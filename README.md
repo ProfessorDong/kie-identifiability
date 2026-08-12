@@ -15,6 +15,29 @@ by scaling, so it cannot see a displacement transverse to the mass-scaling line.
 The quantity that can is the offset `F = ln K_HT - gamma_SC ln K_DT`, which is
 zero on that line by construction.
 
+**The evidence is one-sided, and that is the whole result.** For any admissible
+observation `K_HT > K_DT > 1`,
+
+```
+L_H = (K_HT-1)/(K_DT-1)  >  gamma_obs = ln K_HT / ln K_DT     ALWAYS
+```
+
+because `(x-1)/ln x` is strictly increasing. An exclusion is claimed exactly when
+the reference exponent is below the observed one, and there `L_H > gamma`, so
+Proposition 2 gives the OPEN half-line with `F_obs >= 0`: the entire identified
+set lies above zero. Hence:
+
+* an observed exponent ABOVE the semiclassical reference cannot be produced by
+  kinetic complexity at any commitment -- the inference is robust with no
+  assumption about complexity;
+* an observed exponent BELOW it leaves a set containing the semiclassical locus
+  and every mechanism above it -- uninformative at any precision, because the
+  obstruction is the set's direction, not its width.
+
+This makes exact the criterion of Saunders (1985), used by Cha et al. (1989) and
+Bahnson et al. (1993). Of 83 matched primary records, 82 fall on the
+uninformative side.
+
 **F is not point identified.** Inverting the observation map of the minimal
 competitive scheme over all admissible commitments leaves a set. That set is a
 half-line with a closed-form endpoint:

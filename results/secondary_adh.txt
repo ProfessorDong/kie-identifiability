@@ -1,0 +1,38 @@
+================================================================================================
+SECONDARY ISOTOPE EFFECTS: WHAT THE IDENTIFICATION RESULT GIVES
+================================================================================================
+Proposition 2 is mechanism-free and applies unchanged. Only the
+reference exponent changes, and it is contested: 3.26-3.34 (Bahnson
+et al.) versus ~4.8 (Kohen and Jensen). Exclusion holds iff the
+reference lies below the observed exponent, and is then robust to
+commitment by the asymmetry theorem.
+
+enzymevariant         K_HT   K_DT    L_H gamma_obs     se    pub  95% LCB  >3.34  >4.8
+YADH  wild type      1.350  1.030  11.67    10.153  2.036  10.20    6.804    YES   YES
+LADH  wild type      1.335  1.073   4.59     4.101  0.435   4.10    3.385    YES    no
+LADH  ESE chimera    1.332  1.075   4.43     3.964  0.158   3.96    3.703    YES    no
+LADH  L57V           1.332  1.065   5.11     4.552  0.747   4.55    3.323     no    no
+LADH  L57F           1.318  1.033   9.64     8.504  1.027   8.50    6.814    YES   YES
+LADH  F93W           1.333  1.048   6.94     6.131  0.503   6.13    5.303    YES   YES
+LADH  V203L          1.380  1.074   5.14     4.512  0.241   4.50    4.116    YES    no
+LADH  V203A          1.316  1.058   5.45     4.870  0.336   4.90    4.317    YES    no
+LADH  V203A-F93W     1.325  1.075   4.33     3.891  0.205   3.90    3.555    YES    no
+LADH  V203G          1.358  1.097   3.69     3.305  0.235   3.30    2.920     no    no
+
+  gamma_obs reproduces the published exponents to 0.047 in the worst case,
+  an independent check on the transcription.
+  L_H > gamma_obs in 10 of 10 records, as the theorem requires.
+
+  robust against a 3.34 reference: 8 of 10
+  robust against a 4.8 reference: 3 of 10
+  robust across the WHOLE disputed range: YADH wild type, LADH L57F, LADH F93W
+
+  These three exclude the semiclassical locus whichever side of the
+  Kohen-Jensen dispute is taken, and by the asymmetry theorem the
+  exclusion cannot be an artifact of kinetic complexity. They are the
+  strongest surviving evidence in the primary literature for a
+  breakdown of mass scaling in enzymatic hydrogen transfer.
+
+  The remaining records are not evidence against tunneling. Their
+  identified sets contain zero and every positive value, so they are
+  simply uninformative at a 4.8 reference.
