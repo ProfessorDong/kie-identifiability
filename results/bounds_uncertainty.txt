@@ -1,0 +1,79 @@
+======================================================================================
+UNCERTAINTY-AWARE ONE-SIDED BOUNDS ON THE OFFSET
+======================================================================================
+gamma_SC = 3.34887 (C-H reduced masses)
+a series refutes the ground-channel gated model only if its lower
+confidence bound exceeds the envelope at the relevant scale; for
+intrinsic effects above 1.2689 that envelope is F0 = -0.042086.
+
+The H/T and D/T effects share a tritium reference. The correlation is
+not reported, so results are bracketed over rho in {0, 0.5, 0.9}.
+
+--- rho = 0.0 --------------------------------------------------------------
+series                                          point   95% LCB      SE  refutes?
+FDH V123A (hydride)                           -0.3969   -0.4259  0.0176        no
+FDH V123G (hydride)                           -0.3220   -0.3572  0.0214        no
+TSase WT (hydride)                            -0.4611   -0.4846  0.0143        no
+TSase WT (proton)                             -0.2726   -0.3077  0.0213        no
+TSase Y209W (proton)                          -0.1600   -0.2378  0.0473        no
+ecDHFR F125M (hydride)                        -0.1681   -0.1979  0.0182        no
+ecDHFR G121V-F125M (hydride)                  -0.0740   -0.1584  0.0513        no
+ecDHFR M42W-F125M (hydride)                   -0.1027   -0.2051  0.0623        no
+ecDHFR W133F (hydride)                        -0.0596   -0.1068  0.0286        no
+ecDHFR heavy enzyme (hydride)                 -0.1576   -0.2015  0.0267        no
+ecDHFR light enzyme (hydride)                 -0.0759   -0.0973  0.0130        no
+hsDHFR F32L (hydride)                         -0.2784   -0.3293  0.0310        no
+hsDHFR F32L-PP26N-PEKN62G (hydride)           -0.6937   -0.7118  0.0110        no
+hsDHFR F32M (hydride)                         -0.8782   -0.9298  0.0313        no
+hsDHFR d26-PPLR-d62-PEKN (hydride)            -0.1343   -0.1592  0.0151        no
+hsDHFR d62-PEKN (hydride)                     -0.2368   -0.2380  0.0007        no
+
+--- rho = 0.5 --------------------------------------------------------------
+series                                          point   95% LCB      SE  refutes?
+FDH V123A (hydride)                           -0.3969   -0.4237  0.0163        no
+FDH V123G (hydride)                           -0.3220   -0.3477  0.0156        no
+TSase WT (hydride)                            -0.4611   -0.4828  0.0132        no
+TSase WT (proton)                             -0.2726   -0.2982  0.0156        no
+TSase Y209W (proton)                          -0.1600   -0.2258  0.0400        no
+ecDHFR F125M (hydride)                        -0.1681   -0.1946  0.0161        no
+ecDHFR G121V-F125M (hydride)                  -0.0740   -0.1580  0.0511        no
+ecDHFR M42W-F125M (hydride)                   -0.1027   -0.2006  0.0596        no
+ecDHFR W133F (hydride)                        -0.0596   -0.1028  0.0262        no
+ecDHFR heavy enzyme (hydride)                 -0.1576   -0.1994  0.0254        no
+ecDHFR light enzyme (hydride)                 -0.0759   -0.0966  0.0125        no
+hsDHFR F32L (hydride)                         -0.2784   -0.3245  0.0281        no
+hsDHFR F32L-PP26N-PEKN62G (hydride)           -0.6937   -0.7097  0.0098        no
+hsDHFR F32M (hydride)                         -0.8782   -0.9247  0.0282        no
+hsDHFR d26-PPLR-d62-PEKN (hydride)            -0.1343   -0.1579  0.0143        no
+hsDHFR d62-PEKN (hydride)                     -0.2368   -0.2389  0.0012        no
+
+--- rho = 0.9 --------------------------------------------------------------
+series                                          point   95% LCB      SE  refutes?
+FDH V123A (hydride)                           -0.3969   -0.4207  0.0145        no
+FDH V123G (hydride)                           -0.3220   -0.3355  0.0082        no
+TSase WT (hydride)                            -0.4611   -0.4813  0.0123        no
+TSase WT (proton)                             -0.2726   -0.2858  0.0080        no
+TSase Y209W (proton)                          -0.1600   -0.2181  0.0353        no
+ecDHFR F125M (hydride)                        -0.1681   -0.1912  0.0141        no
+ecDHFR G121V-F125M (hydride)                  -0.0740   -0.1548  0.0492        no
+ecDHFR M42W-F125M (hydride)                   -0.1027   -0.1954  0.0564        no
+ecDHFR W133F (hydride)                        -0.0596   -0.0997  0.0243        no
+ecDHFR heavy enzyme (hydride)                 -0.1576   -0.1957  0.0231        no
+ecDHFR light enzyme (hydride)                 -0.0759   -0.0935  0.0107        no
+hsDHFR F32L (hydride)                         -0.2784   -0.3211  0.0260        no
+hsDHFR F32L-PP26N-PEKN62G (hydride)           -0.6937   -0.7047  0.0067        no
+hsDHFR F32M (hydride)                         -0.8782   -0.9111  0.0200        no
+hsDHFR d26-PPLR-d62-PEKN (hydride)            -0.1343   -0.1568  0.0136        no
+hsDHFR d62-PEKN (hydride)                     -0.2368   -0.2387  0.0012        no
+
+======================================================================================
+SUMMARY
+======================================================================================
+rho = 0.0: series refuting the model = 0 of 16;  best lower bound -0.0973 (ecDHFR light enzyme)
+rho = 0.5: series refuting the model = 0 of 16;  best lower bound -0.0966 (ecDHFR light enzyme)
+rho = 0.9: series refuting the model = 0 of 16;  best lower bound -0.0935 (ecDHFR light enzyme)
+
+The closest series on the point estimate is ecDHFR W133F,
+point bound -0.0596, short of F0 by 0.0175.
+Its 95% lower confidence bound is -0.1068, short by 0.0647, i.e. 0.61 standard errors.
+The apparent near-miss is not an inferential statement.

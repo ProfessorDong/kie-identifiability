@@ -1,0 +1,66 @@
+
+============================================================================
+CLAIM I: Theorem 1 is FALSE -- F exceeds F0 at small A
+============================================================================
+F0 = -0.042086   mu ratios: 1, 1.361971, 1.610094   sqrt(t) = 1.268895
+
+         A         w           F   > F0 ?   K_HT^int
+     0.010     1e-06   -0.002208      YES     1.0061
+     0.010     1e-02   -0.003206      YES     1.0090
+     0.050     1e-06   -0.011042      YES     1.0310
+     0.050     1e-02   -0.011697      YES     1.0333
+     0.200     1e-06   -0.044167       no     1.1298
+     0.200     1e-02   -0.043541       no     1.1296
+     1.000     1e-06   -0.220835       no     1.8406
+     1.000     1e-02   -0.213376       no     1.8176
+
+  analytic: dF/dA = q_H - gamma_SC q_D
+  symbolic simplification: (t - 1)*(d*w - d*(w + 1) + 1)/((w + 1)*(d*w + 1)*(t*w + 1))
+  equals -(t-1)(d-1)/[(1+wt)(1+w)(1+wd)] : True
+  => dF/dA < 0 strictly, so the supremum in A is at A -> 0, not A -> inf.
+
+  global sup over (A,w): F(A->0, w->0) = -0.00000000
+  => sup F = 0, NOT F0.  Theorem 1 as stated is FALSE.  CLAIM CONFIRMED.
+
+============================================================================
+CLAIM I(b): the corrected scale-dependent envelope B(K)
+============================================================================
+threshold sqrt(t) = 1.268895
+  K_HT^int   numeric sup   closed form          F0
+    1.0100     -0.003522     -0.003522   -0.042086
+    1.0500     -0.015749     -0.015749   -0.042086
+    1.1000     -0.027256     -0.027256   -0.042086
+    1.2000     -0.039868     -0.039868   -0.042086
+    1.2689     -0.042086     -0.042086   -0.042086
+    1.5000     -0.042086     -0.042086   -0.042086
+    3.0000     -0.042086     -0.042086   -0.042086
+   11.0000     -0.042086     -0.042086   -0.042086
+  => Theorem 1 holds only for K_HT^int >= sqrt(mu_T/mu_H) = 1.2689.
+     Below that the envelope rises toward 0.  My numerical check started
+     at K = 1.5, which sat entirely inside the region where it holds.
+
+============================================================================
+CLAIM III: the experimental recommendation has the commitment reversed
+============================================================================
+observation map K_obs = x(1+c)/(x+c), c = k_off/k_chem
+         c     K_obs     masking
+      0.01    1.0087      6.9913
+      0.10    1.0864      6.9136
+      1.00    1.7778      6.2222
+     10.00    4.8889      3.1111
+    100.00    7.4815      0.5185
+  10000.00    7.9944      0.0056
+  intrinsic x = 8.0
+  K_obs -> x as c -> INFINITY.  Masking is reduced by INCREASING
+  c = k_off/k_chem.  The manuscript recommends REDUCING it.
+  CLAIM CONFIRMED: sign error in the design recommendation.
+
+============================================================================
+CLAIM IV: the model-free bounds ignore measurement uncertainty
+============================================================================
+ecDHFR W133F, 25 C:  K_HT = 5.04 +- 0.03,  K_DT = 1.65 +- 0.02
+  F_obs        = -0.05962
+  delta-method SE (independence) = 0.04103
+  distance to F0 = +0.01754  ->  0.43 SE
+  CLAIM CONFIRMED: the reported shortfall is well inside one standard
+  error, so 'falls short by 0.018' is not an inferential statement.
