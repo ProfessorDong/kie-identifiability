@@ -21,15 +21,21 @@ Table 2 reported average        7.13+-0.07    1.73+-0.02    3.584   8.40   0.128
 ROBUSTNESS OF THE REPORTED AVERAGE
 ------------------------------------------------------------------------------------------
   F_min = +0.1287, sd = 0.0399, 95% LCB = +0.0630
-  reversibility: vacuity threshold E_D* = 1.827
+  reversibility: lower edge E_D* = 1.827, vacuity window = EMPTY
+  The window is empty because F_obs > 0. By Proposition 3 no equilibrium
+  isotope effect can make this observation uninformative, so the
+  conclusion is unconditional in E_D rather than conditional on a bound.
       E_DT      F_min    95% LCB   excludes gated?
       1.00     0.1287     0.0630               YES
       1.10     0.1287     0.0630               YES
       1.20     0.1287     0.0630               YES
       1.40     0.1287     0.0630               YES
       1.60     0.1287     0.0630               YES
-  Equilibrium isotope effects for alcohol/aldehyde hydride transfer are
-  well below the threshold, so reversibility does not overturn this.
+      2.00     0.1287     0.0630               YES
+      5.00     0.1287     0.0630               YES
+     10.00     0.1287     0.0630               YES
+  The endpoint is unchanged across the whole range: reversibility does
+  not touch this conclusion at any equilibrium isotope effect.
 
   Correlation between the two effects only helps: rho > 0 reduces
        rho      sd(F)    95% LCB

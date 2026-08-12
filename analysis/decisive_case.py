@@ -29,7 +29,7 @@ import pandas as pd
 
 import masses as M
 from partial_id import F_min_exact
-from reversible import eie_threshold, F_min_reversible
+from reversible import eie_threshold, F_min_reversible, vacuity_window
 
 GSC = M.gamma_sc("C")
 F0 = M.offset_F0("C")
@@ -81,15 +81,20 @@ def main():
     fmin = F_min_exact(avg.K_HT, avg.K_DT)[0]
     sd = np.sqrt((avg.K_HT_se / avg.K_HT) ** 2 + (GSC * avg.K_DT_se / avg.K_DT) ** 2)
     es = eie_threshold(avg.K_HT, avg.K_DT)
+    win = vacuity_window(avg.K_HT, avg.K_DT)
     say(f"  F_min = {fmin:+.4f}, sd = {sd:.4f}, 95% LCB = {fmin-1.645*sd:+.4f}")
-    say(f"  reversibility: vacuity threshold E_D* = {es:.3f}")
+    say(f"  reversibility: lower edge E_D* = {es:.3f}, vacuity window = "
+        f"{'EMPTY' if win is None else win}")
+    say("  The window is empty because F_obs > 0. By Proposition 3 no equilibrium")
+    say("  isotope effect can make this observation uninformative, so the")
+    say("  conclusion is unconditional in E_D rather than conditional on a bound.")
     say(f"{'E_DT':>10}{'F_min':>11}{'95% LCB':>11}{'excludes gated?':>18}")
-    for e in (1.0, 1.1, 1.2, 1.4, 1.6):
+    for e in (1.0, 1.1, 1.2, 1.4, 1.6, 2.0, 5.0, 10.0):
         f, _, _ = F_min_reversible(avg.K_HT, avg.K_DT, e)
         say(f"{e:10.2f}{f:11.4f}{f-1.645*sd:11.4f}"
             f"{'YES' if f-1.645*sd > F0 else 'no':>18}")
-    say("  Equilibrium isotope effects for alcohol/aldehyde hydride transfer are")
-    say("  well below the threshold, so reversibility does not overturn this.")
+    say("  The endpoint is unchanged across the whole range: reversibility does")
+    say("  not touch this conclusion at any equilibrium isotope effect.")
     say("")
     say("  Correlation between the two effects only helps: rho > 0 reduces")
     say(f"{'rho':>10}{'sd(F)':>11}{'95% LCB':>11}")

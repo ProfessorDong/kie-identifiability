@@ -3,10 +3,11 @@
 The main text inverts the observation map of the minimal irreversible scheme.
 Hydride transfer in DHFR and formate oxidation in FDH are reversible, so the
 relevant question is what survives when the chemical step can run backwards.
-This module derives that map from the kinetics rather than by analogy, and shows
-that reversibility introduces a sharp threshold: below it the identified set is
-still a bounded half-line, above it the set is the whole real line and the
-experiment determines nothing about the offset.
+This module derives that map from the kinetics rather than by analogy, and finds
+that reversibility opens a bounded WINDOW of equilibrium isotope effects inside
+which the identified set is the whole real line and the experiment determines
+nothing.  Outside the window, on either side, the set is bounded below.  The
+window is empty whenever the observed offset is positive.
 
 THE MAP.  For
 
@@ -36,22 +37,36 @@ which is what makes the structure transparent: F diverges to -infinity exactly
 when D_D can be driven to zero while D_H stays positive and smaller than
 D_D K_H/K_D (the constraint x_H > x_D).
 
-THE THRESHOLD.  Both D vanish simultaneously only at the solution of a 2x2
+THE VACUITY WINDOW.  Both D vanish simultaneously only at the solution of a 2x2
 linear system.  With a = K_H - 1, b = K_D - 1, u = K_H/E_H - 1, v = K_D/E_D - 1,
 
-    C_f* = (v-u)/(a v - b u),      C_r* = (a-b)/(a v - b u).
+    C_f* = (v-u)/(a v - b u),      C_r* = (a-b)/(a v - b u),   den = a v - b u.
 
-Since a > b under normal ordering, that corner lies in the physical quadrant
-C_f, C_r >= 0 exactly when v >= u.  Tying the equilibrium isotope effects by
-mass scaling, E_H = E_D^gamma, this reduces to
+Since a > b under normal ordering, C_r* >= 0 needs den > 0, and C_f* >= 0 then
+needs v >= u.  BOTH conditions matter.  Tying the equilibrium isotope effects by
+mass scaling, E_H = E_D^gamma, the second gives
 
-    E_D >= (K_HT / K_DT)^{1/(gamma-1)}  ==  E_D*,
+    E_D >= (K_HT / K_DT)^{1/(gamma-1)}  ==  E_D* ,
 
-the vacuity threshold.  Below it the set is bounded below; at or above it the
-set is all of R.  Note the contrast that appears here is the RATIO K_HT/K_DT,
-not the difference contrast L_H = (K_HT-1)/(K_DT-1) that governs the
-irreversible case.  Reversibility is a different question and answers to a
-different statistic.
+but that alone is not sufficient: den -> -(a-b) < 0 as E_D -> infinity, so den
+changes sign again at some E_D** and the vacuity region is the bounded interval
+
+    [E_D*, E_D**],   E_D** the root above E_D* of  a(K_DT/E - 1) = b(K_HT/E^g - 1),
+
+which is transcendental in E for non-integer gamma and has no closed form.
+Outside that window the set is bounded below again.
+
+At E_D = E_D* one has v = u and hence den = u(a-b), so the window is nonempty
+exactly when u > 0 there.  That reduces to K_DT^gamma > K_HT, i.e. to
+F_obs < 0.  When the OBSERVED OFFSET IS POSITIVE the window is empty and no
+equilibrium isotope effect can make the identified set vacuous, which is why the
+yeast ADH conclusion of decisive_case.py is unconditional in E_D.
+
+Checked against the optimizer and on 3000 random admissible pairs.
+
+Note the contrast that appears here is the RATIO K_HT/K_DT, not the difference
+contrast L_H = (K_HT-1)/(K_DT-1) that governs the irreversible case.
+Reversibility is a different question and answers to a different statistic.
 """
 from __future__ import annotations
 
@@ -82,8 +97,43 @@ def invert(K, cf, cr, eie):
 
 
 def eie_threshold(kht, kdt, gamma=GSC):
-    """E_D* above which the identified set is the whole real line."""
+    """Lower edge E_D* of the vacuity window: the root of v = u.
+
+    This is NECESSARY for vacuity but not sufficient. See vacuity_window.
+    """
     return (kht / kdt) ** (1.0 / (gamma - 1.0))
+
+
+def _den(E, kht, kdt, gamma=GSC):
+    """den = a v - b u, whose positivity is the second vacuity condition."""
+    a, b = kht - 1.0, kdt - 1.0
+    return a * (kdt / E - 1.0) - b * (kht / E ** gamma - 1.0)
+
+
+def vacuity_window(kht, kdt, gamma=GSC, emax=1e6):
+    """Closed interval of E_DT on which the identified set is unbounded below.
+
+    Vacuity requires the corner (C_f*, C_r*) to lie in the physical quadrant,
+    which needs BOTH v >= u (giving E_DT >= E_D*) AND den = a v - b u > 0.
+    The second condition fails again at large E_DT, because den -> -(a-b) < 0,
+    so the window is a bounded interval [E_D*, E_D**] rather than a half-line.
+
+    At E_DT = E_D* one has v = u and hence den = u(a-b), so the window is
+    nonempty exactly when u > 0 there, which reduces to K_DT^gamma > K_HT,
+    i.e. to F_obs < 0.  When the observed offset is POSITIVE no equilibrium
+    isotope effect makes the set vacuous.
+
+    Returns (E_lo, E_hi), or None when the window is empty.
+    """
+    from scipy.optimize import brentq
+    f_obs = np.log(kht) - gamma * np.log(kdt)
+    if f_obs >= 0.0:
+        return None
+    lo = eie_threshold(kht, kdt, gamma)
+    if _den(lo, kht, kdt, gamma) <= 0.0:
+        return None
+    hi = brentq(_den, lo * (1 + 1e-12), emax, args=(kht, kdt, gamma))
+    return lo, hi
 
 
 # --------------------------------------------------------- the identified set
@@ -166,15 +216,25 @@ def _verify():
     print("=" * 78)
     print("2. THE VACUITY THRESHOLD, ANALYTIC vs NUMERICAL")
     print("=" * 78)
-    print(f"{'K_HT':>7}{'K_DT':>7}{'E_D* (analytic)':>17}"
-          f"{'F_min at 0.9 E*':>17}{'F_min at 1.1 E*':>17}")
-    for kht, kdt in ((5.04, 1.65), (2.362, 1.49), (6.44, 1.92), (1.93, 1.29)):
-        es = eie_threshold(kht, kdt)
-        lo, _, _ = F_min_reversible(kht, kdt, 0.9 * es)
-        hi, _, _ = F_min_reversible(kht, kdt, 1.1 * es)
-        print(f"{kht:7.2f}{kdt:7.2f}{es:17.4f}{lo:17.3f}{hi:17.3f}")
-    print("  Below the threshold F_min is finite; above it the search runs away,")
-    print("  which is the numerical signature of an unbounded identified set.")
+    print(f"{'K_HT':>7}{'K_DT':>7}{'F_obs':>9}{'window [E_D*, E_D**]':>24}"
+          f"{'below':>9}{'inside':>9}{'above':>9}")
+    for kht, kdt in ((5.04, 1.65), (2.362, 1.49), (6.44, 1.92), (1.93, 1.29),
+                     (7.13, 1.73)):
+        fobs = np.log(kht) - GSC * np.log(kdt)
+        win = vacuity_window(kht, kdt)
+        if win is None:
+            print(f"{kht:7.2f}{kdt:7.2f}{fobs:+9.4f}{'empty':>24}"
+                  f"{F_min_reversible(kht,kdt,2.0)[0]:9.3f}{'--':>9}{'--':>9}")
+            continue
+        lo, hi = win
+        b = F_min_reversible(kht, kdt, lo * 0.98)[0]
+        m = F_min_reversible(kht, kdt, 0.5 * (lo + hi))[0]
+        a_ = F_min_reversible(kht, kdt, hi * 1.02)[0]
+        print(f"{kht:7.2f}{kdt:7.2f}{fobs:+9.4f}"
+              f"{'['+format(lo,'.4f')+', '+format(hi,'.4f')+']':>24}"
+              f"{b:9.3f}{m:9.1f}{a_:9.3f}")
+    print("  The window is a bounded INTERVAL, not a half-line: the set is")
+    print("  bounded below on both sides of it. It is empty when F_obs > 0.")
 
     print()
     print("=" * 78)
@@ -198,18 +258,28 @@ def _benchmark():
     print("=" * 78)
     d = pd.read_csv("../data/trinomial_benchmark.csv")
     d["E_star"] = eie_threshold(d.K_HT.values, d.K_DT.values)
-    print(f"  73 records: E_D* ranges {d.E_star.min():.3f} to "
+    wins = [vacuity_window(r.K_HT, r.K_DT) for _, r in d.iterrows()]
+    d["E_lo"] = [w[0] if w else np.nan for w in wins]
+    d["E_hi"] = [w[1] if w else np.nan for w in wins]
+    n_empty = int(d.E_lo.isna().sum())
+    print(f"  73 records: lower edge E_D* ranges {d.E_star.min():.3f} to "
           f"{d.E_star.max():.3f}, median {d.E_star.median():.3f}")
+    print(f"  upper edge E_D** median {d.E_hi.median():.3f}; "
+          f"median window width {np.nanmedian(d.E_hi - d.E_lo):.3f}")
+    print(f"  {n_empty} of 73 records have an EMPTY window (F_obs > 0), so no")
+    print(f"  equilibrium isotope effect can make them vacuous.")
     print()
     print(f"{'family':10s}{'variant':26s}{'step':9s}"
           f"{'min E_D*':>10}{'median E_D*':>13}")
     for key, g in d.groupby(["family", "variant", "step"]):
         print(f"{key[0]:10s}{key[1]:26s}{key[2]:9s}"
               f"{g.E_star.min():10.3f}{g.E_star.median():13.3f}")
+    d[["family","variant","step","T_C","K_HT","K_DT","E_star","E_lo","E_hi"]].to_csv(
+        "../results/reversible_thresholds.csv", index=False)
     print()
-    for e in (1.0, 1.1, 1.2, 1.3):
-        n = int((d.E_star <= e).sum())
-        print(f"  at E_DT = {e:.1f}: {n:2d} of 73 records would be vacuous")
+    for e in (1.0, 1.1, 1.2, 1.3, 1.5):
+        n = int(((d.E_lo <= e) & (e <= d.E_hi)).sum())
+        print(f"  at E_DT = {e:.1f}: {n:2d} of 73 records are inside their window")
 
     print()
     print("=" * 78)
@@ -236,8 +306,6 @@ def _benchmark():
     print("  Reversibility can only lower the endpoint, so the irreversible")
     print("  bounds of the main text are the optimistic case.")
     res.to_csv("../results/reversible_bounds.csv", index=False)
-    d[["family", "variant", "step", "T_C", "K_HT", "K_DT", "E_star"]].to_csv(
-        "../results/reversible_thresholds.csv", index=False)
     print("\n[written] ../results/reversible_{thresholds,bounds}.csv")
 
 

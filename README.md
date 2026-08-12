@@ -62,18 +62,25 @@ vibronic channels can carry the offset above zero; a worked parameter set gives
 `F = +0.00530`, stable from n=6 to n=30. So the gated family is not confined
 below the semiclassical locus once excited channels contribute.
 
-**Reversibility has a sharp threshold.** Deriving the map for a reversible
-chemical step (it is Northrop's equation re-referenced to tritium, which is what
-makes both commitments shared) gives `F = F_obs + gamma ln D_D - ln D_H` and a
-clean condition: the identified set is bounded below iff
+**Reversibility opens a bounded vacuity window.** Deriving the map for a
+reversible chemical step (it is Northrop's equation re-referenced to tritium,
+which is what makes both commitments shared) gives
+`F = F_obs + gamma ln D_D - ln D_H`. The set is unbounded below exactly when the
+corner `Cf* = (v-u)/d`, `Cr* = (a-b)/d`, `d = av-bu` lies in the physical
+quadrant, which needs BOTH `d > 0` and `v >= u`:
 
 ```
-E_D  <  E_D* = (K_HT / K_DT)^(1/(gamma-1))
+window = [E_D*, E_D**],   E_D* = (K_HT/K_DT)^(1/(gamma-1))
+E_D** = root above E_D* of  a(K_DT/E - 1) = b(K_HT/E^gamma - 1)
+window is nonempty  <=>  F_obs < 0
 ```
 
-Above that the set is all of R and the experiment says nothing. Across the
-benchmark `E_D*` runs 1.099-1.694, median 1.465. Reversibility can only lower
-the endpoint, so the irreversible bounds are the optimistic case.
+It is a bounded interval, not a half-line: `d -> -(a-b) < 0` at large `E_D`, so
+the set recovers a finite endpoint above the window as well as below it. And a
+POSITIVE observed offset can never be made vacuous by any equilibrium isotope
+effect. Across the benchmark the lower edge runs 1.099-1.694 (median 1.465),
+upper edge median 1.971, median width 0.50. Verified against direct optimization
+and on 3000 random pairs.
 
 **Empirically, the temperature series exclude nothing.** Across 73 matched
 records in 16 series, one-sided 95% confidence bounds exclude neither mechanism
@@ -86,7 +93,9 @@ give `F_obs = +0.129` against `F0 = -0.042`, with a 95% bound of `+0.063`
 set is the *open* half-line, so no commitment can explain it away -- which
 vindicates their 1989 argument against the later kinetic-complexity objection.
 It clears `F0`, clears the semiclassical locus, and clears `B_vib` for
-lambda > 10 kcal/mol, but not at lambda = 5 with strong driving force.
+lambda > 10 kcal/mol, but not at lambda = 5 with strong driving force. Because
+`F_obs > 0` its vacuity window is empty, so the conclusion is unconditional in
+the equilibrium isotope effect rather than conditional on a bound.
 
 **The experiment is precision limited, not commitment limited.** 52 of 73
 records already have zero commitment gap. The signal is 0.042 and the median
