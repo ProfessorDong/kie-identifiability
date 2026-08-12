@@ -1,0 +1,10 @@
+family,variant,step,T_C,K_HT,K_HT_se,K_DT,K_DT_se,note,source
+LADH,wild type,hydride,25,7.149,0.025,1.894,0.013,Table I primary,Bahnson1993
+LADH,ESE chimera,hydride,25,7.593,0.036,1.872,0.006,Table I primary,Bahnson1993
+LADH,L57V,hydride,25,7.550,0.030,1.902,0.021,Table I primary,Bahnson1993
+LADH,L57F,hydride,25,7.308,0.048,1.827,0.008,Table I primary,Bahnson1993
+LADH,F93W,hydride,25,7.755,0.034,1.858,0.005,Table I primary,Bahnson1993
+LADH,V203L,hydride,25,7.82,0.08,1.89,0.01,Table 1 primary,Bahnson1997
+LADH,V203A,hydride,25,7.24,0.06,1.88,0.02,Table 1 primary,Bahnson1997
+LADH,V203A-F93W,hydride,25,7.65,0.06,1.91,0.02,Table 1 primary,Bahnson1997
+LADH,V203G,hydride,25,7.53,0.03,1.90,0.01,Table 1 primary,Bahnson1997
