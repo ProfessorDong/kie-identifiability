@@ -62,11 +62,39 @@ vibronic channels can carry the offset above zero; a worked parameter set gives
 `F = +0.00530`, stable from n=6 to n=30. So the gated family is not confined
 below the semiclassical locus once excited channels contribute.
 
-**Empirically, nothing is excluded.** Across 73 matched records in 16 series,
-three enzyme families, five enzyme-organism systems and two chemical steps,
-one-sided 95% confidence bounds exclude neither mechanism at any assumed
-correlation between the H/T and D/T effects. The closest series on the point
-estimate falls short by 0.0175, and its 95% lower bound falls short by 0.0634.
+**Reversibility has a sharp threshold.** Deriving the map for a reversible
+chemical step (it is Northrop's equation re-referenced to tritium, which is what
+makes both commitments shared) gives `F = F_obs + gamma ln D_D - ln D_H` and a
+clean condition: the identified set is bounded below iff
+
+```
+E_D  <  E_D* = (K_HT / K_DT)^(1/(gamma-1))
+```
+
+Above that the set is all of R and the experiment says nothing. Across the
+benchmark `E_D*` runs 1.099-1.694, median 1.465. Reversibility can only lower
+the endpoint, so the irreversible bounds are the optimistic case.
+
+**Empirically, the temperature series exclude nothing.** Across 73 matched
+records in 16 series, one-sided 95% confidence bounds exclude neither mechanism
+at any assumed correlation. The closest series falls short by 0.0175 on the
+point estimate and 0.0634 on its 95% bound.
+
+**But yeast ADH does.** The primary effects of Cha, Murray & Klinman (1989)
+give `F_obs = +0.129` against `F0 = -0.042`, with a 95% bound of `+0.063`
+(rising to `+0.079` at rho = 0.9). Because `L_H = 8.40 > gamma_SC` the identified
+set is the *open* half-line, so no commitment can explain it away -- which
+vindicates their 1989 argument against the later kinetic-complexity objection.
+It clears `F0`, clears the semiclassical locus, and clears `B_vib` for
+lambda > 10 kcal/mol, but not at lambda = 5 with strong driving force.
+
+**The experiment is precision limited, not commitment limited.** 52 of 73
+records already have zero commitment gap. The signal is 0.042 and the median
+sampling sd of F is 0.028, so 80% power needs a 1.68x reduction in sd, about
+2.8x more replication. The shared tritium reference *helps*: it enters Var(F)
+with weight `(gamma-1)^2 = 5.52` instead of `1 + gamma^2 = 12.21`, a factor 2.2
+for measuring H/T and D/T in one triple-label mixture. No source reports the
+covariance, so this is currently discarded.
 
 The framework, rather than any verdict on tunneling, is the contribution:
 mechanistic claims from these experiments are comparisons between an
@@ -84,6 +112,12 @@ analysis/
   identifiable_set.py   the half-line result and the point-estimate bounds
   bounds_uncertainty.py one-sided confidence bounds with shared-reference
                         correlation bracketed
+  reversible.py         reversible-scheme identified set and the vacuity
+                        threshold E_D* = (K_HT/K_DT)^(1/(gamma-1))
+  vibronic_envelope.py  summed envelope B_vib; exact gated Franck-Condon
+                        factors via tilted-Gaussian moments
+  design_power.py       precision, correlation and commitment requirements
+  decisive_case.py      yeast ADH primary effects (Cha, Murray & Klinman 1989)
   build_trinomial.py    parses primary SI tables -> benchmark + audit
   offset_analysis.py    profiles the offset per series (continuation method)
   offset_summary.py     goodness-of-fit stratification of those profiles

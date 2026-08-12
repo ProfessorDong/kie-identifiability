@@ -1,0 +1,38 @@
+==========================================================================================
+THE DECISIVE CASE: YEAST ADH PRIMARY EFFECTS (Cha, Murray & Klinman 1989)
+==========================================================================================
+gamma_SC = 3.34887   F0 = -0.042086
+Errors are standard deviations of >=5 determinations. Using them as the
+standard error of the mean is conservative by about sqrt(5).
+
+record                               K_HT         K_DT  gam_obs    L_H    F_min      sd  95% LCB   >F0   >0
+Table 2 determination 1         7.15+-0.17    1.72+-0.03    3.627   8.54   0.1509  0.0631   0.0472   YES  YES
+Table 2 determination 2         7.00+-0.07    1.70+-0.03    3.667   8.57   0.1689  0.0599   0.0703   YES  YES
+Table 2 determination 3         7.23+-0.10    1.76+-0.03    3.499   8.20   0.0851  0.0587  -0.0115   YES   no
+Table 2 reported average        7.13+-0.07    1.73+-0.02    3.584   8.40   0.1287  0.0399   0.0630   YES  YES
+
+  All 4 records have L_H > gamma_SC, so every identified set is the
+  OPEN half-line (F_obs, inf): the endpoint is the commitment-free value and
+  no admissible commitment can lower it. Masking cannot explain these data.
+  4/4 exclude the ground-channel gated model; 3/4 also exclude the
+  semiclassical locus F = 0.
+
+------------------------------------------------------------------------------------------
+ROBUSTNESS OF THE REPORTED AVERAGE
+------------------------------------------------------------------------------------------
+  F_min = +0.1287, sd = 0.0399, 95% LCB = +0.0630
+  reversibility: vacuity threshold E_D* = 1.827
+      E_DT      F_min    95% LCB   excludes gated?
+      1.00     0.1287     0.0630               YES
+      1.10     0.1287     0.0630               YES
+      1.20     0.1287     0.0630               YES
+      1.40     0.1287     0.0630               YES
+      1.60     0.1287     0.0630               YES
+  Equilibrium isotope effects for alcohol/aldehyde hydride transfer are
+  well below the threshold, so reversibility does not overturn this.
+
+  Correlation between the two effects only helps: rho > 0 reduces
+       rho      sd(F)    95% LCB
+      0.00     0.0399     0.0630
+      0.50     0.0349     0.0714
+      0.90     0.0302     0.0791

@@ -1,0 +1,81 @@
+====================================================================================
+WHAT THE EXPERIMENT MUST ACHIEVE
+====================================================================================
+gamma_SC = 3.34887,  discriminating signal |F0| = 0.042086
+
+------------------------------------------------------------------------------------
+1. REQUIRED PRECISION ON THE OFFSET
+------------------------------------------------------------------------------------
+   power    sd(F) required   vs benchmark median
+    0.50           0.02559                1.11x
+    0.80           0.01693                1.68x
+    0.90           0.01438                1.98x
+    0.95           0.01279                2.23x
+  benchmark median sd(F) at rho = 0 is 0.02849
+  so reaching 80% power needs a 1.68-fold reduction in sd,
+  i.e. about 2.8x more replicates at fixed per-assay precision.
+
+------------------------------------------------------------------------------------
+2. THE SHARED TRITIUM REFERENCE REDUCES THE VARIANCE
+------------------------------------------------------------------------------------
+     rho   sqrt(1+g^2-2 g rho)    required s (%)   gain vs rho=0
+    0.00                3.4950             0.484            1.00x
+    0.30                3.1946             0.530            1.09x
+    0.50                2.9776             0.568            1.17x
+    0.70                2.7434             0.617            1.27x
+    0.90                2.4874             0.680            1.41x
+    0.99                2.3631             0.716            1.48x
+  benchmark median relative precision: K_HT 0.81%, K_DT 0.69%
+
+  Common-mode decomposition, s_L^2 = s_ref^2 + s_L,ind^2:
+    shared reference enters Var(F) with weight (gamma-1)^2 = 5.517
+    independent errors enter with weight 1 + gamma^2 = 12.215
+    ratio 2.21, the factor bought by measuring
+    H/T and D/T in one triple-label mixture rather than separately.
+
+  At fixed s_D the variance is minimized at s_H = gamma rho s_D, where
+  Var(F) = gamma^2 s_D^2 (1 - rho^2): the reference error cancels
+  exactly in the limit rho -> 1. Reporting the covariance would let a
+  reader exploit this; none of the sources do.
+
+------------------------------------------------------------------------------------
+3. THE COMMITMENT COSTS MORE THAN THE PRECISION
+------------------------------------------------------------------------------------
+  F_obs - F_min over 73 records: median 0.0000, max 0.3962
+  in units of |F0|: median 0.0, max 9.4
+  52 records have zero gap (L_H >= gamma, so the
+  endpoint is the commitment-free value and nothing is lost).
+  Where the gap is nonzero it dwarfs the signal, so suppressing the
+  commitment matters more than improving precision.
+
+------------------------------------------------------------------------------------
+4. HOW WELL AN INDEPENDENT COMMITMENT MEASUREMENT MUST BE KNOWN
+------------------------------------------------------------------------------------
+  Knowing c point identifies F, with dF/dc from Proposition 2.
+  Requiring the induced sd(F) to stay below half the signal:
+   K_HT   K_DT  c assumed    |dF/dc|   max sd(c)/c
+   5.04   1.65       8.08     0.0875          3.0%
+   5.04   1.65      40.40     0.0014         37.3%
+   6.44   1.92      10.88     0.0635          3.0%
+   6.44   1.92      54.40     0.0010         39.3%
+   2.36   1.49       2.72     0.0971          8.0%
+   2.36   1.49      13.60     0.0010        149.7%
+  A commitment known to a few tens of percent already contributes less
+  than the KIE precision does, so pre-steady-state or isotope-trapping
+  determination of c is the cheaper route to identification.
+
+------------------------------------------------------------------------------------
+5. TEMPERATURES DO NOT SUBSTITUTE FOR PRECISION
+------------------------------------------------------------------------------------
+  The series statistic is a maximum over temperatures and does not
+  average down: adding temperatures raises the selection bias rather
+  than shrinking the standard error. Pooling across temperatures needs
+  F constant in T, which is part of what is under test. Under that
+  assumption sd falls as 1/sqrt(n_T):
+   n_T    sd(F) pooled    power at rho=0
+     1         0.02849             0.434
+     3         0.01645             0.820
+     5         0.01274             0.951
+    10         0.00901             0.999
+    20         0.00637             1.000
+  Reaching 80% power by temperatures alone needs 3 of them at present precision.

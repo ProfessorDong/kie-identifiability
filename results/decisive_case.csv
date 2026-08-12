@@ -1,0 +1,5 @@
+note,F_min,sd,lcb,interior,closed,excl_gated,excl_semiclassical
+Table 2 determination 1,0.15094076988715788,0.06306417902723876,0.04720019538735011,False,False,True,True
+Table 2 determination 2,0.16890703662644868,0.05993772850621196,0.07030947323373,False,False,True,True
+Table 2 determination 3,0.08507862458287097,0.05873471601554992,-0.01153998326270865,False,False,True,False
+Table 2 reported average,0.12872587506981215,0.0399406410663189,0.06302352051571755,False,False,True,True
