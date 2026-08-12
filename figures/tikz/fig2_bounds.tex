@@ -1,0 +1,53 @@
+\documentclass[border=2pt,tikz]{standalone}
+\input{icigstyle}
+\begin{document}
+\begin{tikzpicture}
+% Two-column figure (figure*): natural width ~150 mm scaled to 181.9 mm.
+\pgfplotsset{
+  bd/.style={icig, width=104mm, height=58mm,
+    label style={font=\fontsize{8.6}{10.4}\selectfont, color=cInk},
+    tick label style={font=\fontsize{7.8}{9.4}\selectfont, color=cInk},
+    title style={font=\fontsize{9}{11}\selectfont\bfseries, color=cInk}},
+}
+\tikzset{ann/.style={font=\fontsize{7.6}{9}\selectfont, color=cInk, align=left},
+         lab/.style={font=\fontsize{7.4}{8.8}\selectfont, color=cInk,
+                     anchor=east, inner sep=1.5pt}}
+
+\begin{axis}[bd, xmin=-0.95, xmax=0.30, ymin=-0.9, ymax=15.9,
+  xlabel={model-free lower bound on the offset $F$ (log-KIE units)},
+  ytick=\empty, ymajorgrids=false,
+  y axis line style={draw=none}, ytick style={draw=none},
+  xtick={-0.75,-0.5,-0.25,0}, clip=false,
+  title={what sixteen series bound, without fitting}]
+
+  % the region a bound must reach to refute gated tunneling
+  \addplot[cHyd, opacity=0.16, draw=none, forget plot]
+    coordinates {(-0.042086,-0.9) (0.30,-0.9) (0.30,15.9) (-0.042086,15.9)}
+    \closedcycle;
+
+  % each series: a half-line [bound, infinity)
+  \addplot[cGold!55, line width=0.8pt, forget plot,
+           error bars/.cd, x dir=plus, x explicit,
+           error bar style={cGold!55, line width=0.8pt},
+           error mark=none, /pgfplots/.cd, only marks, mark=none]
+    table[x=bound,y=idx,x error=len] {data/g2b_bounds.dat};
+  \addplot[only marks, mark=*, mark size=1.7pt, forget plot,
+           mark options={fill=cGold, draw=white, line width=0.5pt}]
+    table[x=bound,y=idx] {data/g2b_bounds.dat};
+
+  \addplot[cInk, densely dashed, line width=0.9pt, forget plot]
+    coordinates {(-0.042086,-0.9) (-0.042086,15.9)};
+  \addplot[cPro, line width=1.1pt, forget plot]
+    coordinates {(0,-0.9) (0,15.9)};
+
+  \input{data/g2b_labels.tex}
+
+  \node[ann, anchor=south, align=center] at (axis cs:-0.042086,16.1)
+    {$F_{0}$};
+  \node[ann, color=cPro, anchor=south, align=center] at (axis cs:0.13,16.1)
+    {semiclassical $F=0$};
+  \node[ann, color=cHyd!60!black, anchor=north east, rotate=90]
+    at (axis cs:0.29,15.6) {refutes gated tunneling};
+\end{axis}
+\end{tikzpicture}
+\end{document}

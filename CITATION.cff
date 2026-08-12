@@ -1,0 +1,26 @@
+cff-version: 1.2.0
+title: >-
+  One-sided identifiability in isotope tests of enzymatic
+  hydrogen tunneling: data, code and verification suite
+message: >-
+  If you use this software or the curated benchmark, please cite
+  this repository and the primary measurement papers listed in
+  external_data/SOURCES.md.
+type: software
+authors:
+  - given-names: Liang
+    family-names: Dong
+    email: Liang_Dong@baylor.edu
+    affiliation: >-
+      Department of Electrical and Computer Engineering, Baylor
+      University; Department of Radiology, University of Texas
+      Southwestern Medical Center
+    orcid: 'https://orcid.org/0000-0002-8585-1087'
+license: MIT
+keywords:
+  - identifiability
+  - kinetic isotope effect
+  - hydrogen tunneling
+  - enzyme catalysis
+  - quantum biology
+  - Swain-Schaad

@@ -1,0 +1,50 @@
+% Shared TikZ/pgfplots style for every figure in the manuscript.
+\usepackage[T1]{fontenc}
+\usepackage{mathpazo}
+\usepackage{amsmath,amssymb}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\usepackage{pgfplotstable}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{arrows.meta,positioning,calc,backgrounds,fit,shapes.geometric}
+\usepgfplotslibrary{fillbetween}
+
+% --- palette: colour-blind safe, legible in greyscale -------------------
+\definecolor{cHyd}{HTML}{1B6CA8}   % hydride / primary blue
+\definecolor{cPro}{HTML}{C1492E}   % proton  / primary red
+\definecolor{cAcc}{HTML}{7B5AA6}   % accent  / purple
+\definecolor{cGold}{HTML}{B8860B}  % accent  / gold
+\definecolor{cGrey}{HTML}{6E6E6E}
+\definecolor{cInk}{HTML}{1A1A1A}
+\definecolor{cBandR}{HTML}{C1492E}
+\definecolor{cBandG}{HTML}{4F7942}
+
+% --- base axis ----------------------------------------------------------
+\pgfplotsset{
+  icig/.style={
+    width=68mm, height=52mm,
+    scale only axis,
+    axis line style={cInk, line width=0.45pt},
+    tick style={cInk, line width=0.4pt},
+    tick align=outside, tick pos=left,
+    label style={font=\small, color=cInk},
+    tick label style={font=\footnotesize, color=cInk},
+    title style={font=\small\bfseries, color=cInk, align=left},
+    legend cell align=left,
+    legend style={draw=none, fill=none, font=\scriptsize,
+                  inner sep=1pt, row sep=0.5pt},
+    grid=both,
+    major grid style={cGrey!22, line width=0.28pt},
+    minor grid style={cGrey!12, line width=0.2pt},
+  },
+  % marker shorthands
+  ptA/.style={mark=*, mark size=1.7pt, thick,
+              mark options={fill=cHyd, draw=white, line width=0.4pt}},
+  ptB/.style={mark=*, mark size=1.7pt, thick,
+              mark options={fill=cPro, draw=white, line width=0.4pt}},
+  hollowB/.style={mark=o, mark size=1.7pt, thick,
+              mark options={draw=cPro, line width=0.7pt}},
+}
+
+% panel tag, e.g. \panel{a}
+\newcommand{\panel}[1]{\textbf{(\textsf{#1})}}

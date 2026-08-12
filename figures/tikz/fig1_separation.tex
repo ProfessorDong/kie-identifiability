@@ -1,0 +1,63 @@
+\documentclass[border=2pt,tikz]{standalone}
+\input{icigstyle}
+\begin{document}
+\begin{tikzpicture}
+% Single-column figure: panels stacked, natural width ~62 mm, so the figure
+% scales UP into the 88.9 mm PRX column rather than being squeezed down.
+\pgfplotsset{
+  sp/.style={icig, width=50mm, height=38mm,
+    label style={font=\fontsize{8.4}{10}\selectfont, color=cInk},
+    tick label style={font=\fontsize{7.6}{9.2}\selectfont, color=cInk},
+    title style={font=\fontsize{8.8}{10.6}\selectfont\bfseries, color=cInk},
+    legend style={font=\fontsize{7}{8.4}\selectfont, row sep=-2pt,
+                  draw=cGrey, fill=white, fill opacity=0.92,
+                  text opacity=1, inner sep=2pt}},
+}
+\tikzset{ann/.style={font=\fontsize{7.2}{8.6}\selectfont, color=cInk, align=left}}
+
+% ---------------- (b) the identifiable set is a half-line  [lower panel]
+\begin{axis}[sp, at={(0mm,0mm)}, anchor=south west, xmode=log,
+  xlabel={commitment $c$}, ylabel={implied offset $F(c)$},
+  xmin=1e-2, xmax=1e5, ymin=-0.55, ymax=0.42,
+  ytick={-0.4,-0.2,0,0.2,0.4}, restrict y to domain=-0.6:0.5,
+  title={\panel{b} an observation bounds $F$ from below only},
+  legend style={at={(0.97,0.97)}, anchor=north east}]
+  \addplot[cPro, line width=0.9pt, forget plot, domain=1e-2:1e5, samples=2]{0};
+  \addplot[cInk, densely dashed, line width=0.8pt, forget plot,
+           domain=1e-2:1e5, samples=2]{-0.042086};
+  \addplot[cHyd, line width=1.1pt] table[x=c,y=F] {data/g2_mono.dat};
+  \addlegendentry{$L_H>\gamma_{\mathrm{SC}}$}
+  \addplot[cGold, line width=1.1pt] table[x=c,y=F] {data/g2_inter.dat};
+  \addlegendentry{$L_H<\gamma_{\mathrm{SC}}$}
+  \node[ann, color=cPro, anchor=south west] at (axis cs:1.3e-2,0.02)
+    {semiclassical};
+  \node[ann, anchor=north west] at (axis cs:1.3e-2,-0.055) {$F_{0}$};
+  \node[ann, color=cGrey, anchor=south east] at (axis cs:8e4,-0.50)
+    {$F\!\to\!F_{\mathrm{obs}}$};
+\end{axis}
+
+% ---------------- (a) F is bounded above by F0  [upper panel]
+\begin{axis}[sp, at={(0mm,52mm)}, anchor=south west, xmode=log,
+  xlabel={gating group $w=2\kappa\sqrt{\mu_{\mathrm H}}\,\sigma^{2}$},
+  ylabel={offset $F$},
+  xmin=1e-4, xmax=1e8, ymin=-0.30, ymax=0.055,
+  ytick={-0.3,-0.2,-0.1,0}, restrict y to domain=-0.32:0.06,
+  title={\panel{a} the model never exceeds $F_{0}$},
+  legend style={at={(0.03,0.05)}, anchor=south west}]
+  \addplot[cPro, line width=1.0pt, forget plot, domain=1e-4:1e8, samples=2]{0};
+  \addplot[cInk, densely dashed, line width=0.9pt, forget plot,
+           domain=1e-4:1e8, samples=2]{-0.042086};
+  \addplot[cHyd!45, line width=0.8pt] table[x=w,y=F] {data/g1b_A0.dat};
+  \addlegendentry{$A=0.05$}
+  \addplot[cHyd, line width=0.8pt] table[x=w,y=F] {data/g1b_A1.dat};
+  \addlegendentry{$0.5$}
+  \addplot[cGold, line width=0.8pt] table[x=w,y=F] {data/g1b_A2.dat};
+  \addlegendentry{$5$}
+  \addplot[cAcc, line width=0.8pt] table[x=w,y=F] {data/g1b_A4.dat};
+  \addlegendentry{$5\times10^{5}$}
+  \node[ann, color=cPro, anchor=north east] at (axis cs:6e7,-0.004)
+    {semiclassical $F=0$};
+  \node[ann, anchor=north east] at (axis cs:6e7,-0.052) {$F_{0}=-0.0421$};
+\end{axis}
+\end{tikzpicture}
+\end{document}

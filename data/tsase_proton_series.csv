@@ -1,0 +1,9 @@
+system,variant,step,T_C,T_K,K_HT,K_HT_se,K_DT,K_DT_se,n_rep,source_DOI,PMCID,source_table,notes
+hsTSase,WT,proton,5,278.15,1.7920,0.0132,1.3675,0.0094,5,10.1371/journal.pone.0196506,PMC5929524,S3 Table,SE = replicate sd / sqrt(n)
+hsTSase,WT,proton,15,288.15,1.7975,0.0143,1.3457,0.0037,4,10.1371/journal.pone.0196506,PMC5929524,S3 Table,SE = replicate sd / sqrt(n)
+hsTSase,WT,proton,25,298.15,1.5375,0.0111,1.2325,0.0048,4,10.1371/journal.pone.0196506,PMC5929524,S3 Table,SE = replicate sd / sqrt(n)
+hsTSase,WT,proton,35,308.15,1.9058,0.0154,1.3096,0.0052,4,10.1371/journal.pone.0196506,PMC5929524,S3 Table,SE = replicate sd / sqrt(n)
+ecTSase,Y209W,proton,5,278.15,5.21,0.13,1.93,0.05,,10.3390/ijms16047304,PMC4425018,Table S2,SE as published
+ecTSase,Y209W,proton,15,288.15,4.97,0.21,1.81,0.02,,10.3390/ijms16047304,PMC4425018,Table S2,SE as published
+ecTSase,Y209W,proton,25,298.15,3.54,0.05,1.53,0.03,,10.3390/ijms16047304,PMC4425018,Table S2,SE as published
+ecTSase,Y209W,proton,35,308.15,1.93,0.09,1.29,0.04,,10.3390/ijms16047304,PMC4425018,Table S2,SE as published

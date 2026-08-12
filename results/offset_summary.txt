@@ -1,0 +1,75 @@
+====================================================================================
+WHAT THE BENCHMARK DETERMINES ABOUT THE DISCRIMINATING INVARIANT
+====================================================================================
+gamma_SC = 3.34887 (C-H reduced masses)
+semiclassical: F = 0     gated-tunneling ridge: F0 = -0.042086
+a series discriminates only if its 95% interval is narrower than
+|F0| = 0.0421 and lands on one side of it.
+
+------------------------------------------------------------------------------------
+A. SERIES WHERE THE FORWARD MODEL IS ADEQUATE (p_fit > 0.05)
+------------------------------------------------------------------------------------
+series                                      chi2/dof  p_fit   F_hat   width  x|F0|  open
+TSase Y209W                                  4.6/3    0.200   -0.14   0.200    4.8     -
+ecDHFR W133F                                 0.0/1    0.914   -0.05   0.290    6.9     -
+ecDHFR heavy enzyme                         10.0/5    0.075    0.10   0.310    7.4     -
+ecDHFR G121V-F125M                           9.8/5    0.080    0.22   0.360    8.6     -
+ecDHFR M42W-F125M                            2.1/5    0.833    0.28   0.590   14.0     -
+hsDHFR d26-PPLR-d62-PEKN                     9.1/5    0.104    1.50   1.150   27.3   YES
+hsDHFR d62-PEKN                              2.5/5    0.778   -0.24   1.760   41.8   YES
+hsDHFR F32L                                  0.3/3    0.966   -0.22   1.840   43.7   YES
+TSase WT                                     3.0/3    0.394   -0.09   1.990   47.3   YES
+
+  adequate-fit series                : 9 of 16
+  narrowest 95% interval on F        : 0.200  (4.8x the signal)
+  median 95% interval on F           : 0.590  (14.0x the signal)
+  series excluding BOTH 0 and F0     : 3
+  series that DISCRIMINATE           : 0
+
+------------------------------------------------------------------------------------
+B. SERIES THE MODEL CANNOT DESCRIBE (p_fit <= 0.05): intervals void
+------------------------------------------------------------------------------------
+series                                      chi2/dof    p_fit   F_hat   width
+TSase WT                                   735.1/3    0.0e+00    1.50   0.750
+hsDHFR F32M                                400.7/3    0.0e+00   -0.70   0.050
+FDH V123A                                  145.6/5    0.0e+00    1.50   0.420
+ecDHFR F125M                                82.7/5    2.2e-16   -0.29   0.030
+ecDHFR light enzyme                         62.6/7    4.5e-11   -0.07   0.060
+FDH V123G                                   57.4/5    4.2e-11    1.50   0.770
+hsDHFR F32L-PP26N-PEKN62G                   14.0/3    3.0e-03   -0.71   0.040
+
+  These are NOT measurements of F. Where the model misfits, F absorbs
+  the misfit; the apparently tight bounds are artefacts.
+
+------------------------------------------------------------------------------------
+C. THE ARTEFACT, QUANTIFIED
+------------------------------------------------------------------------------------
+  Spearman(log chi2_min, interval width) = -0.429  (p = 0.0969)
+  median width, adequate fits   : 0.590
+  median width, inadequate fits : 0.060
+  Worse fits give TIGHTER intervals: the signature of misspecification,
+  not of information.
+
+------------------------------------------------------------------------------------
+D. MASS-MODULATED CONTROL (light vs heavy ecDHFR)
+------------------------------------------------------------------------------------
+  heavy enzyme   F = +0.10 [-0.05,+0.26]   chi2 = 10.0/5  p = 0.075  adequate
+  light enzyme   F = -0.07 [-0.10,-0.04]   chi2 = 62.6/7  p = 0.000  INADEQUATE FIT
+  Heavy labelling moves the system along the ridge, where F is
+  invariant, so both should return the same F. The light series does
+  not fit, so the control is inconclusive as it stands.
+
+====================================================================================
+CONCLUSION
+====================================================================================
+Across every series the model can actually describe, the 95% interval
+on the discriminating invariant is at least 4.8 times the
+separation between the two mechanisms. Not one series discriminates.
+
+The limitation is not the number of enzymes: four families, five
+systems, three organisms and two chemical steps all give the same
+answer. It is that F must be recovered through the commitment map,
+whose masking displaces the observed offset by up to 20x the signal.
+
+Precision target for a decisive experiment: a 95% interval on F
+inside 0.042 log-KIE units, i.e. at least 5-fold tighter than the best series here.

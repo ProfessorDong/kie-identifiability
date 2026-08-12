@@ -1,0 +1,5 @@
+series,model,chi2,dof,p_asym,p_boot,aic
+hsTSase hydride transfer,SC  semiclassical + commitment,3.143157714790578,4,0.53416056285157,0.5361596009975063,11.143157714790577
+hsTSase hydride transfer,QM  gated tunneling + commitment,2.95932430057149,3,0.39793917965504455,0.48877805486284287,12.95932430057149
+hsTSase proton abstraction,SC  semiclassical + commitment,745.8788644788224,4,0.0,0.0024937655860349127,753.8788644788224
+hsTSase proton abstraction,QM  gated tunneling + commitment,753.4047602638242,3,0.0,0.0024937655860349127,763.4047602638242

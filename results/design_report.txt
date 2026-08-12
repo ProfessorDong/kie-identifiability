@@ -1,0 +1,69 @@
+==============================================================================
+TRUTHS SPECIFIED BY PHYSICS, SPANNING THE TUNNELING RANGE
+==============================================================================
+tunneling range of the intrinsic exponent: [2.303, 3.257)
+semiclassical value (reduced mass): 3.340
+
+A large intrinsic effect and a large exponent cannot be had together:
+  K_HT^int       reachable gamma_TUN
+       1.5            [2.303, 2.865]
+       2.0            [2.303, 3.016]
+       3.0            [2.303, 3.100]
+       5.0            [2.303, 3.149]
+       8.0            [2.303, 3.172]
+      11.0            [2.303, 3.183]
+      15.0            [2.303, 3.192]
+
+ gamma_TUN         A   w(298K)  sigma/R0  chi2 to data
+      2.35     3.726    0.0518     0.083       5179.28
+      2.50     5.868    0.2652     0.150       3582.04
+      2.70    12.507    0.7549     0.174       1944.29
+      2.90    38.353    1.9333     0.159        844.92
+
+chi2 is against the 8 measured hydride observations with 2 free
+commitment parameters (6 d.o.f.); a large value means that intrinsic
+exponent cannot reproduce the data no matter how the commitment is set.
+
+==============================================================================
+POWER TO REJECT THE SEMICLASSICAL MODEL WHEN GATED TUNNELING IS TRUE
+==============================================================================
+measured relative precision: H/T 0.60%, D/T 0.36%
+temperatures evenly spaced over 5-35 C; alpha = 0.05
+
+ gamma_TUN  n_T    precision    power
+      2.35    4  as measured    11.0%
+      2.35    4    2x better    43.3%
+      2.35    4    4x better    95.7%
+      2.35    8  as measured    10.3%
+      2.35    8    2x better    32.0%
+      2.35    8    4x better    99.0%
+      2.35   12  as measured     9.3%
+      2.35   12    2x better    35.7%
+      2.35   12    4x better    98.3%
+      2.50    4  as measured    15.7%
+      2.50    4    2x better    45.3%
+      2.50    4    4x better    96.7%
+      2.50    8  as measured    11.0%
+      2.50    8    2x better    39.0%
+      2.50    8    4x better    98.0%
+      2.50   12  as measured    10.0%
+      2.50   12    2x better    45.0%
+      2.50   12    4x better    98.7%
+      2.70    4  as measured    13.7%
+      2.70    4    2x better    40.0%
+      2.70    4    4x better    96.7%
+      2.70    8  as measured    11.0%
+      2.70    8    2x better    30.3%
+      2.70    8    4x better    94.0%
+      2.70   12  as measured    11.0%
+      2.70   12    2x better    38.3%
+      2.70   12    4x better    94.7%
+      2.90    4  as measured     6.0%
+      2.90    4    2x better    23.7%
+      2.90    4    4x better    81.3%
+      2.90    8  as measured     7.7%
+      2.90    8    2x better    21.3%
+      2.90    8    4x better    81.7%
+      2.90   12  as measured    10.3%
+      2.90   12    2x better    20.0%
+      2.90   12    4x better    84.7%

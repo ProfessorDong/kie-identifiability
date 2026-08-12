@@ -1,0 +1,17 @@
+# fetched primary sources are never redistributed
+external_data/si/
+*.zip
+
+# LaTeX build artefacts
+*.aux
+*.log
+*.out
+*.bbl
+*.blg
+*.synctex.gz
+*.buildlog
+figures/tikz/*.pdf
+
+__pycache__/
+*.pyc
+.DS_Store

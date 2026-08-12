@@ -1,0 +1,16 @@
+cap on the gated-tunneling Swain-Schaad exponent vs admissible gating
+  unconstrained supremum = semiclassical exponent = 3.257253
+  fully gated limit                               = 2.709511
+
+ sigma/R0 <=    cap on gamma_TUN
+       0.005              3.2483
+       0.010              3.2395
+       0.020              3.2222
+       0.050              3.1734
+       0.100              3.1012
+       0.150              3.0391
+       0.200              2.9856
+       0.250              2.9395
+       0.333              2.8765
+       0.500              2.7903
+       1.000              2.7095

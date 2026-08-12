@@ -1,0 +1,57 @@
+====================================================================================
+THE MODEL-FREE IDENTIFIABLE SET FOR THE DISCRIMINATING INVARIANT
+====================================================================================
+gamma_SC = 3.34887   semiclassical F = 0   tunneling ridge F0 = -0.042086
+
+1. THE SHAPE OF THE SET IS DECIDED BY THE H-REFERENCE CONTRAST
+   records: 73   predicted interior minimum: 21   observed: 21
+   sign criterion L_H < gamma_SC agrees with the numerics on 73/73 records
+   L_H range where the minimum is interior : [1.854, 3.342]
+   L_H range where it is at c -> infinity  : [3.393, 6.542]
+   the two ranges are separated by gamma_SC = 3.3489
+
+2. THE ASSUMPTION-FREE BOUND PER SERIES
+   With F constant in temperature, each temperature contributes its own
+   lower bound, so F >= max_T F_min(T).  No fitting, no Arrhenius form,
+   no gating model: only positivity of the commitment.
+
+   series                                       n_T      F >=  gap to F0  excludes
+   ecDHFR W133F (hydride)                         3   -0.0596     0.0175      none
+   ecDHFR G121V-F125M (hydride)                   5   -0.0740     0.0319      none
+   ecDHFR light enzyme (hydride)                  6   -0.0759     0.0339      none
+   ecDHFR M42W-F125M (hydride)                    5   -0.1027     0.0606      none
+   hsDHFR d26-PPLR-d62-PEKN (hydride)             5   -0.1343     0.0923      none
+   ecDHFR heavy enzyme (hydride)                  5   -0.1576     0.1155      none
+   TSase Y209W (proton)                           4   -0.1600     0.1180      none
+   ecDHFR F125M (hydride)                         5   -0.1681     0.1260      none
+   hsDHFR d62-PEKN (hydride)                      5   -0.2368     0.1947      none
+   TSase WT (proton)                              4   -0.2726     0.2305      none
+   hsDHFR F32L (hydride)                          4   -0.2784     0.2363      none
+   FDH V123G (hydride)                            5   -0.3220     0.2799      none
+   FDH V123A (hydride)                            5   -0.3969     0.3549      none
+   TSase WT (hydride)                             4   -0.4611     0.4190      none
+   hsDHFR F32L-PP26N-PEKN62G (hydride)            4   -0.6937     0.6516      none
+   hsDHFR F32M (hydride)                          4   -0.8782     0.8362      none
+
+   series excluding the tunneling ridge : 0 of 16
+   series excluding semiclassical       : 0 of 16
+   closest: ecDHFR W133F, bound -0.0596,
+            short of the ridge by 0.0175 log-KIE units.
+
+3. WHAT A DECISIVE SINGLE MEASUREMENT WOULD REQUIRE
+   One observation excludes the ridge iff F_obs > F0 with the minimum
+   at c -> infinity, i.e. a commitment-free measurement with
+   ln K_HT - gamma_SC ln K_DT > -0.0421.
+
+     K_DT^obs   K_HT^obs required   observed exponent
+         1.50               3.728              3.2451
+         2.00               9.769              3.2881
+         2.50              20.624              3.3029
+         3.00              37.978              3.3106
+
+   The required exponent sits just below gamma_SC in every case, so the
+   experiment must be essentially commitment-free.  That is the single
+   most informative thing this analysis says about experimental design:
+   suppressing the commitment matters more than precision or
+   temperature coverage, because the commitment is what makes the
+   identifiable set a half-line open in the wrong direction.

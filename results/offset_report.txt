@@ -1,0 +1,48 @@
+==================================================================================
+THE DISCRIMINATING INVARIANT ACROSS THE MATCHED-PAIR BENCHMARK
+==================================================================================
+mass convention: C-H reduced masses, gamma_SC = 3.34887
+semiclassical predicts F = 0;  gated-tunneling ridge predicts F0 = -0.042086
+a series discriminates only if its 95% interval on F is narrower
+than |F0| = 0.0421 AND lands on one side of it.
+
+series                                         n_T   F_hat         95% CI on F   width  w/|F0|
+----------------------------------------------------------------------------------------------
+FDH V123A (hydride)                              5   1.500     [ 1.080, 1.500>   0.420    10.0
+FDH V123G (hydride)                              5   1.500     [ 0.730, 1.500>   0.770    18.3
+TSase Y209W (proton)                             4  -0.140     [-0.230,-0.030]   0.200     4.8
+TSase WT (hydride)                               4  -0.090     [-0.490, 1.500>   1.990    47.3
+TSase WT (proton)                                4   1.500     [ 0.750, 1.500>   0.750    17.8
+ecDHFR F125M (hydride)                           5  -0.290     [-0.300,-0.270]   0.030     0.7
+ecDHFR G121V-F125M (hydride)                     5   0.220     [ 0.100, 0.460]   0.360     8.6
+ecDHFR M42W-F125M (hydride)                      5   0.280     [ 0.050, 0.640]   0.590    14.0
+ecDHFR W133F (hydride)                           3  -0.050     [-0.130, 0.160]   0.290     6.9
+ecDHFR heavy enzyme (hydride)                    5   0.100     [-0.050, 0.260]   0.310     7.4
+ecDHFR light enzyme (hydride)                    6  -0.070     [-0.100,-0.040]   0.060     1.4
+hsDHFR F32L (hydride)                            4  -0.220     [-0.340, 1.500>   1.840    43.7
+hsDHFR F32L-PP26N-PEKN62G (hydride)              4  -0.710     [-0.730,-0.690]   0.040     1.0
+hsDHFR F32M (hydride)                            4  -0.700     [-0.730,-0.680]   0.050     1.2
+hsDHFR d26-PPLR-d62-PEKN (hydride)               5   1.500     [ 0.350, 1.500>   1.150    27.3
+hsDHFR d62-PEKN (hydride)                        5  -0.240     [-0.260, 1.500>   1.760    41.8
+
+==================================================================================
+VERDICT
+==================================================================================
+series analysed                                : 16
+intervals excluding the semiclassical F = 0    : 11
+intervals excluding the tunneling ridge F = F0 : 9
+intervals containing BOTH                      : 5
+narrowest interval on F                        : 0.030  (1x the signal)
+median interval on F                           : 0.390  (9x the signal)
+
+MASS-MODULATED CONTROL (Francis et al., light vs heavy ecDHFR)
+Heavy labelling perturbs the promoting mode at fixed electronic
+structure, so it moves the system ALONG the ridge, where F is
+invariant. Both series should return the same F.
+  heavy enzyme   F = +0.100  [-0.050, +0.260]
+  light enzyme   F = -0.070  [-0.100, -0.040]
+
+Interpretation: the invariant is bounded far more loosely than the
+separation it must resolve, in every series. The obstacle is not the
+number of enzymes but the precision with which F can be recovered
+through the commitment map.

@@ -1,0 +1,117 @@
+
+============================================================================
+CLAIM 1: an UPPER bound sigma/R0 <= eps does NOT cap gamma_TUN
+============================================================================
+referee's counterexample: w = n, A = n^3  =>  r -> 0 but A/w^2 -> inf
+       n    r=sigma/R0       A/w^2   gamma_TUN
+   1e+01     7.071e-02          10    3.132656
+   1e+02     7.071e-03         100    3.243580
+   1e+03     7.071e-04       1e+03    3.255872
+   1e+04     7.071e-05       1e+04    3.257114
+   1e+05     7.071e-06       1e+05    3.257239
+   1e+06     7.071e-07       1e+06    3.257251
+
+semiclassical (atomic-mass) gamma = 3.257253
+=> sup over {r <= eps} equals gamma_SC for EVERY eps > 0.  Claim CONFIRMED.
+
+My published table optimised only on the boundary w = 2*A*eps^2.
+Set-theoretic check: {r<=eps} grows with eps, so its max cannot decrease.
+     eps     max on boundary r=eps    true sup over r<=eps
+   0.010                    3.2395                  3.2573
+   0.050                    3.1734                  3.2572
+   0.100                    3.1012                  3.2572
+   0.200                    2.9856                  3.2572
+   0.333                    2.8765                  3.2572
+   1.000                    2.7095                  3.2572
+The published numbers are the boundary maxima, NOT the constrained sup.
+
+============================================================================
+CLAIM 1b: a LOWER bound sigma/R0 >= eps DOES cap gamma_TUN
+============================================================================
+     eps   sup gamma_TUN over r >= eps
+   0.010                        3.2394
+   0.050                        3.1734
+   0.100                        3.1012
+   0.200                        2.9856
+   0.333                        2.8765
+   1.000                        2.7095
+Caps are strictly below gamma_SC and DECREASE with eps.  Claim CONFIRMED:
+the discriminating constraint is a LOWER bound on the gating amplitude.
+
+============================================================================
+CLAIM 2: gamma_SC is reached only as the intrinsic KIEs DIVERGE
+============================================================================
+     A/w^2   gamma_TUN   ln K_HT^int      K_HT^int
+     1e+00    3.017022        0.6973     2.008e+00
+     1e+01    3.217562        4.5011     9.012e+01
+     1e+02    3.253006       42.5396     2.983e+18
+     1e+03    3.256824      422.9237    4.715e+183
+     1e+04    3.257209     4226.7653           inf
+     1e+05    3.257247    42265.1810           inf
+=> the supremum is an asymptotic slope at divergent KIE, not a finite
+   boundary point in observable space.  Claim CONFIRMED.
+
+============================================================================
+THE RIDGE LIMIT: the correct structural theorem
+============================================================================
+P_H=0.274653  P_D=0.101366   C_H=0.422650  C_D=0.129757
+C_H/C_D = 3.2572525595   gamma_SC = 3.2572525595
+
+verify ln K_LT^int -> P_L + s C_L  along A = s w^2, w -> inf:
+  s=  0.5 w=   1e+03: lnK_HT   0.485434 vs   0.485978   lnK_DT   0.166096 vs   0.166245
+  s=  0.5 w=   1e+05: lnK_HT   0.485972 vs   0.485978   lnK_DT   0.166243 vs   0.166245
+  s=  0.5 w=   1e+07: lnK_HT   0.485978 vs   0.485978   lnK_DT   0.166245 vs   0.166245
+  s=  5.0 w=   1e+03: lnK_HT   2.384361 vs   2.387902   lnK_DT   0.749251 vs   0.750149
+  s=  5.0 w=   1e+05: lnK_HT   2.387866 vs   2.387902   lnK_DT   0.750140 vs   0.750149
+  s=  5.0 w=   1e+07: lnK_HT   2.387901 vs   2.387902   lnK_DT   0.750149 vs   0.750149
+  s= 50.0 w=   1e+03: lnK_HT  21.373635 vs  21.407140   lnK_DT   6.580802 vs   6.589192
+  s= 50.0 w=   1e+05: lnK_HT  21.406804 vs  21.407140   lnK_DT   6.589108 vs   6.589192
+  s= 50.0 w=   1e+07: lnK_HT  21.407136 vs  21.407140   lnK_DT   6.589191 vs   6.589192
+
+=> in the ridge limit the attainable (lnK_DT, lnK_HT) set is the RAY
+   base (P_D,P_H) = (0.1014,0.2747)  direction (C_D,C_H)
+   whose slope C_H/C_D = gamma_SC exactly.
+   The semiclassical locus is the ray from the ORIGIN with the same slope.
+   The two are PARALLEL LINES, offset forever.
+
+   signed mass-scaling offset  F = lnK_HT - gamma_SC lnK_DT = -0.055522
+   perpendicular separation                                   = 0.016295
+   This is a FIXED number set by the masses alone: it does not vanish,
+   and it does not depend on the KIE magnitude or on A, w separately.
+
+   symbolic: simplify(C_H/C_D - gamma_SC) = 0
+
+============================================================================
+CLAIM 2b: finite-scale bound gamma_inf(L_H) < gamma_SC
+============================================================================
+  K_HT^int     gamma_inf   my scan max
+       1.5      2.864941              
+       2.0      3.015690              
+       3.0      3.100554              
+       5.0      3.148631              
+       8.0      3.172544              
+      11.0      3.183539              
+      15.0      3.191812              
+     100.0      3.218449              
+   10000.0      3.237735              
+gamma_SC = 3.257253   (approached only as K_HT^int -> inf)
+At K_HT^int = 11 this gives 3.1835, which is exactly where my fit stopped.
+
+============================================================================
+CLAIM 5: dimensions of A and w
+============================================================================
+kappa = sqrt(k_f)/(2 hbar):  [k_f]=M T^-2, [hbar]=M L^2 T^-1
+  => [kappa] = M^(1/2) T^-1 / (M L^2 T^-1) = M^(-1/2) L^-2
+  so A = kappa R0^2 carries M^(-1/2): NOT dimensionless.  Claim CONFIRMED.
+  correct: A = kappa sqrt(m_H) R0^2,  w = 2 kappa sqrt(m_H) sigma^2.
+
+============================================================================
+CLAIM 6: mass-convention consistency
+============================================================================
+mass numbers 1,2,3          : gamma_SC = 3.257253
+atomic masses 1.008,2.014,3.016: gamma_SC = 3.262779
+C-H/C-D/C-T reduced masses  : gamma_SC = 3.348837
+Theorem 1 is an identity in whatever masses are used, so the tunneling
+supremum EQUALS gamma_SC in the same convention.  Plotting 3.34 as an
+unreachable line above an atomic-mass tunneling model mixes conventions.
+Claim CONFIRMED.
