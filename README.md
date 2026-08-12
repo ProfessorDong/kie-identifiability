@@ -35,6 +35,12 @@ data.** Under a single shared additive commitment `C_f` instead of a single
 shared `c`, both intrinsic effects diverge together and the set is open *below*
 rather than above. The two families agree pair by pair but not jointly.
 
+**The exponent is not even constant where the offset is.** Along the ridge
+`X_L = P_L + s C_L` the Swain-Schaad exponent runs over the whole interval
+[2.846, 3.349] as `s` varies, spanning essentially every value reported as
+diagnostic, while `F` stays pinned at `F0` to ten decimal places because
+`C_H - gamma_SC C_D` vanishes identically.
+
 **Mechanisms enter through the offsets they can attain.** For a gated vibronic
 model the attainable offsets have a *scale-dependent* envelope:
 
@@ -45,7 +51,11 @@ B(K) = ln K - (gamma/2) ln[ K^2 (t-1) / (t - d + K^2 (d-1)) ]   K < sqrt(t)
 
 with threshold `sqrt(mu_T/mu_H) = 1.2689`. There is no flat bound: `dF/dA < 0`
 identically, so the unconstrained supremum is 0, approached as the isotope
-effects collapse to unity. Verified against direct maximization to 7e-7.
+effects collapse to unity. Proved in the supplement; the proof turns on
+`p_L' = q_L/2`, which cancels the intercept and slope contributions to `X_D`
+along the constraint and leaves `dX_D/dw < 0` fixed by `t > d > 1` alone.
+Numerical agreement is 7e-7, which is the double-precision noise floor, not the
+accuracy: at 50 digits the supremum approaches `F0` strictly from below.
 
 **Neither the envelope nor the ordering is universal.** Summing over excited
 vibronic channels can carry the offset above zero; a worked parameter set gives
@@ -56,7 +66,7 @@ below the semiclassical locus once excited channels contribute.
 three enzyme families, five enzyme-organism systems and two chemical steps,
 one-sided 95% confidence bounds exclude neither mechanism at any assumed
 correlation between the H/T and D/T effects. The closest series on the point
-estimate falls short by 0.0175, which is 0.61 standard errors.
+estimate falls short by 0.0175, and its 95% lower bound falls short by 0.0634.
 
 The framework, rather than any verdict on tunneling, is the contribution:
 mechanistic claims from these experiments are comparisons between an
@@ -106,7 +116,7 @@ python build_trinomial.py    # benchmark + transcription audit (244 values)
 python ridge.py              # ridge limit, offset, finite-scale bound
 python partial_id.py         # envelope + exact endpoint, both verified  (~5 min)
 python identifiable_set.py   # the half-line result, point bounds       (~1 min)
-python bounds_uncertainty.py # one-sided confidence bounds             (~25 min)
+python bounds_uncertainty.py # one-sided confidence bounds              (~3 s)
 python audit_r2.py           # reconfirms the second review's claims   (~10 min)
 python audit_v3.py           # adversarial audit, must exit 0          (~10 min)
 python vibronic.py           # the vibronic-sum penalty                 (~5 min)
@@ -137,10 +147,14 @@ Benchmark: 73 matched records, 16 series, 3 enzyme families, 5 enzyme-organism
 systems, 3 organisms, 5-45 C. Transcription audit: 244 values, 0 misses.
 
 Bounds: 0 of 16 series exclude either mechanism, at correlation 0, 0.5 or 0.9.
-Best 95% lower bound -0.0973 (rho = 0) to -0.0935 (rho = 0.9), ecDHFR light
+Best 95% lower bound -0.0975 (rho = 0) to -0.0933 (rho = 0.9), ecDHFR light
 enzyme in both cases. Best point estimate -0.0596 (ecDHFR W133F), short of F0 by
-0.0175, which is 0.61 standard errors of the simultaneous statistic and 0.43 of
-the pointwise delta-method standard error at the single closest temperature.
+0.0175; its 95% lower bound is short by 0.0634. The shortfall is deliberately
+not quoted in standard errors: the series statistic is a maximum over
+temperatures and is strongly right skewed, so the sampling s.d. (0.0853) and the
+Gaussian back-calculation (point - bound)/1.645 (0.0279) differ by a factor of
+three. Bounds are averaged over 5 replications of 5e4 draws; largest Monte Carlo
+s.d. over all 48 cells is 7.4e-4.
 
 ## On the superseded analysis
 

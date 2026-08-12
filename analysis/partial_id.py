@@ -77,6 +77,38 @@ def F_min_exact(kht, kdt, gamma=GSC):
     return np.log(xh) - gamma * np.log(xd), c_star, True, True
 
 
+def F_min_vec(kht, kdt, gamma=GSC):
+    """Vectorized F_min_exact.
+
+    Both branches of the scalar routine are closed form, so the whole
+    calculation is a pair of algebraic expressions selected by the L_H
+    criterion.  Inadmissible pairs (those violating x_H > x_D > 1, which the
+    inversion requires) return -inf rather than being dropped: a replicate that
+    carries no information about the offset belongs in the lower tail of the
+    sampling distribution, and discarding it would bias a lower confidence
+    bound upward.
+
+    On the interior branch the endpoint is evaluated through the closed forms
+
+        x_H* = K_HT b (gamma-1) / (a-b),
+        x_D* = K_DT a (gamma-1) / [gamma (a-b)],
+
+    which follow from substituting c* into x(c) and require a > b, i.e. the
+    normal ordering K_HT > K_DT.  That is exactly the admissibility mask.
+    """
+    kht = np.asarray(kht, dtype=float)
+    kdt = np.asarray(kdt, dtype=float)
+    a, b = kht - 1.0, kdt - 1.0
+    ok = (kht > kdt) & (kdt > 1.0)
+    with np.errstate(divide="ignore", invalid="ignore"):
+        F_obs = np.log(kht) - gamma * np.log(kdt)
+        xh = kht * b * (gamma - 1.0) / (a - b)
+        xd = kdt * a * (gamma - 1.0) / (gamma * (a - b))
+        F_int = np.log(xh) - gamma * np.log(xd)
+    out = np.where(ok & (a < gamma * b), F_int, F_obs)
+    return np.where(ok, out, -np.inf)
+
+
 # ------------------------------------------- two-commitment identified set
 def observed_two(x, cf, cr, eie):
     """Northrop form: K_obs = (x + Cf + Cr*EIE) / (1 + Cf + Cr)."""
@@ -170,8 +202,15 @@ def _verify():
         one = F_min_exact(kht, kdt)[0]
         two = F_min_two_commitment(kht, kdt)
         print(f"{kht:7.2f}{kdt:7.2f}{one:11.4f}{two:11.4f}{two-one:10.4f}")
-    print("  A reverse commitment can only widen the identified set downward,")
-    print("  so bounds computed from the one-commitment map are optimistic.")
+    print("  The 2-commitment column is a GRID EDGE, not a minimum. Under the")
+    print("  additive parameterization x_L = K_LT(1+Cf+Cr) - Cf - Cr*EIE, both")
+    print("  intrinsic effects diverge together as Cf grows, so")
+    print("  F ~ (1-gamma) ln Cf -> -infinity and the set is unbounded below.")
+    print("  That divergence is driven by Cf, NOT by the reverse commitment Cr:")
+    print("  setting Cr = 0 reproduces it. It is the same parameterization")
+    print("  dependence discussed in the Supplemental Material, and it is why")
+    print("  the paper uses the shared-c map of Eq. (1), which follows from the")
+    print("  kinetic scheme, rather than a shared additive commitment.")
 
 
 if __name__ == "__main__":
