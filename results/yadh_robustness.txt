@@ -1,0 +1,48 @@
+========================================================================================
+HOW HARD IS THE YEAST ADH CONCLUSION TO BREAK?
+========================================================================================
+
+1. MASS CONVENTION
+----------------------------------------------------------------------------------------
+convention        gamma_SC         F0     F_obs       sd   95% LCB   > F0   > 0
+reduced C-H        3.34887  -0.042086    0.1287   0.0399    0.0630    YES   YES
+bare atomic        3.26281  -0.055321    0.1759   0.0390    0.1118    YES   YES
+integer 1:2:3      3.25725  -0.055522    0.1789   0.0389    0.1149    YES   YES
+  Cha et al. themselves used 3.26. The conclusion does not depend on
+  which convention is adopted, and is strongest under theirs.
+
+2. HOW BADLY WOULD THE ERRORS HAVE TO BE UNDERSTATED?
+----------------------------------------------------------------------------------------
+  to stop excluding the gated envelope F0   : errors x 2.60
+  to stop excluding the semiclassical locus : errors x 1.96
+  The published errors are standard deviations of >=5 determinations.
+  Treated as standard errors of the mean they would be smaller by about
+  sqrt(5) = 2.24, so the margin above is conservative already.
+
+3. POOLING THE THREE INDEPENDENT DETERMINATIONS
+----------------------------------------------------------------------------------------
+  individual offsets: +0.1509, +0.1689, +0.0851
+  inverse-variance mean +0.1337 +- 0.0349, 95% LCB +0.0763
+  heterogeneity Q = 1.11 on 2 d.o.f., p = 0.575
+  published average row gives +0.1287; the two agree to 0.0050
+  No detectable heterogeneity, so the determinations are mutually
+  consistent and the published average is not carrying the result.
+
+4. AGAINST THE SUMMED VIBRONIC ENVELOPE OVER A BOUNDED BOX
+----------------------------------------------------------------------------------------
+  yeast ADH 95% lower bound: +0.0630
+      lambda range   max B_vib   excluded?
+              5-60      0.6096          no
+             10-60      0.2956          no
+             15-60      0.0061         YES
+             20-60     -0.0002         YES
+  Reorganization energies below ~10 kcal/mol are not plausible for
+  enzymatic hydride transfer; above that the observation excludes the
+  summed model as well as the ground-channel one.
+
+5. REVERSIBILITY AND COMMITMENT, RESTATED
+----------------------------------------------------------------------------------------
+  L_H = 8.40 > gamma_SC, so the set is the open
+  half-line (+0.1287, inf): no commitment lowers the endpoint.
+  vacuity window: EMPTY (F_obs > 0), so no
+  equilibrium isotope effect makes the observation uninformative.
