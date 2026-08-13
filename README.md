@@ -233,11 +233,23 @@ values are of doubtful validity. That is the non-identification problem stated
 qualitatively. This work characterizes the identified set exactly instead, and
 finds it one-sided, so a robust inference survives in one direction.
 
-Siebrand & Smedarchina (*J. Phys. Chem. B* **108**, 4185, 2004) treat the same
-promoting-mode/gating model class; their companion letter (*Chem. Phys. Lett.*
-**410**, 370, 2005) reports that tunneling shifts the Swain-Schaad exponent
-opposite to the usual assumption, depending on vibrational assistance, which is
-the direction the envelope here makes exact.
+Smedarchina & Siebrand (*Chem. Phys. Lett.* **410**, 370, 2005) reached the
+direction of the envelope result in 2005 by instanton methods on a 2D model of
+vibrationally assisted tunneling: assistance drives the tritium-referenced
+exponent *toward* the semiclassical value from below, opposite to the then-
+conventional assumption. Their Eq. (16) gives `e2` in [2.3032, 3.25725], and the
+upper limit is exactly the integer-mass semiclassical exponent 3.25725 that
+`masses.py` returns independently -- a five-decimal cross-check on both.
+
+Their result is also the sharpest illustration of why the offset is the right
+coordinate. The exponent converges to the semiclassical value along the ray,
+which in exponent coordinates looks like the gated family merging with the
+semiclassical locus. It does not merge: the offset is pinned at `F0 = -0.042086`
+for every point on that ray. A ratio of two diverging logarithms cannot resolve
+the bounded difference between them.
+
+Siebrand & Smedarchina (*J. Phys. Chem. B* **108**, 4185, 2004) is the
+full-length treatment of the same promoting-mode model class.
 
 Francis & Kohen (*Perspect. Sci.* **1**, 110, 2014) is the community reporting
 standard. It specifies error propagation but does not call for the covariance
