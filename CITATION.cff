@@ -1,7 +1,7 @@
 cff-version: 1.2.0
 title: >-
-  One-sided identifiability in isotope tests of enzymatic
-  hydrogen tunneling: data, code and verification suite
+  One-sided identification of quantum signatures in enzymatic
+  hydrogen transfer: data, code and verification suite
 message: >-
   If you use this software or the curated benchmark, please cite
   this repository and the primary measurement papers listed in

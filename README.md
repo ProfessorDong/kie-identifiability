@@ -1,4 +1,4 @@
-# One-sided identifiability in isotope tests of enzymatic hydrogen tunneling
+# One-sided identification of quantum signatures in enzymatic hydrogen transfer
 
 Data, code and verification suite for the analysis of what competitive
 multiple-isotope kinetics can establish about hydrogen tunneling in enzymes.
