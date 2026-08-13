@@ -19,7 +19,7 @@
 
 % ================= (a) primary identified sets =========================
 \begin{axis}[asym, name=A, width=58mm, height=76mm,
-  xmin=-1.00, xmax=0.40, ymin=0.2, ymax=27.6,
+  xmin=-1.00, xmax=0.40, ymin=0.2, ymax=29.7,
   xlabel={endpoint of the identified set, $F_{\min}$ \ (log-KIE units)},
   ytick=\empty, ymajorgrids=false,
   y axis line style={draw=none}, ytick style={draw=none},
@@ -28,30 +28,30 @@
 
   % an endpoint left of F0 leaves a set containing both thresholds
   \addplot[draw=none, fill=cGrey!10] coordinates
-    {(-1.00,0.2) (-0.042086,0.2) (-0.042086,27.6) (-1.00,27.6)} \closedcycle;
+    {(-1.00,0.2) (-0.042086,0.2) (-0.042086,29.7) (-1.00,29.7)} \closedcycle;
   \addplot[draw=none, fill=cBandG!13] coordinates
-    {(-0.042086,0.2) (0.40,0.2) (0.40,27.6) (-0.042086,27.6)} \closedcycle;
+    {(-0.042086,0.2) (0.40,0.2) (0.40,29.7) (-0.042086,29.7)} \closedcycle;
 
   \input{data/fa_rays.tex}
 
   % thresholds
   \draw[cBandG!60!black, line width=0.6pt] (axis cs:-0.042086,0.2) --
-       (axis cs:-0.042086,27.6);
-  \draw[cInk, line width=0.5pt, dashed] (axis cs:0,0.2) -- (axis cs:0,27.6);
+       (axis cs:-0.042086,29.7);
+  \draw[cInk, line width=0.5pt, dashed] (axis cs:0,0.2) -- (axis cs:0,29.7);
 
-  \node[annc, anchor=south, color=cBandG!55!black] at (axis cs:0.18,27.1)
+  \node[annc, anchor=south, color=cBandG!55!black] at (axis cs:0.18,27.35)
     {endpoint here:\\\textbf{excludes}};
-  \node[annc, anchor=south, color=cGrey!70!black] at (axis cs:-0.55,27.1)
+  \node[annc, anchor=south, color=cGrey!70!black] at (axis cs:-0.55,27.35)
     {endpoint here: cannot discriminate};
 \end{axis}
 
 % ---- inset: the two thresholds are only 0.042 apart, so resolve them
-\begin{axis}[icig, name=AI, width=21mm, height=16mm,
-  at={(A.south east)}, anchor=south east, xshift=-1.6mm, yshift=3.4mm,
+\begin{axis}[icig, name=AI, width=21mm, height=16.5mm,
+  at={(A.south east)}, anchor=south east, xshift=-0.3mm, yshift=3.2mm,
   xmin=-0.245, xmax=0.165, ymin=0.3, ymax=18.7,
   ytick=\empty, ymajorgrids=false, grid=none,
   y axis line style={draw=none}, ytick style={draw=none},
-  xtick={-0.2,-0.1,0,0.1}, xticklabel style={/pgf/number format/.cd,
+  xtick={-0.2,0,0.1}, xticklabel style={/pgf/number format/.cd,
     fixed, precision=1, /tikz/.cd},
   tick label style={font=\fontsize{5.4}{6.5}\selectfont, color=cInk},
   axis background/.style={fill=white, draw=cGrey!45, line width=0.35pt},
@@ -73,7 +73,7 @@
 % ================= (b) secondary, contested reference ==================
 \begin{axis}[asym, name=B, width=54mm, height=76mm,
   at={(A.south east)}, anchor=south west, xshift=30mm,
-  xmin=2.3, xmax=12.6, ymin=0.3, ymax=11.2,
+  xmin=2.3, xmax=12.6, ymin=0.3, ymax=12.1,
   xlabel={observed secondary exponent $\gamma^{\mathrm{obs}}$},
   ytick=\empty, ymajorgrids=false,
   y axis line style={draw=none}, ytick style={draw=none},
@@ -81,19 +81,19 @@
   title={(\textit{\textbf{B}})\ \ secondary effects}]
 
   \addplot[draw=none, fill=cGold!12] coordinates
-    {(3.34,0.3) (4.8,0.3) (4.8,11.2) (3.34,11.2)} \closedcycle;
+    {(3.34,0.3) (4.8,0.3) (4.8,12.1) (3.34,12.1)} \closedcycle;
 
   \addplot[only marks, mark=*, mark size=1.5pt, cHyd,
            error bars/.cd, x dir=both, x explicit]
     table[x=gobs, y=y, x error plus expr=\thisrow{hi}-\thisrow{gobs},
           x error minus expr=\thisrow{gobs}-\thisrow{lcb}] {data/fb_sec.dat};
 
-  \draw[cInk, line width=0.5pt, dashed] (axis cs:3.34,0.3) -- (axis cs:3.34,11.2);
-  \draw[cPro, line width=0.7pt] (axis cs:4.8,0.3) -- (axis cs:4.8,11.2);
+  \draw[cInk, line width=0.5pt, dashed] (axis cs:3.34,0.3) -- (axis cs:3.34,12.1);
+  \draw[cPro, line width=0.7pt] (axis cs:4.8,0.3) -- (axis cs:4.8,12.1);
 
   \node[ann, anchor=south, rotate=90] at (axis cs:3.20,4.6) {$3.34$};
   \node[ann, anchor=north, rotate=90, color=cPro] at (axis cs:4.95,4.6) {$4.8$};
-  \node[annc, anchor=south, color=cGold!50!black] at (axis cs:4.07,10.6)
+  \node[annc, anchor=south, color=cGold!50!black] at (axis cs:4.07,11.25)
     {disputed};
   \node[ann, anchor=south west] at (axis cs:5.9,0.6)
     {a dataset excludes every\\reference below the left\\end of its bar;
@@ -103,7 +103,7 @@
 % row labels for panel (b)
 \begin{axis}[asym, width=54mm, height=76mm,
   at={(B.south west)}, anchor=south west,
-  xmin=2.3, xmax=12.6, ymin=0.3, ymax=11.2,
+  xmin=2.3, xmax=12.6, ymin=0.3, ymax=12.1,
   axis lines=none, xtick=\empty, ytick=\empty, clip=false]
   \node[rowlab] at (axis cs:2.26,1)  {LADH V203G};
   \node[rowlab] at (axis cs:2.26,2)  {LADH L57V};
