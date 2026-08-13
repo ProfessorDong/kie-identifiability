@@ -58,3 +58,38 @@ lost in the text layer. Rows are assigned by order, the temperature-labelled row
 being the light enzyme, and the unpaired 10 °C row is assigned to the light
 series on interpolation (light runs 3.10 → 4.76 across that gap, heavy
 2.40 → 3.29, and the value is 3.69).
+
+## Records transcribed by hand
+
+Three sources predate machine-readable supplements and are scanned page images
+whose text layer is unreliable, so their values were transcribed by hand from the
+printed tables rather than parsed. They are excluded from the automated audit
+above and are held in their own files so the parsed and typed records never mix:
+
+| Source | File | Table | Records |
+|---|---|---|---|
+| Grant & Klinman, *Biochemistry* **28**, 6597 (1989), [10.1021/bi00442a010](https://doi.org/10.1021/bi00442a010) | `data/bsao_grant1989.csv` | Table I averages, 25 °C | 1 |
+| Jonsson, Edmondson & Klinman, *Biochemistry* **33**, 14871 (1994), [10.1021/bi00253a026](https://doi.org/10.1021/bi00253a026) | `data/trinomial_benchmark.csv` (family `MAOB`) | Tables 1 and 3 | 10 |
+| Bahnson et al. 1993/1997 | `data/ladh_adh_primary.csv` | Table I / Table 1 | 9 |
+
+Both amine oxidase sources report the primary H/T and D/T effects together with
+the secondary effects on the same references; the latter fix the ratio `r` of
+the two commitments used in the unequal-reference check of `analysis/curvature.py`
+(`r = 1.14` at 25 °C for both).
+
+Because these records are not produced by `build_trinomial.py`, re-running that
+script rebuilds only the parsed series. It compares the rebuilt series count with
+the shipped benchmark and writes to `trinomial_benchmark_partial.csv` rather than
+overwriting if it finds fewer, so the hand-transcribed rows cannot be lost by a
+partial rebuild.
+
+Two source classes were examined and rejected, for reasons worth recording:
+
+- **Deuterium-only.** Soybean lipoxygenase (Rickert & Klinman 1999; Knapp et al.
+  2002) and the ADH flexibility work (Kohen & Klinman 2000) report H/D only. No
+  second isotope pair exists, so the offset cannot be formed.
+- **Northrop-derived intrinsic values.** Peptidylglycine α-amidating enzyme
+  (Francisco et al. 1998), dopamine β-monooxygenase (Miller & Klinman 1985) and
+  the ecDHFR I14 series (Stojković et al. 2012) publish intrinsic effects
+  obtained by *imposing* the Swain–Schaad relation. Those values are pinned to
+  `F = 0` by construction, so using them would be circular.

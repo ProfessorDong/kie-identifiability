@@ -72,3 +72,13 @@ Homo sapiens dihydrofolate reductase,hsDHFR,d62-PEKN,hydride,C,15.0,3.97,0.04,1.
 Homo sapiens dihydrofolate reductase,hsDHFR,d62-PEKN,hydride,C,25.0,3.77,0.03,1.6,0.03,10.1021/acs.biochem.1c00558,PMC8697555,Table S2-S6
 Homo sapiens dihydrofolate reductase,hsDHFR,d62-PEKN,hydride,C,35.0,3.53,0.02,1.57,0.01,10.1021/acs.biochem.1c00558,PMC8697555,Table S2-S6
 Homo sapiens dihydrofolate reductase,hsDHFR,d62-PEKN,hydride,C,45.0,3.4,0.03,1.55,0.02,10.1021/acs.biochem.1c00558,PMC8697555,Table S2-S6
+Monoamine oxidase B (p-methoxybenzylamine),MAOB,pH 7.5,abstraction,C,2.0,13.03,0.51,2.707,0.04,10.1021/bi00253a026,,Table 1
+Monoamine oxidase B (p-methoxybenzylamine),MAOB,pH 7.5,abstraction,C,25.0,21.43,0.81,2.703,0.102,10.1021/bi00253a026,,Table 1
+Monoamine oxidase B (p-methoxybenzylamine),MAOB,pH 7.5,abstraction,C,43.2,16.87,0.35,2.464,0.069,10.1021/bi00253a026,,Table 1
+Monoamine oxidase B (p-methoxybenzylamine),MAOB,pH 6.1,abstraction,C,10.0,28.89,1.1,2.896,0.132,10.1021/bi00253a026,,Table 3
+Monoamine oxidase B (p-methoxybenzylamine),MAOB,pH 6.1,abstraction,C,15.0,27.59,0.7,2.892,0.054,10.1021/bi00253a026,,Table 3
+Monoamine oxidase B (p-methoxybenzylamine),MAOB,pH 6.1,abstraction,C,25.0,21.98,1.16,2.69,0.086,10.1021/bi00253a026,,Table 3
+Monoamine oxidase B (p-methoxybenzylamine),MAOB,pH 6.1,abstraction,C,30.0,21.49,0.95,2.631,0.044,10.1021/bi00253a026,,Table 3
+Monoamine oxidase B (p-methoxybenzylamine),MAOB,pH 6.1,abstraction,C,35.0,18.52,0.99,2.569,0.07,10.1021/bi00253a026,,Table 3
+Monoamine oxidase B (p-methoxybenzylamine),MAOB,pH 6.1,abstraction,C,40.0,17.42,0.4,2.509,0.067,10.1021/bi00253a026,,Table 3
+Monoamine oxidase B (p-methoxybenzylamine),MAOB,pH 6.1,abstraction,C,43.0,17.02,0.52,2.507,0.133,10.1021/bi00253a026,,Table 3
