@@ -10,12 +10,35 @@ confidence bound exceeds the mechanism envelope at the relevant scale.
 Every intrinsic H/T effect here exceeds 1.2689, so that envelope is the flat value F0 = -0.042086.
 
 The H/T and D/T effects share a tritium reference. The correlation is
-not reported, so results are bracketed over rho in {0, 0.5, 0.9}.
+not reported, so results are bracketed over rho in {-1, 0, 0.5, 0.9}.
+
+--- rho = -1.0 ----------------------------------------------------------------------------
+series                                        point   95% LCB   MC sd  sd(stat)   P(>F0)  refutes?
+FDH V123A (hydride)                         -0.3969   -0.4309  0.0000    0.0206    0.000        no
+FDH V123G (hydride)                         -0.3220   -0.3710  0.0001    0.0298    0.000        no
+MAOB pH 6.1 (abstraction)                   -0.1720   -0.1648  0.0006    0.1071    0.554        no
+MAOB pH 7.5 (abstraction)                   -0.1944   -0.3205  0.0007    0.1104    0.170        no
+TSase WT (hydride)                          -0.4611   -0.4855  0.0001    0.0185    0.000        no
+TSase WT (proton)                           -0.2726   -0.3218  0.0003    0.0286    0.000        no
+TSase Y209W (proton)                        -0.1600   -0.2478  0.0004    0.0932    0.213        no
+ecDHFR F125M (hydride)                      -0.1681   -0.2042  0.0001    0.0227    0.000        no
+ecDHFR G121V-F125M (hydride)                -0.0740   -0.1624  0.0002    0.0617    0.316        no
+ecDHFR M42W-F125M (hydride)                 -0.1027   -0.2119  0.0001    0.0670    0.188        no
+ecDHFR W133F (hydride)                      -0.0596   -0.1103  0.0005    0.0934    0.643        no
+ecDHFR heavy enzyme (hydride)               -0.1576   -0.2053  0.0004    0.0907    0.233        no
+ecDHFR light enzyme (hydride)               -0.0759   -0.0987  0.0001    0.0383    0.389        no
+hsDHFR F32L (hydride)                       -0.2784   -0.3366  0.0005    0.1016    0.067        no
+hsDHFR F32L-PP26N-PEKN62G (hydride)         -0.6937   -0.7162  0.0001    0.0383    0.000        no
+hsDHFR F32M (hydride)                       -0.8782   -0.9383  0.0003    0.0764    0.000        no
+hsDHFR d26-PPLR-d62-PEKN (hydride)          -0.1343   -0.1615  0.0002    0.0231    0.002        no
+hsDHFR d62-PEKN (hydride)                   -0.2368   -0.2377  0.0003    0.0363    0.002        no
 
 --- rho = 0.0 ----------------------------------------------------------------------------
 series                                        point   95% LCB   MC sd  sd(stat)   P(>F0)  refutes?
 FDH V123A (hydride)                         -0.3969   -0.4259  0.0001    0.0176    0.000        no
 FDH V123G (hydride)                         -0.3220   -0.3572  0.0002    0.0214    0.000        no
+MAOB pH 6.1 (abstraction)                   -0.1720   -0.1744  0.0005    0.0888    0.378        no
+MAOB pH 7.5 (abstraction)                   -0.1944   -0.3036  0.0006    0.0902    0.099        no
 TSase WT (hydride)                          -0.4611   -0.4842  0.0001    0.0160    0.000        no
 TSase WT (proton)                           -0.2726   -0.3080  0.0003    0.0207    0.000        no
 TSase Y209W (proton)                        -0.1600   -0.2354  0.0007    0.0723    0.125        no
@@ -35,6 +58,8 @@ hsDHFR d62-PEKN (hydride)                   -0.2368   -0.2383  0.0003    0.0322 
 series                                        point   95% LCB   MC sd  sd(stat)   P(>F0)  refutes?
 FDH V123A (hydride)                         -0.3969   -0.4231  0.0001    0.0160    0.000        no
 FDH V123G (hydride)                         -0.3220   -0.3477  0.0001    0.0156    0.000        no
+MAOB pH 6.1 (abstraction)                   -0.1720   -0.1801  0.0002    0.0793    0.263        no
+MAOB pH 7.5 (abstraction)                   -0.1944   -0.2931  0.0007    0.0786    0.059        no
 TSase WT (hydride)                          -0.4611   -0.4831  0.0001    0.0143    0.000        no
 TSase WT (proton)                           -0.2726   -0.2979  0.0002    0.0151    0.000        no
 TSase Y209W (proton)                        -0.1600   -0.2272  0.0005    0.0598    0.068        no
@@ -54,6 +79,8 @@ hsDHFR d62-PEKN (hydride)                   -0.2368   -0.2386  0.0002    0.0301 
 series                                        point   95% LCB   MC sd  sd(stat)   P(>F0)  refutes?
 FDH V123A (hydride)                         -0.3969   -0.4207  0.0001    0.0144    0.000        no
 FDH V123G (hydride)                         -0.3220   -0.3356  0.0000    0.0083    0.000        no
+MAOB pH 6.1 (abstraction)                   -0.1720   -0.1831  0.0002    0.0720    0.185        no
+MAOB pH 7.5 (abstraction)                   -0.1944   -0.2837  0.0006    0.0684    0.031        no
 TSase WT (hydride)                          -0.4611   -0.4814  0.0001    0.0124    0.000        no
 TSase WT (proton)                           -0.2726   -0.2861  0.0001    0.0082    0.000        no
 TSase Y209W (proton)                        -0.1600   -0.2190  0.0004    0.0482    0.023        no
@@ -72,9 +99,10 @@ hsDHFR d62-PEKN (hydride)                   -0.2368   -0.2389  0.0001    0.0284 
 ================================================================================================
 SUMMARY
 ================================================================================================
-rho = 0.0: series refuting the model = 0 of 16;  best lower bound -0.0975 (ecDHFR light enzyme)
-rho = 0.5: series refuting the model = 0 of 16;  best lower bound -0.0960 (ecDHFR light enzyme)
-rho = 0.9: series refuting the model = 0 of 16;  best lower bound -0.0933 (ecDHFR light enzyme)
+rho = -1.0: series refuting the model = 0 of 18;  best lower bound -0.0987 (ecDHFR light enzyme)
+rho = 0.0: series refuting the model = 0 of 18;  best lower bound -0.0975 (ecDHFR light enzyme)
+rho = 0.5: series refuting the model = 0 of 18;  best lower bound -0.0960 (ecDHFR light enzyme)
+rho = 0.9: series refuting the model = 0 of 18;  best lower bound -0.0933 (ecDHFR light enzyme)
 
 Largest Monte Carlo s.d. over all cells: 0.00074
 Largest uninformative-replicate fraction: 0.00e+00

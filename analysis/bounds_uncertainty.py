@@ -9,7 +9,7 @@ Three features of the design matter.
 
   * The H/T and D/T effects share a tritium reference, so their errors are
     correlated and the correlation is not reported in the sources; we bracket
-    it over rho in {0, 0.5, 0.9}.
+    it over rho in {-1, 0, 0.5, 0.9}; rho = -1 is the maximally adverse case.
 
   * The per-series bound is a maximum over temperatures, which is a selection,
     so the procedure is simultaneous in T rather than pointwise.  A maximum
@@ -104,11 +104,11 @@ def main():
         f"value F0 = {F0:+.6f}.")
     say("")
     say("The H/T and D/T effects share a tritium reference. The correlation is")
-    say("not reported, so results are bracketed over rho in {0, 0.5, 0.9}.")
+    say("not reported, so results are bracketed over rho in {-1, 0, 0.5, 0.9}.")
     say("")
 
     rows = []
-    for rho in (0.0, 0.5, 0.9):
+    for rho in (-1.0, 0.0, 0.5, 0.9):
         say(f"--- rho = {rho} " + "-" * 76)
         say(f"{'series':42s}{'point':>9}{'95% LCB':>10}{'MC sd':>8}"
             f"{'sd(stat)':>10}{'P(>F0)':>9}{'refutes?':>10}")

@@ -99,7 +99,7 @@ def main():
     say("  Correlation between the two effects only helps: rho > 0 reduces")
     say(f"{'rho':>10}{'sd(F)':>11}{'95% LCB':>11}")
     sH, sD = avg.K_HT_se/avg.K_HT, avg.K_DT_se/avg.K_DT
-    for rho in (0.0, 0.5, 0.9):
+    for rho in (-1.0, 0.0, 0.5, 0.9):
         s = np.sqrt(sH**2 + GSC**2*sD**2 - 2*GSC*rho*sH*sD)
         say(f"{rho:10.2f}{s:11.4f}{fmin-1.645*s:11.4f}")
 
