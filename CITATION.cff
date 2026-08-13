@@ -7,6 +7,10 @@ message: >-
   this repository and the primary measurement papers listed in
   external_data/SOURCES.md.
 type: software
+doi: 10.5281/zenodo.21913975
+repository-code: 'https://github.com/ProfessorDong/kie-identifiability'
+version: v1.0.0
+date-released: '2026-08-13'
 authors:
   - given-names: Liang
     family-names: Dong

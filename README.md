@@ -1,5 +1,8 @@
 # One-sided identification of quantum signatures in enzymatic hydrogen transfer
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.21913975.svg)](https://doi.org/10.5281/zenodo.21913975)
+
+
 Data, code and verification suite for the analysis of what competitive
 multiple-isotope kinetics can establish about hydrogen tunneling in enzymes.
 
