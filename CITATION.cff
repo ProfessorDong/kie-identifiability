@@ -9,7 +9,7 @@ message: >-
 type: software
 doi: 10.5281/zenodo.21913975
 repository-code: 'https://github.com/ProfessorDong/kie-identifiability'
-version: v1.0.0
+version: v1.1.0
 date-released: '2026-08-13'
 authors:
   - given-names: Liang
@@ -23,6 +23,7 @@ authors:
 license: MIT
 keywords:
   - identifiability
+  - partial identification
   - kinetic isotope effect
   - hydrogen tunneling
   - enzyme catalysis
