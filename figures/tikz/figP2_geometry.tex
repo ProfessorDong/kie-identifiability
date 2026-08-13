@@ -1,0 +1,109 @@
+\documentclass[border=2pt,tikz]{standalone}
+\input{icigstyle}
+\usepgfplotslibrary{fillbetween}
+\begin{document}
+\begin{tikzpicture}
+% Two-column figure (figure*). Natural width ~150 mm.
+\pgfplotsset{
+  geo/.style={icig, scale only axis,
+    label style={font=\fontsize{8.2}{10}\selectfont, color=cInk},
+    tick label style={font=\fontsize{7.4}{9}\selectfont, color=cInk},
+    title style={font=\fontsize{8.8}{10.6}\selectfont\bfseries, color=cInk,
+                 align=left}},
+}
+\tikzset{
+  ann/.style={font=\fontsize{7.2}{8.6}\selectfont, color=cInk, align=left},
+  annc/.style={font=\fontsize{7.2}{8.6}\selectfont, color=cInk, align=center},
+  tag/.style={font=\fontsize{7.0}{8.4}\selectfont, align=center,
+              inner sep=1.8pt, rounded corners=1pt},
+}
+
+% =====================================================================
+% (A) the mass-scaling plane
+% =====================================================================
+\begin{axis}[geo, name=A, width=62mm, height=62mm,
+  xmin=0.34, xmax=0.72, ymin=0.95, ymax=3.45,
+  xlabel={$X_{\mathrm D}=\ln \KDT$}, ylabel={$X_{\mathrm H}=\ln \KHT$},
+  xtick={0.4,0.5,0.6,0.7}, ytick={1,1.5,2,2.5,3}, clip=true,
+  title={(\textit{\textbf{A}})\ \ the offset is a vertical distance,\\
+         \hspace*{3.1mm}and it can only increase}]
+
+  % region above the semiclassical locus
+  \addplot[name path=LOC, cInk, line width=0.9pt] table[x=xd,y=xh]
+    {data/fg_locus.dat};
+  \path[name path=TOP] (axis cs:0.34,3.45) -- (axis cs:0.72,3.45);
+  \addplot[cBandG!12] fill between[of=LOC and TOP];
+
+  % commitment trajectories
+  \addplot[cPro, line width=1.1pt] table[x=xd,y=xh] {data/fg_yadh.dat};
+  \addplot[cHyd, line width=1.1pt, densely dashed] table[x=xd,y=xh]
+    {data/fg_light.dat};
+  \addplot[only marks, mark=*, mark size=2.1pt, cPro]
+    table[x=xd,y=xh] {data/fg_yadh_obs.dat};
+  \addplot[only marks, mark=*, mark size=2.1pt, cHyd]
+    table[x=xd,y=xh] {data/fg_light_obs.dat};
+  \addplot[only marks, mark=o, mark size=2.4pt, cHyd, line width=0.7pt]
+    table[x=xd,y=xh] {data/fg_cross.dat};
+
+  % the offset as an explicit vertical gap at the yeast observation
+  \draw[cPro, line width=0.9pt, {Straight Barb[length=1.6pt,width=2.4pt]}-%
+        {Straight Barb[length=1.6pt,width=2.4pt]}]
+    (axis cs:0.548121,1.835529) -- (axis cs:0.548121,1.964440);
+
+  % annotations, placed clear of the curves and of each other
+  \node[ann, anchor=east, color=cPro] at (axis cs:0.536,2.06)
+    {$F_{\mathrm{obs}}>0$};
+  \draw[cPro!55, line width=0.4pt] (axis cs:0.538,2.03) -- (axis cs:0.547,1.95);
+  \node[ann, anchor=west, color=cHyd] at (axis cs:0.556,1.66) {crosses};
+  \draw[cHyd!55, line width=0.4pt] (axis cs:0.554,1.69) -- (axis cs:0.543,1.78);
+  \node[ann, anchor=east, color=cPro] at (axis cs:0.630,3.30) {yeast ADH};
+  \node[ann, anchor=west, color=cHyd] at (axis cs:0.424,1.09) {ecDHFR};
+
+  % direction of falling commitment, inside the plot area
+  \draw[-{Straight Barb[length=2.2pt,width=3.0pt]}, cGrey, line width=0.7pt]
+    (axis cs:0.366,2.66) -- (axis cs:0.366,3.08);
+  \node[annc, anchor=west, color=cGrey!80!black] at (axis cs:0.378,2.87)
+    {commitment\\falling};
+\end{axis}
+
+% annotations placed outside the clipped axis
+\node[ann, anchor=south west, rotate=54] at ($(A.south west)+(9mm,13.5mm)$)
+  {semiclassical locus $X_{\mathrm H}=\gSC X_{\mathrm D}$};
+\node[tag, fill=cBandG!20, anchor=north west] at ($(A.north west)+(2.0mm,-2.0mm)$)
+  {$F>0$};
+\node[tag, anchor=south east] at ($(A.south east)+(-2.0mm,2.0mm)$) {$F<0$};
+
+% =====================================================================
+% (B) the exponent moves along the ridge
+% =====================================================================
+\begin{axis}[geo, name=B, width=58mm, height=25mm,
+  at={(A.north east)}, anchor=north west, xshift=21mm,
+  xmode=log, xmin=1e-2, xmax=1.6e4, ymin=2.76, ymax=3.46,
+  ylabel={exponent $X_{\mathrm H}/X_{\mathrm D}$},
+  xticklabels={}, ytick={2.9,3.1,3.3}, clip=false,
+  title={(\textit{\textbf{B}})\ \ along the ridge the exponent moves\ldots}]
+  \addplot[cHyd, line width=1.2pt] table[x=s,y=expo] {data/fg_ridge.dat};
+  \draw[cInk, line width=0.5pt, dashed] (axis cs:1e-2,3.34887) --
+       (axis cs:1.6e4,3.34887);
+  \node[ann, anchor=south east] at (axis cs:1.4e4,3.355) {$\gSC$};
+  \node[ann, anchor=south east, color=cHyd] at (axis cs:1.3e4,2.80)
+    {rises $2.846\rightarrow3.349$};
+\end{axis}
+
+% =====================================================================
+% (C) the offset does not
+% =====================================================================
+\begin{axis}[geo, name=C, width=58mm, height=25mm,
+  at={(B.south west)}, anchor=north west, yshift=-11mm,
+  xmode=log, xmin=1e-2, xmax=1.6e4, ymin=-0.115, ymax=0.035,
+  xlabel={position along the gated ridge, $s=A/w^{2}$},
+  ylabel={offset $F$}, ytick={-0.1,-0.042086,0},
+  yticklabels={$-0.10$,$\Fz$,$0$}, clip=false,
+  title={(\textit{\textbf{C}})\ \ \ldots and the offset does not}]
+  \addplot[cPro, line width=1.2pt] table[x=s,y=off] {data/fg_ridge.dat};
+  \draw[cInk, line width=0.5pt, dashed] (axis cs:1e-2,0) -- (axis cs:1.6e4,0);
+  \node[ann, anchor=north east, color=cPro] at (axis cs:1.4e4,-0.050)
+    {constant at $\Fz=-0.0421$};
+\end{axis}
+\end{tikzpicture}
+\end{document}
