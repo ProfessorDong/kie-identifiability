@@ -46,14 +46,14 @@
 \end{axis}
 
 % ---- inset: the two thresholds are only 0.042 apart, so resolve them
-\begin{axis}[icig, name=AI, width=21mm, height=16.5mm,
-  at={(A.south east)}, anchor=south east, xshift=-0.3mm, yshift=3.2mm,
+\begin{axis}[icig, name=AI, width=27mm, height=21mm,
+  at={(A.south west)}, anchor=south west, xshift=2.2mm, yshift=26mm,
   xmin=-0.245, xmax=0.165, ymin=0.3, ymax=18.7,
   ytick=\empty, ymajorgrids=false, grid=none,
   y axis line style={draw=none}, ytick style={draw=none},
-  xtick={-0.2,0,0.1}, xticklabel style={/pgf/number format/.cd,
+  xtick={-0.2,-0.1,0,0.1}, xticklabel style={/pgf/number format/.cd,
     fixed, precision=1, /tikz/.cd},
-  tick label style={font=\fontsize{5.4}{6.5}\selectfont, color=cInk},
+  tick label style={font=\fontsize{6.0}{7.2}\selectfont, color=cInk},
   axis background/.style={fill=white, draw=cGrey!45, line width=0.35pt},
   clip=false]
   \addplot[draw=none, fill=cBandG!16] coordinates
@@ -62,12 +62,8 @@
   \draw[cBandG!60!black, line width=0.5pt] (axis cs:-0.042086,0.3) --
        (axis cs:-0.042086,18.7);
   \draw[cInk, line width=0.4pt, dashed] (axis cs:0,0.3) -- (axis cs:0,18.7);
-  \node[font=\fontsize{5.4}{6.5}\selectfont, color=cGrey!75!black,
-    anchor=north west] at (axis cs:-0.238,18.2) {zoom $\times$3.4};
-  \node[font=\fontsize{5.4}{6.5}\selectfont, color=cBandG!55!black,
-    anchor=north east, rotate=90] at (axis cs:-0.050,13.5) {$F_{0}$};
-  \node[font=\fontsize{5.4}{6.5}\selectfont, color=cInk,
-    anchor=north west, rotate=90] at (axis cs:0.008,13.5) {$F=0$};
+  \node[font=\fontsize{6.0}{7.2}\selectfont, color=cGrey!75!black,
+    anchor=north west] at (axis cs:-0.238,18.2) {$\times3.4$ zoom};
 \end{axis}
 
 % ================= (b) secondary, contested reference ==================
