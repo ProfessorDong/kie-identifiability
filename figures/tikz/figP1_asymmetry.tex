@@ -2,7 +2,7 @@
 \input{icigstyle}
 \begin{document}
 \begin{tikzpicture}
-% Two-column figure (figure*). Natural width ~150 mm.
+% Two-column figure (figure*). Natural width ~175 mm.
 \pgfplotsset{
   asym/.style={icig, scale only axis,
     label style={font=\fontsize{8.6}{10.4}\selectfont, color=cInk},
@@ -11,112 +11,64 @@
                  align=left}},
 }
 \tikzset{
-  rowlab/.style={font=\fontsize{6.4}{7.6}\selectfont, color=cInk,
+  rowlab/.style={font=\fontsize{6.6}{7.9}\selectfont, color=cInk,
                  anchor=east, inner sep=1.6pt},
   ann/.style={font=\fontsize{7.4}{8.8}\selectfont, color=cInk, align=left},
   annc/.style={font=\fontsize{7.4}{8.8}\selectfont, color=cInk, align=center},
 }
 
-% ================= (a) primary identified sets =========================
-\begin{axis}[asym, name=A, width=58mm, height=76mm,
-  xmin=-1.00, xmax=0.40, ymin=0.2, ymax=29.7,
+% ================= primary identified sets =============================
+\begin{axis}[asym, name=A, width=138mm, height=76mm,
+  xmin=-1.00, xmax=0.40, ymin=0.2, ymax=33.1,
   xlabel={endpoint of the identified set, $F_{\min}$ \ (log-KIE units)},
   ytick=\empty, ymajorgrids=false,
   y axis line style={draw=none}, ytick style={draw=none},
-  xtick={-1.0,-0.75,-0.5,-0.25,0}, clip=false,
-  title={(\textit{\textbf{A}})\ \ primary effects}]
+  xtick={-1.0,-0.75,-0.5,-0.25,0}, clip=false]
 
   % an endpoint left of F0 leaves a set containing both thresholds
   \addplot[draw=none, fill=cGrey!10] coordinates
-    {(-1.00,0.2) (-0.042086,0.2) (-0.042086,29.7) (-1.00,29.7)} \closedcycle;
+    {(-1.00,0.2) (-0.042086,0.2) (-0.042086,33.1) (-1.00,33.1)} \closedcycle;
   \addplot[draw=none, fill=cBandG!13] coordinates
-    {(-0.042086,0.2) (0.40,0.2) (0.40,29.7) (-0.042086,29.7)} \closedcycle;
+    {(-0.042086,0.2) (0.40,0.2) (0.40,33.1) (-0.042086,33.1)} \closedcycle;
 
   \input{data/fa_rays.tex}
 
   % thresholds
   \draw[cBandG!60!black, line width=0.6pt] (axis cs:-0.042086,0.2) --
-       (axis cs:-0.042086,29.7);
-  \draw[cInk, line width=0.5pt, dashed] (axis cs:0,0.2) -- (axis cs:0,29.7);
+       (axis cs:-0.042086,33.1);
+  \draw[cInk, line width=0.5pt, dashed] (axis cs:0,0.2) -- (axis cs:0,33.1);
 
-  \node[annc, anchor=south, color=cBandG!55!black] at (axis cs:0.18,27.35)
-    {endpoint here:\\\textbf{excludes}};
-  \node[annc, anchor=south, color=cGrey!70!black] at (axis cs:-0.55,27.35)
-    {endpoint here: cannot discriminate};
+  \node[annc, anchor=south, color=cBandG!55!black] at (axis cs:0.185,30.5)
+    {endpoint here: whole set\\clears $\Fz$};
+  \node[annc, anchor=south, color=cGrey!70!black] at (axis cs:-0.55,30.5)
+    {endpoint here: set contains both thresholds};
 \end{axis}
 
-% ---- inset: the two thresholds are only 0.042 apart, so resolve them
-\begin{axis}[icig, name=AI, width=27mm, height=21mm,
-  at={(A.south west)}, anchor=south west, xshift=2.2mm, yshift=26mm,
-  xmin=-0.245, xmax=0.165, ymin=0.3, ymax=18.7,
+% ---- inset: a true 2.2x magnification of the region where the decision is
+% made.  Its right edge sits at 65 mm; the nearest data above 30 mm starts at
+% 78.4 mm, so the box cannot cover any ray or whisker.
+\begin{axis}[icig, scale only axis, name=AI, width=62mm, height=26mm,
+  at={(A.south west)}, anchor=south west, xshift=3mm, yshift=38mm,
+  xmin=-0.115, xmax=0.170, ymin=0.3, ymax=9.7,
   ytick=\empty, ymajorgrids=false, grid=none,
   y axis line style={draw=none}, ytick style={draw=none},
-  xtick={-0.2,-0.1,0,0.1}, xticklabel style={/pgf/number format/.cd,
-    fixed, precision=1, /tikz/.cd},
+  xtick={-0.1,-0.05,0,0.05,0.1,0.15},
+  xticklabel style={/pgf/number format/.cd, fixed, precision=2, /tikz/.cd},
   tick label style={font=\fontsize{6.0}{7.2}\selectfont, color=cInk},
   axis background/.style={fill=white, draw=cGrey!45, line width=0.35pt},
-  clip=false]
+  clip=true]
   \addplot[draw=none, fill=cBandG!16] coordinates
-    {(-0.042086,0.3) (0.155,0.3) (0.155,18.7) (-0.042086,18.7)} \closedcycle;
+    {(-0.042086,0.3) (0.170,0.3) (0.170,9.7) (-0.042086,9.7)} \closedcycle;
   \input{data/fa_zoom.tex}
   \draw[cBandG!60!black, line width=0.5pt] (axis cs:-0.042086,0.3) --
-       (axis cs:-0.042086,18.7);
-  \draw[cInk, line width=0.4pt, dashed] (axis cs:0,0.3) -- (axis cs:0,18.7);
+       (axis cs:-0.042086,9.7);
+  \draw[cInk, line width=0.4pt, dashed] (axis cs:0,0.3) -- (axis cs:0,9.7);
   \node[font=\fontsize{6.0}{7.2}\selectfont, color=cGrey!75!black,
-    anchor=north west] at (axis cs:-0.238,18.2) {$\times3.4$ zoom};
+    anchor=north west] at (axis cs:-0.111,9.4)
+    {$\times2.2$ magnification};
 \end{axis}
-
-% ================= (b) secondary, contested reference ==================
-\begin{axis}[asym, name=B, width=54mm, height=76mm,
-  at={(A.south east)}, anchor=south west, xshift=30mm,
-  xmin=2.3, xmax=12.6, ymin=0.3, ymax=12.1,
-  xlabel={observed secondary exponent $\gamma^{\mathrm{obs}}$},
-  ytick=\empty, ymajorgrids=false,
-  y axis line style={draw=none}, ytick style={draw=none},
-  xtick={3,4,5,6,7,8,9,10,11,12}, clip=false,
-  title={(\textit{\textbf{B}})\ \ secondary effects}]
-
-  \addplot[draw=none, fill=cGold!12] coordinates
-    {(3.34,0.3) (4.8,0.3) (4.8,12.1) (3.34,12.1)} \closedcycle;
-
-  % datasets that clear the whole disputed range are drawn in the same red
-  % used for "excludes" in panel A; the rest in blue
-  \addplot[only marks, mark=*, mark size=1.5pt, cHyd,
-           error bars/.cd, x dir=both, x explicit]
-    table[x=gobs, y=y, x error plus expr=\thisrow{hi}-\thisrow{gobs},
-          x error minus expr=\thisrow{gobs}-\thisrow{lcb}] {data/fb_sec_oth.dat};
-  \addplot[only marks, mark=*, mark size=1.9pt, cPro, line width=0.9pt,
-           error bars/.cd, x dir=both, x explicit]
-    table[x=gobs, y=y, x error plus expr=\thisrow{hi}-\thisrow{gobs},
-          x error minus expr=\thisrow{gobs}-\thisrow{lcb}] {data/fb_sec_rob.dat};
-
-  \draw[cInk, line width=0.5pt, dashed] (axis cs:3.34,0.3) -- (axis cs:3.34,12.1);
-  \draw[cPro, line width=0.7pt] (axis cs:4.8,0.3) -- (axis cs:4.8,12.1);
-
-  \node[ann, anchor=south, rotate=90] at (axis cs:3.20,4.6) {$3.34$};
-  \node[ann, anchor=north, rotate=90, color=cPro] at (axis cs:4.95,4.6) {$4.8$};
-  \node[annc, anchor=south, color=cGold!50!black] at (axis cs:4.07,11.25)
-    {disputed};
-  \node[ann, anchor=south west] at (axis cs:6.45,0.55)
-    {a dataset excludes every\\reference left of its bar.\\Three
-     (\textcolor{cPro}{red}) clear the\\whole disputed band};
-\end{axis}
-
-% row labels for panel (b)
-\begin{axis}[asym, width=54mm, height=76mm,
-  at={(B.south west)}, anchor=south west,
-  xmin=2.3, xmax=12.6, ymin=0.3, ymax=12.1,
-  axis lines=none, xtick=\empty, ytick=\empty, clip=false]
-  \node[rowlab] at (axis cs:2.26,1)  {LADH V203G};
-  \node[rowlab] at (axis cs:2.26,2)  {LADH L57V};
-  \node[rowlab] at (axis cs:2.26,3)  {LADH wild type};
-  \node[rowlab] at (axis cs:2.26,4)  {LADH V203A-F93W};
-  \node[rowlab] at (axis cs:2.26,5)  {LADH ESE chimera};
-  \node[rowlab] at (axis cs:2.26,6)  {LADH V203L};
-  \node[rowlab] at (axis cs:2.26,7)  {LADH V203A};
-  \node[rowlab] at (axis cs:2.26,8)  {LADH F93W};
-  \node[rowlab] at (axis cs:2.26,9)  {YADH wild type};
-  \node[rowlab] at (axis cs:2.26,10) {LADH L57F};
-\end{axis}
+\node[font=\fontsize{6.4}{7.7}\selectfont, color=cInk, anchor=north west,
+  align=left] at ($(AI.south west)+(0mm,-6.0mm)$)
+  {\textcolor{cPro}{\textbf{red}}: the one-sided bound also clears $\Fz$};
 \end{tikzpicture}
 \end{document}
