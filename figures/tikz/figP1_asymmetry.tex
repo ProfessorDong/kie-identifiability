@@ -79,10 +79,16 @@
   \addplot[draw=none, fill=cGold!12] coordinates
     {(3.34,0.3) (4.8,0.3) (4.8,12.1) (3.34,12.1)} \closedcycle;
 
+  % datasets that clear the whole disputed range are drawn in the same red
+  % used for "excludes" in panel A; the rest in blue
   \addplot[only marks, mark=*, mark size=1.5pt, cHyd,
            error bars/.cd, x dir=both, x explicit]
     table[x=gobs, y=y, x error plus expr=\thisrow{hi}-\thisrow{gobs},
-          x error minus expr=\thisrow{gobs}-\thisrow{lcb}] {data/fb_sec.dat};
+          x error minus expr=\thisrow{gobs}-\thisrow{lcb}] {data/fb_sec_oth.dat};
+  \addplot[only marks, mark=*, mark size=1.9pt, cPro, line width=0.9pt,
+           error bars/.cd, x dir=both, x explicit]
+    table[x=gobs, y=y, x error plus expr=\thisrow{hi}-\thisrow{gobs},
+          x error minus expr=\thisrow{gobs}-\thisrow{lcb}] {data/fb_sec_rob.dat};
 
   \draw[cInk, line width=0.5pt, dashed] (axis cs:3.34,0.3) -- (axis cs:3.34,12.1);
   \draw[cPro, line width=0.7pt] (axis cs:4.8,0.3) -- (axis cs:4.8,12.1);
@@ -92,8 +98,8 @@
   \node[annc, anchor=south, color=cGold!50!black] at (axis cs:4.07,11.25)
     {disputed};
   \node[ann, anchor=south west] at (axis cs:6.45,0.55)
-    {a dataset excludes every\\reference left of its bar;\\three clear the
-     whole\\disputed range};
+    {a dataset excludes every\\reference left of its bar.\\Three
+     (\textcolor{cPro}{red}) clear the\\whole disputed band};
 \end{axis}
 
 % row labels for panel (b)

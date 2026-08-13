@@ -69,6 +69,17 @@ print(f"panel a: {len(df)} rows, {int(inf_mask.sum())} informative, "
 # ---- panel (b): secondary, largest excludable reference
 s = pd.read_csv("../results/secondary_adh.csv").sort_values("gamma_lcb")
 s = s.reset_index(drop=True); s["y"] = np.arange(len(s)) + 1
+# split by whether the dataset clears the WHOLE disputed reference range,
+# so the count quoted in the annotation is visible rather than asserted
+for flag, name in ((True, "rob"), (False, "oth")):
+    sub = s[s.robust_48 == flag]
+    with open(OUT + f"fb_sec_{name}.dat", "w") as fh:
+        fh.write("y gobs lcb hi\n")
+        for _, r in sub.iterrows():
+            fh.write(f"{r.y} {r.gamma_obs:.4f} {r.gamma_lcb:.4f} "
+                     f"{r.gamma_obs + 1.645*r.gamma_se:.4f}\n")
+    print(f"    {name}: {len(sub)} rows"
+          + (f" -> {', '.join(sub.family+' '+sub.variant)}" if flag else ""))
 with open(OUT + "fb_sec.dat", "w") as fh:
     fh.write("y gobs lcb hi\n")
     for _, r in s.iterrows():
