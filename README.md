@@ -225,6 +225,25 @@ Gaussian back-calculation (point - bound)/1.645 (0.0279) differ by a factor of
 three. Bounds are averaged over 5 replications of 5e4 draws; largest Monte Carlo
 s.d. over all 48 cells is 7.4e-4.
 
+## Relation to recent work
+
+Williams (*J. Phys. Chem. B* **129**, 3604, 2025) observes that many parameter
+combinations reproduce the same apparent KIE, and concludes derived intrinsic
+values are of doubtful validity. That is the non-identification problem stated
+qualitatively. This work characterizes the identified set exactly instead, and
+finds it one-sided, so a robust inference survives in one direction.
+
+Siebrand & Smedarchina (*J. Phys. Chem. B* **108**, 4185, 2004) treat the same
+promoting-mode/gating model class; their companion letter (*Chem. Phys. Lett.*
+**410**, 370, 2005) reports that tunneling shifts the Swain-Schaad exponent
+opposite to the usual assumption, depending on vibrational assistance, which is
+the direction the envelope here makes exact.
+
+Francis & Kohen (*Perspect. Sci.* **1**, 110, 2014) is the community reporting
+standard. It specifies error propagation but does not call for the covariance
+between H/T and D/T effects sharing a tritium reference, which `design_power.py`
+shows is worth a factor of 2.2 in that variance component.
+
 ## On the superseded analysis
 
 `results/` retains outputs from an earlier version of this work that was
