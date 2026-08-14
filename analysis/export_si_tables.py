@@ -50,14 +50,17 @@ BV = {(-5.0, 1500): (-6.1, -1.7, -7.1, -11.0), (-5.0, 2500): (57.1, -10.6, -25.4
       (-15.0, 3000): (684.3, -42.3, 1.7, -24.7), (-15.0, 3600): (1412.8, -264.5, 2.4, -31.5)}
 L += [r"\begin{table}[h]",
       r"\caption{Summed vibronic envelope $B_{\mathrm{vib}}$ (units of $10^{-3}$) "
-      r"at $T=298.15$~K, computed on a $60\times60$ logarithmic grid in $(A,w)$ "
-      r"restricted to $\KHT^{\mathrm{int}}\ge\sqrt{t}$. Negative entries leave a "
+      r"at $T=298.15$~K. Each entry is the largest $F$ found on a $60\times60$ "
+      r"logarithmic grid over $A\in[0.050,63.1]$ and $w\in[0.0025,25.1]$, "
+      r"restricted to $\KHT^{\mathrm{int}}\ge\sqrt{t}$: a sampled maximum over "
+      r"that rectangle, not a certified supremum over the continuum. "
+      r"Negative entries leave a "
       r"separation between the gated and semiclassical families; entries at or "
       r"above zero leave none. For comparison $\Fz=-42.1$ in these units. Entries "
       r"are converged to better than $1$ in the last digit except in the steeply "
       r"varying corner at $\lambda=10$, $\Delta G^{\circ}=-15$.}",
       r"\label{tab:bvib-si}", r"\begin{center}\small",
-      r"\begin{tabular}{lccccc}", r"\toprule",
+      r"\begin{tabular}{lcccc}", r"\toprule",
       r" & \multicolumn{4}{c}{$\lambda$ (kcal\,mol$^{-1}$)}\\",
       r"$\tilde\nu$ (cm$^{-1}$) & 5 & 10 & 20 & 40\\", r"\midrule"]
 for dG in (-5.0, -15.0):

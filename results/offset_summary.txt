@@ -12,15 +12,17 @@ A. SERIES WHERE THE FORWARD MODEL IS ADEQUATE (p_fit > 0.05)
 series                                      chi2/dof  p_fit   F_hat   width  x|F0|  open
 TSase Y209W                                  4.6/3    0.200   -0.14   0.200    4.8     -
 ecDHFR W133F                                 0.0/1    0.914   -0.05   0.290    6.9     -
+MAOB pH 7.5                                  0.2/1    0.638   -0.21   0.300    7.1     -
 ecDHFR heavy enzyme                         10.0/5    0.075    0.10   0.310    7.4     -
 ecDHFR G121V-F125M                           9.8/5    0.080    0.22   0.360    8.6     -
 ecDHFR M42W-F125M                            2.1/5    0.833    0.28   0.590   14.0     -
 hsDHFR d26-PPLR-d62-PEKN                     9.1/5    0.104    1.50   1.150   27.3   YES
 hsDHFR d62-PEKN                              2.5/5    0.778   -0.24   1.760   41.8   YES
+MAOB pH 6.1                                  2.3/9    0.986   -0.21   1.780   42.3   YES
 hsDHFR F32L                                  0.3/3    0.966   -0.22   1.840   43.7   YES
 TSase WT                                     3.0/3    0.394   -0.09   1.990   47.3   YES
 
-  adequate-fit series                : 9 of 16
+  adequate-fit series                : 11 of 18
   narrowest 95% interval on F        : 0.200  (4.8x the signal)
   median 95% interval on F           : 0.590  (14.0x the signal)
   series excluding BOTH 0 and F0     : 3
@@ -44,7 +46,7 @@ hsDHFR F32L-PP26N-PEKN62G                   14.0/3    3.0e-03   -0.71   0.040
 ------------------------------------------------------------------------------------
 C. THE ARTEFACT, QUANTIFIED
 ------------------------------------------------------------------------------------
-  Spearman(log chi2_min, interval width) = -0.429  (p = 0.0969)
+  Spearman(log chi2_min, interval width) = -0.368  (p = 0.1325)
   median width, adequate fits   : 0.590
   median width, inadequate fits : 0.060
   Worse fits give TIGHTER intervals: the signature of misspecification,
