@@ -96,7 +96,8 @@ def main():
     say("  The endpoint is unchanged across the whole range: reversibility does")
     say("  not touch this conclusion at any equilibrium isotope effect.")
     say("")
-    say("  Correlation between the two effects only helps: rho > 0 reduces")
+    say("  Correlation acts in both directions: rho > 0 shrinks sd(F), rho < 0")
+    say("  inflates it.  The paper reports the maximally adverse rho = -1.")
     say(f"{'rho':>10}{'sd(F)':>11}{'95% LCB':>11}")
     sH, sD = avg.K_HT_se/avg.K_HT, avg.K_DT_se/avg.K_DT
     for rho in (-1.0, 0.0, 0.5, 0.9):

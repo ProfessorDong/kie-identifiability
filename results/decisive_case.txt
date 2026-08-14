@@ -37,8 +37,10 @@ ROBUSTNESS OF THE REPORTED AVERAGE
   The endpoint is unchanged across the whole range: reversibility does
   not touch this conclusion at any equilibrium isotope effect.
 
-  Correlation between the two effects only helps: rho > 0 reduces
+  Correlation acts in both directions: rho > 0 shrinks sd(F), rho < 0
+  inflates it.  The paper reports the maximally adverse rho = -1.
        rho      sd(F)    95% LCB
+     -1.00     0.0485     0.0489
       0.00     0.0399     0.0630
       0.50     0.0349     0.0714
       0.90     0.0302     0.0791
