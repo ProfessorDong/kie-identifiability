@@ -2,73 +2,51 @@
 \input{icigstyle}
 \begin{document}
 \begin{tikzpicture}
-% Two-column figure (figure*). Natural width ~175 mm.
+% Single-column figure. Natural width ~87 mm, drawn at final size so no
+% rescaling occurs in the manuscript and the type sizes below are the ones the
+% reader sees.  The axis is cut at -0.50; the two systems below it carry their
+% endpoints in the row label.  |F0| spans ~3.5 mm here, so the magnified inset
+% used by the earlier two-column version is unnecessary.
 \pgfplotsset{
   asym/.style={icig, scale only axis,
-    label style={font=\fontsize{8.6}{10.4}\selectfont, color=cInk},
-    tick label style={font=\fontsize{7.8}{9.4}\selectfont, color=cInk},
-    title style={font=\fontsize{9}{11}\selectfont\bfseries, color=cInk,
-                 align=left}},
+    label style={font=\fontsize{7.2}{8.6}\selectfont, color=cInk},
+    tick label style={font=\fontsize{6.4}{7.7}\selectfont, color=cInk}},
 }
 \tikzset{
-  rowlab/.style={font=\fontsize{6.6}{7.9}\selectfont, color=cInk,
-                 anchor=east, inner sep=1.6pt},
-  ann/.style={font=\fontsize{7.4}{8.8}\selectfont, color=cInk, align=left},
-  annc/.style={font=\fontsize{7.4}{8.8}\selectfont, color=cInk, align=center},
+  rowlab/.style={font=\fontsize{5.5}{6.6}\selectfont, color=cInk,
+                 anchor=east, inner sep=1.2pt},
+  annc/.style={font=\fontsize{5.9}{7.1}\selectfont, color=cInk, align=center},
 }
 
-% ================= primary identified sets =============================
-\begin{axis}[asym, name=A, width=138mm, height=76mm,
-  xmin=-1.00, xmax=0.40, ymin=0.2, ymax=33.1,
-  xlabel={endpoint of the identified set, $F_{\min}$ \ (log-KIE units)},
+\begin{axis}[asym, name=A, width=47mm, height=80mm,
+  xmin=-0.50, xmax=0.20, ymin=0.2, ymax=32.6,
+  xlabel={endpoint of the identified set, $F_{\min}$},
   ytick=\empty, ymajorgrids=false,
   y axis line style={draw=none}, ytick style={draw=none},
-  xtick={-1.0,-0.75,-0.5,-0.25,0}, clip=false]
+  xtick={-0.4,-0.2,0,0.2}, minor x tick num=1,
+  xticklabel style={/pgf/number format/.cd, fixed, precision=1, /tikz/.cd},
+  clip=false]
 
-  % an endpoint left of F0 leaves a set containing both thresholds
+  % left of F0 the set contains both thresholds; right of it the set clears F0
   \addplot[draw=none, fill=cGrey!10] coordinates
-    {(-1.00,0.2) (-0.042086,0.2) (-0.042086,33.1) (-1.00,33.1)} \closedcycle;
+    {(-0.50,0.2) (-0.042086,0.2) (-0.042086,32.6) (-0.50,32.6)} \closedcycle;
   \addplot[draw=none, fill=cBandG!13] coordinates
-    {(-0.042086,0.2) (0.40,0.2) (0.40,33.1) (-0.042086,33.1)} \closedcycle;
+    {(-0.042086,0.2) (0.20,0.2) (0.20,32.6) (-0.042086,32.6)} \closedcycle;
 
   \input{data/fa_rays.tex}
 
-  % thresholds
   \draw[cBandG!60!black, line width=0.6pt] (axis cs:-0.042086,0.2) --
-       (axis cs:-0.042086,33.1);
-  \draw[cInk, line width=0.5pt, dashed] (axis cs:0,0.2) -- (axis cs:0,33.1);
+       (axis cs:-0.042086,32.6);
+  \draw[cInk, line width=0.5pt, dashed] (axis cs:0,0.2) -- (axis cs:0,32.6);
 
-  \node[annc, anchor=south, color=cBandG!55!black] at (axis cs:0.185,30.5)
-    {endpoint here: whole set\\clears $\Fz$};
-  \node[annc, anchor=south, color=cGrey!70!black] at (axis cs:-0.55,30.5)
-    {endpoint here: set contains both thresholds};
+  \node[annc, anchor=south, color=cGrey!70!black] at (axis cs:-0.272,30.6)
+    {endpoint here: set contains\\both thresholds};
+  \node[annc, anchor=south, color=cBandG!55!black] at (axis cs:0.086,30.6)
+    {endpoint here:\\set clears $\Fz$};
+  % the green band is empty below row ~19, so the key sits there rather than
+  % over the yeast ADH ray at the top
+  \node[annc, anchor=center, color=cInk] at (axis cs:0.088,9.0)
+    {\textcolor{cPro}{\textbf{red}}:\\bound also\\clears $\Fz$};
 \end{axis}
-
-% ---- inset: a true 2.2x magnification of the region where the decision is
-% made.  Its right edge sits at 65 mm; the nearest data above 30 mm starts at
-% 78.4 mm, so the box cannot cover any ray or whisker.
-\begin{axis}[icig, scale only axis, name=AI, width=62mm, height=26mm,
-  at={(A.south west)}, anchor=south west, xshift=3mm, yshift=38mm,
-  xmin=-0.115, xmax=0.170, ymin=0.3, ymax=9.7,
-  ytick=\empty, ymajorgrids=false, grid=none,
-  y axis line style={draw=none}, ytick style={draw=none},
-  xtick={-0.1,-0.05,0,0.05,0.1,0.15},
-  xticklabel style={/pgf/number format/.cd, fixed, precision=2, /tikz/.cd},
-  tick label style={font=\fontsize{6.0}{7.2}\selectfont, color=cInk},
-  axis background/.style={fill=white, draw=cGrey!45, line width=0.35pt},
-  clip=true]
-  \addplot[draw=none, fill=cBandG!16] coordinates
-    {(-0.042086,0.3) (0.170,0.3) (0.170,9.7) (-0.042086,9.7)} \closedcycle;
-  \input{data/fa_zoom.tex}
-  \draw[cBandG!60!black, line width=0.5pt] (axis cs:-0.042086,0.3) --
-       (axis cs:-0.042086,9.7);
-  \draw[cInk, line width=0.4pt, dashed] (axis cs:0,0.3) -- (axis cs:0,9.7);
-  \node[font=\fontsize{6.0}{7.2}\selectfont, color=cGrey!75!black,
-    anchor=north west] at (axis cs:-0.111,9.4)
-    {$\times2.2$ magnification};
-\end{axis}
-\node[font=\fontsize{6.4}{7.7}\selectfont, color=cInk, anchor=north west,
-  align=left] at ($(AI.south west)+(0mm,-6.0mm)$)
-  {\textcolor{cPro}{\textbf{red}}: the one-sided bound also clears $\Fz$};
 \end{tikzpicture}
 \end{document}
