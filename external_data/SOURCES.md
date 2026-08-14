@@ -14,10 +14,10 @@ sources are paywalled and must be downloaded manually; see below.
 | Source | DOI | Contributes | Availability |
 |---|---|---|---|
 | Islam et al., *PLoS ONE* **13**, e0196506 (2018) | `10.1371/journal.pone.0196506` | hsTSase hydride + proton | CC-BY 4.0 |
-| Wang et al., *Int. J. Mol. Sci.* **16**, 7304 (2015) | `10.3390/ijms16047304` | ecTSase Y209W proton | CC-BY, PMC4425018 |
+| Abeysinghe & Kohen, *Int. J. Mol. Sci.* **16**, 7304 (2015) | `10.3390/ijms16047304` | ecTSase Y209W proton | CC-BY, PMC4425018 |
 | Singh et al., *JACS* **136**, 2575 (2014) | `10.1021/ja411998h` | 4 ecDHFR variants, 5 temperatures | PMC3985941, OA |
 | Li et al., *Biochemistry* **60**, 3822 (2021) | `10.1021/acs.biochem.1c00558` | 5 hsDHFR variants | PMC8697555, OA |
-| Francis et al., *JACS* **136**, 8333 (2014) | `10.1021/ja501936d` | light vs heavy ecDHFR | PMC4063187, OA |
+| Wang et al., *JACS* **136**, 8333 (2014) | `10.1021/ja501936d` | light vs heavy ecDHFR | PMC4063187, OA |
 | Pagano et al., *ACS Catal.* **9**, 11199 (2019) | `10.1021/acscatal.9b03345` | FDH V123A, V123G | **paywalled** |
 
 ## Sources examined and excluded
@@ -52,7 +52,7 @@ layer rather than retyping them, and runs an audit confirming that every parsed
 number appears verbatim in its source. With all sources present the audit covers
 244 values across four documents and passes with zero misses.
 
-One judgment is documented rather than automated: in Francis et al. the light
+One judgment is documented rather than automated: in Wang et al. the light
 and heavy enzyme rows are distinguished only by colour in the original, which is
 lost in the text layer. Rows are assigned by order, the temperature-labelled row
 being the light enzyme, and the unpaired 10 °C row is assigned to the light
