@@ -238,6 +238,80 @@ dof, p = 1e-9: the mutations change the intrinsic chemistry, not merely the
 commitment, so the forms are not replicates. The obstacle is the systems, not the
 estimator.
 
+**Network topology fixes the geometry.** For any steady-state mechanism with one
+isotope-sensitive step, each King-Altman term is a product of distinct rate
+constants, so that constant enters `V/K` to at most first power above and below
+the line. The observation map is therefore Moebius, `K(x) = (Ax+B)/(Cx+D)`
+fixing `x=1`, with
+
+```
+h'' proportional to -(AD - BC)(AC x^2 - BD)
+```
+
+Two coefficients decide everything, and both are read off the topology rather
+than fitted. `B != 0` only if some route reaches the monitored product without
+passing through the isotope-sensitive step; `C != 0` only if that step
+partitions against another, which is what a commitment is. So:
+
+| competing branch | isotope-blind bypass | identified set |
+|---|---|---|
+| yes | no  | upper half-line |
+| no  | yes | lower half-line |
+| yes | yes | upper above `x* = sqrt(beta delta/(alpha gamma))/k_T`, lower below |
+
+Both schemes in this work have `B = 0`; the reversible result is now a corollary
+rather than a separate calculation. A bypass also caps the observable, since
+`K(x) -> A/C`, so the measured effects bound it: an isotope-blind route would
+have to carry a fifth to a half of the isotope-sensitive flux before the
+direction could change in any benchmark system. (`analysis/network_geometry.py`)
+
+**The half-line is one measurement from being a number.** Inverting the
+observation map at known commitment gives the intrinsic effect in closed form,
+
+```
+x = K c / (1 + c - K)          finite above unity exactly when c > K - 1
+```
+
+and the offset follows as a point. It is forgiving: writing `c = m(K_HT - 1)`,
+the yeast intrinsic offset at `m = 3` is `+0.399` against a half-line endpoint of
+`+0.129`, so the bound understates the offset by **6.4|F0|**, and recovering it
+to within half the mechanistic signal needs `c` to only **5.8%**. At `m = 5` the
+gain is 3.4|F0| for 12.5%. Commitments are routinely measured to that precision.
+The bound is not merely loose; it is loose in the direction that hides the
+signal.
+
+**The obvious alternative fails, instructively.** Since `k_off` is diffusional
+and the chemical step is not, Stokes-Einstein makes `c` scale as `1/eta`, so one
+system at two viscosities over-determines the intrinsic pair and returns it in
+closed form, with the two isotope pairs giving the same `c` as a consistency
+check. Exact recovery on 2e4 random triples. But the inversion amplifies
+relative error by 3x at `c = 10` and 30x at `c = 1`, demanding the isotope
+effects to 0.7%-0.07% against roughly 1% in practice, and it is most demanding
+exactly where masking is heaviest.
+
+**What the closed offset then measures: the promoting mode.** In the gated model
+`F` depends on the gating width `w = 2 kappa sqrt(mu_H) sigma^2(T)`, and for a
+harmonic promoting mode the exact thermal variance is
+
+```
+w(T) = w0 coth(hbar omega_g / 2 k_B T)
+```
+
+a quantum expression in which zero-point motion holds `w` fixed below
+`theta = hbar omega_g / k_B`. The offset inherits that structure. Across
+250-350 K the predicted span of `F` is 0.12|F0| at 50 cm-1, **1.26|F0| at 200**,
+**1.47|F0| at 400**, and 0.51|F0| at 800, while the Swain-Schaad exponent moves
+0.01-0.02 over the same interval. Sensitivity peaks where the mode sits at the
+quantum-classical crossover `hbar omega_g ~ 2 k_B T`, which at 300 K is
+417 cm-1; sweeping `A` over [1,50] and `w0` over [0.1,2] moves that peak only
+between 140 and 480 cm-1, so it tracks the crossover rather than the
+parameterization. Promoting modes invoked in this literature lie in that window.
+(`analysis/completion.py`)
+
+An experiment long read as a yes-or-no tunneling test, completed with one
+commitment measurement and read in the offset coordinate, becomes a quantitative
+measurement of the promoting vibration.
+
 The framework, rather than any verdict on tunneling, is the contribution:
 mechanistic claims from these experiments are comparisons between an
 experimentally identified set and a computed mechanism envelope.
@@ -247,6 +321,10 @@ experimentally identified set and a computed mechanism envelope.
 ```
 analysis/
   masses.py             isotope mass convention, imported everywhere
+  network_geometry.py   Moebius structure of V/K; curvature class and the
+                        identified-set direction from network topology
+  completion.py         closing the half-line with one commitment measurement,
+                        and what the closed offset measures about the gating mode
   curvature.py          WHY the evidence is one-sided: masking is concave
                         through the origin in log-rate coordinates, mass scaling
                         is homogeneity; axioms, composition, direction, and the
@@ -279,6 +357,8 @@ analysis/
   export_fig_asym.py    identified-set figure data (29 systems)
   export_si_tables.py   supplementary tables; writes to the manuscript tree if
                         present, otherwise to results/
+  export_benchmark_table.py  complete 94-record benchmark table
+  export_profiles_table.py   per-series profile table
 data/                   curated inputs, never written by any script
 results/                generated reports and tables
 figures/tikz/           figure sources and their data
@@ -301,6 +381,8 @@ python partial_id.py         # envelope + exact endpoint, both verified  (~5 min
 python identifiable_set.py   # the half-line result, point bounds       (~1 min)
 python bounds_uncertainty.py # one-sided confidence bounds, rho in {-1,0,.5,.9}
 python curvature.py          # the one-sidedness theorem + controls    (~2 min)
+python network_geometry.py   # topology -> curvature -> set direction
+python completion.py         # closing the set; the gating-mode readout
 python audit_r2.py           # reconfirms the second review's claims   (~10 min)
 python audit_v3.py           # adversarial audit, must exit 0          (~10 min)
 python vibronic.py           # the vibronic-sum penalty                 (~5 min)
