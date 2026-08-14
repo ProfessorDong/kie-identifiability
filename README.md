@@ -1,4 +1,4 @@
-# One-sided identification of mass-scaling deviations in enzymatic hydrogen transfer
+# Bounding and recovering mass-scaling deviations in enzymatic hydrogen transfer
 
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.21913975.svg)](https://doi.org/10.5281/zenodo.21913975)
 
@@ -29,7 +29,7 @@ L_H = (K_HT-1)/(K_DT-1)  >  gamma_obs = ln K_HT / ln K_DT     ALWAYS
 
 because `(x-1)/ln x` is strictly increasing. An exclusion is claimed exactly when
 the reference exponent is below the observed one, and there `L_H > gamma`, so
-Proposition 2 gives the OPEN half-line with `F_obs >= 0`: the entire identified
+Proposition S2 gives the OPEN half-line with `F_obs >= 0`: the entire identified
 set lies above zero. Hence:
 
 * an observed exponent ABOVE the semiclassical reference cannot be produced by
@@ -194,7 +194,7 @@ tractable one: the signal is 0.042 and the median sampling sd of F is 0.028, so
 not tractable. Replication locates `F_min` more precisely rather than higher, so
 an endpoint that masking has pushed down stays down: a system exactly
 semiclassical intrinsically but carrying `c = 1` has `F_min = -0.447` and cannot
-be made decisive at any sample size. The frequent case `L_H >= gamma` (52 of 73
+be made decisive at any sample size. The frequent case `L_H >= gamma` (62 of 83
 records) means the endpoint EQUALS `F_obs`, so computing it costs no assumption
 about `c`; it does NOT mean masking is absent. The attainable margin is
 `F_min - B`, fixed by the enzyme rather than the experiment. The shared tritium reference *helps*: it enters Var(F)
@@ -257,7 +257,7 @@ partitions against another, which is what a commitment is. So:
 |---|---|---|
 | yes | no  | upper half-line |
 | no  | yes | lower half-line |
-| yes | yes | upper above `x* = sqrt(beta delta/(alpha gamma))/k_T`, lower below |
+| yes | yes | upper above `x* = sqrt(BD/(AC))`, lower below |
 
 Both schemes in this work have `B = 0`; the reversible result is now a corollary
 rather than a separate calculation. A bypass also caps the observable, since
@@ -265,20 +265,59 @@ rather than a separate calculation. A bypass also caps the observable, since
 have to carry a fifth to a half of the isotope-sensitive flux before the
 direction could change in any benchmark system. (`analysis/network_geometry.py`)
 
-**The half-line is one measurement from being a number.** Inverting the
-observation map at known commitment gives the intrinsic effect in closed form,
+**The half-line is one measurement from being a number, and two systems already
+have that measurement.** Inverting the observation map at known commitment gives
+the intrinsic effect in closed form,
 
 ```
 x = K c / (1 + c - K)          finite above unity exactly when c > K - 1
 ```
 
-and the offset follows as a point. It is forgiving: writing `c = m(K_HT - 1)`,
-the yeast intrinsic offset at `m = 3` is `+0.399` against a half-line endpoint of
-`+0.129`, so the bound understates the offset by **6.4|F0|**, and recovering it
-to within half the mechanistic signal needs `c` to only **5.8%**. At `m = 5` the
-gain is 3.4|F0| for 12.5%. Commitments are routinely measured to that precision.
-The bound is not merely loose; it is loose in the direction that hides the
-signal.
+and the offset follows as a point rather than a bound. Two systems in the record
+can be completed from kinetics already published, with no new experiment:
+
+* *Yeast ADH.* Klinman (1976) measured `k_-1/k_cat = 1.3-7.3` for benzyl alcohol
+  on the same enzyme, in the same laboratory, at the conditions Cha, Murray &
+  Klinman (1989) used thirteen years later. Referenced to tritium that ratio is
+  `c = (K_HT - 1) + K_HT a`, giving `c = 15.4-58.2`, comfortably above the
+  singular value `K_HT - 1 = 6.13`. The identified set collapses from
+  `F > +0.129` to `F_int = +0.198 to +0.474`, an intrinsic exponent of 3.70-4.14
+  against a semiclassical 3.349. The bound understated the offset by
+  1.6-8.2|F0|: the conclusion is unchanged in direction and strengthened in size.
+* *Bovine serum amine oxidase.* Grant & Klinman's Table IV (1989) sets the
+  pre-steady-state isotope effect beside the steady-state one, so their ratio is
+  the masking factor directly, with no model inversion. The four determinations
+  from 15 to 45 C give `0.948 +/- 0.044` (chi2/dof = 0.63), consistent with no
+  masking at 1.2 sigma. That gives `c = 337-4018` and
+  `F_int = -0.188 to -0.109`, entirely below `F0`, with an intrinsic exponent of
+  3.18-3.25, entirely below `gamma_SC`.
+
+The two completions land on opposite sides of the semiclassical locus, which is
+the point: the procedure returns a number, not a verdict fixed in advance. Two
+further systems resist it, and the reasons are diagnostic rather than accidental.
+Monoamine oxidase B does not complete because the stopped-flow comparison Jonsson
+et al. (1994) invoke is attributed to an earlier source and its value not
+reproduced, while their own `D(V/K)` is a second measurement of the same masked
+quantity. Horse liver ADH does not complete because its alcohol Michaelis-constant
+isotope effect is *inverse* -- `K_m` = 0.03 mM against 0.08 mM for the
+`alpha,alpha-d2` analogue in Sekhar & Plapp (1990), a ratio of 0.375 -- and
+solving the two-step relation for `k_off` then returns a negative number. Both
+remain bounds.
+
+The same inversion is what keeps the yeast range from being narrowed further:
+Klinman's Table III reports 1.3 on the coenzyme constant, which maps to `a = 2.3`,
+but 0.80 on the alcohol constant, which the two-step partition model cannot
+produce at all, since `K_m = (k_off + k)/k_on` with `k_H > k_D` forces that ratio
+above unity. The inverse alcohol effect is systematic in these enzymes rather
+than an outlier, and the mapping inherits the model risk. What survives it is the
+direction, which survives completely: for *any* admissible commitment the
+completed yeast offset exceeds the half-line endpoint.
+
+The precision required of `c` is mild. Writing `c = m(K_HT - 1)`, recovering the
+yeast offset to within half the mechanistic signal needs `c` to only **5.8%** at
+`m = 3`, relaxing to 12.5% at `m = 5`. Commitments are routinely measured to that
+precision. The bound is not merely loose; it is loose in the direction that hides
+the signal.
 
 **The obvious alternative fails, instructively.** Since `k_off` is diffusional
 and the chemical step is not, Stokes-Einstein makes `c` scale as `1/eta`, so one
@@ -386,7 +425,7 @@ python completion.py         # closing the set; the gating-mode readout
 python audit_r2.py           # reconfirms the second review's claims   (~10 min)
 python audit_v3.py           # adversarial audit, must exit 0          (~10 min)
 python vibronic.py           # the vibronic-sum penalty                 (~5 min)
-python offset_analysis.py    # per-series profiles                     (~40 min)
+python offset_analysis.py    # per-series profiles                     (~50 min)
 python offset_summary.py     # stratified interpretation
 python export_figs_v3.py     # pgfplots tables
 cd ../figures/tikz && ./build.sh
@@ -396,8 +435,8 @@ Every stochastic step is seeded, so a rerun reproduces the reported values
 exactly. `data/` is inputs only: no script writes to a file it reads.
 
 One caveat on timing: `offset_analysis.py` computes profile likelihoods by
-continuation over a 301-point grid for each of 16 series and takes roughly
-40 minutes on one core.
+continuation over a 301-point grid for each of 18 series and takes roughly
+50 minutes on one core.
 
 ## Key numbers
 
@@ -409,18 +448,22 @@ the hydrogen isotopes; the bare-mass value 3.2628 is also in circulation.
 gamma_SC = 3.34887   rigid = 2.45884   F0 = -0.042086   threshold = 1.26890
 ```
 
-Benchmark: 73 matched records, 16 series, 3 enzyme families, 5 enzyme-organism
-systems, 3 organisms, 5-45 C. Transcription audit: 244 values, 0 misses.
+Temperature-series benchmark: 83 matched records, 18 series, 5 enzyme families,
+6 enzyme-organism systems, 2-45 C. Transcription audit: 244 values across the
+four PDF-derived sources, 0 misses. The wider matched-primary record used for the
+identified-set figure is 94 records over 29 systems, of which 28 fall on the
+uninformative side.
 
-Bounds: 0 of 16 series exclude either mechanism, at correlation 0, 0.5 or 0.9.
-Best 95% lower bound -0.0975 (rho = 0) to -0.0933 (rho = 0.9), ecDHFR light
-enzyme in both cases. Best point estimate -0.0596 (ecDHFR W133F), short of F0 by
-0.0175; its 95% lower bound is short by 0.0634. The shortfall is deliberately
-not quoted in standard errors: the series statistic is a maximum over
-temperatures and is strongly right skewed, so the sampling s.d. (0.0853) and the
-Gaussian back-calculation (point - bound)/1.645 (0.0279) differ by a factor of
-three. Bounds are averaged over 5 replications of 5e4 draws; largest Monte Carlo
-s.d. over all 48 cells is 7.4e-4.
+Bounds: 0 of 18 series exclude either mechanism, at correlation -1, 0, 0.5 or
+0.9. Best 95% lower bound -0.0987 (rho = -1) to -0.0933 (rho = 0.9), ecDHFR light
+enzyme in every case. Best point estimate -0.0596 (ecDHFR W133F), short of F0 by
+0.0175; its own 95% lower bound is short by 0.0634 (rho = 0) and 0.0682 at the
+maximally adverse rho = -1. The shortfall is deliberately not quoted in standard
+errors: the series statistic is a maximum over temperatures and is strongly right
+skewed, so the sampling s.d. (0.0853) and the Gaussian back-calculation
+(point - bound)/1.645 (0.0279) differ by a factor of three. Bounds are averaged
+over 5 replications of 5e4 draws; largest Monte Carlo s.d. over all 72 cells is
+7.4e-4.
 
 ## Relation to recent work
 
@@ -470,8 +513,8 @@ documented rather than quietly removed:
    value itself derived from the same data through the relation under test.
    Profiling instead moved a chi-square of 845 to 6.17.
 
-A fourth was caught internally: a monotonicity assertion that failed on 21 of 73
-records, which led to the `L_H` criterion now in the paper.
+A fourth was caught internally: a monotonicity assertion that failed on 21 of the
+73 records then in the benchmark, which led to the `L_H` criterion now in the paper.
 
 A second external review then found three more, all confirmed here
 (`results/audit_review2.txt`):

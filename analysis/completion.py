@@ -59,6 +59,66 @@ def commitment_precision_needed(KH, KD, c, target=abs(F0)/2, gamma=GSC):
     return np.inf if d == 0 else target/d
 
 
+# ------------------------------------- systems completed from published kinetics
+def yadh_completion(a, KH=7.13, KD=1.73):
+    """Yeast ADH closed by Klinman's dissociation ratio a = k_-1/k_cat.
+
+    a is referenced to the protiated substrate, our commitment to tritium, so
+    c = k_off/k_T = a x_H; combining with x_H = K_HT c/(c - (K_HT - 1)) gives
+    c = (K_HT - 1) + K_HT a with no iteration.  Isotope effects are Cha, Murray
+    & Klinman (1989); a = 1.3 to 7.3 is Klinman (1976), Table IV.
+    """
+    c = (KH - 1.0) + KH*a
+    xh, xd = intrinsic_from_commitment(KH, c), intrinsic_from_commitment(KD, c)
+    return dict(c=c, xH=xh, xD=xd, gamma=np.log(xh)/np.log(xd),
+                F=np.log(xh) - GSC*np.log(xd))
+
+
+def bsao_completion(mask, KH=35.2, KD=3.07):
+    """Bovine serum amine oxidase closed by a measured masking factor.
+
+    Grant & Klinman (1989) Table IV reports the steady-state and pre-steady-state
+    H/D effects side by side, and their ratio is the masking factor directly:
+    with K = x(1+c)/(x+c) for both isotopes, (K_HT/K_DT)/(x_H/x_D) collapses to
+    (x_D + c)/(x_H + c), a function of c alone.  Inverting it is the whole step.
+    """
+    g = lambda c: ((intrinsic_from_commitment(KD, c) + c)
+                   / (intrinsic_from_commitment(KH, c) + c) - mask)
+    lo, hi = KH + 1e-9, 1e12          # g is increasing in c, -> 1 as c -> inf
+    for _ in range(400):
+        mid = 0.5*(lo + hi)
+        lo, hi = (mid, hi) if g(mid) < 0 else (lo, mid)
+    c = 0.5*(lo + hi)
+    xh, xd = intrinsic_from_commitment(KH, c), intrinsic_from_commitment(KD, c)
+    return dict(c=c, xH=xh, xD=xd, gamma=np.log(xh)/np.log(xd),
+                F=np.log(xh) - GSC*np.log(xd))
+
+
+def report_completions():
+    """Reproduces the two completion tables of the supplement."""
+    print("\nSystems completed from published kinetics, no new experiment\n")
+    print(f"{'system':26s} {'c':>8s} {'x_H':>7s} {'x_D':>7s} "
+          f"{'gamma_int':>10s} {'F_int':>8s}")
+    Fobs_y = np.log(7.13) - GSC*np.log(1.73)
+    for lab, a in (("YADH  a = 1.3", 1.3), ("YADH  a = 7.3", 7.3)):
+        r = yadh_completion(a)
+        print(f"{lab:26s} {r['c']:8.1f} {r['xH']:7.2f} {r['xD']:7.3f} "
+              f"{r['gamma']:10.2f} {r['F']:+8.3f}")
+    print(f"   half-line endpoint was F > {Fobs_y:+.3f}; the completion moves it up by "
+          f"{(yadh_completion(7.3)['F']-Fobs_y)/abs(F0):.1f} to "
+          f"{(yadh_completion(1.3)['F']-Fobs_y)/abs(F0):.1f} |F0|")
+    for lab, m in (("BSAO  -1 sigma", 0.948 - 0.044), ("BSAO  central", 0.948),
+                   ("BSAO  +1 sigma", 0.948 + 0.044)):
+        r = bsao_completion(m)
+        print(f"{lab:26s} {r['c']:8.0f} {r['xH']:7.2f} {r['xD']:7.3f} "
+              f"{r['gamma']:10.3f} {r['F']:+8.3f}")
+    print(f"   both intrinsic exponents lie below gamma_SC = {GSC:.3f}, and the "
+          f"offsets below F0 = {F0:+.4f}")
+    print("   note: c is poorly determined near the no-masking limit (a 5% shift in\n"
+          "   the masking factor moves c by a factor 6) while F moves by 0.04 |F0|.\n"
+          "   The offset is the well-conditioned coordinate, not the commitment.")
+
+
 # ------------------------------------------------------- the two-viscosity route
 def intrinsic_from_two_viscosities(K1, K2, r):
     """Intrinsic effect from observations at viscosity ratio r (c2 = c1/r)."""
@@ -125,3 +185,4 @@ def run():
 
 if __name__ == "__main__":
     run()
+    report_completions()

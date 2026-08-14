@@ -42,8 +42,8 @@ Two documents cannot be fetched programmatically. Place them in
    Austin-Kloppe et al. 2026, if you wish to reproduce the exclusion analysis
    in Supplemental Material §S4.2.
 
-Without the Pagano SI the build produces 14 series and 63 records instead of 16
-and 73; every other result is unaffected.
+Without the Pagano SI the build produces 16 series and 73 records instead of 18
+and 83; every other result is unaffected.
 
 ## Transcription discipline
 
@@ -82,6 +82,23 @@ script rebuilds only the parsed series. It compares the rebuilt series count wit
 the shipped benchmark and writes to `trinomial_benchmark_partial.csv` rather than
 overwriting if it finds fewer, so the hand-transcribed rows cannot be lost by a
 partial rebuild.
+
+## Auxiliary kinetics used to complete the identified set
+
+These sources contribute no isotope-effect records. They supply the one extra
+quantity that turns a half-line into a point, and are read by
+`analysis/completion.py`:
+
+| Source | Quantity taken | Used for |
+|---|---|---|
+| Klinman, *Biochemistry* **15**, 2018 (1976), [10.1021/bi00654a032](https://doi.org/10.1021/bi00654a032) | `k_-1/k_cat = 1.3–7.3` for benzyl alcohol at 25 °C, pH 8.5 (Table IV; Table III gives the underlying Michaelis-constant effects) | completes yeast ADH, whose isotope effects are Cha et al. (1989) |
+| Grant & Klinman, *Biochemistry* **28**, 6597 (1989) | Table IV, pre-steady-state beside steady-state isotope effects, 15–45 °C | masking factor 0.948 ± 0.044, completes bovine serum amine oxidase |
+| Sekhar & Plapp, *Biochemistry* **29**, 4289 (1990), [10.1021/bi00470a005](https://doi.org/10.1021/bi00470a005) | `K_m` = 0.03 mM (benzyl alcohol) against 0.08 mM (α,α-`d2`) | shows the alcohol Michaelis effect is inverse in horse liver ADH, which is why that system admits no completion |
+
+These are rate ratios and Michaelis constants read from the printed tables, not
+isotope-effect records, so they are held as literals in `completion.py` at the
+point of use rather than in `data/`.  Running that script reproduces both
+completion tables of the supplement.
 
 Two source classes were examined and rejected, for reasons worth recording:
 
