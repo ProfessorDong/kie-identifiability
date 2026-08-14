@@ -9,8 +9,8 @@ message: >-
 type: software
 doi: 10.5281/zenodo.21913975
 repository-code: 'https://github.com/ProfessorDong/kie-identifiability'
-version: v1.1.0
-date-released: '2026-08-13'
+version: v1.2.0
+date-released: '2026-08-14'
 authors:
   - given-names: Liang
     family-names: Dong
@@ -29,3 +29,5 @@ keywords:
   - enzyme catalysis
   - quantum biology
   - Swain-Schaad
+  - commitment to catalysis
+  - promoting vibration
