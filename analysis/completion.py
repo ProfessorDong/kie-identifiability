@@ -48,19 +48,24 @@ def intrinsic_from_commitment(K, c):
     return np.where(c > K - 1.0, K * c / (1.0 + c - K), np.nan)
 
 
-def dF_dlnc(KH, KD, c, gamma=GSC):
-    """Sensitivity of the completed offset to the commitment, Eq. (2)."""
-    return (1.0 - KH)/(1.0 + c - KH) - gamma*(1.0 - KD)/(1.0 + c - KD)
+def dF_dlnc(KH, KD, c, r=1.0, gamma=GSC):
+    """Sensitivity of the completed offset to the commitment.
+
+    c is c_H; the D/T comparison carries r*c, so d ln x_D/d ln c_H picks up the
+    denominator 1 + r c - K_DT rather than 1 + c - K_DT.  Setting r = 1 recovers
+    the shared-reference expression.
+    """
+    return (1.0 - KH)/(1.0 + c - KH) - gamma*(1.0 - KD)/(1.0 + r*c - KD)
 
 
-def commitment_precision_needed(KH, KD, c, target=abs(F0)/2, gamma=GSC):
-    """Relative precision on c that fixes F to +/- `target`."""
-    d = abs(dF_dlnc(KH, KD, c, gamma))
+def commitment_precision_needed(KH, KD, c, r=1.0, target=abs(F0)/2, gamma=GSC):
+    """Relative precision on c_H that fixes F to +/- `target`."""
+    d = abs(dF_dlnc(KH, KD, c, r, gamma))
     return np.inf if d == 0 else target/d
 
 
 # ------------------------------------- systems completed from published kinetics
-def yadh_completion(a, KH=7.13, KD=1.73):
+def yadh_completion(a, KH=7.13, KD=1.73, r=1.31):
     """Yeast ADH closed by Klinman's dissociation ratio a = k_-1/k_cat.
 
     a is referenced to the protiated substrate, our commitment to tritium, so
@@ -69,12 +74,15 @@ def yadh_completion(a, KH=7.13, KD=1.73):
     & Klinman (1989); a = 1.3 to 7.3 is Klinman (1976), Table IV.
     """
     c = (KH - 1.0) + KH*a
-    xh, xd = intrinsic_from_commitment(KH, c), intrinsic_from_commitment(KD, c)
-    return dict(c=c, xH=xh, xD=xd, gamma=np.log(xh)/np.log(xd),
+    # the two tritium references differ at the non-transferred position, so the
+    # D/T comparison carries commitment r*c, not c (Proposition S4).  Using one
+    # shared c here would contradict the result the paper proves.
+    xh, xd = intrinsic_from_commitment(KH, c), intrinsic_from_commitment(KD, r*c)
+    return dict(c=c, cD=r*c, xH=xh, xD=xd, gamma=np.log(xh)/np.log(xd),
                 F=np.log(xh) - GSC*np.log(xd))
 
 
-def bsao_completion(mask, KH=35.2, KD=3.07):
+def bsao_completion(mask, KH=35.2, KD=3.07, r=1.14):
     """Bovine serum amine oxidase closed by a measured masking factor.
 
     Grant & Klinman (1989) Table IV reports the steady-state and pre-steady-state
@@ -82,15 +90,15 @@ def bsao_completion(mask, KH=35.2, KD=3.07):
     with K = x(1+c)/(x+c) for both isotopes, (K_HT/K_DT)/(x_H/x_D) collapses to
     (x_D + c)/(x_H + c), a function of c alone.  Inverting it is the whole step.
     """
-    g = lambda c: ((intrinsic_from_commitment(KD, c) + c)
-                   / (intrinsic_from_commitment(KH, c) + c) - mask)
+    g = lambda c: ((1 + c)*(intrinsic_from_commitment(KD, r*c) + r*c)
+                   / ((intrinsic_from_commitment(KH, c) + c)*(1 + r*c)) - mask)
     lo, hi = KH + 1e-9, 1e12          # g is increasing in c, -> 1 as c -> inf
     for _ in range(400):
         mid = 0.5*(lo + hi)
         lo, hi = (mid, hi) if g(mid) < 0 else (lo, mid)
     c = 0.5*(lo + hi)
-    xh, xd = intrinsic_from_commitment(KH, c), intrinsic_from_commitment(KD, c)
-    return dict(c=c, xH=xh, xD=xd, gamma=np.log(xh)/np.log(xd),
+    xh, xd = intrinsic_from_commitment(KH, c), intrinsic_from_commitment(KD, r*c)
+    return dict(c=c, cD=r*c, xH=xh, xD=xd, gamma=np.log(xh)/np.log(xd),
                 F=np.log(xh) - GSC*np.log(xd))
 
 
@@ -117,6 +125,109 @@ def report_completions():
     print("   note: c is poorly determined near the no-masking limit (a 5% shift in\n"
           "   the masking factor moves c by a factor 6) while F moves by 0.04 |F0|.\n"
           "   The offset is the well-conditioned coordinate, not the commitment.")
+
+
+
+# ------------------------------------- Grant & Klinman 1989 Table IV, verbatim
+# (k_H/k_D) at substrate saturation, stopped-flow against steady state.  The
+# stopped-flow column used dideuterated benzylamine, so both columns carry the
+# primary and secondary effect together; the steady-state column is derived from
+# the competitive tritium effects of Tables I and II.
+BSAO_TABLE_IV = np.array([
+    #  T(C)  stopped-flow  +-     steady-state  +-
+    [  0.0,   14.8, 0.7,   19.0, 0.8],
+    [  5.0,   15.7, 1.2,   18.7, 0.2],
+    [ 15.0,   16.6, 1.4,   16.5, 0.4],
+    [ 25.0,   16.1, 1.8,   13.5, 0.4],
+    [ 35.0,   13.8, 1.1,   13.0, 0.4],
+    [ 45.0,   10.4, 0.9,   10.4, 0.2],
+])
+
+
+def bsao_masking_by_temperature():
+    """Per-temperature masking factor m = steady/stopped, with propagated error."""
+    T, sf, sfe, ss, sse = BSAO_TABLE_IV.T
+    m = ss / sf
+    me = m * np.sqrt((sse / ss) ** 2 + (sfe / sf) ** 2)
+    return T, m, me
+
+
+def bsao_homogeneity(rows=None):
+    """Inverse-variance mean and Cochran Q for a subset of the temperatures."""
+    T, m, me = bsao_masking_by_temperature()
+    sel = np.ones_like(T, bool) if rows is None else rows
+    w = 1.0 / me[sel] ** 2
+    mu = float((w * m[sel]).sum() / w.sum())
+    Q = float((w * (m[sel] - mu) ** 2).sum())
+    return mu, float(1 / np.sqrt(w.sum())), Q, int(sel.sum()) - 1
+
+
+def _mc_bsao(n, seed, m_val, m_err, KH=(35.2, 0.8), KD=(3.07, 0.07), r=(1.1370, 0.0193)):
+    rng = np.random.default_rng(seed)
+    kh, kd, rr = (rng.normal(*KH, n), rng.normal(*KD, n), rng.normal(*r, n))
+    mm = rng.normal(m_val, m_err, n)
+    Fobs = np.log(kh) - GSC * np.log(kd)
+    lo = np.maximum(kh, kd) - 1 + 1e-9
+    hi = np.full(n, 1e12)
+    mc = np.clip(mm, 1e-6, 1 - 1e-9)
+    for _ in range(200):
+        mid = np.sqrt(lo * hi)
+        f = ((1 + mid) * (intrinsic_from_commitment(kd, rr * mid) + rr * mid)
+             / ((intrinsic_from_commitment(kh, mid) + mid) * (1 + rr * mid)) - mc)
+        lo, hi = np.where(f < 0, mid, lo), np.where(f < 0, hi, mid)
+    c = np.sqrt(lo * hi)
+    xh, xd = intrinsic_from_commitment(kh, c), intrinsic_from_commitment(kd, rr * c)
+    F = np.where(mm >= 1.0, Fobs, np.log(xh) - GSC * np.log(xd))
+    g = np.log(xh) / np.log(xd)
+    ok = (kh > kd) & (kd > 1) & np.isfinite(F)
+    return F[ok], g[ok]
+
+
+def _mc_yadh(n, seed, a, KH=(7.13, 0.07), KD=(1.73, 0.02), r=(1.3107, 0.0164)):
+    rng = np.random.default_rng(seed)
+    kh, kd, rr = (rng.normal(*KH, n), rng.normal(*KD, n), rng.normal(*r, n))
+    aa = rng.uniform(*a, n) if isinstance(a, tuple) else np.full(n, a)
+    c = (kh - 1) + kh * aa
+    xh, xd = intrinsic_from_commitment(kh, c), intrinsic_from_commitment(kd, rr * c)
+    F = np.log(xh) - GSC * np.log(xd)
+    g = np.log(xh) / np.log(xd)
+    ok = (kh > kd) & (kd > 1) & np.isfinite(F)
+    return F[ok], g[ok]
+
+
+def report_uncertainty(n=400000, seed=20260815):
+    """Propagate every measured input through both completions."""
+    T, m, me = bsao_masking_by_temperature()
+    print("\nBSAO masking factor, temperature by temperature (Grant & Klinman Table IV)")
+    print(f"  {'T(C)':>5} {'m':>8} {'+-':>7} {'(m-1)/sd':>9}")
+    for i in range(len(T)):
+        print(f"  {T[i]:5.0f} {m[i]:8.3f} {me[i]:7.3f} {(m[i]-1)/me[i]:+9.2f}")
+    mu, se, Q, dof = bsao_homogeneity()
+    print(f"  all six pooled : {mu:.4f} +- {se:.4f}   Q = {Q:.2f} on {dof} dof")
+    mu2, se2, Q2, d2 = bsao_homogeneity(T >= 15)
+    print(f"  15-45 C pooled : {mu2:.4f} +- {se2:.4f}   Q = {Q2:.2f} on {d2} dof")
+    print("  masking cannot exceed unity; the 0 C value does so by 3.5 standard")
+    print("  deviations, so a single masking factor does not describe these data.")
+
+    print("\nCompletions with every measured input propagated")
+    F, g = _mc_bsao(n, seed, m[3], me[3])
+    q = np.percentile(F, [2.5, 50, 97.5]); qg = np.percentile(g, [2.5, 50, 97.5])
+    print(f"  BSAO at 25 C, m = {m[3]:.3f} +- {me[3]:.3f} (matched condition)")
+    print(f"    F_int {q[1]:+.3f}  95% [{q[0]:+.3f},{q[2]:+.3f}]   "
+          f"P(F<F0) = {np.mean(F < F0):.2f}")
+    print(f"    gamma_int {qg[1]:.2f} 95% [{qg[0]:.2f},{qg[2]:.2f}]   "
+          f"P(gamma<gamma_SC) = {np.mean(g < GSC):.2f}")
+    print("    -> the interval straddles both thresholds: not informative.")
+    for a in (1.3, 2.3, 7.3):
+        F, g = _mc_yadh(n, seed, a)
+        q = np.percentile(F, [2.5, 50, 97.5]); qg = np.percentile(g, [2.5, 50, 97.5])
+        print(f"  YADH a = {a:.1f}: F_int {q[1]:+.3f} 95% [{q[0]:+.3f},{q[2]:+.3f}]"
+              f"  gamma_int {qg[1]:.2f} [{qg[0]:.2f},{qg[2]:.2f}]"
+              f"  P(F>0) = {np.mean(F > 0):.4f}")
+    F, _ = _mc_yadh(n, seed, (1.3, 7.3))
+    q = np.percentile(F, [2.5, 50, 97.5])
+    print(f"  YADH, a uniform on [1.3,7.3]: F_int {q[1]:+.3f} "
+          f"95% [{q[0]:+.3f},{q[2]:+.3f}]  P(F>0) = {np.mean(F > 0):.4f}")
 
 
 # ------------------------------------------------------- the two-viscosity route
@@ -150,14 +261,15 @@ def run():
     print("Closing the half-line with one commitment measurement\n")
     print(f"{'system':22s} {'K_HT':>7s} {'K_DT':>7s} {'c/(K_H-1)':>10s} "
           f"{'F_int':>9s} {'gain vs bound':>14s} {'c needed':>9s}")
-    for lab, KH, KD in [("YADH", 7.13, 1.73), ("BSAO", 35.2, 3.07),
-                        ("LADH F93W", 7.755, 1.858)]:
+    for lab, KH, KD, r in [("YADH", 7.13, 1.73, 1.3107),
+                           ("BSAO", 35.2, 3.07, 1.1370),
+                           ("LADH F93W", 7.755, 1.858, 1.27)]:
         Fobs = np.log(KH) - GSC*np.log(KD)
         for mult in (2.0, 3.0, 5.0):
             c = (KH - 1.0)*mult
-            xh = intrinsic_from_commitment(KH, c); xd = intrinsic_from_commitment(KD, c)
+            xh = intrinsic_from_commitment(KH, c); xd = intrinsic_from_commitment(KD, r*c)
             Fi = np.log(xh) - GSC*np.log(xd)
-            need = commitment_precision_needed(KH, KD, c)
+            need = commitment_precision_needed(KH, KD, c, r)
             print(f"{lab:22s} {KH:7.2f} {KD:7.3f} {mult:10.1f} {Fi:+9.4f} "
                   f"{(Fi-Fobs)/abs(F0):11.1f}|F0| {need*100:8.1f}%")
 
@@ -186,3 +298,4 @@ def run():
 if __name__ == "__main__":
     run()
     report_completions()
+    report_uncertainty()

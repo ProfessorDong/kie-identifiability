@@ -119,5 +119,16 @@ check("c->inf recovers the intrinsic effect",
 check("c->0 fully masks it", close(Q.observed_from_intrinsic(12.0, 1e-12), 1.0, 1e-6))
 check("masking is strict for finite c", 1.0 < Q.observed_from_intrinsic(12.0, 2.5) < 12.0)
 
+print("\n9. network reduction (Proposition S6)")
+_x, _phi, _q = sp.symbols("x phi q", positive=True)
+_N = (_q + 1 + _phi) / (1 + _phi)
+_Kgen = _N * (_x + _phi) / (_x + _phi + _q)
+_Y, _c = (_x + _phi) / (1 + _phi), _q / (1 + _phi)
+check("K(x;phi,q) = K_series(Y;c) symbolically",
+      sp.simplify(sp.expand(_Kgen - _Y * (1 + _c) / (_Y + _c))) == 0)
+check("the map fixes x=1", sp.simplify(_Kgen.subs(_x, 1) - 1) == 0)
+check("contraction gives Y-1 = (x-1)/(1+phi), so L_H is bypass invariant",
+      sp.simplify((_Y - 1) - (_x - 1) / (1 + _phi)) == 0)
+
 print(f"\nfailures: {FAIL}")
 raise SystemExit(1 if FAIL else 0)

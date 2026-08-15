@@ -260,41 +260,67 @@ partitions against another, which is what a commitment is. So:
 | yes | yes | upper above `x* = sqrt(BD/(AC))`, lower below |
 
 Both schemes in this work have `B = 0`; the reversible result is now a corollary
-rather than a separate calculation. A bypass also caps the observable, since
-`K(x) -> A/C`, so the measured effects bound it: an isotope-blind route would
-have to carry a fifth to a half of the isotope-sensitive flux before the
-direction could change in any benchmark system. (`analysis/network_geometry.py`)
+rather than a separate calculation.
 
-**The half-line is one measurement from being a number, and two systems already
-have that measurement.** Inverting the observation map at known commitment gives
+What a bypass does to the identified set follows from an exact reduction, not
+from curvature. With `phi = k_b/k_T` the bypass fraction and `q = k_2/k_T` the
+competing rate, the general map factors as the series map acting on a contracted
+effect,
+
+```
+K(x; phi, q) = K_series(Y; c),   Y = (x + phi)/(1 + phi),   c = q/(1 + phi)
+```
+
+so a bypass does not change the FORM of the masking, it pulls the intrinsic
+effect toward unity first. Because `Y - 1 = (x-1)/(1+phi)`, the `L_H` case split
+is unchanged. The endpoint then falls smoothly with `phi`, with no threshold,
+and the two tritium references do not scale together: `phi_D = r phi_H`, so
+bypass and reference asymmetry must be profiled jointly. With the measured
+`r = 1.31`, the one exclusion in the record survives an isotope-blind route
+below **18%** of the isotope-sensitive flux (13% against the semiclassical
+locus). An earlier version of this file claimed a bound of "a fifth to a half"
+derived from the curvature switch evaluated at the SMALLEST admissible competing
+rate; that is the infimum of the switch, not a bound above it, and it established
+nothing. (`analysis/network_geometry.py`)
+
+**The half-line is one measurement from being a number, and one system has that
+measurement.** Inverting the observation map at known commitment gives
 the intrinsic effect in closed form,
 
 ```
 x = K c / (1 + c - K)          finite above unity exactly when c > K - 1
 ```
 
-and the offset follows as a point rather than a bound. Two systems in the record
-can be completed from kinetics already published, with no new experiment:
+and the offset follows as a point rather than a bound, once the reference
+asymmetry `r = c_D/c_H` is known. One system in the record completes from
+kinetics already published, with no new experiment; a second is attempted and
+fails, instructively:
 
-* *Yeast ADH.* Klinman (1976) measured `k_-1/k_cat = 1.3-7.3` for benzyl alcohol
-  on the same enzyme, in the same laboratory, at the conditions Cha, Murray &
-  Klinman (1989) used thirteen years later. Referenced to tritium that ratio is
-  `c = (K_HT - 1) + K_HT a`, giving `c = 15.4-58.2`, comfortably above the
-  singular value `K_HT - 1 = 6.13`. The identified set collapses from
-  `F > +0.129` to `F_int = +0.198 to +0.474`, an intrinsic exponent of 3.70-4.14
-  against a semiclassical 3.349. The bound understated the offset by
-  1.6-8.2|F0|: the conclusion is unchanged in direction and strengthened in size.
-* *Bovine serum amine oxidase.* Grant & Klinman's Table IV (1989) sets the
-  pre-steady-state isotope effect beside the steady-state one, so their ratio is
-  the masking factor directly, with no model inversion. The four determinations
-  from 15 to 45 C give `0.948 +/- 0.044` (chi2/dof = 0.63), consistent with no
-  masking at 1.2 sigma. That gives `c = 337-4018` and
-  `F_int = -0.188 to -0.109`, entirely below `F0`, with an intrinsic exponent of
-  3.18-3.25, entirely below `gamma_SC`.
+* *Yeast ADH completes.* Klinman (1976) measured `k_-1/k_cat = 1.3-7.3` for
+  benzyl alcohol on the same enzyme, in the same laboratory, at the conditions
+  Cha, Murray & Klinman (1989) used thirteen years later. Referenced to tritium
+  that ratio is `c_H = (K_HT - 1) + K_HT a`, giving `c_H = 15.4-58.2`, well above
+  the singular value `K_HT - 1 = 6.13`. With `c_D = 1.31 c_H` the identified set
+  collapses from `F > +0.129` to `F_int = +0.208 to +0.513`, an intrinsic
+  exponent of 3.72-4.23 against a semiclassical 3.349. Propagating every measured
+  input (both effects, `r`, and `a`) by Monte Carlo leaves `P(F_int > 0) = 1.0000`
+  at every `a`: the conclusion is unchanged in direction and strengthened in size.
+* *Bovine serum amine oxidase does not.* Grant & Klinman's Table IV (1989) sets
+  the pre-steady-state isotope effect beside the steady-state one at **six**
+  temperatures, and their ratio is a masking factor directly. But the six are not
+  consistent with one value (`Q = 17.9` on 5 dof, `p = 0.003`), and masking
+  cannot exceed unity, which the 0 C ratio does by 3.5 sigma. The competitive
+  effects exist only at 25 C, where the matched factor is `0.839 +/- 0.097`, the
+  most extreme of the six. Full propagation gives `F_int = -0.038`, 95%
+  `[-0.267, +0.242]`, straddling both thresholds: `P(F_int < F0) = 0.49`. An
+  earlier version of this file reported `-0.188 to -0.107` from a factor pooled
+  over 15-45 C with only that factor's uncertainty propagated; the pooling is
+  what the data reject.
 
-The two completions land on opposite sides of the semiclassical locus, which is
-the point: the procedure returns a number, not a verdict fixed in advance. Two
-further systems resist it, and the reasons are diagnostic rather than accidental.
+A commitment closes the half-line only when it is precise enough AND measured at
+the condition of the isotope pair. Yeast ADH meets both; the amine oxidase meets
+neither. Two further systems resist completion for reasons that are diagnostic
+rather than accidental.
 Monoamine oxidase B does not complete because the stopped-flow comparison Jonsson
 et al. (1994) invoke is attributed to an earlier source and its value not
 reproduced, while their own `D(V/K)` is a second measurement of the same masked
@@ -314,8 +340,8 @@ direction, which survives completely: for *any* admissible commitment the
 completed yeast offset exceeds the half-line endpoint.
 
 The precision required of `c` is mild. Writing `c = m(K_HT - 1)`, recovering the
-yeast offset to within half the mechanistic signal needs `c` to only **5.8%** at
-`m = 3`, relaxing to 12.5% at `m = 5`. Commitments are routinely measured to that
+yeast offset to within half the mechanistic signal needs `c_H` to only **5.3%**
+at `m = 3`, relaxing to 11.2% at `m = 5` (with `c_D = r c_H`). Commitments are routinely measured to that
 precision. The bound is not merely loose; it is loose in the direction that hides
 the signal.
 
@@ -328,9 +354,10 @@ relative error by 3x at `c = 10` and 30x at `c = 1`, demanding the isotope
 effects to 0.7%-0.07% against roughly 1% in practice, and it is most demanding
 exactly where masking is heaviest.
 
-**What the closed offset then measures: the promoting mode.** In the gated model
-`F` depends on the gating width `w = 2 kappa sqrt(mu_H) sigma^2(T)`, and for a
-harmonic promoting mode the exact thermal variance is
+**What a closed offset would bear on: the promoting mode.** In the gated model
+`F` depends on the gating width `w = 2 kappa sqrt(mu_H) sigma^2(T)` AND on the
+scale parameter `A`, and for a harmonic promoting mode the exact thermal
+variance is
 
 ```
 w(T) = w0 coth(hbar omega_g / 2 k_B T)
@@ -338,18 +365,26 @@ w(T) = w0 coth(hbar omega_g / 2 k_B T)
 
 a quantum expression in which zero-point motion holds `w` fixed below
 `theta = hbar omega_g / k_B`. The offset inherits that structure. Across
-250-350 K the predicted span of `F` is 0.12|F0| at 50 cm-1, **1.26|F0| at 200**,
-**1.47|F0| at 400**, and 0.51|F0| at 800, while the Swain-Schaad exponent moves
-0.01-0.02 over the same interval. Sensitivity peaks where the mode sits at the
+250-350 K the predicted span of `F` at `A = 5`, `w0 = 0.5` is 0.12|F0| at
+50 cm-1, **1.26|F0| at 200**, **1.47|F0| at 400**, and 0.51|F0| at 800, while
+the Swain-Schaad exponent moves 0.01-0.02 over the same interval. Sensitivity peaks where the mode sits at the
 quantum-classical crossover `hbar omega_g ~ 2 k_B T`, which at 300 K is
 417 cm-1; sweeping `A` over [1,50] and `w0` over [0.1,2] moves that peak only
 between 140 and 480 cm-1, so it tracks the crossover rather than the
 parameterization. Promoting modes invoked in this literature lie in that window.
 (`analysis/completion.py`)
 
-An experiment long read as a yes-or-no tunneling test, completed with one
-commitment measurement and read in the offset coordinate, becomes a quantitative
-measurement of the promoting vibration.
+Sensitivity is not identifiability, and only the first is claimed. `F` depends on
+`A`, `w0` and `theta` jointly and the three are badly confounded: for an
+11-point series over 250-350 K the Jacobian in `(ln A, ln w0, ln theta)` has
+singular values 0.60, 2.7e-2, 1.4e-4, so `cond(J'J) ~ 1.7e7`. Below `theta` the
+data carry almost nothing about `theta`; above it only `w0/theta` is determined.
+No system supplies a completed `F(T)` series: yeast ADH gives one temperature,
+the amine oxidase one isotope pair. Recovering `omega_g` is therefore a design
+target, not a result here. An experiment long read as a yes-or-no tunneling test,
+completed and read in the offset coordinate, returns a number whose temperature
+dependence carries the gating variance; that is where a quantitative test of
+promoting-mode models would begin.
 
 The framework, rather than any verdict on tunneling, is the contribution:
 mechanistic claims from these experiments are comparisons between an
@@ -360,6 +395,9 @@ experimentally identified set and a computed mechanism envelope.
 ```
 analysis/
   masses.py             isotope mass convention, imported everywhere
+  audit_numbers.py      sweeps every derived number against both manuscript
+                        files; catches fabricated and stale values that a
+                        whitelist check cannot
   network_geometry.py   Moebius structure of V/K; curvature class and the
                         identified-set direction from network topology
   completion.py         closing the half-line with one commitment measurement,

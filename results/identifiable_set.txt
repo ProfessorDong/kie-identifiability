@@ -4,10 +4,10 @@ THE MODEL-FREE IDENTIFIABLE SET FOR THE DISCRIMINATING INVARIANT
 gamma_SC = 3.34887   semiclassical F = 0   tunneling ridge F0 = -0.042086
 
 1. THE SHAPE OF THE SET IS DECIDED BY THE H-REFERENCE CONTRAST
-   records: 73   predicted interior minimum: 21   observed: 21
-   sign criterion L_H < gamma_SC agrees with the numerics on 73/73 records
+   records: 83   predicted interior minimum: 21   observed: 21
+   sign criterion L_H < gamma_SC agrees with the numerics on 83/83 records
    L_H range where the minimum is interior : [1.854, 3.342]
-   L_H range where it is at c -> infinity  : [3.393, 6.542]
+   L_H range where it is at c -> infinity  : [3.393, 14.710]
    the two ranges are separated by gamma_SC = 3.3489
 
 2. THE ASSUMPTION-FREE BOUND PER SERIES
@@ -24,6 +24,8 @@ gamma_SC = 3.34887   semiclassical F = 0   tunneling ridge F0 = -0.042086
    ecDHFR heavy enzyme (hydride)                  5   -0.1576     0.1155      none
    TSase Y209W (proton)                           4   -0.1600     0.1180      none
    ecDHFR F125M (hydride)                         5   -0.1681     0.1260      none
+   MAOB pH 6.1 (abstraction)                      7   -0.1720     0.1299      none
+   MAOB pH 7.5 (abstraction)                      3   -0.1944     0.1523      none
    hsDHFR d62-PEKN (hydride)                      5   -0.2368     0.1947      none
    TSase WT (proton)                              4   -0.2726     0.2305      none
    hsDHFR F32L (hydride)                          4   -0.2784     0.2363      none
@@ -33,8 +35,8 @@ gamma_SC = 3.34887   semiclassical F = 0   tunneling ridge F0 = -0.042086
    hsDHFR F32L-PP26N-PEKN62G (hydride)            4   -0.6937     0.6516      none
    hsDHFR F32M (hydride)                          4   -0.8782     0.8362      none
 
-   series excluding the tunneling ridge : 0 of 16
-   series excluding semiclassical       : 0 of 16
+   series excluding the tunneling ridge : 0 of 18
+   series excluding semiclassical       : 0 of 18
    closest: ecDHFR W133F, bound -0.0596,
             short of the ridge by 0.0175 log-KIE units.
 

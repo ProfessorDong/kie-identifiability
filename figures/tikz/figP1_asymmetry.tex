@@ -13,12 +13,12 @@
     tick label style={font=\fontsize{6.4}{7.7}\selectfont, color=cInk}},
 }
 \tikzset{
-  rowlab/.style={font=\fontsize{5.5}{6.6}\selectfont, color=cInk,
+  rowlab/.style={font=\fontsize{6.2}{7.2}\selectfont, color=cInk,
                  anchor=east, inner sep=1.2pt},
-  annc/.style={font=\fontsize{5.9}{7.1}\selectfont, color=cInk, align=center},
+  annc/.style={font=\fontsize{6.3}{7.6}\selectfont, color=cInk, align=center},
 }
 
-\begin{axis}[asym, name=A, width=47mm, height=80mm,
+\begin{axis}[asym, name=A, width=41mm, height=83mm,
   xmin=-0.50, xmax=0.20, ymin=0.2, ymax=32.6,
   xlabel={endpoint of the identified set, $F_{\min}$},
   ytick=\empty, ymajorgrids=false,
@@ -39,14 +39,12 @@
        (axis cs:-0.042086,32.6);
   \draw[cInk, line width=0.5pt, dashed] (axis cs:0,0.2) -- (axis cs:0,32.6);
 
-  \node[annc, anchor=south, color=cGrey!70!black] at (axis cs:-0.272,30.6)
-    {endpoint here: set contains\\both thresholds};
-  \node[annc, anchor=south, color=cBandG!55!black] at (axis cs:0.086,30.6)
-    {endpoint here:\\set clears $\Fz$};
-  % the green band is empty below row ~19, so the key sits there rather than
-  % over the yeast ADH ray at the top
-  \node[annc, anchor=center, color=cInk] at (axis cs:0.088,9.0)
-    {\textcolor{cPro}{\textbf{red}}:\\bound also\\clears $\Fz$};
+  % Short forms: the narrower axis leaves no room for the fuller wording, and
+  % the caption carries it.  The red key is dropped for the same reason.
+  \node[annc, anchor=south, color=cGrey!70!black] at (axis cs:-0.30,30.6)
+    {set contains\\both thresholds};
+  \node[annc, anchor=south, color=cBandG!55!black] at (axis cs:0.085,30.6)
+    {set clears\\$\Fz$};
 \end{axis}
 \end{tikzpicture}
 \end{document}

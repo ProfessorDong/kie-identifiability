@@ -80,11 +80,14 @@ with open(OUT + "fa_rays.tex", "w") as fh:
             fh.write(f"\\fill[{col}] (axis cs:{r.point:.5f},{r.y}) circle (0.85pt);\n")
         else:
             # endpoint lies off the left edge: chevron instead of a dot
-            fh.write(f"\\node[font=\\fontsize{{5.4}}{{6.4}}\\selectfont, color={col}, "
+            fh.write(f"\\node[font=\\fontsize{{6.2}}{{7.4}}\\selectfont, color={col}, "
                      f"anchor=east, inner sep=0.6pt] at (axis cs:{XMIN:.5f},{r.y}) "
                      f"{{$\\ll$}};\n")
         lab = r.label if r.point >= XMIN else f"{r.label} ({r.point:.2f})"
-        fh.write(f"\\node[rowlab] at (axis cs:{XMIN-0.032:.5f},{r.y}) {{{lab}}};\n")
+        # off-scale rows carry a chevron at XMIN, so their labels sit further
+        # left to keep clear of it
+        dx = 0.032 if r.point >= XMIN else 0.060
+        fh.write(f"\\node[rowlab] at (axis cs:{XMIN-dx:.5f},{r.y}) {{{lab}}};\n")
 print(f"panel: {len(df)} rows, {len(off)} off-scale below {XMIN}")
 for _, r in off.iterrows():
     print(f"   off-scale: {r.label} at {r.point:+.4f}")
