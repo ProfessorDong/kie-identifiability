@@ -23,6 +23,37 @@ def _lcb(point, kht, kht_se, kdt, kdt_se, rho=RHO):
     sd = np.sqrt(sH**2 + (GSC*sD)**2 - 2*GSC*rho*sH*sD)
     return point - 1.645*sd
 
+_TB = pd.read_csv("../data/trinomial_benchmark.csv")
+_FAM = {"FDH": "formate dehydrogenase", "TSase": "thymidylate synthase",
+        "ecDHFR": "Escherichia coli dihydrofolate reductase",
+        "hsDHFR": "Homo sapiens dihydrofolate reductase",
+        "MAOB": "monoamine oxidase"}
+
+
+def _series_closed(r):
+    """Is the plotted endpoint of this series attained at finite commitment?
+
+    A series row plots the largest endpoint over its temperatures, so whether
+    that endpoint is attained is a property of the single record achieving it.
+    The identified set is closed exactly when L_H < gamma; otherwise the
+    endpoint is approached only as the commitment diverges and is excluded.
+    """
+    sub = _TB[_TB.system.str.contains(_FAM.get(r.family, r.family), case=False,
+                                      na=False)
+              & (_TB.variant.astype(str) == str(r.variant))]
+    if r.family == "TSase" and "step" in _TB.columns:
+        sub = sub[sub.step.astype(str) == str(r.step)]
+    vals = [F_min_exact(x.K_HT, x.K_DT) for _, x in sub.iterrows()
+            if x.K_HT > x.K_DT > 1]
+    if not vals:
+        raise ValueError(f"no benchmark record for {r.family} {r.variant}")
+    best = max(vals, key=lambda v: v[0])
+    if abs(best[0] - r.point) > 1e-6:
+        raise ValueError(f"endpoint mismatch for {r.family} {r.variant}: "
+                         f"{r.point} vs {best[0]}")
+    return bool(best[3])
+
+
 b = pd.read_csv("../results/bounds_uncertainty.csv")
 # Conservative throughout: every bound is the maximally adverse rho = -1 case,
 # so any system drawn as clearing F0 clears it under any correlation.
@@ -34,24 +65,31 @@ for _, r in b.iterrows():
     lab = f"{r.family} {r.variant}"
     if r.family in multi:
         lab += f" ({r.step})"
-    rows.append((lab, r.point, r.lcb, "series"))
+    rows.append((lab, r.point, r.lcb, "series", _series_closed(r)))
 lad = pd.read_csv("../data/ladh_adh_primary.csv")
+# A form measured by two studies at different temperatures is two analysis
+# units, as the two amine oxidase pH values already are; the temperature
+# disambiguates the label only where a form appears more than once.
+_dup = {v for v, g in lad.groupby("variant") if len(g) > 1}
 for _, r in lad.iterrows():
-    f, _, _, _ = F_min_exact(r.K_HT, r.K_DT)
-    rows.append((f"LADH {r.variant}", f,
-                 _lcb(f, r.K_HT, r.K_HT_se, r.K_DT, r.K_DT_se), "ladh"))
+    f, _, _, cl = F_min_exact(r.K_HT, r.K_DT)
+    lab = f"LADH {r.variant}"
+    if r.variant in _dup:
+        lab += f" {int(r.T_C)}$^\\circ$C"
+    rows.append((lab, f,
+                 _lcb(f, r.K_HT, r.K_HT_se, r.K_DT, r.K_DT_se), "ladh", cl))
 bs = pd.read_csv("../data/bsao_grant1989.csv")
 for _, r in bs.iterrows():
-    f, _, _, _ = F_min_exact(r.K_HT, r.K_DT)
+    f, _, _, cl = F_min_exact(r.K_HT, r.K_DT)
     rows.append((f"BSAO {r.variant}", f,
-                 _lcb(f, r.K_HT, r.K_HT_se, r.K_DT, r.K_DT_se), "bsao"))
+                 _lcb(f, r.K_HT, r.K_HT_se, r.K_DT, r.K_DT_se), "bsao", cl))
 ya = pd.read_csv("../data/cha1989_yadh.csv")
 a = ya[ya.note.str.contains("average")].iloc[0]
-f, _, _, _ = F_min_exact(a.K_HT, a.K_DT)
+f, _, _, cl = F_min_exact(a.K_HT, a.K_DT)
 rows.append(("YADH wild type", f,
-             _lcb(f, a.K_HT, a.K_HT_se, a.K_DT, a.K_DT_se), "yadh"))
+             _lcb(f, a.K_HT, a.K_HT_se, a.K_DT, a.K_DT_se), "yadh", cl))
 
-df = pd.DataFrame(rows, columns=["label", "point", "lcb", "grp"])
+df = pd.DataFrame(rows, columns=["label", "point", "lcb", "grp", "closed"])
 df = df.sort_values("point").reset_index(drop=True)
 df["y"] = np.arange(len(df)) + 1
 inf_mask = df.lcb > F0
@@ -77,7 +115,14 @@ with open(OUT + "fa_rays.tex", "w") as fh:
             fh.write(f"\\draw[{wcol}, line width={lw}] "
                      f"(axis cs:{max(r.lcb,XMIN):.5f},{r.y}) -- "
                      f"(axis cs:{r.point:.5f},{r.y});\n")
-            fh.write(f"\\fill[{col}] (axis cs:{r.point:.5f},{r.y}) circle (0.85pt);\n")
+            # filled when the endpoint is attained at finite commitment,
+            # open when it is only approached, which the caption relies on
+            if r.closed:
+                fh.write(f"\\fill[{col}] (axis cs:{r.point:.5f},{r.y}) "
+                         f"circle (0.85pt);\n")
+            else:
+                fh.write(f"\\draw[{col}, line width=0.45pt, fill=white] "
+                         f"(axis cs:{r.point:.5f},{r.y}) circle (0.95pt);\n")
         else:
             # endpoint lies off the left edge: chevron instead of a dot
             fh.write(f"\\node[font=\\fontsize{{6.2}}{{7.4}}\\selectfont, color={col}, "
@@ -93,3 +138,5 @@ for _, r in off.iterrows():
     print(f"   off-scale: {r.label} at {r.point:+.4f}")
 
 print(f"panel: {int(inf_mask.sum())} informative of {len(df)}")
+print(f"panel: {int(df.closed.sum())} closed endpoints, "
+      f"{int((~df.closed).sum())} open")

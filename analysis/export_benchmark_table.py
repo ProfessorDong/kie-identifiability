@@ -24,6 +24,17 @@ def _num(x: float) -> str:
     return f"{x:g}"
 
 
+def _err(x: float) -> str:
+    """Uncertainties to two significant figures.
+
+    Most entries are transcribed as published and already carry one or two
+    figures.  The hsTSase hydride rows are standard errors of the mean computed
+    as sd/sqrt(n) over replicates, so they arrive at full float precision; left
+    unrounded they claim six significant figures and overrun the table.
+    """
+    return f"{x:.2g}"
+
+
 def main() -> None:
     d = pd.read_csv("../data/trinomial_benchmark.csv")
     lines, nrec = [], 0
@@ -36,8 +47,8 @@ def main() -> None:
             # differ wherever L_H < gamma_SC, which is most of the benchmark
             fobs = np.log(r.K_HT) - GSC * np.log(r.K_DT)
             lines.append(
-                f" & {_num(r.T_C)} & {_num(r.K_HT)} $\\pm$ {_num(r.K_HT_se)}"
-                f" & {_num(r.K_DT)} $\\pm$ {_num(r.K_DT_se)}"
+                f" & {_num(r.T_C)} & {_num(r.K_HT)} $\\pm$ {_err(r.K_HT_se)}"
+                f" & {_num(r.K_DT)} $\\pm$ {_err(r.K_DT_se)}"
                 f" & {gam:.3f} & {lh:.3f} & {fobs:.4f}\\\\"
             )
             nrec += 1

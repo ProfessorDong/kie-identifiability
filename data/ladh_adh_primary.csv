@@ -8,3 +8,5 @@ LADH,V203L,hydride,25,7.82,0.08,1.89,0.01,Table 1 primary,Bahnson1997
 LADH,V203A,hydride,25,7.24,0.06,1.88,0.02,Table 1 primary,Bahnson1997
 LADH,V203A-F93W,hydride,25,7.65,0.06,1.91,0.02,Table 1 primary,Bahnson1997
 LADH,V203G,hydride,25,7.53,0.03,1.90,0.01,Table 1 primary,Bahnson1997
+LADH,wild type,hydride,3,9.0,0.7,2.2,0.2,Table 2 primary aqueous,TsaiKlinman2001
+LADH,F93W,hydride,3,10.3,0.2,2.0,0.1,Table 4 primary aqueous,TsaiKlinman2001

@@ -130,5 +130,40 @@ check("the map fixes x=1", sp.simplify(_Kgen.subs(_x, 1) - 1) == 0)
 check("contraction gives Y-1 = (x-1)/(1+phi), so L_H is bypass invariant",
       sp.simplify((_Y - 1) - (_x - 1) / (1 + _phi)) == 0)
 
+print("\n10. unequal-reference endpoint (Corollary S4.2)")
+_c, _g, _a, _b, _r = sp.symbols("c gamma a b r", positive=True)
+_xH = (_a + 1) * _c / (1 + _c - (_a + 1))
+_xD = (_b + 1) * (_r * _c) / (1 + _r * _c - (_b + 1))
+_F = sp.log(_xH) - _g * sp.log(_xD)
+_stated = (_c * (_g * _b - _a * _r) - _a * _b * (_g - 1)) / (_c * (_c - _a) * (_r * _c - _b))
+check("dF_r/dc closed form", sp.simplify(sp.expand(sp.diff(_F, _c) - _stated)) == 0)
+_cs = _a * _b * (_g - 1) / (_g * _b - _a * _r)
+check("c* is stationary", sp.simplify(sp.diff(_F, _c).subs(_c, _cs)) == 0)
+check("x_H* closed form",
+      sp.simplify(_xH.subs(_c, _cs) - (_a + 1) * _b * (_g - 1) / (_a * _r - _b)) == 0)
+check("x_D* closed form",
+      sp.simplify(_xD.subs(_c, _cs) - (_b + 1) * _r * _a * (_g - 1) / (_g * (_a * _r - _b))) == 0)
+check("reduces to Proposition S2 at r=1",
+      sp.simplify(_stated.subs(_r, 1)
+                  - (_c * (_g * _b - _a) - _a * _b * (_g - 1)) / (_c * (_c - _a) * (_c - _b))) == 0)
+
+print("\n11. binding-aware map (Proposition S8)")
+_al,_be,_x,_c,_u = sp.symbols("alpha beta x c u", positive=True)
+_K = _al*_x*(1+_c)/(_x+_be*_c)
+check("reduces to the series map at alpha=beta=1",
+      sp.simplify(_K.subs({_al:1,_be:1}) - _x*(1+_c)/(_x+_c)) == 0)
+check("K/alpha = series map on u = x/beta",
+      sp.simplify(_K/_al - (_u*(1+_c)/(_u+_c)).subs(_u, _x/_be)) == 0)
+_aH,_aD,_bH,_bD,_xH,_xD,_gm = sp.symbols(
+    "alpha_H alpha_D beta_H beta_D x_H x_D gamma", positive=True)
+_Fo = sp.log(_aH*_xH/_bH) - _gm*sp.log(_aD*_xD/_bD)
+_Fi = sp.log(_xH) - _gm*sp.log(_xD)
+_Fb = sp.log(_aH/_bH) - _gm*sp.log(_aD/_bD)
+check("F_obs = F_int + F_bind in the commitment-free limit",
+      sp.simplify(_Fo - _Fi - _Fb) == 0)
+check("F_bind vanishes when binding effects are mass scaled",
+      sp.simplify(_Fb.subs(_aH/_bH, (_aD/_bD)**_gm)) == 0 or
+      sp.simplify((sp.log((_aD/_bD)**_gm) - _gm*sp.log(_aD/_bD))) == 0)
+
 print(f"\nfailures: {FAIL}")
 raise SystemExit(1 if FAIL else 0)

@@ -1,4 +1,4 @@
-# Bounding and recovering mass-scaling deviations in enzymatic hydrogen transfer
+# Network structure determines what isotope experiments can identify in enzymatic hydrogen transfer
 
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.21913975.svg)](https://doi.org/10.5281/zenodo.21913975)
 
