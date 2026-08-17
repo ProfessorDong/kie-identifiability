@@ -1,0 +1,128 @@
+\documentclass[border=2pt,tikz]{standalone}
+\input{icigstyle}
+\usetikzlibrary{arrows.meta,positioning}
+\begin{document}
+\begin{tikzpicture}
+% Two-column figure (figure*). Natural width ~150 mm.
+\pgfplotsset{
+  atl/.style={icig, scale only axis,
+    label style={font=\fontsize{8.0}{9.6}\selectfont, color=cInk},
+    tick label style={font=\fontsize{7.2}{8.6}\selectfont, color=cInk},
+    title style={font=\fontsize{8.6}{10.4}\selectfont\bfseries, color=cInk,
+                 align=left}},
+}
+\tikzset{
+  ann/.style={font=\fontsize{7.5}{9.0}\selectfont, color=cInk, align=left,
+              inner sep=0pt},
+  hd/.style={font=\fontsize{8.6}{10.4}\selectfont\bfseries, color=cInk},
+  st/.style={circle, draw=cInk, line width=0.4pt, inner sep=0pt,
+             minimum size=5.3mm, font=\fontsize{6.6}{7.8}\selectfont},
+  fl/.style={-{Latex[length=1.4mm,width=1.0mm]}, line width=0.42pt, cInk},
+  lbl/.style={font=\fontsize{6.4}{7.5}\selectfont, color=cInk, inner sep=1.2pt},
+}
+\def\gap{1.20}
+\hyphenpenalty=10000 \exhyphenpenalty=10000 \tolerance=2000
+
+\node[hd, anchor=north west] at (0,0.05) {(\textit{\textbf{A}})\ \ four topologies};
+
+% ---------------------------------------------------------------- concave
+\begin{scope}[shift={(0.15,-0.95)}]
+  \node[st] (e) at (0,0) {E};  \node[st] (s) at (\gap,0) {ES};
+  \node[lbl,anchor=west] (p) at (2*\gap-0.16,0) {P};
+  \draw[fl] (s) -- node[lbl,above]{$k$} (p.west);
+  \draw[fl] (s) -- node[lbl,above]{$k_{\mathrm{off}}$} (e);
+  \node[ann, anchor=north west, text width=52mm] at (-0.30,-0.40)
+    {\textbf{concave.} the labeled step competes with release};
+\end{scope}
+
+% ---------------------------------------------------------------- mixed
+\begin{scope}[shift={(0.15,-2.50)}]
+  \node[st] (e) at (0,0) {E};  \node[st] (s) at (\gap,0) {ES};
+  \node[lbl,anchor=west] (p) at (2*\gap-0.16,0) {P};
+  \draw[fl] (s) -- node[lbl,above]{$k$} (p.west);
+  \draw[fl] (s) -- node[lbl,above]{$k_{\mathrm{off}}$} (e);
+  \draw[fl,cPro] (s) to[bend right=45]
+      node[lbl,below,color=cPro]{$k_{b}$} (p.south west);
+  \node[ann, anchor=north west, text width=52mm] at (-0.30,-0.62)
+    {\textbf{mixed.} a second route reaches P without it};
+\end{scope}
+
+% ---------------------------------------------------------------- blind
+\begin{scope}[shift={(0.15,-4.05)}]
+  \node[st] (e) at (0,0) {E};  \node[st] (s) at (\gap,0) {ES};
+  \node[st] (t) at (2*\gap,0) {EX};
+  \node[lbl,anchor=west] (p) at (3*\gap-0.16,0) {P};
+  \draw[fl] (s) -- (t);
+  \draw[fl] (t) -- node[lbl,above]{$k$} (p.west);
+  \draw[fl] (s) -- node[lbl,above]{$k_{\mathrm{off}}$} (e);
+  \node[ann, anchor=north west, text width=52mm] at (-0.30,-0.40)
+    {\textbf{blind.} the label lies past the last commitment};
+\end{scope}
+
+% ---------------------------------------------------------------- inverse
+\begin{scope}[shift={(0.15,-5.60)}]
+  \node[st] (e) at (0,0) {E};  \node[st] (s) at (\gap,0) {ES};
+  \node[st] (t) at (2*\gap,0) {EX};
+  \node[lbl,anchor=west] (p) at (3*\gap-0.16,0) {P};
+  \draw[fl] (s) -- node[lbl,above]{$k$} (t);
+  \draw[fl] (t) -- node[lbl,above]{$k_{\mathrm{cat}}$} (p.west);
+  \draw[fl] (s) -- node[lbl,above]{$k_{\mathrm{off}}$} (e);
+  \draw[fl,cPro] (s) to[bend right=38]
+      node[lbl,below,color=cPro,yshift=0.4mm]{$k_{b}$} (p.south west);
+  \draw[fl,cGrey] (t) -- ++(0,0.52)
+      node[lbl,above,color=cGrey,yshift=-0.4mm]{to E};
+  \node[ann, anchor=north west, text width=52mm] at (-0.30,-0.68)
+    {\textbf{inverse.} the label steers flux away from $k_{b}$: \mbox{$AD<BC$}};
+\end{scope}
+
+% =====================================================================
+% (B) the observation map
+% =====================================================================
+\begin{axis}[atl, name=B, width=58mm, height=30mm,
+  at={(7.05cm,0.15cm)}, anchor=north west,
+  xmin=0, xmax=3.7, ymin=-0.34, ymax=2.05,
+  xlabel={$\ln x$ on the labeled step}, ylabel={$\ln K$ observed},
+  xtick={0,1,2,3}, ytick={0,0.5,1.0,1.5,2.0}, clip=true,
+  title={(\textit{\textbf{B}})\ \ masking is curvature}]
+  \addplot[cHyd, line width=0.85pt] table[x=lx,y=lk] {data/fn_map_concave.dat};
+  \addplot[cPro, line width=0.85pt] table[x=lx,y=lk] {data/fn_map_mixed.dat};
+  \addplot[cGold, line width=0.9pt] table[x=lx,y=lk] {data/fn_map_blind.dat};
+  \addplot[cAcc, line width=0.85pt, densely dashed]
+     table[x=lx,y=lk] {data/fn_map_inverse.dat};
+  \addplot[only marks, mark=*, mark size=1.15pt, cPro]
+     table[x=lx,y=lk] {data/fn_xstar_mixed.dat};
+  % labels sit against their own curves; values read from the plotted data
+  \node[ann, color=cHyd, anchor=north west] at (axis cs:2.55,1.16) {concave};
+  \node[ann, color=cPro, anchor=south east] at (axis cs:3.05,1.72) {mixed};
+  \node[ann, color=cPro, anchor=west] at (axis cs:1.10,0.60) {$x^{*}$};
+  \node[ann, color=cGold, anchor=south west] at (axis cs:2.30,0.02) {blind, $K\equiv1$};
+  \node[ann, color=cAcc, anchor=north west] at (axis cs:2.30,-0.13) {inverse};
+\end{axis}
+
+% =====================================================================
+% (C) the offset along the mass-scaling ray
+% =====================================================================
+\begin{axis}[atl, name=C, width=58mm, height=30mm,
+  at={(7.05cm,-4.55cm)}, anchor=north west,
+  xmin=1, xmax=2.2, ymin=-0.115, ymax=0.098,
+  xlabel={$x_{\mathrm D}$ along $x_{\mathrm H}=x_{\mathrm D}^{\gamma}$},
+  ylabel={offset $F$ implied}, clip=true,
+  xtick={1,1.2,1.4,1.6,1.8,2,2.2}, ytick={-0.1,-0.05,0,0.05},
+  title={(\textit{\textbf{C}})\ \ and curvature fixes the side}]
+  \addplot[cGrey, line width=0.45pt, densely dotted, forget plot]
+     coordinates {(1,0) (6,0)};
+  \addplot[cHyd, line width=0.85pt] table[x=xd,y=F] {data/fn_off_concave.dat};
+  \addplot[cPro, line width=0.85pt] table[x=xd,y=F] {data/fn_off_mixed.dat};
+  \addplot[cGold, line width=0.9pt] table[x=xd,y=F] {data/fn_off_blind.dat};
+  \addplot[cAcc, line width=0.85pt, densely dashed]
+     table[x=xd,y=F] {data/fn_off_inverse.dat};
+  % each label sits against its own curve; positions taken from the plotted
+  % data so none overlaps a line.  The sign convention is in the caption.
+  \node[ann, color=cHyd, anchor=west] at (axis cs:1.46,-0.098) {concave};
+  \node[ann, color=cPro, anchor=south] at (axis cs:1.56,0.058) {mixed};
+  \node[ann, color=cAcc, anchor=east] at (axis cs:2.16,0.082) {inverse};
+  \node[ann, color=cGold, anchor=east] at (axis cs:2.19,0.013) {blind};
+\end{axis}
+
+\end{tikzpicture}
+\end{document}
