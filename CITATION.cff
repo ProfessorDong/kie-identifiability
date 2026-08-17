@@ -1,7 +1,7 @@
 cff-version: 1.2.0
 title: >-
-  Network structure determines what isotope experiments can identify
-  in enzymatic hydrogen transfer: data, code and verification suite
+  Network topology fixes the geometry of partial identification in enzymatic hydrogen transfer:
+  data, code and verification suite
 message: >-
   If you use this software or the curated benchmark, please cite
   this repository and the primary measurement papers listed in

@@ -253,6 +253,39 @@ def check_corpus():
     return bad
 
 
+def check_repo_metadata():
+    """CITATION.cff and README must carry the article's title.
+
+    CITATION.cff is what Zenodo reads when a release is cut, so a stale title
+    here becomes a stale archive record.  It drifted once already, through two
+    retitlings that were not propagated.
+    """
+    from pathlib import Path
+    main = DOCS["main"].read_text()
+    i = main.index("\\title{") + 7
+    d = 0
+    for j in range(i, len(main)):
+        if main[j] == "{":
+            d += 1
+        elif main[j] == "}":
+            if d == 0:
+                break
+            d -= 1
+    title = " ".join(main[i:j].split())
+    root = Path(__file__).resolve().parent.parent
+    bad = 0
+    for name in ("CITATION.cff", "README.md"):
+        f = root / name
+        if not f.exists():
+            continue
+        txt = " ".join(f.read_text().split())
+        if title not in txt:
+            print(f"  FAIL {name} does not carry the article title")
+            bad += 1
+    print(f"  repo metadata: {2 - bad}/2 files carry the article title")
+    return bad
+
+
 def check_titles():
     """The supplement must carry the article's title.
 
@@ -307,6 +340,7 @@ def run():
     bad += check_si_pointers()
     bad += check_general_census()
     bad += check_corpus()
+    bad += check_repo_metadata()
     bad += check_titles()
     print(f"\n{'FAIL' if bad else 'PASS'}: {bad} derived quantities missing or contradicted")
     return 1 if bad else 0
