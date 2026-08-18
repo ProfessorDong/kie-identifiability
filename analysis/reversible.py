@@ -262,11 +262,11 @@ def _benchmark():
     d["E_lo"] = [w[0] if w else np.nan for w in wins]
     d["E_hi"] = [w[1] if w else np.nan for w in wins]
     n_empty = int(d.E_lo.isna().sum())
-    print(f"  73 records: lower edge E_D* ranges {d.E_star.min():.3f} to "
+    print(f"  {len(d)} records: lower edge E_D* ranges {d.E_star.min():.3f} to "
           f"{d.E_star.max():.3f}, median {d.E_star.median():.3f}")
     print(f"  upper edge E_D** median {d.E_hi.median():.3f}; "
           f"median window width {np.nanmedian(d.E_hi - d.E_lo):.3f}")
-    print(f"  {n_empty} of 73 records have an EMPTY window (F_obs > 0), so no")
+    print(f"  {n_empty} of {len(d)} records have an EMPTY window (F_obs > 0), so no")
     print(f"  equilibrium isotope effect can make them vacuous.")
     print()
     print(f"{'family':10s}{'variant':26s}{'step':9s}"
@@ -279,7 +279,7 @@ def _benchmark():
     print()
     for e in (1.0, 1.1, 1.2, 1.3, 1.5):
         n = int(((d.E_lo <= e) & (e <= d.E_hi)).sum())
-        print(f"  at E_DT = {e:.1f}: {n:2d} of 73 records are inside their window")
+        print(f"  at E_DT = {e:.1f}: {n:2d} of {len(d)} records are inside their window")
 
     print()
     print("=" * 78)
@@ -302,7 +302,7 @@ def _benchmark():
              ((1.0, 'F_min_E1p0'), (1.1, 'F_min_E1p1'), (1.2, 'F_min_E1p2'))}
     print()
     for e, n in n_ref.items():
-        print(f"  at E_DT = {e}: {n} of 16 series exclude the gated model")
+        print(f"  at E_DT = {e}: {n} of {len(res)} series exclude the gated model")
     print("  Reversibility can only lower the endpoint, so the irreversible")
     print("  bounds of the main text are the optimistic case.")
     res.to_csv("../results/reversible_bounds.csv", index=False)

@@ -368,6 +368,51 @@ def check_methods_sources():
     return 0
 
 
+def check_precision_limited_count():
+    """How many units clear F0 on the point estimate but not on the bound.
+
+    This is the group the SI describes when the two aqueous records are folded
+    in.  Adding them took the group from two to three, and the SI carried the
+    old count for a while, so it is checked against the data here.
+    """
+    import pandas as pd, numpy as np
+    from partial_id import F_min_exact
+    NUM = {2: "two", 3: "three", 4: "four"}
+    G = M.gamma_sc("C")
+    F0 = M.offset_F0("C")
+
+    def lcb(pt, kh, sh, kd, sd, rho=-1.0):
+        a, b = sh / kh, sd / kd
+        return pt - 1.645 * np.sqrt(a ** 2 + (G * b) ** 2 - 2 * G * rho * a * b)
+
+    pts = []
+    b = pd.read_csv("../results/bounds_uncertainty.csv")
+    b = b[b.rho == -1.0]
+    pts += [(r.point, r.lcb) for _, r in b.iterrows()]
+    for f in ("../data/ladh_adh_primary.csv", "../data/bsao_grant1989.csv"):
+        d = pd.read_csv(f)
+        for _, r in d.iterrows():
+            p = F_min_exact(r.K_HT, r.K_DT)[0]
+            pts.append((p, lcb(p, r.K_HT, r.K_HT_se, r.K_DT, r.K_DT_se)))
+    ya = pd.read_csv("../data/cha1989_yadh.csv")
+    a = ya[ya.note.str.contains("average")].iloc[0]
+    p = F_min_exact(a.K_HT, a.K_DT)[0]
+    pts.append((p, lcb(p, a.K_HT, a.K_HT_se, a.K_DT, a.K_DT_se)))
+    n = sum(1 for pt, l in pts if pt > F0 and l <= F0)
+    word = NUM.get(n, str(n))
+    bad = 0
+    for tag in ("main", "si"):
+        t = " ".join(DOCS[tag].read_text().split()).lower()
+        if f"from two to {word}" not in t and f"while {word}," not in t \
+                and f"{word}, all horse liver" not in t:
+            print(f"  FAIL precision-limited: {tag} does not state {word} "
+                  f"({n} units clear on the point estimate but not the bound)")
+            bad += 1
+    if not bad:
+        print(f"  precision-limited units: {n}, stated as '{word}' in both documents")
+    return bad
+
+
 def check_ladh_zero_claim():
     """How many horse liver sets contain zero must match what the text claims.
 
@@ -579,6 +624,7 @@ def run():
     bad += check_cited_scripts()
     bad += check_no_ai_mentions()
     bad += check_methods_sources()
+    bad += check_precision_limited_count()
     bad += check_ladh_zero_claim()
     bad += check_ecdhfr_assignment()
     bad += check_envelope()

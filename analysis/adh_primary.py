@@ -94,11 +94,15 @@ def main():
     say(f"  every record has L_H > gamma_SC = {GSC:.3f}, so every identified set is")
     say("  the open half-line (F_obs, inf) and no commitment lowers an endpoint.")
     say(f"  LADH: {len(lad_r)} records, offsets {lad_r.F_min.min():+.4f} to "
-        f"{lad_r.F_min.max():+.4f}, all negative.")
+        f"{lad_r.F_min.max():+.4f}, "
+        f"{'all negative' if (lad_r.F_min < 0).all() else f'{int((lad_r.F_min >= 0).sum())} not negative'}.")
     say(f"        {int(lad_r.excl_gated.sum())} of {len(lad_r)} exclude anything.")
-    say(f"        Each set contains 0 and every positive value: consistent with")
-    say(f"        tunneling, with the semiclassical locus, and with the gated")
-    say(f"        model alike. These data are uninformative, not contradictory.")
+    n0 = int((lad_r.F_min < 0).sum())
+    say(f"        {n0} of {len(lad_r)} sets contain 0 and every positive value:")
+    say(f"        consistent with tunneling, with the semiclassical locus, and")
+    say(f"        with the gated model alike, so uninformative rather than")
+    m = len(lad_r) - n0
+    say(f"        contradictory. The other {m} {'lies' if m == 1 else 'lie'} above 0.")
     say(f"  YADH: offset {res[res.family=='YADH'].F_min.iloc[0]:+.4f}, excludes both.")
     say("")
     say("  Bahnson et al. (1993) give the reason: the LADH reaction is partially")

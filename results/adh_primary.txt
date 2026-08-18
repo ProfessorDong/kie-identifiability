@@ -14,15 +14,18 @@ LADH  V203L            7.820   1.890   3.231   7.66  -0.0751  0.0205  -0.1088   
 LADH  V203A            7.240   1.880   3.136   7.09  -0.1344  0.0366  -0.1946       no      no
 LADH  V203A-F93W       7.650   1.910   3.144   7.31  -0.1324  0.0359  -0.1915       no      no
 LADH  V203G            7.530   1.900   3.145   7.26  -0.1306  0.0181  -0.1603       no      no
+LADH  wild type        9.000   2.200   2.787   6.67  -0.4432  0.3142  -0.9601       no      no
+LADH  F93W            10.300   2.000   3.365   9.30   0.0109  0.1686  -0.2664       no      no
 YADH  wild type        7.130   1.730   3.584   8.40   0.1287  0.0399   0.0630      YES     YES
 
   every record has L_H > gamma_SC = 3.349, so every identified set is
   the open half-line (F_obs, inf) and no commitment lowers an endpoint.
-  LADH: 9 records, offsets -0.1719 to -0.0263, all negative.
-        0 of 9 exclude anything.
-        Each set contains 0 and every positive value: consistent with
-        tunneling, with the semiclassical locus, and with the gated
-        model alike. These data are uninformative, not contradictory.
+  LADH: 11 records, offsets -0.4432 to +0.0109, 1 not negative.
+        0 of 11 exclude anything.
+        10 of 11 sets contain 0 and every positive value:
+        consistent with tunneling, with the semiclassical locus, and
+        with the gated model alike, so uninformative rather than
+        contradictory. The other 1 lies above 0.
   YADH: offset +0.1287, excludes both.
 
   Bahnson et al. (1993) give the reason: the LADH reaction is partially
