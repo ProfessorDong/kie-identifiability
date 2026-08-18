@@ -13,8 +13,8 @@ sources are paywalled and must be downloaded manually; see below.
 
 | Source | DOI | Contributes | Availability |
 |---|---|---|---|
-| Islam et al., *PLoS ONE* **13**, e0196506 (2018) | `10.1371/journal.pone.0196506` | hsTSase hydride + proton | CC-BY 4.0 |
-| Abeysinghe & Kohen, *Int. J. Mol. Sci.* **16**, 7304 (2015) | `10.3390/ijms16047304` | ecTSase Y209W proton | CC-BY, PMC4425018 |
+| Islam et al., *PLoS ONE* **13**, e0196506 (2018) | `10.1371/journal.pone.0196506` | hsTSase hydride + proton | PMC5929524, OA (S4/S5 Tables, .xlsx) |
+| Abeysinghe & Kohen, *Int. J. Mol. Sci.* **16**, 7304 (2015) | `10.3390/ijms16047304` | ecTSase Y209W proton | PMC4425018, OA (Table S2) |
 | Singh et al., *JACS* **136**, 2575 (2014) | `10.1021/ja411998h` | 4 ecDHFR variants, 5 temperatures | PMC3985941, OA |
 | Li et al., *Biochemistry* **60**, 3822 (2021) | `10.1021/acs.biochem.1c00558` | 5 hsDHFR variants | PMC8697555, OA |
 | Wang et al., *JACS* **136**, 8333 (2014) | `10.1021/ja501936d` | light vs heavy ecDHFR | PMC4063187, OA |

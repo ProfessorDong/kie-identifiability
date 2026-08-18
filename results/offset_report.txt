@@ -14,7 +14,7 @@ MAOB pH 6.1 (abstraction)                        7  -0.210     [-0.280, 1.500>  
 MAOB pH 7.5 (abstraction)                        3  -0.210     [-0.330,-0.030]   0.300     7.1
 TSase Y209W (proton)                             4  -0.140     [-0.230,-0.030]   0.200     4.8
 TSase WT (hydride)                               4  -0.090     [-0.490, 1.500>   1.990    47.3
-TSase WT (proton)                                4   1.500     [ 0.750, 1.500>   0.750    17.8
+TSase WT (proton)                                4   1.500     [ 0.770, 1.500>   0.730    17.3
 ecDHFR F125M (hydride)                           5  -0.290     [-0.300,-0.270]   0.030     0.7
 ecDHFR G121V-F125M (hydride)                     5   0.220     [ 0.100, 0.460]   0.360     8.6
 ecDHFR M42W-F125M (hydride)                      5   0.280     [ 0.050, 0.640]   0.590    14.0

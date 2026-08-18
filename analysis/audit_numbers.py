@@ -243,6 +243,46 @@ AI_TERMS = ("chatgpt", "openai", "anthropic", "copilot", "gemini",
             "machine-generated", "llm")
 
 
+def check_provenance_split():
+    """The SI's provenance counts must match the benchmark's own source DOIs.
+
+    Five sources are parsed from a publisher PDF, one from a published
+    spreadsheet, and one was transcribed by hand from scanned pages.  Only the
+    first two classes are evidence of transcription; quoting a larger parsed
+    count than the data supports would overstate the audit.
+    """
+    import pandas as pd
+    PDF = {"10.1021/ja411998h", "10.1021/acs.biochem.1c00558",
+           "10.1021/acscatal.9b03345", "10.1021/ja501936d",
+           "10.3390/ijms16047304"}
+    XLSX = {"10.1371/journal.pone.0196506"}
+    HAND = {"10.1021/bi00253a026"}
+    d = pd.read_csv("../data/trinomial_benchmark.csv")
+    n_pdf = int(d.source_DOI.isin(PDF).sum())
+    n_xls = int(d.source_DOI.isin(XLSX).sum())
+    n_hand = int(d.source_DOI.isin(HAND).sum())
+    parsed = n_pdf + n_xls
+    bad = 0
+    if parsed + n_hand != len(d):
+        print(f"  FAIL provenance: {parsed}+{n_hand} != {len(d)}; "
+              "a source DOI is unclassified")
+        bad += 1
+    si = " ".join(DOCS["si"].read_text().split())
+    main = " ".join(DOCS["main"].read_text().split())
+    for label, need, doc, text in (
+            ("SI parsed total", f"${parsed}$ of the ${len(d)}$", "si", si),
+            ("SI value count", f"${parsed * 4}$ values", "si", si),
+            ("SI pdf values", f"{n_pdf * 4} values", "si", si),
+            ("main parsed total", f"{parsed} of the {len(d)} records", "main", main)):
+        if need not in text:
+            print(f"  FAIL provenance: {doc} does not state {need!r} ({label})")
+            bad += 1
+    if not bad:
+        print(f"  provenance: {n_pdf} PDF ({n_pdf*4} values) + {n_xls} spreadsheet "
+              f"({n_xls*4}) = {parsed} parsed, {n_hand} hand-transcribed")
+    return bad
+
+
 def check_cited_scripts():
     """Every script named in the documents must exist in analysis/.
 
@@ -535,6 +575,7 @@ def run():
     bad += check_si_pointers()
     bad += check_general_census()
     bad += check_corpus()
+    bad += check_provenance_split()
     bad += check_cited_scripts()
     bad += check_no_ai_mentions()
     bad += check_methods_sources()

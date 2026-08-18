@@ -26,6 +26,125 @@ NUM = r"([0-9]+\.[0-9]+)\s*(?:±|\+-|\+/-)\s*([0-9]+\.[0-9]+)"
 ROW4 = re.compile(r"^\s*([0-9]{1,2})\s+" + NUM + r"\s+" + NUM)
 
 
+def _xlsx_cells(path):
+    """Numeric cells of the first worksheet, as {(row, col): float}.
+
+    xlsx is a zip of XML, so this needs no third-party reader and keeps the
+    dependency list to numpy/scipy/pandas/sympy.
+    """
+    import zipfile
+    with zipfile.ZipFile(path) as z:
+        sheet = next(n for n in z.namelist()
+                     if re.match(r"xl/worksheets/sheet\d+\.xml$", n))
+        xml = z.read(sheet).decode("utf8", "replace")
+    cells = {}
+    for m in re.finditer(r'<c r="([A-Z]+)(\d+)"([^>]*)>(.*?)</c>', xml, re.S):
+        col, row, attr, body = m.group(1), int(m.group(2)), m.group(3), m.group(4)
+        v = re.search(r"<v>(.*?)</v>", body, re.S)
+        if not v or 't="s"' in attr:      # skip shared strings: headers only
+            continue
+        try:
+            cells[(row, col)] = float(v.group(1))
+        except ValueError:
+            pass
+    return cells
+
+
+def _replicates(cells, r0, r1, avg, sd, tol=5e-6):
+    """The replicate set inside rows [r0, r1] reproducing `avg` and `sd`.
+
+    Ref. Islam 2018 ships a hand-made spreadsheet: each temperature block lists
+    its replicates, but the columns they sit in drift between blocks, so the
+    replicates cannot be read positionally.  They are instead identified by the
+    property that defines them -- their mean and population standard deviation
+    must equal the values the paper publishes.  That makes the extraction
+    self-validating: a wrong set does not reproduce both moments.  Returning the
+    set also yields n, which the standard error needs.
+    """
+    import itertools, statistics as st
+    lo, hi = avg - 6 * sd, avg + 6 * sd
+    cand = [v for (r, c), v in sorted(cells.items()) if r0 <= r <= r1
+            and lo <= v <= hi]
+    # the published mean, and occasionally one stray, sit inside the window
+    for k in range(0, min(3, len(cand)) + 1):
+        for drop in itertools.combinations(range(len(cand)), k):
+            keep = [v for i, v in enumerate(cand) if i not in drop]
+            if len(keep) < 2:
+                continue
+            if (abs(st.mean(keep) - avg) < tol
+                    and abs(st.pstdev(keep) - sd) < tol):
+                return sorted(keep)
+    raise ValueError(f"replicates not resolved for avg={avg} sd={sd}")
+
+
+# Islam 2018, hsTSase.  s004 is hydride transfer, s005 proton abstraction; each
+# holds four temperature blocks.  (row, avg column, sd column) per isotope.
+_HSTS = {
+    "hydride": ("PMC5929524/pone.0196506.s004.xlsx",
+                [(5, 3, 31), (15, 33, 62), (25, 64, 87), (35, 89, 107)],
+                ("E", "F"), ("H", "I")),
+    "proton":  ("PMC5929524/pone.0196506.s005.xlsx",
+                [(5, 4, 24), (15, 25, 52), (25, 53, 69), (35, 70, 94)],
+                ("D", "E"), ("G", "H")),
+}
+
+
+def hstsase_records():
+    """The eight hsTSase records, parsed from the published spreadsheets.
+
+    The paper reports a population standard deviation; the benchmark carries a
+    standard error, so each is converted with the recovered replicate count,
+    se = sd * sqrt(n / (n - 1)) / sqrt(n).
+    """
+    import math
+    out = []
+    for step, (rel, blocks, ht, dt) in _HSTS.items():
+        path = SI / rel
+        if not path.exists():
+            return []
+        cells = _xlsx_cells(path)
+        for T, r0, r1 in blocks:
+            row = {}
+            for iso, (ac, sc) in (("H", ht), ("D", dt)):
+                avg, sd = cells[(r0, ac)], cells[(r0, sc)]
+                n = len(_replicates(cells, r0, r1, avg, sd))
+                row[iso] = (avg, sd * math.sqrt(n / (n - 1)) / math.sqrt(n))
+            out.append(dict(system="Homo sapiens thymidylate synthase",
+                            family="TSase", variant="WT", step=step,
+                            donor_atom="C", T_C=float(T),
+                            K_HT=row["H"][0], K_HT_se=row["H"][1],
+                            K_DT=row["D"][0], K_DT_se=row["D"][1],
+                            source_DOI="10.1371/journal.pone.0196506",
+                            PMCID="PMC5929524",
+                            source_table="S4 Table" if step == "hydride"
+                                         else "S5 Table"))
+    return out
+
+
+def ectsase_records():
+    """The four ecTSase Y209W proton records, from Table S2 of Abeysinghe 2015."""
+    path = SI / "PMC4425018/ijms-16-07304-s001.pdf"
+    if not path.exists():
+        return []
+    txt = text_of(path)
+    i = txt.find("Table S2.")
+    out = []
+    for line in txt[i:i + 1200].splitlines():
+        m = ROW4.match(line)
+        if not m:
+            continue
+        T, kh, sh, kd, sd = (float(m.group(1)), float(m.group(2)),
+                             float(m.group(3)), float(m.group(4)),
+                             float(m.group(5)))
+        out.append(dict(system="Escherichia coli thymidylate synthase",
+                        family="TSase", variant="Y209W", step="proton",
+                        donor_atom="C", T_C=T, K_HT=kh, K_HT_se=sh,
+                        K_DT=kd, K_DT_se=sd,
+                        source_DOI="10.3390/ijms16047304",
+                        PMCID="PMC4425018", source_table="Table S2"))
+    return out
+
+
 def text_of(pdf):
     return subprocess.run(["pdftotext", "-layout", str(pdf), "-"],
                           capture_output=True, text=True).stdout
@@ -135,33 +254,13 @@ def main():
                                  PMCID="PMC4063187", source_table="Table S1"))
                 cur_T = None
 
-    # ---- thymidylate synthase series already curated in v2 ---------------
-    v2 = pathlib.Path("../data")
-    ts = pd.read_csv(v2 / "tsase_proton_series.csv")
-    for _, r in ts.iterrows():
-        recs.append(dict(system=("Homo sapiens thymidylate synthase"
-                                 if r.system == "hsTSase"
-                                 else "Escherichia coli thymidylate synthase"),
-                         family="TSase", variant=r.variant, step="proton",
-                         donor_atom="C", T_C=r.T_C, K_HT=r.K_HT, K_HT_se=r.K_HT_se,
-                         K_DT=r.K_DT, K_DT_se=r.K_DT_se,
-                         source_DOI=r.source_DOI, PMCID=r.PMCID,
-                         source_table=r.source_table))
-    su = pd.read_csv(v2 / "hstsase_kie_summary.csv")
-    w = su.pivot_table(index=["system", "step", "T_C"], columns="isotope_pair",
-                       values=["KIE", "KIE_sd", "n_rep"]).reset_index()
-    for _, r in w.iterrows():
-        n_ht = r[("n_rep", "H/T")]; n_dt = r[("n_rep", "D/T")]
-        recs.append(dict(system="Homo sapiens thymidylate synthase", family="TSase",
-                         variant="WT", step=r[("step", "")].replace("_transfer", "")
-                                              .replace("_abstraction", ""),
-                         donor_atom="C", T_C=r[("T_C", "")],
-                         K_HT=r[("KIE", "H/T")],
-                         K_HT_se=r[("KIE_sd", "H/T")] / n_ht ** 0.5,
-                         K_DT=r[("KIE", "D/T")],
-                         K_DT_se=r[("KIE_sd", "D/T")] / n_dt ** 0.5,
-                         source_DOI="10.1371/journal.pone.0196506",
-                         PMCID="PMC5929524", source_table="S3-S6 Tables"))
+    # ---- thymidylate synthase, parsed from the published supplements ------
+    # Previously these twelve records were re-read from curated CSVs in this
+    # repository, which is no evidence of transcription: rebuilding them
+    # reproduced our own file.  They are now parsed from the publishers'
+    # documents like every other source.
+    recs.extend(hstsase_records())
+    recs.extend(ectsase_records())
 
     d = pd.DataFrame(recs).drop_duplicates(
         subset=["family", "variant", "step", "T_C"]).reset_index(drop=True)

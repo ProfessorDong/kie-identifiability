@@ -27,7 +27,7 @@ gamma_SC = 3.34887   semiclassical F = 0   tunneling ridge F0 = -0.042086
    MAOB pH 6.1 (abstraction)                      7   -0.1720     0.1299      none
    MAOB pH 7.5 (abstraction)                      3   -0.1944     0.1523      none
    hsDHFR d62-PEKN (hydride)                      5   -0.2368     0.1947      none
-   TSase WT (proton)                              4   -0.2726     0.2305      none
+   TSase WT (proton)                              4   -0.2725     0.2304      none
    hsDHFR F32L (hydride)                          4   -0.2784     0.2363      none
    FDH V123G (hydride)                            5   -0.3220     0.2799      none
    FDH V123A (hydride)                            5   -0.3969     0.3549      none

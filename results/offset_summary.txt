@@ -32,7 +32,7 @@ TSase WT                                     3.0/3    0.394   -0.09   1.990   47
 B. SERIES THE MODEL CANNOT DESCRIBE (p_fit <= 0.05): intervals void
 ------------------------------------------------------------------------------------
 series                                      chi2/dof    p_fit   F_hat   width
-TSase WT                                   735.1/3    0.0e+00    1.50   0.750
+TSase WT                                   736.7/3    0.0e+00    1.50   0.730
 hsDHFR F32M                                400.7/3    0.0e+00   -0.70   0.050
 FDH V123A                                  145.6/5    0.0e+00    1.50   0.420
 ecDHFR F125M                                82.7/5    2.2e-16   -0.29   0.030

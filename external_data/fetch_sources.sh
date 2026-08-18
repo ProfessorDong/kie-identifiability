@@ -34,6 +34,8 @@ echo "open-access supplements:"
 fetch PMC3985941 ja411998h_si_001.pdf    # Singh 2014,    ecDHFR network variants
 fetch PMC8697555 bi1c00558_si_001.pdf    # Li 2021,       hsDHFR loop variants
 fetch PMC4063187 ja501936d_si_001.pdf    # Francis 2014,  light vs heavy ecDHFR
+fetch PMC5929524 pone.0196506.s004.xlsx  # Islam 2018,    hsTSase hydride + proton
+fetch PMC4425018 ijms-16-07304-s001.pdf  # Abeysinghe 2015, ecTSase Y209W proton
 
 echo
 echo "retrieved $ok, failed $fail"
