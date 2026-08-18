@@ -233,6 +233,189 @@ def check_general_census():
     return bad
 
 
+# Author's standing instruction: no reference to AI, language models or
+# machine-generated writing appears anywhere in the article, the supplement or
+# the repository metadata.  Reviewers have repeatedly proposed adding one; this
+# check fails the audit if any such text is ever introduced.
+AI_TERMS = ("chatgpt", "openai", "anthropic", "copilot", "gemini",
+            "large language model", "language model", "generative ai",
+            "artificial intelligence", "ai-assisted", "ai assisted",
+            "machine-generated", "llm")
+
+
+def check_cited_scripts():
+    """Every script named in the documents must exist in analysis/.
+
+    The SI names a script wherever the computation does not live in
+    verify_derivation.py.  Filenames are the least stable thing the text can
+    cite, and nothing else here would notice a rename, so they are resolved
+    against the directory.
+    """
+    import re
+    from pathlib import Path
+    here = Path(__file__).resolve().parent
+    bad, seen = 0, set()
+    for tag, path in (("main", DOCS["main"]), ("si", DOCS["si"])):
+        text = path.read_text()
+        for raw in re.findall(r"\\texttt\{([A-Za-z0-9\\_]+\.py)\}", text):
+            name = raw.replace("\\_", "_")
+            seen.add(name)
+            if not (here / name).is_file():
+                print(f"  FAIL scripts: {tag} cites {name}, which does not exist")
+                bad += 1
+    if not seen:
+        print("  FAIL scripts: no cited scripts found; the pattern may have "
+              "stopped matching")
+        return 1
+    if not bad:
+        print(f"  cited scripts: {len(seen)} named in the text, all present")
+    return bad
+
+
+def check_no_ai_mentions():
+    """No AI/model reference may appear in the manuscript or the supplement."""
+    from pathlib import Path
+    bad = 0
+    targets = [("main", DOCS["main"]), ("si", DOCS["si"])]
+    root = Path(__file__).resolve().parent.parent
+    for extra in ("README.md", "CITATION.cff"):
+        f = root / extra
+        if f.exists():
+            targets.append((extra, f))
+    for tag, path in targets:
+        t = path.read_text().lower()
+        hits = [w for w in AI_TERMS if w in t]
+        if hits:
+            print(f"  FAIL ai-mention: {tag} contains {hits}")
+            bad += 1
+    if not bad:
+        print(f"  no AI/model reference in {len(targets)} documents, as required")
+    return bad
+
+
+def check_methods_sources():
+    """Every data file's own bib key must be cited in Materials and Methods.
+
+    Adding the two aqueous 3 C records brought TsaiKlinman2001 into the corpus
+    but not into the Methods source list, so the provenance of two records went
+    uncited.  The data files that name their source are checked against the
+    citation here.
+    """
+    import pandas as pd, glob, re
+    main = DOCS["main"].read_text()
+    m = re.search(r"Isotope effects were taken from the published tables of\s*"
+                  r"refs\.?\\?\s*\\cite\{([^}]*)\}", main)
+    if not m:
+        print("  FAIL methods: could not locate the source citation")
+        return 1
+    cited = {k.strip() for k in m.group(1).split(",")}
+    needed = set()
+    for f in glob.glob("../data/*.csv"):
+        try:
+            d = pd.read_csv(f)
+        except Exception:
+            continue
+        if "source" in d.columns:
+            needed |= {str(v) for v in d["source"].dropna().unique()}
+    # only files that actually feed the benchmark matter
+    needed &= {"Grant1989", "Cha1989", "Bahnson1993", "Bahnson1997",
+               "TsaiKlinman2001"}
+    missing = sorted(needed - cited)
+    if missing:
+        print(f"  FAIL methods: data sources not cited in Methods: {missing}")
+        return 1
+    print(f"  Methods source list: all {len(needed)} named data sources cited")
+    return 0
+
+
+def check_ladh_zero_claim():
+    """How many horse liver sets contain zero must match what the text claims.
+
+    Adding the two aqueous 3 C records put one LADH endpoint above zero, which
+    silently falsified the standing claim that every horse liver set contains
+    zero.  Nothing caught it, so the count is checked against the data here.
+    """
+    import pandas as pd
+    from partial_id import F_min_exact
+    NUM = {10: "ten", 11: "eleven", 9: "nine", 8: "eight"}
+    d = pd.read_csv("../data/ladh_adh_primary.csv")
+    n_tot = len(d)
+    n_zero = 0
+    for _, r in d.iterrows():
+        f, _, _, closed = F_min_exact(r.K_HT, r.K_DT)
+        if (f <= 0) if closed else (f < 0):
+            n_zero += 1
+    bad = 0
+    if n_zero == n_tot:
+        want = "every"
+    else:
+        want = f"{NUM.get(n_zero, n_zero)} of the {NUM.get(n_tot, n_tot)}"
+    for tag, path in (("main", DOCS["main"]), ("si", DOCS["si"])):
+        t = " ".join(path.read_text().split()).lower()
+        if want not in t:
+            print(f"  FAIL LADH: {tag} does not say '{want}' "
+                  f"({n_zero}/{n_tot} sets contain zero)")
+            bad += 1
+    if not bad:
+        print(f"  horse liver: {n_zero} of {n_tot} sets contain zero, "
+              f"stated as '{want}' in both documents")
+    return bad
+
+
+def check_ecdhfr_assignment():
+    """The disputed 10 C ecDHFR row must not be able to move either series point.
+
+    Ref. Wang2014 distinguishes the light and heavy enzyme rows only by color,
+    which the text layer loses, so the unpaired 10 C row is assigned by
+    interpolation.  The series statistic is a maximum over temperatures and
+    that record is interior to both series, so the assignment cannot select it.
+    This test fails if new data ever makes it the maximum.
+    """
+    import pandas as pd
+    from partial_id import F_min_exact
+    d = pd.read_csv("../data/trinomial_benchmark.csv")
+    m = (d.system.str.contains("Escherichia", na=False)
+         & d.variant.astype(str).str.contains("heavy|light", case=False, na=False))
+    r10 = m & d.T_C.eq(10.0)
+    if r10.sum() != 1:
+        print(f"  FAIL ecDHFR: expected one 10 C row, found {int(r10.sum())}")
+        return 1
+    pts = []
+    for tag in ("light enzyme", "heavy enzyme", None):
+        dd = d.copy()
+        if tag is None:
+            dd = dd[~r10]
+        else:
+            dd.loc[r10, "variant"] = tag
+        mm = (dd.system.str.contains("Escherichia", na=False)
+              & dd.variant.astype(str).str.contains("heavy|light", case=False,
+                                                    na=False))
+        pts.append({v: round(max(F_min_exact(r.K_HT, r.K_DT)[0]
+                                 for _, r in g.iterrows()), 10)
+                    for v, g in dd[mm].groupby("variant")})
+    if pts[0] != pts[1] or pts[0] != pts[2]:
+        print(f"  FAIL ecDHFR: the 10 C assignment moves a series point: {pts}")
+        return 1
+    print("  ecDHFR 10 C row: point endpoints invariant under all three "
+          "assignments")
+    return 0
+
+
+def check_envelope():
+    """The quoted joint envelope must survive the profiled worst case."""
+    import joint_nuisance as J
+    return J.check_envelope_safe()
+
+
+def check_joint_counterexamples():
+    """The conservative boundary must reject both constructed counterexamples."""
+    from joint_nuisance import check_counterexamples
+    bad = check_counterexamples(verbose=False)
+    print(f"  joint counterexamples rejected by the bound: "
+          f"{2 - bad}/2")
+    return bad
+
+
 def check_corpus():
     """The record and unit counts must match the data files, not just each other."""
     import pandas as pd
@@ -249,6 +432,18 @@ def check_corpus():
         if str(CORPUS["records"]) not in t:
             print(f"  FAIL corpus: {CORPUS['records']} absent from {d}")
             bad += 1
+    # the README drifted once, holding 94/29/28 after the corpus grew
+    readme = (ROOT.parent / "github-package" / "README.md")
+    if not readme.exists():
+        readme = Path(__file__).resolve().parent.parent / "README.md"
+    if readme.exists():
+        rt = readme.read_text()
+        for q in (str(CORPUS["records"]), str(CORPUS["units"])):
+            if q not in rt:
+                print(f"  FAIL corpus: README.md does not carry {q}")
+                bad += 1
+        print(f"  README corpus figures: {CORPUS['records']} records, "
+              f"{CORPUS['units']} units")
     print(f"  corpus: {n} records in the data, quoted consistently")
     return bad
 
@@ -340,6 +535,13 @@ def run():
     bad += check_si_pointers()
     bad += check_general_census()
     bad += check_corpus()
+    bad += check_cited_scripts()
+    bad += check_no_ai_mentions()
+    bad += check_methods_sources()
+    bad += check_ladh_zero_claim()
+    bad += check_ecdhfr_assignment()
+    bad += check_envelope()
+    bad += check_joint_counterexamples()
     bad += check_repo_metadata()
     bad += check_titles()
     print(f"\n{'FAIL' if bad else 'PASS'}: {bad} derived quantities missing or contradicted")

@@ -1,4 +1,4 @@
-# Network topology fixes the geometry of partial identification in enzymatic hydrogen transfer
+# Network topology classifies the geometry of partial identification in enzymatic hydrogen transfer
 
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.21913975.svg)](https://doi.org/10.5281/zenodo.21913975)
 
@@ -238,7 +238,7 @@ dof, p = 1e-9: the mutations change the intrinsic chemistry, not merely the
 commitment, so the forms are not replicates. The obstacle is the systems, not the
 estimator.
 
-**Network topology fixes the geometry.** For any steady-state mechanism with one
+**Network topology classifies the geometry.** For any steady-state mechanism with one
 isotope-sensitive step, each King-Altman term is a product of distinct rate
 constants, so that constant enters `V/K` to at most first power above and below
 the line. The observation map is therefore Moebius, `K(x) = (Ax+B)/(Cx+D)`
@@ -454,15 +454,15 @@ python masses.py             # the mass convention and its consequences
 python verify_derivation.py  # must exit 0
 python build_trinomial.py    # benchmark + transcription audit (244 values)
 python ridge.py              # ridge limit, offset, finite-scale bound
-python partial_id.py         # envelope + exact endpoint, both verified  (~5 min)
-python identifiable_set.py   # the half-line result, point bounds       (~1 min)
+python partial_id.py         # envelope + exact endpoint, both verified
+python identifiable_set.py   # the half-line result, point bounds
 python bounds_uncertainty.py # one-sided confidence bounds, rho in {-1,0,.5,.9}
-python curvature.py          # the one-sidedness theorem + controls    (~2 min)
+python curvature.py          # the one-sidedness theorem + controls
 python network_geometry.py   # topology -> curvature -> set direction
 python completion.py         # closing the set; the gating-mode readout
-python audit_r2.py           # reconfirms the second review's claims   (~10 min)
-python audit_v3.py           # adversarial audit, must exit 0          (~10 min)
-python vibronic.py           # the vibronic-sum penalty                 (~5 min)
+python audit_r2.py           # reconfirms the second review's claims
+python audit_v3.py           # adversarial audit, must exit 0
+python vibronic.py           # the vibronic-sum penalty
 python offset_analysis.py    # per-series profiles                     (~50 min)
 python offset_summary.py     # stratified interpretation
 python export_figs_v3.py     # pgfplots tables
@@ -471,6 +471,16 @@ cd ../figures/tikz && ./build.sh
 
 Every stochastic step is seeded, so a rerun reproduces the reported values
 exactly. `data/` is inputs only: no script writes to a file it reads.
+
+Verified from a clean checkout and a fresh virtualenv on 2026-08-18, against
+newer libraries than the pins require (numpy 2.5.2, scipy 1.18.0, pandas 3.0.5):
+all twenty scripts exit 0 and every regenerated file in `results/` matches,
+except that `offset_profiles*.csv` move by 1e-5 in `chi2_min` and 1e-11 in
+`p_fit`. Those are optimizer-convergence differences between scipy releases.
+Every reported column -- `F_hat`, `F_lo`, `F_hi`, `width`, `open_interval`,
+`excludes_semiclassical`, `excludes_ridge`, `adequate` -- is unchanged, as is
+every verdict. Only the timings above are machine dependent; most steps finish
+in seconds, and `offset_analysis.py` takes about fifty minutes.
 
 One caveat on timing: `offset_analysis.py` computes profile likelihoods by
 continuation over a 301-point grid for each of 18 series and takes roughly
@@ -489,8 +499,8 @@ gamma_SC = 3.34887   rigid = 2.45884   F0 = -0.042086   threshold = 1.26890
 Temperature-series benchmark: 83 matched records, 18 series, 5 enzyme families,
 6 enzyme-organism systems, 2-45 C. Transcription audit: 244 values across the
 four PDF-derived sources, 0 misses. The wider matched-primary record used for the
-identified-set figure is 94 records over 29 systems, of which 28 fall on the
-uninformative side.
+identified-set figure is 96 records over 31 analysis units, of which 27 fall on
+the uninformative side, three more fail on precision alone, and one clears.
 
 Bounds: 0 of 18 series exclude either mechanism, at correlation -1, 0, 0.5 or
 0.9. Best 95% lower bound -0.0987 (rho = -1) to -0.0933 (rho = 0.9), ecDHFR light

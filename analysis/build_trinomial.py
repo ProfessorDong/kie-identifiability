@@ -198,7 +198,10 @@ def main():
            .agg(n_T=("T_C", "size"), T_min=("T_C", "min"), T_max=("T_C", "max"),
                 KHT_min=("K_HT", "min"), KHT_max=("K_HT", "max"))
            .to_string())
-    print(f"\n[written] {OUT/'trinomial_benchmark.csv'}")
+    # name the file actually written: `target` is the partial file whenever the
+    # guard above fired, and reporting the canonical name there wrongly tells the
+    # operator the shipped benchmark was overwritten
+    print(f"\n[written] {target}")
 
 
 if __name__ == "__main__":

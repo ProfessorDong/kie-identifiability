@@ -261,3 +261,92 @@ def box_sensitivity(halfwidths=(0.02, 0.05, 0.10, 0.15, 0.20), nphi=8):
             sl = ic = np.nan
         out.append((h, ic, sl, float(fbs[0]), float(phis[m].max()) if m.any() else 0.0))
     return out
+
+
+# ------------------------------------------------------------ regression tests
+# Two points that a reviewer constructed to defeat successive versions of the
+# joint statement.  Both reproduce the decisive observation exactly from an
+# intrinsic pair sitting on the gated envelope, with every binding constant
+# inside BIND_BOX.  They are kept here so that no future edit to the boundary
+# can quietly re-admit them.
+COUNTEREXAMPLES = [
+    # (aH, bH, aD, bD, phi_H, qH, xH, xD, F_bind)
+    (0.927018, 1.0, 0.953123, 1.0, 0.080, 5332.15, 8.23791, 1.90076, 0.085),
+    (0.900, 1.100, 0.91177041968, 0.99118399687, 0.080,
+     23482.51806735, 9.33459727350, 1.97304213752, 0.079),
+]
+
+# The conservative closed form quoted in the supplement.  A least-squares fit to
+# the profiled contour is NOT a bound: its residuals have both signs, and the
+# second counterexample above lives exactly in the gap where the fit sits above
+# the contour.  This line is the fit displaced down by the largest positive
+# residual, so it lies at or below the contour everywhere.
+def envelope(phi_H):
+    return 0.1656 - 1.0866 * phi_H
+
+
+# The envelope must be checked by profiling directly at F_bind = envelope(phi),
+# NOT by comparing it against the tabulated contour: those entries are bisection
+# midpoints at tolerance 2e-3 and four of the eight sit above the true boundary.
+ENVELOPE_MARGIN = 9.5e-5          # tightest verified slack, at phi_H = 0.073
+ENVELOPE_PHI_MAX = 0.1524         # beyond this the envelope is negative, hence vacuous
+
+
+def check_envelope_safe(nphi=9, phi_max=ENVELOPE_PHI_MAX, verbose=True):
+    """Every F_bind on the quoted envelope must survive the profiled worst case.
+
+    The worst case sits on the corners of BIND_BOX (verified against the full
+    interior grid), so the corner search below is exhaustive, not a sample.
+    """
+    lo, hi = BIND_BOX
+    bad, tightest = 0, np.inf
+    for phi in np.linspace(0.0, phi_max, nphi):
+        fb = envelope(phi)
+        if fb < 0:
+            continue
+        worst = np.inf
+        for aH in (lo, hi):
+            for bH in (lo, hi):
+                lr = (np.log(aH / bH) - fb) / G
+                for aD in (lo, hi):
+                    bD = aD * np.exp(-lr)
+                    if lo - 1e-15 <= bD <= hi + 1e-15:
+                        e = _endpoint_ab(aH, bH, aD, bD, phi, n=40000)
+                        if np.isfinite(e):
+                            worst = min(worst, e)
+        if not np.isfinite(worst):
+            continue
+        tightest = min(tightest, worst - F0)
+        if worst <= F0:
+            bad += 1
+            if verbose:
+                print(f"  FAIL envelope: phi={phi:.4f} F_bind={fb:.5f} "
+                      f"endpoint {worst:+.7f} <= F0 {F0:+.7f}")
+    if verbose and not bad:
+        print(f"  envelope survives the profiled worst case at {nphi} bypasses, "
+              f"tightest slack {tightest:.2e}")
+    return bad
+
+
+def check_counterexamples(verbose=True):
+    """Each counterexample must reproduce the observation, sit on the envelope,
+    and be EXCLUDED by the conservative boundary."""
+    bad = 0
+    for (aH, bH, aD, bD, phi, qH, xH, xD, fb) in COUNTEREXAMPLES:
+        K = lambda x, ph, q, al, be: al * (x + ph) / (1 + ph) * \
+            (q + 1 + ph) / (be * q + x + ph)
+        kh = K(xH, phi, qH, aH, bH)
+        kd = K(xD, R_YADH * phi, R_YADH * qH, aD, bD)
+        fint = np.log(xH) - G * np.log(xD)
+        fb_chk = np.log(aH / bH) - G * np.log(aD / bD)
+        inbox = all(BIND_BOX[0] <= v <= BIND_BOX[1] for v in (aH, bH, aD, bD))
+        reproduces = abs(kh - KH_OBS) < 5e-4 and abs(kd - KD_OBS) < 5e-4
+        on_env = abs(fint - F0) < 5e-5
+        excluded = fb > envelope(phi)          # the boundary must reject it
+        ok = inbox and reproduces and on_env and excluded and abs(fb_chk - fb) < 1e-3
+        bad += not ok
+        if verbose:
+            print(f"  F_bind={fb:.3f} phi={phi:.3f}: in box {inbox}, "
+                  f"reproduces {reproduces}, on envelope {on_env}, "
+                  f"excluded by bound {excluded}")
+    return bad

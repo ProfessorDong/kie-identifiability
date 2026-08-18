@@ -1,4 +1,4 @@
-"""Data for the atlas figure: topology fixes the geometry.
+"""Data for the atlas figure: topology classifies the geometry.
 
 One representative of each class the enumeration produces.  Nothing here is
 drawn by hand: every coefficient is the symbolic Moebius result for a named

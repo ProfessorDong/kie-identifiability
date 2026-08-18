@@ -15,3 +15,8 @@ figures/tikz/*.pdf
 __pycache__/
 *.pyc
 .DS_Store
+
+# build artefacts written outside figures/tikz
+figures/*.pdf
+# partial benchmark written when primary sources are absent
+data/*_partial.csv
