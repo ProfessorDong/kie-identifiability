@@ -8,8 +8,8 @@ independent random points is zero with overwhelming probability
 (Schwartz-Zippel), and the classification is required to agree across draws;
 disagreement is reported rather than resolved silently.
 """
-import sys, json, time, collections
-sys.path.insert(0,'/home/dong/Workspace/WritePaper/MDPI_Entropy_QuantumB/github-package/analysis')
+import sys, os, json, time, collections
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import sympy as sp
 from random import Random
 from multiprocessing import Pool

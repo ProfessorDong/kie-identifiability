@@ -14,6 +14,7 @@ Exit status is non-zero if any derived quantity is missing or contradicted.
 """
 from __future__ import annotations
 
+import os
 import re
 import sys
 from pathlib import Path
@@ -29,8 +30,15 @@ from partial_id import F_min_exact
 
 GSC = M.gamma_sc("C")
 F0 = M.offset_F0("C")
-ROOT = Path("/home/dong/Workspace/WritePaper/MDPI_Entropy_QuantumB/v3_quantum/manuscript")
-DOCS = {"main": ROOT / "pnas_manuscript.tex", "si": ROOT / "si/si_body.tex"}
+# Which manuscript to audit.  Defaults to the frozen PNAS submission; point
+# KIE_MANUSCRIPT at another manuscript directory to audit the active rewrite:
+#     KIE_MANUSCRIPT=../../natcomms python3 audit_numbers.py
+_DEFAULT_ROOT = Path(__file__).resolve().parents[2] / "v3_quantum" / "manuscript"
+ROOT = Path(os.environ.get("KIE_MANUSCRIPT") or _DEFAULT_ROOT).resolve()
+_MAIN_NAMES = ("pnas_manuscript.tex", "natcomms_manuscript.tex")
+_MAIN = next((ROOT / n for n in _MAIN_NAMES if (ROOT / n).exists()),
+             ROOT / _MAIN_NAMES[0])
+DOCS = {"main": _MAIN, "si": ROOT / "si/si_body.tex"}
 
 
 def derived():
@@ -588,7 +596,10 @@ def check_titles():
         return " ".join("".join(out).split())
 
     main = _title(DOCS["main"])
-    si = _title(ROOT / "si/pnas_si.tex")
+    _si_names = ("pnas_si.tex", "natcomms_si.tex")
+    _si_doc = next((ROOT / "si" / n for n in _si_names if (ROOT / "si" / n).exists()),
+                   ROOT / "si" / _si_names[0])
+    si = _title(_si_doc)
     ok = main == si
     print(f"  article title : {main[:58]}...")
     print(f"  supplement    : {'matches' if ok else 'DIFFERS: ' + si[:58]}")
@@ -602,6 +613,8 @@ def _texts():
 def run():
     texts = _texts()
     bad = 0
+    print(f"auditing: {DOCS['main']}")
+    print(f"          {DOCS['si']}\n")
     print(f"{'quantity':32s} {'value':>11s}  documents")
     for lab, val, dp, docs in derived():
         s = f"{abs(val):.{dp}f}"

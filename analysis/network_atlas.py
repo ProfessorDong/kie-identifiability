@@ -544,8 +544,8 @@ def check_manuscript(path=None):
     """
     from pathlib import Path
     if path is None:
-        path = ("/home/dong/Workspace/WritePaper/MDPI_Entropy_QuantumB/"
-                "v3_quantum/manuscript/si/si_body.tex")
+        path = (Path(__file__).resolve().parents[2]
+                / "v3_quantum" / "manuscript" / "si" / "si_body.tex")
     txt = Path(path).read_text()
     a = txt.index(r"\subsection{An atlas of mechanisms}")
     b = txt.index(r"\subsection{A bypass contracts")
