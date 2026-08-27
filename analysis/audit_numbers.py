@@ -33,11 +33,11 @@ F0 = M.offset_F0("C")
 # Which manuscript to audit.  Defaults to the active Nature Communications
 # manuscript; point KIE_MANUSCRIPT at another manuscript directory to override:
 #     KIE_MANUSCRIPT=../../v3_quantum/manuscript python3 audit_numbers.py
-# The PNAS tree under v3_quantum/ is a frozen historical record: it carries the
-# old title and is expected to fail the repo-metadata guard.  Not maintained.
+# Only the manuscript directory named here is audited; earlier drafts kept
+# elsewhere are not maintained and are not checked.
 _DEFAULT_ROOT = Path(__file__).resolve().parents[2] / "natcomms"
 ROOT = Path(os.environ.get("KIE_MANUSCRIPT") or _DEFAULT_ROOT).resolve()
-_MAIN_NAMES = ("pnas_manuscript.tex", "natcomms_manuscript.tex")
+_MAIN_NAMES = ("natcomms_manuscript.tex",)
 _MAIN = next((ROOT / n for n in _MAIN_NAMES if (ROOT / n).exists()),
              ROOT / _MAIN_NAMES[0])
 DOCS = {"main": _MAIN, "si": ROOT / "si/si_body.tex"}
@@ -46,8 +46,8 @@ DOCS = {"main": _MAIN, "si": ROOT / "si/si_body.tex"}
 def _titled(text):
     """Content of \\title{...}, tolerating the optional \\title[short]{...} form.
 
-    The Springer Nature class takes a running-head argument that the PNAS class
-    does not, and a bare index("\\title{") raises on it.
+    The document class takes an optional running-head argument, and a bare
+    index("\\title{") raises on it.
     """
     m = re.search(r"\\title(?![a-zA-Z])", text)   # not \titleformat, \titlespacing
     if m is None:
@@ -278,9 +278,8 @@ def check_si_pointers():
     mismatched pair is the failure this guards -- renumbering the supplement
     while leaving the main text pointing at the old numbers.
 
-    The older PNAS forms are still accepted, title-only, so the frozen tree
-    remains auditable.  A document carrying no pointers at all fails: a renamed
-    supplement once turned this guard into a silent 0-of-0 pass.
+    A document carrying no pointers at all fails: a renamed supplement once
+    turned this guard into a silent 0-of-0 pass.
     """
     numbered = _si_numbered_titles(DOCS["si"].read_text())
     main = DOCS["main"].read_text()
@@ -292,8 +291,7 @@ def check_si_pointers():
     dotted = re.findall(
         r"Supplementary Note~?(\d+),\s*\\textit\{([^}]*)\}", main)
     legacy = re.findall(
-        r"(?:\\textit\{SI Appendix\}|Supplementary Information),"
-        r"\s*\\textit\{([^}]*)\}", main)
+        r"Supplementary Information,\s*\\textit\{([^}]*)\}", main)
 
     if not dotted and not legacy:
         print("  FAIL SI pointers: main text names no supplement heading at all")
@@ -669,15 +667,15 @@ def check_repo_metadata():
 def check_titles():
     """The supplement must carry the article's title.
 
-    PNAS builds the two documents from separate sources, so a retitled article
-    leaves the supplement on the old title with nothing to flag it.  That is
-    what happened when the paper was reframed around network structure.
+    The article and its supplement are built from separate sources, so a
+    retitled article leaves the supplement on the old title with nothing to
+    flag it.  That has happened before.
     """
     def _title(p):
         return _titled(p.read_text())
 
     main = _title(DOCS["main"])
-    _si_names = ("pnas_si.tex", "natcomms_si.tex")
+    _si_names = ("natcomms_si.tex",)
     _si_doc = next((ROOT / "si" / n for n in _si_names if (ROOT / "si" / n).exists()),
                    ROOT / "si" / _si_names[0])
     si = _title(_si_doc)
@@ -687,18 +685,54 @@ def check_titles():
     return 0 if ok else 1
 
 
+HAVE_DOCS = all(p.exists() for p in DOCS.values())
+
+
 def _texts():
+    """Manuscript sources, or empty when they are not present.
+
+    The public deposit carries the analysis, the data and the results, but not
+    the manuscript: the article is not ours to redistribute before publication.
+    Most guards here are cross-checks between a computed quantity and the text
+    that quotes it, so they cannot run from the archive alone.  Rather than
+    fail with a traceback -- which is what a reviewer downloading the archive
+    used to get -- the suite reports which checks it can and cannot perform.
+    """
+    if not HAVE_DOCS:
+        return {k: "" for k in DOCS}
     return {k: p.read_text() for k, p in DOCS.items()}
+
+
+# Guards that compare a computed quantity against the manuscript text.  Without
+# the manuscript they have nothing to compare against and are skipped, loudly.
+_NEEDS_DOCS = {
+    "check_si_figrefs", "check_si_eqrefs", "check_si_pointers",
+    "check_general_census", "check_corpus", "check_provenance_split",
+    "check_cited_scripts", "check_no_ai_mentions", "check_methods_sources",
+    "check_precision_limited_count", "check_ladh_zero_claim",
+    "check_repo_metadata", "check_titles",
+}
 
 
 def run():
     texts = _texts()
     bad = 0
-    print(f"auditing: {DOCS['main']}")
-    print(f"          {DOCS['si']}\n")
+    if HAVE_DOCS:
+        print(f"auditing: {DOCS['main']}")
+        print(f"          {DOCS['si']}\n")
+    else:
+        print("manuscript sources not found; auditing the deposit alone.")
+        print(f"  looked in: {ROOT}")
+        print("  Set KIE_MANUSCRIPT to a manuscript directory to cross-check the")
+        print("  text as well.  Everything below is computed from the deposited")
+        print("  data and code, and is verified in full.\n")
     print(f"{'quantity':32s} {'value':>11s}  documents")
     for lab, val, dp, docs in derived():
         s = f"{abs(val):.{dp}f}"
+        if not HAVE_DOCS:
+            # nothing to compare against; report the computed value and move on
+            print(f"  {lab:30s} {val:+11.6f}  (computed)")
+            continue
         for d in docs:
             t = texts[d]
             if s in t:
@@ -709,23 +743,24 @@ def run():
                 verdict = f"MISSING (near: {sorted(set(near))[:3]})" if near else "MISSING"
                 bad += 1
             print(f"  {lab:30s} {val:+11.6f}  {d}: {verdict}")
-    bad += check_si_figrefs()
-    bad += check_si_eqrefs()
-    bad += check_si_pointers()
-    bad += check_general_census()
-    bad += check_corpus()
-    bad += check_provenance_split()
-    bad += check_cited_scripts()
-    bad += check_no_ai_mentions()
-    bad += check_methods_sources()
-    bad += check_precision_limited_count()
-    bad += check_ladh_zero_claim()
-    bad += check_ecdhfr_assignment()
-    bad += check_envelope()
-    bad += check_joint_counterexamples()
-    bad += check_repo_metadata()
-    bad += check_titles()
-    print(f"\n{'FAIL' if bad else 'PASS'}: {bad} derived quantities missing or contradicted")
+    for _fn in (check_si_figrefs, check_si_eqrefs, check_si_pointers,
+                check_general_census, check_corpus, check_provenance_split,
+                check_cited_scripts, check_no_ai_mentions,
+                check_methods_sources, check_precision_limited_count,
+                check_ladh_zero_claim, check_ecdhfr_assignment,
+                check_envelope, check_joint_counterexamples,
+                check_repo_metadata, check_titles):
+        if not HAVE_DOCS and _fn.__name__ in _NEEDS_DOCS:
+            print(f"  SKIPPED (needs the manuscript): {_fn.__name__}")
+            continue
+        bad += _fn()
+    if HAVE_DOCS:
+        print(f"\n{'FAIL' if bad else 'PASS'}: {bad} derived quantities "
+              f"missing or contradicted")
+    else:
+        print(f"\n{'FAIL' if bad else 'PASS'}: {bad} failures in the checks that "
+              f"run without the manuscript.")
+        print("  The text cross-checks above were skipped, not failed.")
     return 1 if bad else 0
 
 

@@ -1,8 +1,8 @@
-"""Emit the three tables that live in the REVTeX main text into the PNAS SI.
+"""Emit three tables into the Supplementary Information.
 
-The PNAS main text has no tables (6-page limit), so the confidence bounds, the
-summed-envelope map and the secondary records must appear in the SI or they
-appear nowhere.  Generated from the results files, never retyped.
+The main text carries no tables, so the confidence bounds, the summed-envelope
+map and the secondary records appear in the supplement or nowhere.  Generated
+from the results files, never retyped.
 """
 from __future__ import annotations
 

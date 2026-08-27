@@ -544,10 +544,9 @@ def check_manuscript(path=None, rows=None):
     """
     from pathlib import Path
     if path is None:
-        # Same target as audit_numbers.py: the live manuscript by default, with
-        # KIE_MANUSCRIPT overriding.  This pointed at v3_quantum/ until
-        # 2026-08-27 and so was checking the census against the frozen PNAS
-        # document rather than the paper actually being submitted.
+        # Same target as audit_numbers.py: the manuscript directory by default,
+        # with KIE_MANUSCRIPT overriding.  This once pointed elsewhere and so
+        # checked the census against a superseded draft.
         import os
         root = Path(os.environ.get("KIE_MANUSCRIPT")
                     or Path(__file__).resolve().parents[2] / "natcomms")
@@ -557,9 +556,7 @@ def check_manuscript(path=None, rows=None):
     b = txt.index(r"\subsection{A bypass contracts")
     sec = txt[a:b]
     _root = Path(path).parent.parent
-    main = next((_root / n for n in ("natcomms_manuscript.tex",
-                                     "pnas_manuscript.tex")
-                 if (_root / n).exists()), _root / "natcomms_manuscript.tex")
+    main = _root / "natcomms_manuscript.tex"
     mtxt = main.read_text()
     ma = mtxt.index("We tested this by enumeration")
     sec += mtxt[ma:ma + 1400]
