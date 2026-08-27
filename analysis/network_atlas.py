@@ -534,7 +534,7 @@ def series_factorizes(n):
     return sp.simplify(K - prod) == 0
 
 
-def check_manuscript(path=None):
+def check_manuscript(path=None, rows=None):
     """Assert that the counts quoted in the supplement match this enumeration.
 
     Scoped to the atlas subsection, so a number that happens to appear
@@ -544,13 +544,22 @@ def check_manuscript(path=None):
     """
     from pathlib import Path
     if path is None:
-        path = (Path(__file__).resolve().parents[2]
-                / "v3_quantum" / "manuscript" / "si" / "si_body.tex")
+        # Same target as audit_numbers.py: the live manuscript by default, with
+        # KIE_MANUSCRIPT overriding.  This pointed at v3_quantum/ until
+        # 2026-08-27 and so was checking the census against the frozen PNAS
+        # document rather than the paper actually being submitted.
+        import os
+        root = Path(os.environ.get("KIE_MANUSCRIPT")
+                    or Path(__file__).resolve().parents[2] / "natcomms")
+        path = root / "si" / "si_body.tex"
     txt = Path(path).read_text()
     a = txt.index(r"\subsection{An atlas of mechanisms}")
     b = txt.index(r"\subsection{A bypass contracts")
     sec = txt[a:b]
-    main = Path(path).parent.parent / "pnas_manuscript.tex"
+    _root = Path(path).parent.parent
+    main = next((_root / n for n in ("natcomms_manuscript.tex",
+                                     "pnas_manuscript.tex")
+                 if (_root / n).exists()), _root / "natcomms_manuscript.tex")
     mtxt = main.read_text()
     ma = mtxt.index("We tested this by enumeration")
     sec += mtxt[ma:ma + 1400]
@@ -560,6 +569,18 @@ def check_manuscript(path=None):
     want = {"total": len(fam), "blind": nblind,
             "informative": len(fam) - nblind, "with bypass": nbyp,
             "without bypass": len(fam) - nblind - nbyp}
+    # The counts above are topology-only and cheap.  How many conditional
+    # mechanisms actually REALIZE both geometries is an empirical fact about the
+    # sampled rate constants, so it needs the full atlas; pass rows= from
+    # atlas() to check it.  This is the number the paper leans on when it says
+    # topology classifies the available geometries rather than fixing one.
+    if rows is not None:
+        cond = [r for r in rows if r["cls"] == "conditional"]
+        multi = sum(1 for r in cond if len(set(r["realized"])) > 1)
+        want["conditional"] = len(cond)
+        want["conditional realizing both geometries"] = multi
+    else:
+        print("  (multi-geometry count not checked: call with rows=atlas(4)[0])")
     bad = 0
     for lab, v in want.items():
         if f"${v}$" not in sec:
@@ -571,8 +592,11 @@ def check_manuscript(path=None):
 if __name__ == "__main__":
     import sys as _s
     print("network atlas: verification")
-    n = verify(nmax=int(_s.argv[1]) if len(_s.argv) > 1 else 3)
-    n += check_manuscript()
+    _nmax = int(_s.argv[1]) if len(_s.argv) > 1 else 3
+    n = verify(nmax=_nmax)
+    _rows, _flagged, _bad = atlas(nmax=_nmax, verbose=False)
+    n += _bad
+    n += check_manuscript(rows=_rows)
     print(f"\n{'FAIL' if n else 'PASS'}: {n} failures")
     print()
     report()

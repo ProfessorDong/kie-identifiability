@@ -30,15 +30,56 @@ from partial_id import F_min_exact
 
 GSC = M.gamma_sc("C")
 F0 = M.offset_F0("C")
-# Which manuscript to audit.  Defaults to the frozen PNAS submission; point
-# KIE_MANUSCRIPT at another manuscript directory to audit the active rewrite:
-#     KIE_MANUSCRIPT=../../natcomms python3 audit_numbers.py
-_DEFAULT_ROOT = Path(__file__).resolve().parents[2] / "v3_quantum" / "manuscript"
+# Which manuscript to audit.  Defaults to the active Nature Communications
+# manuscript; point KIE_MANUSCRIPT at another manuscript directory to override:
+#     KIE_MANUSCRIPT=../../v3_quantum/manuscript python3 audit_numbers.py
+# The PNAS tree under v3_quantum/ is a frozen historical record: it carries the
+# old title and is expected to fail the repo-metadata guard.  Not maintained.
+_DEFAULT_ROOT = Path(__file__).resolve().parents[2] / "natcomms"
 ROOT = Path(os.environ.get("KIE_MANUSCRIPT") or _DEFAULT_ROOT).resolve()
 _MAIN_NAMES = ("pnas_manuscript.tex", "natcomms_manuscript.tex")
 _MAIN = next((ROOT / n for n in _MAIN_NAMES if (ROOT / n).exists()),
              ROOT / _MAIN_NAMES[0])
 DOCS = {"main": _MAIN, "si": ROOT / "si/si_body.tex"}
+
+
+def _titled(text):
+    """Content of \\title{...}, tolerating the optional \\title[short]{...} form.
+
+    The Springer Nature class takes a running-head argument that the PNAS class
+    does not, and a bare index("\\title{") raises on it.
+    """
+    m = re.search(r"\\title(?![a-zA-Z])", text)   # not \titleformat, \titlespacing
+    if m is None:
+        raise ValueError("no \\title in document")
+    j = m.end()
+    while j < len(text) and text[j] in " \n\t":
+        j += 1
+    if j < len(text) and text[j] == "[":
+        d = 0
+        while j < len(text):
+            if text[j] == "[":
+                d += 1
+            elif text[j] == "]":
+                d -= 1
+                if d == 0:
+                    j += 1
+                    break
+            j += 1
+        while j < len(text) and text[j] in " \n\t":
+            j += 1
+    if j >= len(text) or text[j] != "{":
+        raise ValueError("no brace group after \\title")
+    d, out = 0, []
+    for ch in text[j + 1:]:
+        if ch == "{":
+            d += 1
+        elif ch == "}":
+            if d == 0:
+                break
+            d -= 1
+        out.append(ch)
+    return " ".join("".join(out).split())
 
 
 def derived():
@@ -189,6 +230,29 @@ def check_si_eqrefs():
     return bad
 
 
+def _si_numbered_titles(text):
+    """(supplementary-note number, title) for every SI heading.
+
+    The note number is the index of the enclosing \\section, so a pointer at a
+    subsection resolves to the note that contains it.  Brace matching so that
+    multi-line titles survive.
+    """
+    out, note = [], 0
+    for m in re.finditer(r"\\(sub)?section\*?\{", text):
+        i, d = m.end(), 0
+        for j in range(i, len(text)):
+            if text[j] == "{":
+                d += 1
+            elif text[j] == "}":
+                if d == 0:
+                    break
+                d -= 1
+        if not m.group(1):
+            note += 1
+        out.append((note, " ".join(text[i:j].split())))
+    return out
+
+
 def _si_section_titles(text):
     """Section titles with proper brace matching, so multi-line titles survive."""
     out = []
@@ -206,22 +270,60 @@ def _si_section_titles(text):
 
 
 def check_si_pointers():
-    """Every 'SI Appendix, Some Section' pointer must name a real SI section.
+    """Every pointer into the supplement must name a real heading.
 
-    A pointer may shorten a long title, so a prefix counts as a match; anything
-    that is not even a prefix is a pointer to nothing.
+    The Nature Communications form is "Supplementary Note N, \\textit{Title}",
+    which carries both a number and a title, so both are checked: the title must
+    name a heading and N must be the note that heading actually sits in.  A
+    mismatched pair is the failure this guards -- renumbering the supplement
+    while leaving the main text pointing at the old numbers.
+
+    The older PNAS forms are still accepted, title-only, so the frozen tree
+    remains auditable.  A document carrying no pointers at all fails: a renamed
+    supplement once turned this guard into a silent 0-of-0 pass.
     """
-    titles = _si_section_titles(DOCS["si"].read_text())
+    numbered = _si_numbered_titles(DOCS["si"].read_text())
     main = DOCS["main"].read_text()
-    ptrs = re.findall(r"\\textit\{SI Appendix\},\s*\\textit\{([^}]*)\}", main)
+
+    def resolve(q):
+        return [n for n, t in numbered if t.lower().startswith(q.lower())]
+
     bad = 0
-    for p in sorted(set(ptrs)):
-        q = " ".join(p.split())
-        if not any(t.lower().startswith(q.lower()) for t in titles):
-            print(f"  SI pointer names no section: {q!r}")
+    dotted = re.findall(
+        r"Supplementary Note~?(\d+),\s*\\textit\{([^}]*)\}", main)
+    legacy = re.findall(
+        r"(?:\\textit\{SI Appendix\}|Supplementary Information),"
+        r"\s*\\textit\{([^}]*)\}", main)
+
+    if not dotted and not legacy:
+        print("  FAIL SI pointers: main text names no supplement heading at all")
+        return 1
+
+    seen = set()
+    for num, title in dotted:
+        q = " ".join(title.split())
+        seen.add((num, q))
+    for num, q in sorted(seen):
+        hits = resolve(q)
+        if not hits:
+            print(f"  FAIL SI pointer names no heading: {q!r}")
             bad += 1
-    print(f"  SI Appendix pointers: {len(set(ptrs))} distinct, "
-          f"{len(set(ptrs)) - bad} resolve")
+        elif len(set(hits)) > 1:
+            print(f"  FAIL SI pointer is ambiguous: {q!r} -> notes {sorted(set(hits))}")
+            bad += 1
+        elif hits[0] != int(num):
+            print(f"  FAIL SI pointer {q!r} says Note {num}, heading is in Note {hits[0]}")
+            bad += 1
+
+    seenl = {" ".join(x.split()) for x in legacy}
+    for q in sorted(seenl):
+        if not resolve(q):
+            print(f"  FAIL SI pointer names no heading: {q!r}")
+            bad += 1
+
+    total = len(seen) + len(seenl)
+    print(f"  Supplementary pointers: {total} distinct, {total - bad} resolve "
+          f"(number and title checked on {len(seen)})")
     return bad
 
 
@@ -549,17 +651,7 @@ def check_repo_metadata():
     retitlings that were not propagated.
     """
     from pathlib import Path
-    main = DOCS["main"].read_text()
-    i = main.index("\\title{") + 7
-    d = 0
-    for j in range(i, len(main)):
-        if main[j] == "{":
-            d += 1
-        elif main[j] == "}":
-            if d == 0:
-                break
-            d -= 1
-    title = " ".join(main[i:j].split())
+    title = _titled(DOCS["main"].read_text())
     root = Path(__file__).resolve().parent.parent
     bad = 0
     for name in ("CITATION.cff", "README.md"):
@@ -582,18 +674,7 @@ def check_titles():
     what happened when the paper was reframed around network structure.
     """
     def _title(p):
-        t = p.read_text()
-        i = t.index(r"\title{")
-        depth, out = 0, []
-        for ch in t[i + 7:]:
-            if ch == "{":
-                depth += 1
-            elif ch == "}":
-                if depth == 0:
-                    break
-                depth -= 1
-            out.append(ch)
-        return " ".join("".join(out).split())
+        return _titled(p.read_text())
 
     main = _title(DOCS["main"])
     _si_names = ("pnas_si.tex", "natcomms_si.tex")
