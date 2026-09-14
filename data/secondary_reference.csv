@@ -1,0 +1,14 @@
+family,variant,T_C,K_HT,K_HT_se,K_DT,K_DT_se,source,source_table,note
+MAOB,pH 7.5,2.0,1.115,0.012,1.095,0.007,Jonsson1994,Table 1,secondary H/T and D/T; SD of one experiment (5-7 time points)
+MAOB,pH 7.5,25.0,1.272,0.030,1.119,0.034,Jonsson1994,Table 1,secondary H/T and D/T; SD of one experiment (5-7 time points)
+MAOB,pH 7.5,43.2,1.233,0.010,1.078,0.015,Jonsson1994,Table 1,secondary H/T and D/T; SD of one experiment (5-7 time points)
+MAOB,pH 6.1,10.0,1.388,0.019,1.149,0.019,Jonsson1994,Table 3,secondary H/T and D/T; SD of one experiment (5-7 time points)
+MAOB,pH 6.1,15.0,1.359,0.016,1.132,0.018,Jonsson1994,Table 3,secondary H/T and D/T; D/T error pooled over two experiments
+MAOB,pH 6.1,25.0,1.339,0.037,1.131,0.012,Jonsson1994,Table 3,secondary H/T and D/T; errors pooled over two and three experiments
+MAOB,pH 6.1,30.0,1.341,0.011,1.127,0.010,Jonsson1994,Table 3,secondary H/T and D/T; SD of one experiment (5-7 time points)
+MAOB,pH 6.1,35.0,1.340,0.013,1.129,0.032,Jonsson1994,Table 3,secondary H/T and D/T; SD of one experiment (5-7 time points)
+MAOB,pH 6.1,40.0,1.286,0.028,1.109,0.042,Jonsson1994,Table 3,secondary H/T and D/T; SD of one experiment (5-7 time points)
+MAOB,pH 6.1,43.0,1.263,0.029,1.118,0.015,Jonsson1994,Table 3,secondary H/T and D/T; SD of one experiment (5-7 time points)
+BSAO,wild type,25.0,1.195,0.016,1.051,0.011,Grant1989,Table II,average secondary H/T and D/T with SD over six experiments
+LADH,wild type,3.0,1.32,0.01,1.10,0.01,TsaiKlinman2001,Table 2,aqueous row; secondary H/T and D/T
+LADH,F93W,3.0,1.37,0.01,1.05,0.01,TsaiKlinman2001,Table 4,aqueous row; secondary H/T and D/T

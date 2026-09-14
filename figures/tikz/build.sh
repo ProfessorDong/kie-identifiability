@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
-# Build every TikZ figure to a standalone PDF and install into manuscript/figures.
+# Build every TikZ figure to a standalone PDF and install it into figures/.
+# A manuscript build copies the figures it uses from there.
 set -u
 cd "$(dirname "$0")"
 ok=0; fail=0
@@ -13,7 +14,5 @@ for f in fig*.tex; do
   fi
 done
 rm -f *.aux *.log *.buildlog
-mkdir -p ../../manuscript/figures
-cp -f fig*.pdf ../../manuscript/figures/ 2>/dev/null
 cp -f fig*.pdf ../ 2>/dev/null
 echo "built $ok, failed $fail"

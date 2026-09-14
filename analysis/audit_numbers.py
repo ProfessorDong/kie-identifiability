@@ -30,17 +30,13 @@ from partial_id import F_min_exact
 
 GSC = M.gamma_sc("C")
 F0 = M.offset_F0("C")
-# Which manuscript to audit.  Defaults to the active Nature Communications
-# manuscript; point KIE_MANUSCRIPT at another manuscript directory to override:
-#     KIE_MANUSCRIPT=../../v3_quantum/manuscript python3 audit_numbers.py
-# Only the manuscript directory named here is audited; earlier drafts kept
-# elsewhere are not maintained and are not checked.
-_DEFAULT_ROOT = Path(__file__).resolve().parents[2] / "natcomms"
-ROOT = Path(os.environ.get("KIE_MANUSCRIPT") or _DEFAULT_ROOT).resolve()
-_MAIN_NAMES = ("natcomms_manuscript.tex",)
-_MAIN = next((ROOT / n for n in _MAIN_NAMES if (ROOT / n).exists()),
-             ROOT / _MAIN_NAMES[0])
-DOCS = {"main": _MAIN, "si": ROOT / "si/si_body.tex"}
+# Which manuscript to audit: see manuscript_root.py.  KIE_MANUSCRIPT, or the
+# untracked manuscript_root.local, names the directory; the main text is its one
+# *_manuscript.tex.  A target named but not readable is an error, not a skip --
+# see run().
+import manuscript_root as MR
+ROOT = MR.root()
+DOCS = {"main": MR.one(ROOT, "*_manuscript.tex"), "si": ROOT / "si/si_body.tex"}
 
 
 def _titled(text):
@@ -88,6 +84,23 @@ def derived():
         ("gamma_SC", GSC, 5, ("main", "si")),
         ("F0", F0, 6, ("main", "si")),
     ]
+    # Reference exponents quoted in Supplementary Note 1 for comparison with the
+    # sources.  These were hand-typed until 2026-09-14, when a reference-review
+    # found the bare-mass value given as 3.26278 in one place and 3.26281 in
+    # another; masses.py constants give 3.262807.  Each is now recomputed here
+    # from the same atomic masses, so a stale or transposed value fails.
+    def _exp(mH, mD, mT, heavy=None):
+        red = (lambda m: m) if heavy is None else (lambda m: m * heavy / (m + heavy))
+        f = lambda m: red(m) ** -0.5
+        return (f(mH) - f(mT)) / (f(mD) - f(mT))
+    g_bare = _exp(M.M_H_ATOMIC, M.M_D_ATOMIC, M.M_T_ATOMIC)
+    out.append(("gamma bare atomic masses", g_bare, 5, ("si",)))
+    out.append(("gamma integer 1:2:3", _exp(1.0, 2.0, 3.0), 5, ("si",)))
+    # Saunders 1985 quotes 3.34 for reduced masses; integer isotope masses
+    # reduced against carbon-12 reproduce it, as the note states.
+    out.append(("gamma reduced, integer vs C12", _exp(1.0, 2.0, 3.0, 12.0), 5, ("si",)))
+    # Swain et al. 1958 wrote the relation as the 1.442 power of the H/D effect.
+    out.append(("gamma/(gamma-1) bare (Swain 1.442)", g_bare / (g_bare - 1), 5, ("si",)))
     for a, lab in ((1.3, "hi"), (7.3, "lo")):
         r = yadh_completion(a)
         out.append((f"YADH F_int {lab}", r["F"], 3, ("main", "si")))
@@ -155,6 +168,15 @@ def derived():
     ya = pd.read_csv("../data/cha1989_yadh.csv")
     a = ya[ya.note.str.contains("average")].iloc[0]
     out.append(("YADH F_obs", F_min_exact(a.K_HT, a.K_DT)[0], 3, ("main", "si")))
+    # Cha's errors are labelled standard deviations; until 2026-09-14 both
+    # documents claimed that using them as standard errors was conservative by
+    # sqrt(5).  The errors on the average in fact match the standard error of the
+    # three determinations, which is now what the text says, with these numbers.
+    det = ya[ya.note.str.contains("determination")]
+    out.append(("YADH SE of 3 determinations, H/T",
+                det.K_HT.std(ddof=1) / np.sqrt(len(det)), 3, ("main", "si")))
+    out.append(("YADH SE of 3 determinations, D/T",
+                det.K_DT.std(ddof=1) / np.sqrt(len(det)), 3, ("main", "si")))
     return out
 
 
@@ -174,7 +196,7 @@ def derived():
 # criteria ever change.
 # The corpus size appears in prose in both documents and is not otherwise a
 # derived quantity, so it grew stale when records were added.  Pinned here.
-CORPUS = {"records": 96, "units": 31}
+CORPUS = {"records": 97, "units": 32}
 
 
 GENERAL_CENSUS = {"networks": 764, "edges": 5538, "mixed": 3415,
@@ -192,9 +214,21 @@ SI_FIGREFS = {
 
 
 def check_si_figrefs():
-    """Every 'Fig.~N of the main text' must point at the intended caption."""
+    """Every 'Fig.~N of the main text' must point at the intended caption.
+
+    Captions are collected from figure environments only.  Counting every
+    \\caption in the file breaks the moment the manuscript gains a table: the
+    table's caption shifts the index and every later figure reference is then
+    compared against the wrong float.  That is what happened when Table 1 was
+    added on 2026-09-11 -- the guard reported Fig. 3 as the atlas figure.
+    """
     main = DOCS["main"].read_text()
-    caps = re.findall(r"\\caption\{(.{0,120})", main, re.S)
+    caps = []
+    for fig in re.findall(r"\\begin\{figure\*?\}(.*?)\\end\{figure\*?\}",
+                          main, re.S):
+        m = re.search(r"\\caption\{(.{0,120})", fig, re.S)
+        if m:
+            caps.append(m.group(1))
     si = DOCS["si"].read_text()
     bad = 0
     for n in sorted(set(int(m) for m in
@@ -272,7 +306,7 @@ def _si_section_titles(text):
 def check_si_pointers():
     """Every pointer into the supplement must name a real heading.
 
-    The Nature Communications form is "Supplementary Note N, \\textit{Title}",
+    The form used is "Supplementary Note N, \\textit{Title}",
     which carries both a number and a title, so both are checked: the title must
     name a heading and N must be the note that heading actually sits in.  A
     mismatched pair is the failure this guards -- renumbering the supplement
@@ -345,10 +379,28 @@ def check_general_census():
 # machine-generated writing appears anywhere in the article, the supplement or
 # the repository metadata.  Reviewers have repeatedly proposed adding one; this
 # check fails the audit if any such text is ever introduced.
-AI_TERMS = ("chatgpt", "openai", "anthropic", "copilot", "gemini",
-            "large language model", "language model", "generative ai",
+# The hard rule this enforces is that no AI or model reference appears in the
+# manuscript, the supplement, or the repository metadata.  The list below is
+# deliberately over-inclusive: a false positive costs one look, a false
+# negative defeats the guard.  It omitted "claude" and "co-authored-by" until
+# 2026-09-09, so a perturbation test injecting "Claude" passed silently -- the
+# exact failure this suite exists to prevent.
+#
+# Two deliberate exclusions, both to avoid false positives that would train the
+# reader to ignore the guard: bare "gpt" (GPT is glutamic-pyruvic transaminase,
+# an enzyme name that could legitimately appear here, so the hyphenated
+# "gpt-" is used instead) and "assistant" (a research assistant may properly be
+# thanked in an acknowledgement).
+AI_TERMS = ("chatgpt", "openai", "anthropic", "claude", "copilot", "gemini",
+            "gpt-", "large language model", "language model", "generative ai",
             "artificial intelligence", "ai-assisted", "ai assisted",
+            "ai-generated", "ai generated", "co-authored-by", "chatbot",
             "machine-generated", "llm")
+
+
+def _corpus_records():
+    import corpus
+    return corpus.counts()["records"]
 
 
 def check_provenance_split():
@@ -381,7 +433,12 @@ def check_provenance_split():
             ("SI parsed total", f"${parsed}$ of the ${len(d)}$", "si", si),
             ("SI value count", f"${parsed * 4}$ values", "si", si),
             ("SI pdf values", f"{n_pdf * 4} values", "si", si),
-            ("main parsed total", f"{parsed} of the {len(d)} records", "main", main)):
+            ("main parsed total", f"{parsed} of the {len(d)} temperature-resolved records",
+             "main", main),
+            # every record not parsed was transcribed by hand, including all the
+            # single-condition records; the count follows from the corpus
+            ("main hand total", f"The remaining ${_corpus_records() - parsed}$ were "
+             f"transcribed by hand", "main", main)):
         if need not in text:
             print(f"  FAIL provenance: {doc} does not state {need!r} ({label})")
             bad += 1
@@ -493,29 +550,31 @@ def check_precision_limited_count():
         a, b = sh / kh, sd / kd
         return pt - 1.645 * np.sqrt(a ** 2 + (G * b) ** 2 - 2 * G * rho * a * b)
 
+    import corpus
     pts = []
     b = pd.read_csv("../results/bounds_uncertainty.csv")
     b = b[b.rho == -1.0]
     pts += [(r.point, r.lcb) for _, r in b.iterrows()]
-    for f in ("../data/ladh_adh_primary.csv", "../data/bsao_grant1989.csv"):
-        d = pd.read_csv(f)
-        for _, r in d.iterrows():
-            p = F_min_exact(r.K_HT, r.K_DT)[0]
-            pts.append((p, lcb(p, r.K_HT, r.K_HT_se, r.K_DT, r.K_DT_se)))
-    ya = pd.read_csv("../data/cha1989_yadh.csv")
-    a = ya[ya.note.str.contains("average")].iloc[0]
-    p = F_min_exact(a.K_HT, a.K_DT)[0]
-    pts.append((p, lcb(p, a.K_HT, a.K_HT_se, a.K_DT, a.K_DT_se)))
+    # every single-condition record, read from the one list that defines them;
+    # until 2026-09-14 this function kept its own list of files
+    for _, r in corpus.single_condition().iterrows():
+        p = F_min_exact(r.K_HT, r.K_DT)[0]
+        pts.append((p, lcb(p, r.K_HT, r.K_HT_se, r.K_DT, r.K_DT_se)))
     n = sum(1 for pt, l in pts if pt > F0 and l <= F0)
     word = NUM.get(n, str(n))
+    ORD = {3: "third", 4: "fourth", 5: "fifth"}
+    need = {"main": (f"while {word},", f"remaining {word} the endpoint",
+                     f"and {word} more limited by precision alone",
+                     f"and {word} more are limited by precision alone"),
+            "si": (f"a {ORD.get(n, n)} unit whose endpoint exceeds",)}
     bad = 0
-    for tag in ("main", "si"):
+    for tag, phrases in need.items():
         t = " ".join(DOCS[tag].read_text().split()).lower()
-        if f"from two to {word}" not in t and f"while {word}," not in t \
-                and f"{word}, all horse liver" not in t:
-            print(f"  FAIL precision-limited: {tag} does not state {word} "
-                  f"({n} units clear on the point estimate but not the bound)")
-            bad += 1
+        for ph in phrases:
+            if ph not in t:
+                print(f"  FAIL precision-limited: {tag} lacks '{ph}' "
+                      f"({n} units clear on the point estimate but not the bound)")
+                bad += 1
     if not bad:
         print(f"  precision-limited units: {n}, stated as '{word}' in both documents")
     return bad
@@ -611,30 +670,43 @@ def check_joint_counterexamples():
 
 def check_corpus():
     """The record and unit counts must match the data files, not just each other."""
-    import pandas as pd
-    n = (len(pd.read_csv("../data/trinomial_benchmark.csv"))
-         + len(pd.read_csv("../data/ladh_adh_primary.csv"))
-         + len(pd.read_csv("../data/bsao_grant1989.csv")) + 1)
+    import corpus
+    c = corpus.counts()
+    n = c["records"]
     bad = 0
     if n != CORPUS["records"]:
         print(f"  FAIL corpus: data files hold {n} records, prose says "
               f"{CORPUS['records']}")
         bad += 1
-    for d in ("main", "si"):
-        t = DOCS[d].read_text()
-        if str(CORPUS["records"]) not in t:
-            print(f"  FAIL corpus: {CORPUS['records']} absent from {d}")
-            bad += 1
+    if c["units"] != CORPUS["units"]:
+        print(f"  FAIL corpus: data files give {c['units']} analysis units, prose "
+              f"says {CORPUS['units']}")
+        bad += 1
+    # Phrases, not bare numbers: "97" occurs inside "1997", so the old bare test
+    # passed on a document that still said 96 (found 2026-09-14).
+    R, U = CORPUS["records"], CORPUS["units"]
+    for d, phrases in (("main", (f"benchmark of {R} matched", f"{R} matched records in {U} analysis units",
+                                 f"We assembled {R} matched primary records", f"giving {U} analysis units",
+                                 f"${R}$ records in ${U}$ analysis units")),
+                       ("si", (f"all ${R}$ records",))):
+        t = " ".join(DOCS[d].read_text().split())
+        for ph in phrases:
+            if ph not in t:
+                print(f"  FAIL corpus: {d} lacks {ph!r}")
+                bad += 1
     # the README drifted once, holding 94/29/28 after the corpus grew
     readme = (ROOT.parent / "github-package" / "README.md")
     if not readme.exists():
         readme = Path(__file__).resolve().parent.parent / "README.md"
     if readme.exists():
-        rt = readme.read_text()
-        for q in (str(CORPUS["records"]), str(CORPUS["units"])):
-            if q not in rt:
-                print(f"  FAIL corpus: README.md does not carry {q}")
-                bad += 1
+        rt = " ".join(readme.read_text().split())
+        # The whole phrase, not the bare numbers: "97" and "32" occur inside
+        # page numbers and years, so a bare-number test passed on a README that
+        # still said 96 and 31 (found 2026-09-14).
+        q = f"{CORPUS['records']} records over {CORPUS['units']} analysis units"
+        if q not in rt:
+            print(f"  FAIL corpus: README.md does not carry {q!r}")
+            bad += 1
         print(f"  README corpus figures: {CORPUS['records']} records, "
               f"{CORPUS['units']} units")
     print(f"  corpus: {n} records in the data, quoted consistently")
@@ -664,6 +736,274 @@ def check_repo_metadata():
     return bad
 
 
+def check_reference_asymmetry():
+    """Every r stated in the text must equal r computed from the secondary effects.
+
+    Until 2026-09-14 each r was hand-typed, and monoamine oxidase B at pH 6.1 was
+    tabulated as 1.14 -- the value of bovine serum amine oxidase and of MAO-B at
+    pH 7.5 -- when its own data give 1.13 to 1.21.  This checks, against
+    reference_asymmetry.py: every "inferred" cell of the protocol table (a single
+    value, or a range where secondary effects were measured at several
+    temperatures), the r column of the bypass table, the r of each
+    network_geometry.BENCH entry, and the overall range quoted in both documents.
+    """
+    import reference_asymmetry as RA
+    import network_geometry as NG
+    d = RA.table()
+    bad = 0
+    fam = {"YADH": "YADH", "LADH": "LADH", "BSAO": "BSAO", "MAOB": "MAOB"}
+
+    def expect(family, variant):
+        lo, hi = RA.r_range(family, variant)
+        a, b = f"{lo:.2f}", f"{hi:.2f}"
+        return a if a == b else f"{a}--{b}"
+
+    si = DOCS["si"].read_text()
+    rows = re.findall(r"^(YADH|LADH|BSAO|MAOB) (.+?) & [^&\n]+ & yes & ([\d.\-]+) & inferred",
+                      si, re.M)
+    if len(rows) != d.groupby(["family", "variant"]).ngroups:
+        print(f"  FAIL reference asymmetry: protocol table has {len(rows)} inferred "
+              f"rows, data hold {d.groupby(['family', 'variant']).ngroups} forms")
+        bad += 1
+    for f, v, cell in rows:
+        want = expect(fam[f], v)
+        if cell != want:
+            print(f"  FAIL reference asymmetry: protocol table {f} {v} says {cell}, "
+                  f"data give {want}")
+            bad += 1
+
+    bypass = {"Yeast alcohol dehydrogenase": ("YADH", "wild type", 25.0),
+              "Horse liver F93W": ("LADH", "F93W", 25.0),
+              "Bovine serum amine oxidase": ("BSAO", "wild type", 25.0),
+              "Monoamine oxidase~B, pH~6.1, $10\\,^{\\circ}$C": ("MAOB", "pH 6.1", 10.0)}
+    for label, (f, v, T) in bypass.items():
+        m = re.search(re.escape(label) + r" & \$[\d.]+\$ & \$([\d.]+)\$", si)
+        want = f"{RA.r_at(f, v, T):.2f}"
+        if m is None or m.group(1) != want:
+            print(f"  FAIL reference asymmetry: bypass table {label!r} r = "
+                  f"{m.group(1) if m else 'absent'}, data give {want}")
+            bad += 1
+
+    # a shared-tracer row carries r = 1 exactly, from tracer_design.csv
+    m = re.search(r"DHFR light enzyme, \$25\\,\^\{\\circ\}\$C & \$[\d.]+\$ & \$?([\d.\-]+)\$?", si)
+    want = f"{RA.r_design('ecDHFR', 'light enzyme'):g}"
+    if m is None or m.group(1) != want:
+        print(f"  FAIL reference asymmetry: bypass table DHFR light r = "
+              f"{m.group(1) if m else 'absent'}, tracer design gives {want}")
+        bad += 1
+    bench = {"YADH (Cha 1989)": ("YADH", "wild type", 25.0),
+             "BSAO (Grant 1989)": ("BSAO", "wild type", 25.0),
+             "MAO-B pH 6.1, 10 C": ("MAOB", "pH 6.1", 10.0),
+             "LADH F93W": ("LADH", "F93W", 25.0)}
+    for lab, _, _, r in NG.BENCH:
+        if lab == "ecDHFR light, 25 C" and r != RA.r_design("ecDHFR", "light enzyme"):
+            print(f"  FAIL reference asymmetry: BENCH {lab} r = {r}, tracer design gives 1")
+            bad += 1
+        if lab in bench:
+            want = RA.r_at(*bench[lab])
+            if abs(r - want) > 0.005:
+                print(f"  FAIL reference asymmetry: network_geometry BENCH {lab} r = "
+                      f"{r:.4f}, data give {want:.4f}")
+                bad += 1
+
+    lo, hi = f"{d.r.min():.2f}", f"{d.r.max():.2f}"
+    for doc in ("main", "si"):
+        txt = " ".join(DOCS[doc].read_text().split())
+        # Two phrasings.  The second ("$r$ running from $a$, for ..., to $b$")
+        # escaped the first pattern, and a stale "1.14 ... to 1.31" survived in
+        # it after the MAO-B correction (found 2026-09-14).
+        found = re.findall(r"\$r=(\d\.\d\d)\$ to \$(\d\.\d\d)\$", txt)
+        found += re.findall(r"\$r\$ (?:runs|running) from \$(\d\.\d\d)\$[^$]*?"
+                            r"(?:\$[^$]*\$[^$]*?)*? to \$(\d\.\d\d)\$", txt)
+        # a quoted range must be the overall one or that of a single family
+        # (the monoamine oxidase series is quoted on its own)
+        fams = {(f"{g.r.min():.2f}", f"{g.r.max():.2f}") for _, g in d.groupby("family")}
+        for a, b in found:
+            if (a, b) != (lo, hi) and (a, b) not in fams:
+                print(f"  FAIL reference asymmetry: {doc} quotes r = {a} to {b}, "
+                      f"data give {lo} to {hi} overall and no family has that range")
+                bad += 1
+    if not bad:
+        print(f"  reference asymmetry: {len(rows)} protocol rows, 4 bypass rows, "
+              f"BENCH and the quoted range {lo} to {hi} agree with the data")
+    return bad
+
+
+def check_promoting_mode():
+    r"""The promoting-mode numbers must be those completion.py computes.
+
+    The temperature spans of F, the crossover wavenumber and the range over
+    which the sensitivity peak moves were hand-typed.  On 2026-09-14 the
+    reference review found the text arguing from the 50 cm^-1 span, so each is
+    now recomputed: every "$s|\Fz|$ at $nu$~cm$^{-1}$" pair in either document
+    must match offset_vs_T at A = 5, w0 = 0.5 over 250-350 K, all four quoted
+    wavenumbers must appear in both, and the crossover and peak range must agree
+    with sensitivity_peak over the sweep A in [1, 50], w0 in [0.1, 2].
+    """
+    from completion import CM_TO_K, F0 as _F0, offset_vs_T, sensitivity_peak
+    span = {nu: abs(np.diff(offset_vs_T(5.0, 0.5, nu, [250.0, 350.0]))[0]) / abs(_F0)
+            for nu in (50, 200, 400, 800)}
+    peaks = [sensitivity_peak(A, w0)[0] for A in (1.0, 2.0, 5.0, 10.0, 20.0, 50.0)
+             for w0 in (0.1, 0.25, 0.5, 1.0, 2.0)]
+    lo, hi, cross = f"{min(peaks):.0f}", f"{max(peaks):.0f}", f"{2 * 300 / CM_TO_K:.0f}"
+    bad = 0
+    pair = re.compile(r"\$(\d+\.\d\d)\|\\Fz\|\$\s+(?:for an?|at)\s+\$(\d+)\$~cm")
+    for doc in ("main", "si"):
+        t = DOCS[doc].read_text()
+        seen = set()
+        for val, nu in pair.findall(t):
+            nu = int(nu)
+            seen.add(nu)
+            if nu not in span or val != f"{span[nu]:.2f}":
+                want = f"{span[nu]:.2f}" if nu in span else "not computed"
+                print(f"  FAIL promoting mode: {doc} gives {val}|F0| at {nu} cm-1, "
+                      f"completion.py gives {want}")
+                bad += 1
+        for nu in span:
+            if nu not in seen:
+                print(f"  FAIL promoting mode: {doc} does not quote the span at {nu} cm-1")
+                bad += 1
+        if not re.search(rf"is\s+\${cross}\$~cm", t):
+            print(f"  FAIL promoting mode: {doc} does not give the crossover as {cross} cm-1")
+            bad += 1
+        if not re.search(rf"between\s+\${lo}\$\s+and\s+\${hi}\$~cm", t):
+            print(f"  FAIL promoting mode: {doc} does not give the peak range {lo}-{hi} cm-1")
+            bad += 1
+    if not bad:
+        print("  promoting mode: spans " + ", ".join(f"{span[n]:.2f} at {n}" for n in span)
+              + f"; crossover {cross}; peak {lo}-{hi} cm-1, in both documents")
+    return bad
+
+
+def check_corpus_consequences():
+    r"""Statements that follow from the size and content of the corpus.
+
+    Admitting the Agrawal 2004 wild-type E. coli thymidylate synthase record
+    (2026-09-14) changed the number of units, and so the multiplicity correction,
+    the number of forms in the protocol table, and every "all N records" claim.
+    None of those was computed by any deposited code: the Bonferroni bounds were
+    hand-typed.  Each is now derived here and matched to the sentence that
+    states it, not merely to a number appearing somewhere.
+    """
+    import corpus
+    from scipy import stats
+    from holdout import structural_prediction_check
+    _W = {0: "zero", 13: "thirteen", 16: "sixteen", 17: "seventeen", 29: "twenty-nine",
+          30: "thirty", 31: "thirty-one", 32: "thirty-two", 33: "thirty-three"}
+
+    class _Words(dict):
+        # a count with no word is written as digits, so an unexpected count
+        # fails the phrase test instead of crashing the whole suite
+        def __missing__(self, k):
+            return str(k)
+    W = _Words(_W)
+    main = " ".join(DOCS["main"].read_text().split())
+    si = " ".join(DOCS["si"].read_text().split())
+    bad = 0
+
+    def need(doc, text, what):
+        nonlocal bad
+        if text not in (main if doc == "main" else si):
+            print(f"  FAIL corpus consequences: {doc} lacks {what}: {text!r}")
+            bad += 1
+
+    c = corpus.counts()
+    u, n = c["units"], c["records"]
+    # multiplicity, for the yeast record, at rho = 0 and rho = -1
+    ya = corpus.single_condition()
+    a = ya[ya.grp == "yadh"].iloc[0]
+    z = stats.norm.ppf(1 - 0.05 / u)
+    F = np.log(a.K_HT) - GSC * np.log(a.K_DT)
+    x, y = a.K_HT_se / a.K_HT, GSC * a.K_DT_se / a.K_DT
+    b0 = F - z * np.hypot(x, y)
+    b1 = F - z * (x + y)
+    need("si", f"correction across the {W[u]} gives ${b0:+.3f}$ under independence "
+               f"and ${b1:+.3f}$ at $\\rho=-1$", "the Bonferroni bounds")
+    need("si", f"the margin over $\\Fz$ is ${b1 - F0:.3f}$", "the simultaneous margin")
+    need("si", f"Bonferroni-corrected bound at that correlation by ${b1 - F0:.3f}$",
+         "the simultaneous margin (joint-nuisance note)")
+    need("main", f"singled out from {W[u]} examined", "the multiplicity denominator")
+    need("si", f"singled out from {W[u]} examined", "the multiplicity denominator")
+    need("main", f"applied uniformly to all {W[u]} systems", "the unit count")
+    # the monotonicity condition of E(phi), and the Theorem 1 forecast
+    rows = pd.concat([corpus.series(), corpus.single_condition()])
+    holds = sum(1 for _, r in rows.iterrows()
+                if (r.K_HT - 1) - GSC * (r.K_DT - 1) < (r.K_HT - 1) * (r.K_DT - 1) * (GSC - 1))
+    if holds == n:
+        need("si", f"holds for all ${n}$ records here", "the E(phi) monotonicity count")
+    else:
+        print(f"  FAIL corpus consequences: E(phi) monotone for {holds} of {n}")
+        bad += 1
+    chk, viol = structural_prediction_check()
+    if viol or chk != n:
+        print(f"  FAIL corpus consequences: Theorem 1 forecast {chk} checked, {viol} violations")
+        bad += 1
+    need("si", f"Checked against all ${chk}$ records, there are no violations",
+         "the Theorem 1 forecast count")
+    # the protocol table: one row per distinct series or form
+    tab = DOCS["si"].read_text()
+    tab = tab[tab.index(r"\label{tab:protocol}"):]
+    tab = tab[:tab.index(r"\end{tabular}")]
+    lines = [ln.rstrip() for ln in tab.splitlines()]
+    inferred = sum(1 for ln in lines if ln.endswith(r"inferred$^{a}$\\"))
+    shared = sum(1 for ln in lines if ln.endswith(r"& 1 & shared tracer$^{b}$\\"))
+    forms = inferred + shared
+    # the table's statuses must be those deposited in tracer_design.csv, which
+    # records the tracer each source used in the H/T and the D/T experiment
+    import reference_asymmetry as RA
+    td = RA.tracer_design()
+    # row by row, so a swap of two statuses cannot pass on the counts alone
+    cells = {}
+    for ln in lines:
+        if ln.endswith(r"inferred$^{a}$\\") or ln.endswith(r"shared tracer$^{b}$\\"):
+            cells[ln.split(" & ")[0]] = "labeled" if "inferred" in ln else "shared"
+    from corpus import display_family
+    for _, x in td.iterrows():
+        if x.design == "labeled":
+            stem = f"{x.family} {x.variant}"
+        else:
+            fam = display_family(x.family, x.variant) if x.family == "TSase" else x.family
+            var = "WT" if x.family == "ecTSase" else x.variant
+            stem = f"{fam} {var} ({x.step}"
+        # labeled rows are named exactly; shared rows carry "(step" and may add a
+        # temperature, so they match on that prefix (which includes the step)
+        hit = [k for k in cells if (k == stem if x.design == "labeled" else k.startswith(stem))]
+        if len(hit) != 1 or cells[hit[0]] != x.design:
+            print(f"  FAIL corpus consequences: protocol table row for {stem!r} is "
+                  f"{[cells[h] for h in hit] or 'absent'}, tracer_design.csv says {x.design}")
+            bad += 1
+    if (inferred, shared) != (int((td.design == "labeled").sum()), int((td.design == "shared").sum())):
+        print(f"  FAIL corpus consequences: protocol table {inferred} inferred / {shared} shared, "
+              f"tracer_design.csv {(td.design == 'labeled').sum()} / {(td.design == 'shared').sum()}")
+        bad += 1
+    if forms != u - 2:
+        print(f"  FAIL corpus consequences: protocol table has {forms} forms, "
+              f"units minus the two repeat 3 C records give {u - 2}")
+        bad += 1
+    need("si", f"outcome for the {W[forms]} distinct series and enzyme forms", "the form count")
+    need("si", f"{W[inferred].capitalize()} of the {W[forms]} report secondary", "the inferred count")
+    need("si", f"the remaining {W[shared]} need no inference", "the shared-tracer count")
+    need("si", f"For the remaining {W[shared]} the question does not arise", "the shared-tracer count")
+    need("main", f"across {W[inferred]} of the {W[forms]} forms", "the form count")
+    need("main", f"For the remaining {W[shared]} the question does not arise", "the shared-tracer count")
+    # the admitted E. coli thymidylate synthase record
+    e = ya[ya.grp == "ectsase"].iloc[0]
+    fe = F_min_exact(e.K_HT, e.K_DT)[0]
+    se = np.sqrt((e.K_HT_se / e.K_HT) ** 2 + (GSC * e.K_DT_se / e.K_DT) ** 2
+                 + 2 * GSC * (e.K_HT_se / e.K_HT) * (e.K_DT_se / e.K_DT))
+    lh = (e.K_HT - 1) / (e.K_DT - 1)
+    need("main", f"endpoint of ${fe:+.3f}$", "the ecTSase endpoint")
+    need("main", f"bound of ${fe - 1.645 * se:.3f}$", "the ecTSase bound")
+    need("si", f"$L_H={lh:.2f}>\\gSC$", "the ecTSase L_H")
+    need("si", f"$F_{{\\mathrm{{obs}}}}={fe:+.3f}$", "the ecTSase endpoint")
+    need("si", f"at $\\rho=-1$ is ${fe - 1.645 * se:.3f}$", "the ecTSase bound")
+    if not bad:
+        print(f"  corpus consequences: Bonferroni over {u} units ({b0:+.3f}, {b1:+.3f}, "
+              f"margin {b1 - F0:.3f}); {forms} protocol forms; all {n} records "
+              f"monotone and forecast; ecTSase endpoint {fe:+.3f}, bound {fe - 1.645 * se:.3f}")
+    return bad
+
+
 def check_titles():
     """The supplement must carry the article's title.
 
@@ -675,9 +1015,7 @@ def check_titles():
         return _titled(p.read_text())
 
     main = _title(DOCS["main"])
-    _si_names = ("natcomms_si.tex",)
-    _si_doc = next((ROOT / "si" / n for n in _si_names if (ROOT / "si" / n).exists()),
-                   ROOT / "si" / _si_names[0])
+    _si_doc = MR.one(ROOT / "si", "*_si.tex")
     si = _title(_si_doc)
     ok = main == si
     print(f"  article title : {main[:58]}...")
@@ -710,11 +1048,25 @@ _NEEDS_DOCS = {
     "check_general_census", "check_corpus", "check_provenance_split",
     "check_cited_scripts", "check_no_ai_mentions", "check_methods_sources",
     "check_precision_limited_count", "check_ladh_zero_claim",
-    "check_repo_metadata", "check_titles",
+    "check_repo_metadata", "check_titles", "check_reference_asymmetry",
+    "check_promoting_mode", "check_corpus_consequences",
 }
 
 
 def run():
+    # A target named by the caller must be readable.  Without this check,
+    # KIE_MANUSCRIPT pointed at a tree whose files are named differently falls
+    # through to the deposit path below: thirteen guards print SKIPPED, nothing
+    # fails, and the suite exits 0 -- which reads as a pass on documents that
+    # were never opened.  The graceful path exists for the public archive,
+    # where no manuscript is expected; it must not cover a requested target.
+    _requested = MR.requested()
+    if _requested and not HAVE_DOCS:
+        missing = "\n  ".join(str(p) for p in DOCS.values() if not p.exists())
+        sys.stderr.write(
+            f"manuscript directory {_requested}\nbut these documents are missing:\n"
+            f"  {missing}\nRefusing to report a pass on documents not read.\n")
+        return 2
     texts = _texts()
     bad = 0
     if HAVE_DOCS:
@@ -743,13 +1095,29 @@ def run():
                 verdict = f"MISSING (near: {sorted(set(near))[:3]})" if near else "MISSING"
                 bad += 1
             print(f"  {lab:30s} {val:+11.6f}  {d}: {verdict}")
+            # A CONFLICTING COPY is invisible to the containment test above:
+            # if the correct value appears once, a wrong copy of the same
+            # quantity elsewhere passes.  That is exactly how 3.26278 sat beside
+            # 3.26281 in the supplement.  Look for numbers written to the same
+            # precision that agree with the correct value to all but the last
+            # two decimals and yet differ from it.  Only at >= 5 decimals, where
+            # agreement to three places is meaningful and distinct quantities
+            # (3.34887 vs 3.34278) do not collide.
+            if dp >= 5:
+                head = s[: s.index(".") + 1 + (dp - 2)]
+                pat = rf"(?<![\d.]){re.escape(head)}\d{{2}}(?![\d])"
+                clash = sorted({m for m in re.findall(pat, t) if m != s})
+                if clash:
+                    print(f"  {'':30s} {'':11s}  {d}: CONFLICTING COPY {clash}")
+                    bad += 1
     for _fn in (check_si_figrefs, check_si_eqrefs, check_si_pointers,
                 check_general_census, check_corpus, check_provenance_split,
                 check_cited_scripts, check_no_ai_mentions,
                 check_methods_sources, check_precision_limited_count,
                 check_ladh_zero_claim, check_ecdhfr_assignment,
                 check_envelope, check_joint_counterexamples,
-                check_repo_metadata, check_titles):
+                check_repo_metadata, check_titles, check_reference_asymmetry,
+                check_promoting_mode, check_corpus_consequences):
         if not HAVE_DOCS and _fn.__name__ in _NEEDS_DOCS:
             print(f"  SKIPPED (needs the manuscript): {_fn.__name__}")
             continue

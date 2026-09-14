@@ -27,7 +27,10 @@ w = 2 kappa sqrt(mu_H) sigma^2(T), and for a harmonic promoting mode the exact
 thermal variance is w(T) = w0 coth(theta/2T) with theta = hbar omega_g / k_B.
 Zero-point motion makes w saturate below theta, so F(T) carries the mode
 frequency.  The sensitivity is largest where hbar omega_g ~ 2 k_B T, i.e. near
-400 cm^-1 at physiological temperature, which is the promoting-mode range.
+417 cm^-1 at 300 K; over A in [1, 50] and w0 in [0.1, 2] the peak moves between
+140 and 480 cm^-1.  The donor-acceptor frequencies invoked in the literature lie
+mostly lower, 50 to 300 cm^-1 (Klinman & Kohen 2013), so the offset is most
+informative about the upper part of that range.
 """
 from __future__ import annotations
 

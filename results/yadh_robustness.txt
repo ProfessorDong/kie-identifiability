@@ -15,9 +15,9 @@ integer 1:2:3      3.25725  -0.055522    0.1789   0.0389    0.1149    YES   YES
 ----------------------------------------------------------------------------------------
   to stop excluding the gated envelope F0   : errors x 2.60
   to stop excluding the semiclassical locus : errors x 1.96
-  The published errors are standard deviations of >=5 determinations.
-  Treated as standard errors of the mean they would be smaller by about
-  sqrt(5) = 2.24, so the margin above is conservative already.
+  Errors on the average (0.07, 0.02) match the standard
+  error of the 3 determinations (0.067, 0.018), so these
+  factors are the margin as it stands, with no allowance for the 'SD' label.
 
 3. POOLING THE THREE INDEPENDENT DETERMINATIONS
 ----------------------------------------------------------------------------------------
@@ -31,14 +31,15 @@ integer 1:2:3      3.25725  -0.055522    0.1789   0.0389    0.1149    YES   YES
 4. AGAINST THE SUMMED VIBRONIC ENVELOPE OVER A BOUNDED BOX
 ----------------------------------------------------------------------------------------
   yeast ADH 95% lower bound: +0.0630
-      lambda range   max B_vib   excluded?
+      lambda range   max B_vib   LCB > max
               5-60      0.6096          no
              10-60      0.2956          no
              15-60      0.0061         YES
              20-60     -0.0002         YES
-  Reorganization energies below ~10 kcal/mol are not plausible for
-  enzymatic hydride transfer; above that the observation excludes the
-  summed model as well as the ground-channel one.
+  WITHDRAWN as an exclusion: these maxima are pinned at the edge of the
+  sampled box and reverse sign when it is extended, the summed family
+  reaching offsets well above anything measured.  No exclusion of the
+  summed model is claimed; the comparison is with the ground channel only.
 
 5. REVERSIBILITY AND COMMITMENT, RESTATED
 ----------------------------------------------------------------------------------------
@@ -46,3 +47,9 @@ integer 1:2:3      3.25725  -0.055522    0.1789   0.0389    0.1149    YES   YES
   half-line (+0.1287, inf): no commitment lowers the endpoint.
   vacuity window: EMPTY (F_obs > 0), so no
   equilibrium isotope effect makes the observation uninformative.
+
+6. MULTIPLICITY
+----------------------------------------------------------------------------------------
+  analysis units 32, one-sided z = 2.9552
+  rho = +0: Bonferroni bound +0.0107, margin over F0 +0.0528, over 0 +0.0107
+  rho = -1: Bonferroni bound -0.0147, margin over F0 +0.0274, over 0 -0.0147

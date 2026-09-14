@@ -544,19 +544,18 @@ def check_manuscript(path=None, rows=None):
     """
     from pathlib import Path
     if path is None:
-        # Same target as audit_numbers.py: the manuscript directory by default,
-        # with KIE_MANUSCRIPT overriding.  This once pointed elsewhere and so
-        # checked the census against a superseded draft.
-        import os
-        root = Path(os.environ.get("KIE_MANUSCRIPT")
-                    or Path(__file__).resolve().parents[2] / "natcomms")
-        path = root / "si" / "si_body.tex"
+        # Same target as audit_numbers.py, resolved by manuscript_root.py.
+        # This pointed at a superseded manuscript directory twice, and so
+        # checked the census against text no longer being maintained.
+        import manuscript_root as MR
+        path = MR.root() / "si" / "si_body.tex"
     txt = Path(path).read_text()
     a = txt.index(r"\subsection{An atlas of mechanisms}")
     b = txt.index(r"\subsection{A bypass contracts")
     sec = txt[a:b]
     _root = Path(path).parent.parent
-    main = _root / "natcomms_manuscript.tex"
+    import manuscript_root as MR
+    main = MR.one(_root, "*_manuscript.tex")
     mtxt = main.read_text()
     ma = mtxt.index("We tested this by enumeration")
     sec += mtxt[ma:ma + 1400]

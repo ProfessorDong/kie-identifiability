@@ -20,3 +20,6 @@ __pycache__/
 figures/*.pdf
 # partial benchmark written when primary sources are absent
 data/*_partial.csv
+
+# local pointer to a manuscript directory (see analysis/manuscript_root.py)
+analysis/manuscript_root.local

@@ -70,9 +70,18 @@ def main():
     for tgt, nm in ((f0, "the gated envelope F0"), (0.0, "the semiclassical locus")):
         lam = (f - tgt) / (1.645 * sd)
         say(f"  to stop excluding {nm:24s}: errors x {lam:.2f}")
-    say("  The published errors are standard deviations of >=5 determinations.")
-    say("  Treated as standard errors of the mean they would be smaller by about")
-    say(f"  sqrt(5) = {np.sqrt(5):.2f}, so the margin above is conservative already.")
+    # Until 2026-09-14 this claimed the margin was conservative by sqrt(5),
+    # reading Cha's "standard deviations based on five or more determinations"
+    # as replicate SDs.  They are within-experiment scatter over >=5 time points,
+    # propagated into the mean for the average row -- and against the scatter
+    # between the three determinations, the average's errors are already the
+    # standard error of the mean.  No margin is claimed from the label.
+    det = y[y.note.str.contains("determination")]
+    se_h = det.K_HT.std(ddof=1) / np.sqrt(len(det))
+    se_d = det.K_DT.std(ddof=1) / np.sqrt(len(det))
+    say(f"  Errors on the average ({avg.K_HT_se:.2f}, {avg.K_DT_se:.2f}) match the standard")
+    say(f"  error of the {len(det)} determinations ({se_h:.3f}, {se_d:.3f}), so these")
+    say("  factors are the margin as it stands, with no allowance for the 'SD' label.")
 
     say("")
     say("3. POOLING THE THREE INDEPENDENT DETERMINATIONS")
@@ -99,7 +108,7 @@ def main():
     say("-" * 88)
     lcb = f - 1.645 * sd
     say(f"  yeast ADH 95% lower bound: {lcb:+.4f}")
-    say(f"{'lambda range':>18}{'max B_vib':>12}{'excluded?':>12}")
+    say(f"{'lambda range':>18}{'max B_vib':>12}{'LCB > max':>12}")
     for lo, hi, lab in ((5, 60, "5-60"), (10, 60, "10-60"), (15, 60, "15-60"),
                         (20, 60, "20-60")):
         best = -np.inf
@@ -110,9 +119,14 @@ def main():
                     if np.isfinite(b):
                         best = max(best, b)
         say(f"{lab:>18}{best:12.4f}{'YES' if lcb > best else 'no':>12}")
-    say("  Reorganization energies below ~10 kcal/mol are not plausible for")
-    say("  enzymatic hydride transfer; above that the observation excludes the")
-    say("  summed model as well as the ground-channel one.")
+    # Until 2026-09-14 this section concluded that the observation excludes the
+    # summed model above ~10 kcal/mol.  The supplement withdrew that: these
+    # maxima sit at the edge of the sampled box and reverse sign when it is
+    # extended (vibronic_envelope.py).  The printout now says so.
+    say("  WITHDRAWN as an exclusion: these maxima are pinned at the edge of the")
+    say("  sampled box and reverse sign when it is extended, the summed family")
+    say("  reaching offsets well above anything measured.  No exclusion of the")
+    say("  summed model is claimed; the comparison is with the ground channel only.")
 
     say("")
     say("5. REVERSIBILITY AND COMMITMENT, RESTATED")
@@ -123,6 +137,23 @@ def main():
     say(f"  half-line ({fmin:+.4f}, inf): no commitment lowers the endpoint.")
     say(f"  vacuity window: {'EMPTY' if win is None else win} (F_obs > 0), so no")
     say("  equilibrium isotope effect makes the observation uninformative.")
+
+    say("")
+    say("6. MULTIPLICITY")
+    say("-" * 88)
+    # The yeast system is singled out from every analysis unit examined, so its
+    # bound also carries a one-sided Bonferroni correction over all of them.
+    import corpus
+    m = corpus.counts()["units"]
+    z = stats.norm.ppf(1 - 0.05 / m)
+    g, f0, _ = convention("reduced C-H")
+    f = np.log(avg.K_HT) - g * np.log(avg.K_DT)
+    a, b = avg.K_HT_se / avg.K_HT, g * avg.K_DT_se / avg.K_DT
+    say(f"  analysis units {m}, one-sided z = {z:.4f}")
+    for rho in (0.0, -1.0):
+        bnd = f - z * np.sqrt(a * a + b * b - 2 * rho * a * b)
+        say(f"  rho = {rho:+.0f}: Bonferroni bound {bnd:+.4f}, margin over F0 "
+            f"{bnd - f0:+.4f}, over 0 {bnd:+.4f}")
 
     with open("../results/yadh_robustness.txt", "w") as fh:
         fh.write("\n".join(OUT) + "\n")

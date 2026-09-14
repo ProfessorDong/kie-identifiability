@@ -2,8 +2,10 @@
 THE DECISIVE CASE: YEAST ADH PRIMARY EFFECTS (Cha, Murray & Klinman 1989)
 ==========================================================================================
 gamma_SC = 3.34887   F0 = -0.042086
-Errors are standard deviations of >=5 determinations. Using them as the
-standard error of the mean is conservative by about sqrt(5).
+Errors as published. Cha et al. call them standard deviations of >=5
+determinations (time points within one experiment); the errors on the
+average are those propagated into the mean, and they match the standard
+error of the three determinations, so no further margin is claimed.
 
 record                               K_HT         K_DT  gam_obs    L_H    F_min      sd  95% LCB   >F0   >0
 Table 2 determination 1         7.15+-0.17    1.72+-0.03    3.627   8.54   0.1509  0.0631   0.0472   YES  YES

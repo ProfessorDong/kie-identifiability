@@ -26,6 +26,11 @@ NUM = r"([0-9]+\.[0-9]+)\s*(?:±|\+-|\+/-)\s*([0-9]+\.[0-9]+)"
 ROW4 = re.compile(r"^\s*([0-9]{1,2})\s+" + NUM + r"\s+" + NUM)
 
 
+# Sources whose records are transcribed by hand from scanned pages and so are never
+# produced by this parse.  Must agree with HAND in audit_numbers.check_provenance_split.
+HAND_TRANSCRIBED = {"10.1021/bi00253a026"}
+
+
 def _xlsx_cells(path):
     """Numeric cells of the first worksheet, as {(row, col): float}.
 
@@ -166,6 +171,74 @@ def parse_tables(txt, table_re, source):
             yield m.group(1).strip(), rows
 
 
+
+# PDF source of each parsed series.  The spreadsheet source (Islam 2018) is not
+# here: its values are recovered from replicate columns, not printed as value±error.
+PDF_SOURCES = {
+    "10.1021/ja411998h": "PMC3985941/ja411998h_si_001.pdf",
+    "10.1021/acs.biochem.1c00558": "PMC8697555/bi1c00558_si_001.pdf",
+    "10.1021/acscatal.9b03345": "manual/cs9b03345_si_001.pdf",
+    "10.1021/ja501936d": "PMC4063187/ja501936d_si_001.pdf",
+    "10.3390/ijms16047304": "PMC4425018/ijms-16-07304-s001.pdf",
+}
+
+
+def _num(x):
+    """Shortest decimal form, which is how a trailing zero is lost in the CSV."""
+    return format(float(x), ".10g")
+
+
+def transcription_audit(bench=OUT / "trinomial_benchmark.csv"):
+    """Every shipped PDF-derived value must appear WITH ITS ERROR in its source.
+
+    The manuscript, the SI and SOURCES.md have long stated that an audit
+    confirms every parsed number appears verbatim in its source.  Until
+    2026-09-14 no deposited code performed that check; it existed only as prose.
+    This is it.  It reads the SHIPPED benchmark -- the numbers the analysis
+    uses -- not a fresh parse, so a hand edit to the CSV is caught even though
+    the parser would not reproduce it.
+
+    Each isotope effect is matched together with its uncertainty, e.g.
+    "3.07 ± 0.02", tolerating trailing zeros the CSV drops (4.10 -> 4.1) and any
+    spacing around the ±.  Matching the pair rather than the bare number means a
+    value attached to the wrong error fails, which a presence test would miss.
+
+    What it does NOT establish: that the value sits in the right ROW or COLUMN
+    of the table.  A swap of the H/T and D/T columns, or of two temperatures,
+    would pass.  Row and column assignment were checked against the rendered
+    page images during the 2026-09 reference review, not by this function.
+    """
+    d = pd.read_csv(bench)
+    pairs = found = 0
+    misses = []
+    for doi, rel in PDF_SOURCES.items():
+        pdf = SI / rel
+        if not pdf.exists():
+            print(f"  transcription audit: {rel} not present; skipped")
+            continue
+        txt = text_of(pdf).replace("\u00b1", "±")
+        # Collect every "number ± number" the source prints and compare
+        # NUMERICALLY.  Matching formatted strings instead is brittle: the CSV
+        # drops trailing zeros, so a printed "2.00 ± 0.05" does not contain "2".
+        printed = {(float(a), float(b)) for a, b in
+                   re.findall(r"(\d+\.?\d*)\s*±\s*(\d+\.?\d*)", txt)}
+        for _, r in d[d["source_DOI"] == doi].iterrows():
+            for val, err in (("K_HT", "K_HT_se"), ("K_DT", "K_DT_se")):
+                v, e = float(r[val]), float(r[err])
+                pairs += 1
+                if any(abs(v - a) < 5e-10 and abs(e - b) < 5e-10
+                       for a, b in printed):
+                    found += 1
+                else:
+                    misses.append(f"{r['variant']} {r['T_C']:g}C "
+                                  f"{val}={_num(v)}±{_num(e)}")
+    print(f"\n  transcription audit: {found} of {pairs} value±error pairs "
+          f"({2 * pairs} values) found verbatim in their source PDFs; "
+          f"{len(misses)} missing")
+    for m in misses:
+        print(f"    MISSING  {m}")
+    return len(misses)
+
 def main():
     recs = []
 
@@ -279,16 +352,51 @@ def main():
     # this script would otherwise silently overwrite it with a partial set.
     target = OUT / "trinomial_benchmark.csv"
     n_series = d.groupby(["family", "system", "variant", "step"]).ngroups
+    have = None
     if target.exists():
         have = pd.read_csv(target)
-        n_have = have.groupby(["family", "system", "variant", "step"]).ngroups
+        keys = ["family", "system", "variant", "step"]
+        n_have = have.groupby(keys).ngroups
+        # The shipped benchmark also holds records transcribed by hand from
+        # scanned pages (SOURCES.md), which no parse can produce.  Until
+        # 2026-09-14 the comparison below counted those in its baseline, so a
+        # complete, exact rebuild still printed "Primary sources are missing" --
+        # on every correct run.  Compare against the parseable subset instead.
+        hand = have[have["source_DOI"].isin(HAND_TRANSCRIBED)]
+        parseable = have[~have["source_DOI"].isin(HAND_TRANSCRIBED)]
+        n_parse = parseable.groupby(keys).ngroups
         if n_series < n_have:
+            # Never overwrite the complete file with a parse that lacks the
+            # hand-transcribed rows, whether or not the parse itself is complete.
             target = OUT / "trinomial_benchmark_partial.csv"
+        if n_series < n_parse:
             print(f"\n  WARNING: rebuilt {len(d)} records / {n_series} series, but the")
-            print(f"  shipped benchmark has {len(have)} / {n_have}.  Primary sources are")
-            print("  missing; run external_data/fetch_sources.sh and see SOURCES.md.")
-            print(f"  Writing to {target.name} and leaving the complete file intact.\n")
+            print(f"  shipped benchmark has {len(parseable)} / {n_parse} parseable ones.")
+            print("  Primary sources are missing; run external_data/fetch_sources.sh")
+            print("  and see SOURCES.md.")
     d.to_csv(target, index=False)
+    if have is not None and n_series < n_have:
+        if n_series < n_parse:
+            pass  # warned above; a partial parse is not compared
+        else:
+            # Compare what was WRITTEN, read back, against the shipped parseable
+            # rows.  Comparing the in-memory frame instead fails on dtype
+            # differences in the merge keys and reports a false difference.
+            new = pd.read_csv(target)
+            k = keys + ["T_C"]
+            cmp = parseable.merge(new, on=k, how="outer",
+                                  suffixes=("_ship", "_new"), indicator=True)
+            paired = bool((cmp["_merge"] == "both").all())
+            same = paired and all(
+                (cmp[f"{c}_ship"] - cmp[f"{c}_new"]).abs().max() < 1e-9
+                for c in ("K_HT", "K_HT_se", "K_DT", "K_DT_se"))
+            print(f"\n  Rebuilt all {len(d)} parseable records / {n_series} series"
+                  + (" and they reproduce the shipped values exactly." if same
+                     else ", but they DIFFER from the shipped values; inspect before use."))
+            print(f"  The shipped benchmark also holds {len(hand)} hand-transcribed records"
+                  f" / {n_have - n_parse} series")
+            print("  that no parse produces (SOURCES.md), so this is written separately.")
+        print(f"  Wrote {target.name}; the complete file is left intact.\n")
 
     print(f"matched (H/T, D/T) competitive records: {len(d)}")
     print(f"independent series: {d.groupby(['family','system','variant','step']).ngroups}")
@@ -304,4 +412,6 @@ def main():
 
 
 if __name__ == "__main__":
+    import sys
     main()
+    sys.exit(1 if transcription_audit() else 0)

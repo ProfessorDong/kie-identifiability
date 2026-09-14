@@ -68,10 +68,15 @@ for tag, r in (("mono", mono), ("inter", inter)):
 b = pd.read_csv("../results/modelfree_bounds.csv").sort_values("bound")
 b = b.reset_index(drop=True)
 b["idx"] = np.arange(len(b))
-w_("g2b_bounds.dat", b[["idx", "bound"]])
+# each series is a half-line [bound, inf), drawn as a ray to the axis edge at
+# x = 0.30; fig2_bounds.tex reads that length as "len", which this export
+# omitted for a while, so the figure could not build
+b["len"] = 0.30 - b.bound
+w_("g2b_bounds.dat", b[["idx", "bound", "len"]])
+from corpus import display_family
 (OUT / "g2b_labels.tex").write_text("".join(
     f"\\node[font=\\fontsize{{6.4}}{{7.6}}\\selectfont,anchor=east] "
-    f"at (axis cs:-1.02,{r.idx:.0f}) {{{r.family} {r.variant}}};\n"
+    f"at (axis cs:-1.02,{r.idx:.0f}) {{{display_family(r.family, r.variant)} {r.variant}{' (' + r.step + ')' if r.family == 'TSase' else ''}}};\n"
     for _, r in b.iterrows()))
 print(f"  g2b_labels.tex          {len(b)} labels")
 print(f"\n  gamma_SC={GSC:.5f}  F0={F0:+.6f}")

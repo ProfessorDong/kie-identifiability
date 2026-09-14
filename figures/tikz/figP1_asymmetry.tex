@@ -18,8 +18,8 @@
   annc/.style={font=\fontsize{6.3}{7.6}\selectfont, color=cInk, align=center},
 }
 
-\begin{axis}[asym, name=A, width=41mm, height=83mm,
-  xmin=-0.50, xmax=0.20, ymin=0.2, ymax=32.6,
+\begin{axis}[asym, name=A, width=41mm, height=85.6mm,
+  xmin=-0.50, xmax=0.20, ymin=0.2, ymax=33.6,
   xlabel={endpoint of the identified set, $F_{\min}$},
   ytick=\empty, ymajorgrids=false,
   y axis line style={draw=none}, ytick style={draw=none},
@@ -29,21 +29,23 @@
 
   % left of F0 the set contains both thresholds; right of it the set clears F0
   \addplot[draw=none, fill=cGrey!10] coordinates
-    {(-0.50,0.2) (-0.042086,0.2) (-0.042086,32.6) (-0.50,32.6)} \closedcycle;
+    {(-0.50,0.2) (-0.042086,0.2) (-0.042086,33.6) (-0.50,33.6)} \closedcycle;
   \addplot[draw=none, fill=cBandG!13] coordinates
-    {(-0.042086,0.2) (0.20,0.2) (0.20,32.6) (-0.042086,32.6)} \closedcycle;
+    {(-0.042086,0.2) (0.20,0.2) (0.20,33.6) (-0.042086,33.6)} \closedcycle;
 
   \input{data/fa_rays.tex}
 
   \draw[cBandG!60!black, line width=0.6pt] (axis cs:-0.042086,0.2) --
-       (axis cs:-0.042086,32.6);
-  \draw[cInk, line width=0.5pt, dashed] (axis cs:0,0.2) -- (axis cs:0,32.6);
+       (axis cs:-0.042086,33.6);
+  \draw[cInk, line width=0.5pt, dashed] (axis cs:0,0.2) -- (axis cs:0,33.6);
 
   % Short forms: the narrower axis leaves no room for the fuller wording, and
   % the caption carries it.  The red key is dropped for the same reason.
-  \node[annc, anchor=south, color=cGrey!70!black] at (axis cs:-0.30,30.6)
+  \node[annc, anchor=south, color=cGrey!70!black] at (axis cs:-0.30,31.6)
     {set contains\\both thresholds};
-  \node[annc, anchor=south, color=cBandG!55!black] at (axis cs:0.085,30.6)
+  % Placed below the three rows that reach past F0, not above them: at the top
+  % it covered the yeast ray, the one row the region exists to show.
+  \node[annc, anchor=south, color=cBandG!55!black] at (axis cs:0.110,12.0)
     {set clears\\$\Fz$};
 \end{axis}
 \end{tikzpicture}

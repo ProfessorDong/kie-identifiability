@@ -64,11 +64,8 @@ def structural_prediction_check():
     open half-line.  Checking that against every record is a genuine
     out-of-sample test of a structural claim, since no record entered the proof.
     """
-    frames = [pd.read_csv(f) for f in ("../data/trinomial_benchmark.csv",
-                                       "../data/ladh_adh_primary.csv",
-                                       "../data/bsao_grant1989.csv")]
-    ya = pd.read_csv("../data/cha1989_yadh.csv")
-    frames.append(ya[ya.note.str.contains("average")])
+    import corpus
+    frames = [corpus.series(), corpus.single_condition()]
     n = viol = 0
     for f in frames:
         for _, r in f.iterrows():

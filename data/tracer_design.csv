@@ -1,0 +1,31 @@
+family,variant,step,design,tracer_HT,tracer_DT,source,evidence
+YADH,wild type,hydride,labeled,[1-3H]benzyl alcohol,[1-2H 1-3H]benzyl alcohol,Cha1989,note 27
+LADH,wild type,hydride,labeled,[1-3H]benzyl alcohol,[1-2H 1-3H]benzyl alcohol,Bahnson1993; TsaiKlinman2001,Methods
+LADH,ESE chimera,hydride,labeled,[1-3H]benzyl alcohol,[1-2H 1-3H]benzyl alcohol,Bahnson1993,Methods
+LADH,L57V,hydride,labeled,[1-3H]benzyl alcohol,[1-2H 1-3H]benzyl alcohol,Bahnson1993,Methods
+LADH,L57F,hydride,labeled,[1-3H]benzyl alcohol,[1-2H 1-3H]benzyl alcohol,Bahnson1993,Methods
+LADH,F93W,hydride,labeled,[1-3H]benzyl alcohol,[1-2H 1-3H]benzyl alcohol,Bahnson1993; TsaiKlinman2001,Methods
+LADH,V203L,hydride,labeled,[1-3H]benzyl alcohol,[1-2H 1-3H]benzyl alcohol,Bahnson1997,Methods
+LADH,V203A,hydride,labeled,[1-3H]benzyl alcohol,[1-2H 1-3H]benzyl alcohol,Bahnson1997,Methods
+LADH,V203A-F93W,hydride,labeled,[1-3H]benzyl alcohol,[1-2H 1-3H]benzyl alcohol,Bahnson1997,Methods
+LADH,V203G,hydride,labeled,[1-3H]benzyl alcohol,[1-2H 1-3H]benzyl alcohol,Bahnson1997,Methods
+BSAO,wild type,proton,labeled,randomly tritiated [1-1H]benzylamine,randomly tritiated [1-2H]benzylamine,Grant1989,Methods
+MAOB,pH 7.5,abstraction,labeled,[1 1-1H2 1-3H]-p-methoxybenzylamine,[1 1-2H2 1-3H]-p-methoxybenzylamine,Jonsson1994,Methods
+MAOB,pH 6.1,abstraction,labeled,[1 1-1H2 1-3H]-p-methoxybenzylamine,[1 1-2H2 1-3H]-p-methoxybenzylamine,Jonsson1994,Methods
+FDH,V123A,hydride,shared,[3H]formic acid,[3H]formic acid,Pagano2019,Methods
+FDH,V123G,hydride,shared,[3H]formic acid,[3H]formic acid,Pagano2019,Methods
+TSase,WT,hydride,shared,(R)-6-[3H]-MTHF,(R)-6-[3H]-MTHF,Islam2018,Methods
+TSase,WT,proton,shared,[5-3H]-dUMP,[5-3H]-dUMP,Islam2018,Methods
+TSase,Y209W,proton,shared,[5-3H] dUMP,[5-3H] dUMP,Abeysinghe2015,Methods
+ecTSase,wild type,hydride,shared,(R)-[6-3H]CH2H4folate,(R)-[6-3H]CH2H4folate,Agrawal2004,Materials
+ecDHFR,F125M,hydride,shared,(4R)-[4-3H]-NADPH,(4R)-[4-3H]-NADPH,Singh2014,Methods
+ecDHFR,G121V-F125M,hydride,shared,(4R)-[4-3H]-NADPH,(4R)-[4-3H]-NADPH,Singh2014,Methods
+ecDHFR,M42W-F125M,hydride,shared,(4R)-[4-3H]-NADPH,(4R)-[4-3H]-NADPH,Singh2014,Methods
+ecDHFR,W133F,hydride,shared,(4R)-[4-3H]-NADPH,(4R)-[4-3H]-NADPH,Singh2014,Methods
+ecDHFR,heavy enzyme,hydride,shared,[4R-T]-NADPH,[4R-T]-NADPH,Wang2014,Methods
+ecDHFR,light enzyme,hydride,shared,[4R-T]-NADPH,[4R-T]-NADPH,Wang2014,Methods
+hsDHFR,F32L,hydride,shared,4R-3H-NADPH,4R-3H-NADPH,Li2021,Methods
+hsDHFR,F32L-PP26N-PEKN62G,hydride,shared,4R-3H-NADPH,4R-3H-NADPH,Li2021,Methods
+hsDHFR,F32M,hydride,shared,4R-3H-NADPH,4R-3H-NADPH,Li2021,Methods
+hsDHFR,d26-PPLR-d62-PEKN,hydride,shared,4R-3H-NADPH,4R-3H-NADPH,Li2021,Methods
+hsDHFR,d62-PEKN,hydride,shared,4R-3H-NADPH,4R-3H-NADPH,Li2021,Methods

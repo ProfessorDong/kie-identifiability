@@ -13,6 +13,7 @@ import pandas as pd
 from scipy import stats
 
 import masses as M
+from corpus import display_family
 
 F0 = abs(M.offset_F0("C"))
 # The manuscript tree is not part of the public package; fall back to
@@ -31,7 +32,7 @@ def main() -> None:
     lines = []
     for _, r in d.iterrows():
         lines.append(
-            f"{r.family} & {r.variant} & {r.step} & {int(r.n_T)} & "
+            f"{display_family(r.family, r.variant)} & {r.variant} & {r.step} & {int(r.n_T)} & "
             f"{r.chi2_min:.1f}/{int(r.dof)} & {r.p_fit:.3f} & "
             f"{r.F_hat:+.2f} & [{r.F_lo:+.2f}, {r.F_hi:+.2f}] & "
             f"{r.width:.3f} ({r.width/F0:.1f})\\\\"

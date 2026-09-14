@@ -395,6 +395,20 @@ experimentally identified set and a computed mechanism envelope.
 ```
 analysis/
   masses.py             isotope mass convention, imported everywhere
+  corpus.py             the matched primary record: the temperature series and
+                        every single-condition record file, read by all
+                        scripts that need them (97 records, 32 units)
+  reference_asymmetry.py  the reference asymmetry r: exactly 1 where one
+                        tritiated isotopologue served both experiments
+                        (data/tracer_design.csv), otherwise inferred from the
+                        sources' secondary effects
+  manuscript_root.py    locates a manuscript for the text cross-checks
+                        (KIE_MANUSCRIPT, or an untracked manuscript_root.local);
+                        without one those checks are skipped
+  holdout.py            leave-one-temperature-out stability; Theorem 1
+                        forecast checked against every record
+  yadh_robustness.py    the yeast result under mass convention, error
+                        inflation, pooling, reversibility and multiplicity
   audit_numbers.py      sweeps every derived number against both manuscript
                         files; catches fabricated and stale values that a
                         whitelist check cannot
@@ -431,10 +445,10 @@ analysis/
   discriminate.py       model fits (superseded analysis, retained for the record)
   design.py             power calculation (superseded, retained)
   export_figs_v3.py     pgfplots tables for the figures
-  export_fig_asym.py    identified-set figure data (29 systems)
-  export_si_tables.py   supplementary tables; writes to the manuscript tree if
-                        present, otherwise to results/
-  export_benchmark_table.py  complete 94-record benchmark table
+  export_fig_asym.py    identified-set figure data (32 analysis units)
+  export_si_tables.py   supplementary tables (results/)
+  export_bounds_table.py     per-series bounds table (results/)
+  export_benchmark_table.py  complete 83-record temperature-series table
   export_profiles_table.py   per-series profile table
 data/                   curated inputs, never written by any script
 results/                generated reports and tables
@@ -452,7 +466,7 @@ cd analysis
 
 python masses.py             # the mass convention and its consequences
 python verify_derivation.py  # must exit 0
-python build_trinomial.py    # benchmark + transcription audit (244 values)
+python build_trinomial.py    # benchmark + transcription audit (260 values)
 python ridge.py              # ridge limit, offset, finite-scale bound
 python partial_id.py         # envelope + exact endpoint, both verified
 python identifiable_set.py   # the half-line result, point bounds
@@ -497,10 +511,10 @@ gamma_SC = 3.34887   rigid = 2.45884   F0 = -0.042086   threshold = 1.26890
 ```
 
 Temperature-series benchmark: 83 matched records, 18 series, 5 enzyme families,
-6 enzyme-organism systems, 2-45 C. Transcription audit: 244 values across the
-four PDF-derived sources, 0 misses. The wider matched-primary record used for the
-identified-set figure is 96 records over 31 analysis units, of which 27 fall on
-the uninformative side, three more fail on precision alone, and one clears.
+6 enzyme-organism systems, 2-45 C. Transcription audit: 260 values across the
+five PDF-derived sources, each matched with its uncertainty, 0 misses. The wider matched-primary record used for the
+identified-set figure is 97 records over 32 analysis units, of which 27 fall on
+the uninformative side, four more fail on precision alone, and one clears.
 
 Bounds: 0 of 18 series exclude either mechanism, at correlation -1, 0, 0.5 or
 0.9. Best 95% lower bound -0.0987 (rho = -1) to -0.0933 (rho = 0.9), ecDHFR light
@@ -515,10 +529,11 @@ over 5 replications of 5e4 draws; largest Monte Carlo s.d. over all 72 cells is
 
 ## Relation to recent work
 
-Williams (*J. Phys. Chem. B* **129**, 3604, 2025) observes that many parameter
-combinations reproduce the same apparent KIE, and concludes derived intrinsic
-values are of doubtful validity. That is the non-identification problem stated
-qualitatively. This work characterizes the identified set exactly instead, and
+Williams (*J. Phys. Chem. B* **129**, 3604, 2025) shows by numerical example
+that the same apparent KIE can arise from many combinations of step isotope
+effects and weighting factors, and proposes comparing computed effects with
+observed ones rather than with derived intrinsic values "of possibly dubious
+validity". That is the non-identification problem, illustrated. This work characterizes the identified set exactly instead, and
 finds it one-sided, so a robust inference survives in one direction.
 
 Smedarchina & Siebrand (*Chem. Phys. Lett.* **410**, 370, 2005) reached the

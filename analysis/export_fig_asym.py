@@ -8,6 +8,7 @@ import pandas as pd
 
 import masses as M
 from partial_id import F_min_exact
+import corpus
 
 GSC = M.gamma_sc("C"); F0 = M.offset_F0("C")
 OUT = "../figures/tikz/data/"
@@ -61,33 +62,42 @@ b = b[b.rho == RHO]
 # TSase contributes both a hydride- and a proton-transfer series; without the
 # step in the label the two WT rows are indistinguishable in the figure.
 multi = {f for f, g in b.groupby("family") if g.step.nunique() > 1}
+# Thymidylate synthase appears as two species, and since the wild-type E. coli
+# record was admitted (2026-09-14) "TSase WT" no longer names one enzyme.  The
+# species is read from the benchmark's own system column, not assumed.
+_SPECIES = {"Escherichia coli": "ec", "Homo sapiens": "hs"}
+
+
+def _tsase_prefix(variant):
+    sysname = _TB[(_TB.family == "TSase")
+                  & (_TB.variant.astype(str) == str(variant))].system.iloc[0]
+    return next(v for k, v in _SPECIES.items() if sysname.startswith(k))
+
+
 for _, r in b.iterrows():
-    lab = f"{r.family} {r.variant}"
-    if r.family in multi:
-        lab += f" ({r.step})"
+    if r.family == "TSase":
+        lab = f"{_tsase_prefix(r.variant)}TSase {r.variant} ({r.step})"
+    else:
+        lab = f"{r.family} {r.variant}"
+        if r.family in multi:
+            lab += f" ({r.step})"
     rows.append((lab, r.point, r.lcb, "series", _series_closed(r)))
-lad = pd.read_csv("../data/ladh_adh_primary.csv")
+
+single = corpus.single_condition()
 # A form measured by two studies at different temperatures is two analysis
 # units, as the two amine oxidase pH values already are; the temperature
 # disambiguates the label only where a form appears more than once.
-_dup = {v for v, g in lad.groupby("variant") if len(g) > 1}
-for _, r in lad.iterrows():
+_dup = {(fam, v) for (fam, v), g in single.groupby(["family", "variant"]) if len(g) > 1}
+_SHORT = {"wild type": "WT"}
+for _, r in single.iterrows():
     f, _, _, cl = F_min_exact(r.K_HT, r.K_DT)
-    lab = f"LADH {r.variant}"
-    if r.variant in _dup:
-        lab += f" {int(r.T_C)}$^\\circ$C"
-    rows.append((lab, f,
-                 _lcb(f, r.K_HT, r.K_HT_se, r.K_DT, r.K_DT_se), "ladh", cl))
-bs = pd.read_csv("../data/bsao_grant1989.csv")
-for _, r in bs.iterrows():
-    f, _, _, cl = F_min_exact(r.K_HT, r.K_DT)
-    rows.append((f"BSAO {r.variant}", f,
-                 _lcb(f, r.K_HT, r.K_HT_se, r.K_DT, r.K_DT_se), "bsao", cl))
-ya = pd.read_csv("../data/cha1989_yadh.csv")
-a = ya[ya.note.str.contains("average")].iloc[0]
-f, _, _, cl = F_min_exact(a.K_HT, a.K_DT)
-rows.append(("YADH wild type", f,
-             _lcb(f, a.K_HT, a.K_HT_se, a.K_DT, a.K_DT_se), "yadh", cl))
+    if r.grp == "ectsase":
+        lab = f"ecTSase {_SHORT.get(r.variant, r.variant)} ({r.step})"
+    else:
+        lab = f"{r.family} {r.variant}"
+        if (r.family, r.variant) in _dup:
+            lab += f" {int(r.T_C)}$^\\circ$C"
+    rows.append((lab, f, _lcb(f, r.K_HT, r.K_HT_se, r.K_DT, r.K_DT_se), r.grp, cl))
 
 df = pd.DataFrame(rows, columns=["label", "point", "lcb", "grp", "closed"])
 df = df.sort_values("point").reset_index(drop=True)

@@ -11,12 +11,12 @@ import numpy as np
 import pandas as pd
 
 import masses as M
+from corpus import display_family
 
 GSC = M.gamma_sc("C")
-# The manuscript tree is not part of the public package; fall back to
-# results/ so the table is still reproducible from the shipped code.
-_MS = pathlib.Path("../manuscript")
-OUT = str(_MS / "sm_table_data.tex") if _MS.is_dir() else "../results/sm_table_data.tex"
+# Always results/.  A manuscript build copies the table from here; no
+# manuscript directory is written by this script.
+OUT = "../results/sm_table_data.tex"
 
 
 def _num(x: float) -> str:
@@ -39,7 +39,7 @@ def main() -> None:
     d = pd.read_csv("../data/trinomial_benchmark.csv")
     lines, nrec = [], 0
     for (fam, var, step), g in d.groupby(["family", "variant", "step"], sort=False):
-        lines.append(f"\\textit{{{fam} {var}, {step}}} & & & & & & \\\\")
+        lines.append(f"\\textit{{{display_family(fam, var)} {var}, {step}}} & & & & & & \\\\")
         for _, r in g.sort_values("T_C").iterrows():
             gam = np.log(r.K_HT) / np.log(r.K_DT)
             lh = (r.K_HT - 1.0) / (r.K_DT - 1.0)

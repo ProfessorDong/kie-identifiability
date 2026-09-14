@@ -46,8 +46,10 @@ def main():
     say("THE DECISIVE CASE: YEAST ADH PRIMARY EFFECTS (Cha, Murray & Klinman 1989)")
     say("=" * 90)
     say(f"gamma_SC = {GSC:.5f}   F0 = {F0:+.6f}")
-    say("Errors are standard deviations of >=5 determinations. Using them as the")
-    say("standard error of the mean is conservative by about sqrt(5).")
+    say("Errors as published. Cha et al. call them standard deviations of >=5")
+    say("determinations (time points within one experiment); the errors on the")
+    say("average are those propagated into the mean, and they match the standard")
+    say("error of the three determinations, so no further margin is claimed.")
     say("")
     say(f"{'record':28s}{'K_HT':>13}{'K_DT':>13}{'gam_obs':>9}{'L_H':>7}"
         f"{'F_min':>9}{'sd':>8}{'95% LCB':>9}{'>F0':>6}{'>0':>5}")

@@ -1,0 +1,2 @@
+family,variant,step,T_C,K_HT,K_HT_se,K_DT,K_DT_se,note,source
+ecTSase,wild type,hydride,20,6.91,0.05,1.78,0.02,"observed competitive V/K H/T and D/T stated in the Results text (p. 2001; Fig. 1); each temperature averages >=3 independent experiments, the error type is not stated; 100 mM Tris pH 7.5, 50 mM 2-mercaptoethanol, 1 mM EDTA, 5 mM CH2O, no Mg2+; tracer (R)-[6-3H]CH2H4folate in protiated or (R)-[6-2H] cofactor; the other temperatures (5, 30, 40 C) are in Fig. 2 only",Agrawal2004
