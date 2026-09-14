@@ -496,6 +496,16 @@ Every reported column -- `F_hat`, `F_lo`, `F_hi`, `width`, `open_interval`,
 every verdict. Only the timings above are machine dependent; most steps finish
 in seconds, and `offset_analysis.py` takes about fifty minutes.
 
+Re-verified for v1.8.0 on 2026-09-14 from a clean clone (Python 3.12.13, numpy
+2.2.6, scipy 1.17.1, pandas 3.0.2, sympy 1.14.0), with the fetched supplements in
+place: `verify_derivation.py`, `corpus.py`, `reference_asymmetry.py`,
+`holdout.py`, `build_trinomial.py` (transcription audit 130 of 130 pairs),
+`network_geometry.py`, `identifiable_set.py`, `bounds_uncertainty.py`,
+`completion.py`, `decisive_case.py`, `yadh_robustness.py`, every `export_*`
+script and `audit_numbers.py` exit 0, the six figures build, and no tracked file
+changes. `offset_analysis.py` and `network_atlas.py`, whose computations this
+release does not touch, were not rerun.
+
 One caveat on timing: `offset_analysis.py` computes profile likelihoods by
 continuation over a 301-point grid for each of 18 series and takes roughly
 50 minutes on one core.
