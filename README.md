@@ -519,6 +519,13 @@ script and `audit_numbers.py` exit 0, the six figures build, and no tracked file
 changes. `offset_analysis.py` and `network_atlas.py`, whose computations this
 release does not touch, were not rerun.
 
+Re-verified for v1.8.1 on 2026-09-15 from a clean clone, same environment: the
+same scripts plus `export_fig_atlas.py`, `export_figures.py` and
+`export_profiles_table.py` exit 0 (`bounds_uncertainty.py` about two minutes),
+the six figures build, `audit_numbers.py` passes, and no tracked file changes.
+The changes in `network_atlas.py` are to comments and docstrings only, and
+`offset_analysis.py` is untouched; neither was rerun.
+
 One caveat on timing: `offset_analysis.py` computes profile likelihoods by
 continuation over a 301-point grid for each of 18 series and takes roughly
 50 minutes on one core.
