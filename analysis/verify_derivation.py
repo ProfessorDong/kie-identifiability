@@ -165,5 +165,120 @@ check("F_bind vanishes when binding effects are mass scaled",
       sp.simplify(_Fb.subs(_aH/_bH, (_aD/_bD)**_gm)) == 0 or
       sp.simplify((sp.log((_aD/_bD)**_gm) - _gm*sp.log(_aD/_bD))) == 0)
 
+print("\n12. envelope convergence rate at fixed K (Supplementary Note 2), 60 digits")
+# For K > sqrt(t) the constrained supremum approaches F0 as 1/w with coefficient
+# (d-1)/d (ln K - ln t/2); only at K = sqrt(t) does that coefficient vanish and the
+# gap fall as 1/w^2.  The supplement said w^-2 for every K until 2026-09-15; it is
+# the DERIVATIVE, eq. (sm-dXD), that falls as w^-2.
+import mpmath as mp
+import masses as _M
+mp.mp.dps = 60
+_mC = mp.mpf(12)
+_red = lambda m: _mC * mp.mpf(m) / (_mC + mp.mpf(m))
+_d = mp.sqrt(_red(_M.M_D_ATOMIC) / _red(_M.M_H_ATOMIC))
+_t = mp.sqrt(_red(_M.M_T_ATOMIC) / _red(_M.M_H_ATOMIC))
+_gg = (1 - 1 / _t) / (1 / _d - 1 / _t)
+_F0 = mp.log(_t) / 2 - _gg * mp.log(_t / _d) / 2
+_p = lambda w, m: mp.log((1 + w * _t) / (1 + w * m)) / 2
+_q = lambda w, m: (_t - m) / ((1 + w * m) * (1 + w * _t))
+def _gap(K, w):
+    L = mp.log(K)
+    A = (L - _p(w, 1)) / _q(w, 1)
+    return _F0 - (L - _gg * (_p(w, _d) + A * _q(w, _d)))
+for K in (mp.mpf(7), mp.mpf(2)):
+    coef = (_d - 1) / _d * (mp.log(K) - mp.log(_t) / 2)
+    w = mp.mpf(10) ** 8
+    check(f"K={float(K):g}: w (F0-F) -> (d-1)/d (ln K - ln t/2)",
+          abs(w * _gap(K, w) / coef - 1) < 1e-6,
+          f"{mp.nstr(w * _gap(K, w), 10)} vs {mp.nstr(coef, 10)}")
+_ks = mp.sqrt(_t)
+_r8, _r6 = [mp.mpf(10) ** e * mp.mpf(10) ** e * _gap(_ks, mp.mpf(10) ** e) for e in (8, 6)]
+check("K=sqrt(t): w^2 (F0-F) converges (gap falls as w^-2)",
+      abs(_r8 / _r6 - 1) < 1e-3 and _r8 > 0, f"{mp.nstr(_r6, 8)} -> {mp.nstr(_r8, 8)}")
+
+print("\n13. bounded-bypass endpoint: stationarity quadratic and both branches")
+_KH, _KD, _ph, _rr, _c, _gm2 = sp.symbols("K_H K_D phi r c gamma", positive=True)
+_a2, _b2 = _KH - 1, _KD - 1
+_rho = _rr * (1 + _ph) / (1 + _rr * _ph)
+_PH, _PD = _KH + _a2 * _ph, _KD + _b2 * _rr * _ph
+_xH2 = (_c * _PH + _ph * _a2) / (_c - _a2)
+_xD2 = (_rho * _c * _PD + _rr * _ph * _b2) / (_rho * _c - _b2)
+# the pair reproduces both observations through the bypass map (q = c(1+phi))
+_Kmap = lambda x, ph, q: (x + ph) / (1 + ph) * (q + 1 + ph) / (q + x + ph)
+check("intrinsic pair reproduces K_HT and K_DT",
+      sp.simplify(_Kmap(_xH2, _ph, _c * (1 + _ph)) - _KH) == 0
+      and sp.simplify(_Kmap(_xD2, _rr * _ph, _rr * _c * (1 + _ph)) - _KD) == 0)
+_dF = sp.diff(sp.log(_xH2), _c) - _gm2 * sp.diff(sp.log(_xD2), _c)
+_stat = (_a2 * _KH * (_PD * _rho * _c + _rr * _ph * _b2) * (_rho * _c - _b2)
+         - _gm2 * _rr * _b2 * _KD * (_PH * _c + _ph * _a2) * (_c - _a2))
+_den = (_PH * _c + _ph * _a2) * (_c - _a2) * (_PD * _rho * _c + _rr * _ph * _b2) * (_rho * _c - _b2)
+check("dF/dc = -(1+phi) * quadratic / positive denominator",
+      sp.simplify(_dF + (1 + _ph) * _stat / _den) == 0)
+import network_geometry as _NG
+_n, _worst, _int, _crit, _n1 = _NG.check_endpoint_exact(n=3000)
+check("endpoint_exact = direct profile on random admissible triples",
+      _worst < 1e-7, f"{_n} triples, {_int} interior, max diff {_worst:.1e}")
+check("c -> infinity criterion agrees with the profile (r = 1)", _crit == 0,
+      f"{_crit} disagreements in {_n1} triples")
+
+print("\n14. yeast reference asymmetry: the joint relations reduce to a quadratic")
+_a3, _hh, _dd, _SH3, _SD3, _r3 = sp.symbols("a h d S_H S_D r", positive=True)
+_c3 = _hh * (1 + _a3) - 1
+_s3 = (_SH3 * (1 + _a3) - 1) / _a3
+_qq = (_r3 * _c3 - (_dd - 1)) / _dd
+_sD3 = (_SD3 * (_qq + 1) - 1) / _qq
+# q d (r sigma_D - sigma_H) is exactly the quadratic, so the two share their roots
+check("r sigma_D = sigma_H  <=>  S_D c r^2 + (S_D - d - s c) r + s(d-1) = 0",
+      sp.simplify((_r3 * _sD3 - _s3) * _qq * _dd
+                  - (_SD3 * _c3 * _r3**2 + (_SD3 - _dd - _s3 * _c3) * _r3
+                     + _s3 * (_dd - 1))) == 0)
+import completion as _C
+_nq, _nanq, _dq, _pq = _C.check_joint_r_quadratic()
+check("quadratic root = bisection over the Monte Carlo inputs",
+      _nanq == 0 and _dq < 1e-10 and _pq < 1, f"{_nq} draws, max diff {_dq:.1e}, root product <= {_pq:.3f}")
+
+print("\n15. mixed-labeling secondary design: forward commitments are ordered")
+# c_i = k_off/k_iT with reference molecules HT and DT (transferred isotope first),
+# so c_D/c_H = k_HT/k_DT, the primary H/D effect: >= 1 for a normal primary effect.
+import mixed_label as _ML
+_n, _bad, _worst, _lift = _ML.check_ordered()
+check("ordered maps never raise F above F_int (any reference exponent > 1)",
+      _bad == 0, f"{_bad} of {_n}, largest excess {_worst:.1e}")
+check("anti-ordered maps do lift pairs on the ray", _lift > 0, f"{_lift} of {_n}")
+check("4.8 locus: ordered c_H=1, c_D=5 deflates; anti-ordered 5, 1 inflates",
+      _ML.observed_exponent(1.10, 4.8, 1.0, 5.0) < 4.8 < _ML.observed_exponent(1.10, 4.8, 5.0, 1.0),
+      f"{_ML.observed_exponent(1.10, 4.8, 1.0, 5.0):.2f} and {_ML.observed_exponent(1.10, 4.8, 5.0, 1.0):.2f}")
+
+print("\n16. binding correction: exact shift on the open branch only")
+from partial_id import F_min_binding as _Fb, F_min_exact as _Fme
+import masses as _M2
+_G = _M2.gamma_sc("C")
+def _profile_binding(KH, KD, aH, bH, aD, bD, n=2000000):
+    kh, kd = KH / aH, KD / aD
+    cs = (max(kh, kd) - 1.0) * (1 + np.geomspace(1e-12, 1e12, n))
+    xh, xd = bH * kh * cs / (1 + cs - kh), bD * kd * cs / (1 + cs - kd)
+    ok = (xh > xd) & (xd > 1)
+    return float(np.min(np.log(xh[ok]) - _G * np.log(xd[ok])))
+_args = (1.05, 1.05, 0.95, 0.95)          # alpha_H, beta_H, alpha_D, beta_D: F_bind = 0
+_closed = _Fb(3.0, 1.8, *_args) - _Fme(3.0, 1.8)[0]
+check("closed form = direct profile with binding, closed branch",
+      abs(_Fb(3.0, 1.8, *_args) - _profile_binding(3.0, 1.8, *_args)) < 1e-6)
+check("closed branch (3, 1.8): F_bind = 0 yet the endpoint moves",
+      abs(_closed) > 0.1, f"shift {_closed:+.6f}")
+_open = _Fb(7.13, 1.73, *_args) - _Fme(7.13, 1.73)[0]
+check("open branch (yeast): F_bind = 0 leaves the endpoint unchanged",
+      abs(_open) < 1e-12, f"shift {_open:+.2e}")
+_rng = np.random.default_rng(16)
+_bad = 0
+for _ in range(20000):
+    KD = 1 + _rng.uniform(0.05, 2.0); KH = KD + _rng.uniform(0.05, 20.0)
+    aH, bH, aD, bD = _rng.uniform(0.9, 1.1, 4)
+    kh, kd = KH / aH, KD / aD
+    if not (kh > kd > 1) or (kh - 1) / (kd - 1) < _G:
+        continue
+    Fb = np.log(aH / bH) - _G * np.log(aD / bD)
+    _bad += abs(_Fb(KH, KD, aH, bH, aD, bD) - (np.log(KH) - _G * np.log(KD) - Fb)) > 1e-10
+check("open branch: endpoint = F_obs - F_bind exactly", _bad == 0, f"{_bad} violations")
+
 print(f"\nfailures: {FAIL}")
 raise SystemExit(1 if FAIL else 0)

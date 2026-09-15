@@ -67,6 +67,21 @@ def commitment_precision_needed(KH, KD, c, r=1.0, target=abs(F0)/2, gamma=GSC):
     return np.inf if d == 0 else target/d
 
 
+def isotope_error_budget(KH, KD, sH, sD, c, r=1.0, gamma=GSC):
+    """Standard error of F from the isotope effects alone, at KNOWN commitment c.
+
+    commitment_precision_needed() is a commitment-only budget.  At fixed c the
+    inverse x = K c/(1 + c - K) has d ln x/d ln K = (1 + c)/(1 + c - K), so the
+    measured errors propagate even when c is exact.  Returns (se at rho = 0,
+    se at rho = -1).  For the yeast pair at c = 3(K_HT - 1) both exceed |F0|/2,
+    which is why the commitment percentages alone do not deliver that target.
+    """
+    cD = r*c
+    uH = (1 + c)/(1 + c - KH) * sH/KH
+    uD = gamma*(1 + cD)/(1 + cD - KD) * sD/KD
+    return float(np.hypot(uH, uD)), float(uH + uD)
+
+
 # ------------------------------------- systems completed from published kinetics
 def yadh_completion(a, KH=7.13, KD=1.73, r=1.31):
     """Yeast ADH closed by Klinman's dissociation ratio a = k_-1/k_cat.
@@ -106,8 +121,28 @@ SEC_YADH = dict(SHT=(1.350, 0.015), SDT=(1.030, 0.006))   # Cha et al. 1989 Tabl
 def yadh_joint_r(a, KH=7.13, KD=1.73, SHT=1.350, SDT=1.030, lo=1.0, hi=10.0):
     """r implied jointly by primary and secondary effects at commitment a.
 
-    Vectorized bisection; entries without a sign change on [lo, hi] are nan.
+    Eliminating q and sigma_D from the relations above leaves a quadratic in r,
+
+        S_DT c r^2 + (S_DT - K_DT - sigma_H c) r + sigma_H (K_DT - 1) = 0,
+
+    with c = K_HT(1+a) - 1 and sigma_H = (S_HT(1+a) - 1)/a.  Its roots multiply
+    to sigma_H (K_DT-1)/(S_DT c), far below one here, so at most one exceeds
+    unity, and that root is r.  Vectorized; entries with no root in (lo, hi) are
+    nan.  _yadh_joint_r_bisect solves the unreduced relations as a cross-check.
     """
+    a, KH, KD, SHT, SDT = np.broadcast_arrays(*(np.asarray(v, float)
+                                                for v in (a, KH, KD, SHT, SDT)))
+    c = KH * (1.0 + a) - 1.0
+    sH = (SHT * (a + 1.0) - 1.0) / a
+    A, B, C = SDT * c, SDT - KD - sH * c, sH * (KD - 1.0)
+    disc = B * B - 4.0 * A * C
+    with np.errstate(invalid="ignore"):
+        r = (-B + np.sqrt(disc)) / (2.0 * A)
+    return np.where((disc >= 0) & (r > lo) & (r < hi), r, np.nan)
+
+
+def _yadh_joint_r_bisect(a, KH=7.13, KD=1.73, SHT=1.350, SDT=1.030, lo=1.0, hi=10.0):
+    """The same r by bisection on the unreduced relations (cross-check only)."""
     a, KH, KD, SHT, SDT = np.broadcast_arrays(*(np.asarray(v, float)
                                                 for v in (a, KH, KD, SHT, SDT)))
     c = (KH - 1.0) + KH * a
@@ -127,6 +162,24 @@ def yadh_joint_r(a, KH=7.13, KD=1.73, SHT=1.350, SDT=1.030, lo=1.0, hi=10.0):
         fm = res(M_)
         L, H = np.where(fm > 0, M_, L), np.where(fm > 0, H, M_)
     return np.where(ok, 0.5 * (L + H), np.nan)
+
+
+def check_joint_r_quadratic(n=200000, seed=20260915):
+    """Quadratic against bisection over the Monte Carlo input distribution.
+
+    Returns (draws, draws where exactly one method is nan, largest |difference|,
+    largest product of the roots).
+    """
+    rng = np.random.default_rng(seed)
+    a = rng.uniform(1.3, 7.3, n)
+    KH, KD = rng.normal(7.13, 0.07, n), rng.normal(1.73, 0.02, n)
+    SH, SD = rng.normal(*SEC_YADH["SHT"], n), rng.normal(*SEC_YADH["SDT"], n)
+    q, b = yadh_joint_r(a, KH, KD, SH, SD), _yadh_joint_r_bisect(a, KH, KD, SH, SD)
+    c = KH * (1 + a) - 1
+    prod = ((SH * (1 + a) - 1) / a) * (KD - 1) / (SD * c)
+    both = np.isfinite(q) & np.isfinite(b)
+    return (n, int(np.sum(np.isfinite(q) != np.isfinite(b))),
+            float(np.max(np.abs(q[both] - b[both]))), float(prod.max()))
 
 
 def bypass_tolerance(KH, KD, r, target):

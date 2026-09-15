@@ -135,7 +135,7 @@ with open(OUT + "fa_rays.tex", "w") as fh:
                          f"(axis cs:{r.point:.5f},{r.y}) circle (0.95pt);\n")
         else:
             # endpoint lies off the left edge: chevron instead of a dot
-            fh.write(f"\\node[font=\\fontsize{{6.2}}{{7.4}}\\selectfont, color={col}, "
+            fh.write(f"\\node[font=\\fontsize{{8.2}}{{9.6}}\\selectfont, color={col}, "
                      f"anchor=east, inner sep=0.6pt] at (axis cs:{XMIN:.5f},{r.y}) "
                      f"{{$\\ll$}};\n")
         lab = r.label if r.point >= XMIN else f"{r.label} ({r.point:.2f})"

@@ -41,8 +41,11 @@ L += [r"\begin{table}[!htbp]",
       r"tritium reference. The threshold for excluding the ground-channel model "
       r"is $\Fz=-0.0421$; no entry reaches it. Each bound is on the series "
       r"maximum of the endpoint: the one-sided bound for each temperature at "
-      r"level $0.05/n_T$, then the largest of these, which has coverage at least "
-      r"$95\%$ by the union bound. Bounds average " + _WORD[_bu.N_REP] +
+      r"level $0.05/n_T$, then the largest of these, which by the union bound has "
+      r"coverage at least $95\%$ whenever each per-temperature bound has its "
+      r"nominal coverage. That coverage is approximate: the errors are re-expressed "
+      r"on the log scale at the observed effects, so the bound would be exact only "
+      r"if the log-scale standard deviations were known. Bounds average " + _WORD[_bu.N_REP] +
       r" replications of " + _sci(_bu.N_DRAW) + r" draws; the largest Monte Carlo "
       r"standard deviation over all " + _WORD[4 * len(b) // 4] + r" cells is " +
       _sci(b.lcb_mc_sd.max(), 1) + r". The bracket includes $\rho=-1$, the "
@@ -75,9 +78,12 @@ L += [r"\begin{table}[!htbp]",
       r"exponent to $0.05$ in every case. These measurements come from the "
       r"mixed-labeling design, in which the H/T effect accompanies C--H cleavage "
       r"and the D/T effect accompanies C--D cleavage, so the two ratios are "
-      r"referred to different molecules and do not share a commitment. "
-      r"Theorem~1 of the main text does not apply to them, and we draw no "
-      r"identification inference from these values in either direction.}",
+      r"referred to different molecules. Their forward commitments are ordered "
+      r"by the primary effect, so forward masking can only deflate these "
+      r"exponents (Supplementary Note~\ref{sm:mixed}); reverse commitments and "
+      r"secondary equilibrium effects are not bounded, and the ground-channel "
+      r"envelope has no prediction for a secondary exponent, so no envelope "
+      r"inference is drawn from these values.}",
       r"\label{tab:sec-si}", r"\begin{center}\small",
       r"\begin{tabular}{llcccc}", r"\toprule",
       r"Enzyme & Form & $\KHT$ & $\KDT$ & $\gamma^{\mathrm{obs}}$ & published\\",

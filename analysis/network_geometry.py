@@ -150,8 +150,25 @@ def from_series(Y, phi):
     return np.asarray(Y, float) * (1.0 + phi) - phi
 
 
+def _rho(phi, r):
+    """D-side contracted commitment per H-side one: c_D = rho c_H.
+
+    q_D = r q_H and phi_D = r phi_H with c = q/(1+phi) give
+    rho = r(1+phi)/(1+r phi), which is r at phi = 0.
+    """
+    return r * (1.0 + phi) / (1.0 + r * phi)
+
+
+def _x_pair(KH, KD, phi, r, c):
+    """Intrinsic pair at H-side contracted commitment c (Supplementary Note 3)."""
+    a, b, rho = KH - 1.0, KD - 1.0, _rho(phi, r)
+    xh = (c * (KH + a * phi) + phi * a) / (c - a)
+    xd = (rho * c * (KD + b * r * phi) + r * phi * b) / (rho * c - b)
+    return xh, xd
+
+
 def endpoint(KH, KD, phi, r=1.0, n=200000):
-    """Endpoint of the identified set for F at bypass fraction phi.
+    """Endpoint of the identified set for F at bypass fraction phi, by profiling.
 
     The two tritium references differ at the non-transferred position, so their
     chemical rates differ by r = c_D/c_H (Proposition S4).  An isotope-blind
@@ -161,20 +178,86 @@ def endpoint(KH, KD, phi, r=1.0, n=200000):
         phi_D = r phi_H,    q_D = r q_H,
 
     so the bypass and the reference asymmetry cannot be treated separately.
-    Profiling the commitment exactly and taking c -> infinity gives
+    Where the infimum sits at c -> infinity it is
 
-        E_r(phi) = ln[K_HT + (K_HT-1)phi] - gamma ln[K_DT + (K_DT-1) r phi],
+        E_r(phi) = ln[K_HT + (K_HT-1)phi] - gamma ln[K_DT + (K_DT-1) r phi];
 
-    which reduces to the shared-reference expression at r = 1.
+    otherwise it is interior, and endpoint_exact() gives it in closed form.
+
+    Until 2026-09-15 the D side was profiled at the H-side commitment itself
+    rather than at rho c, which is wrong whenever r != 1 and the minimum is
+    interior.  Every system in BENCH has its infimum at c -> infinity, where the
+    two agree, so no reported number changed.  Requires r >= 1.
     """
-    cmin = max(KH, KD) - 1.0
+    a, b = KH - 1.0, KD - 1.0
+    cmin = max(a, b / _rho(phi, r))
     cs = cmin * (1.0 + np.geomspace(1e-10, 1e12, n))
-    YH, YD = KH * cs / (1 + cs - KH), KD * cs / (1 + cs - KD)
-    xh, xd = YH * (1 + phi) - phi, YD * (1 + r * phi) - r * phi
+    xh, xd = _x_pair(KH, KD, phi, r, cs)
     ok = (xh > xd) & (xd > 1.0)
     F = np.where(ok, np.log(np.where(ok, xh, 2.0)) - GSC * np.log(np.where(ok, xd, 2.0)),
                  np.inf)
     return float(min(F.min(), endpoint_closed(KH, KD, phi, r)))
+
+
+def endpoint_exact(KH, KD, phi, r=1.0):
+    """Closed-form endpoint at bypass fraction phi, both branches, r >= 1.
+
+    F(c) tends to +infinity as c falls to K_HT - 1 and to E_r(phi) as c grows,
+    so its infimum is E_r(phi) or the value at an interior stationary point.
+    With a = K_HT-1, b = K_DT-1, P_H = K_HT + a phi, P_D = K_DT + b r phi and
+    rho = r(1+phi)/(1+r phi), dF/dc = 0 is the quadratic
+
+        a K_HT (P_D rho c + r phi b)(rho c - b) = gamma r b K_DT (P_H c + phi a)(c - a),
+
+    which at r = 1 is the stationarity condition of Supplementary Note 3.  Points
+    where the ordering x_H > x_D binds solve a second quadratic and are included,
+    so the admissible set is the one endpoint() profiles.
+    """
+    a, b, rho = KH - 1.0, KD - 1.0, _rho(phi, r)
+    PH, PD = KH + a * phi, KD + b * r * phi
+    stat = (a * KH * np.polymul([PD * rho, r * phi * b], [rho, -b])
+            - GSC * r * b * KD * np.polymul([PH, phi * a], [1.0, -a]))
+    tie = (np.polymul([PH, phi * a], [rho, -b])
+           - np.polymul([PD * rho, r * phi * b], [1.0, -a]))
+    vals = [endpoint_closed(KH, KD, phi, r)] if PH > PD else []
+    cmin = max(a, b / rho)
+    for poly in (stat, tie):
+        for z in np.roots(np.trim_zeros(poly, "f")):
+            if abs(z.imag) < 1e-9 * max(1.0, abs(z.real)) and z.real > cmin:
+                xh, xd = _x_pair(KH, KD, phi, r, z.real)
+                if xh >= xd * (1 - 1e-12) and xd > 1.0:
+                    vals.append(float(np.log(xh) - GSC * np.log(xd)))
+    return min(vals) if vals else float("nan")
+
+
+def check_endpoint_exact(n=3000, seed=20260915):
+    """endpoint_exact against direct profiling on random admissible triples.
+
+    Returns (number of triples, largest discrepancy, how many have an interior
+    minimum, disagreements of the c -> infinity criterion with the profile, and
+    how many triples have r = 1, the case that criterion is stated for).
+    """
+    rng = np.random.default_rng(seed)
+    worst = 0.0
+    interior = crit_bad = done = n_r1 = 0
+    while done < n:
+        KD = 1.0 + rng.uniform(0.02, 3.0)
+        KH = KD + rng.uniform(0.02, 30.0)
+        phi = float(rng.choice([0.0, rng.uniform(0, 1), rng.uniform(0, 5)]))
+        r = float(rng.choice([1.0, rng.uniform(1.0, 2.0)]))
+        num, ex = endpoint(KH, KD, phi, r, n=400000), endpoint_exact(KH, KD, phi, r)
+        if not (np.isfinite(num) and np.isfinite(ex)):
+            continue
+        done += 1
+        worst = max(worst, abs(num - ex))
+        at_inf = abs(ex - endpoint_closed(KH, KD, phi, r)) < 1e-9
+        interior += not at_inf
+        if r == 1.0:
+            n_r1 += 1
+            a, b = KH - 1.0, KD - 1.0
+            crit = KH * a / (KH + a * phi) > GSC * KD * b / (KD + b * phi)
+            crit_bad += crit != at_inf
+    return done, worst, interior, crit_bad, n_r1
 
 
 def endpoint_closed(KH, KD, phi, r=1.0):

@@ -153,6 +153,40 @@ def coverage_check(family="ecDHFR", variant="W133F", rho=-1.0, reps=20000,
     return fail_old / reps, fail_new / reps
 
 
+def plugin_coverage(kht, sh, kdt, sd, alpha, n=1_000_000, seed=20260915, plugin=True):
+    """Repeated-sampling failure rate of the single-record rho = -1 lower bound.
+
+    Truth: log K ~ N(log K_true, s/K_true), perfectly anti-correlated (the model
+    this module draws from).  The bound as implemented re-expresses the reported
+    absolute errors at the OBSERVED effects (s/K_obs) and takes the alpha quantile
+    of the endpoint over draws centred there.  At rho = -1 the draws lie on a line
+    along which the endpoint is monotone, so that quantile is the endpoint at the
+    z_alpha point and no inner Monte Carlo is needed.
+
+    Returns P(bound > true endpoint); a valid bound has at most alpha.  With
+    plugin=False the log-scale standard deviations are held at their true values,
+    and the rate is alpha exactly.  The plug-in bound is only approximate: until
+    2026-09-15 the Methods called it exact at rho = -1, which holds only for known
+    log-scale standard deviations (4.8% for the yeast errors, 7.6% for 2.0 +- 0.2,
+    1.1 +- 0.001, at a nominal 5%).
+    """
+    from scipy.stats import norm
+    rng = np.random.default_rng(seed)
+    truth = F_min_exact(kht, kdt)[0]
+    s_h, s_d = sh / kht, sd / kdt
+    z = rng.standard_normal(n)
+    lh, ld = np.log(kht) + s_h * z, np.log(kdt) - s_d * z
+    if plugin:
+        u_h, u_d = sh / np.exp(lh), sd / np.exp(ld)
+    else:
+        u_h, u_d = s_h, s_d
+    za = norm.ppf(alpha)
+    bh, bd = np.exp(lh + u_h * za), np.exp(ld - u_d * za)
+    ok = (bh > bd) & (bd > 1)
+    lcb = np.where(ok, F_min_vec(np.where(ok, bh, 2.0), np.where(ok, bd, 1.5)), -np.inf)
+    return float(np.mean(lcb > truth))
+
+
 def main():
     d = pd.read_csv("../data/trinomial_benchmark.csv")
     say("=" * 96)

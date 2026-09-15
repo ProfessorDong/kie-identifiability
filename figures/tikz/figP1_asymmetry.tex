@@ -2,23 +2,25 @@
 \input{icigstyle}
 \begin{document}
 \begin{tikzpicture}
-% Single-column figure. Natural width ~87 mm, drawn at final size so no
-% rescaling occurs in the manuscript and the type sizes below are the ones the
-% reader sees.  The axis is cut at -0.50; the two systems below it carry their
+% Double-column figure, ~130 mm wide and ~113 mm tall, drawn at final size so no rescaling
+% occurs in the manuscript and the type sizes below are the ones the reader sees.
+% Until 2026-09-15 it was drawn single-column at 87 mm with 6.2 pt row labels,
+% which a review measured as too small for print; double-column figures of
+% 300-504 pt are standard.  The axis is cut at -0.50; the two systems below it carry their
 % endpoints in the row label.  |F0| spans ~3.5 mm here, so the magnified inset
 % used by the earlier two-column version is unnecessary.
 \pgfplotsset{
   asym/.style={icig, scale only axis,
-    label style={font=\fontsize{7.2}{8.6}\selectfont, color=cInk},
-    tick label style={font=\fontsize{6.4}{7.7}\selectfont, color=cInk}},
+    label style={font=\fontsize{9}{10.8}\selectfont, color=cInk},
+    tick label style={font=\fontsize{8.5}{10.2}\selectfont, color=cInk}},
 }
 \tikzset{
-  rowlab/.style={font=\fontsize{6.2}{7.2}\selectfont, color=cInk,
+  rowlab/.style={font=\fontsize{8.2}{9.6}\selectfont, color=cInk,
                  anchor=east, inner sep=1.2pt},
-  annc/.style={font=\fontsize{6.3}{7.6}\selectfont, color=cInk, align=center},
+  annc/.style={font=\fontsize{8.4}{10}\selectfont, color=cInk, align=center},
 }
 
-\begin{axis}[asym, name=A, width=41mm, height=85.6mm,
+\begin{axis}[asym, name=A, width=68mm, height=100mm,
   xmin=-0.50, xmax=0.20, ymin=0.2, ymax=33.6,
   xlabel={endpoint of the identified set, $F_{\min}$},
   ytick=\empty, ymajorgrids=false,

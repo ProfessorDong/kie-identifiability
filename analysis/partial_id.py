@@ -110,6 +110,25 @@ def F_min_vec(kht, kdt, gamma=GSC):
 
 
 # ------------------------------------------- two-commitment identified set
+def F_min_binding(kht, kdt, aH, bH, aD, bD, gamma=GSC):
+    """Endpoint with isotope-sensitive association (alpha) and dissociation (beta).
+
+    Proposition S8: K/alpha is the series map acting on u = x/beta, so for a shared
+    commitment and no bypass the endpoint is
+
+        F_min(K_HT/alpha_H, K_DT/alpha_D) + ln beta_H - gamma ln beta_D,
+
+    provided the corrected pair keeps normal order.  On the OPEN branch of the
+    corrected pair, (K_H/alpha_H - 1)/(K_D/alpha_D - 1) >= gamma, this is
+    F_obs - F_bind with F_bind = ln(alpha_H/beta_H) - gamma ln(alpha_D/beta_D).
+    On the closed branch it is not: at (3, 1.8) with alpha_H = beta_H = 1.05 and
+    alpha_D = beta_D = 0.95, F_bind = 0 but the endpoint falls by 0.158.  Until
+    2026-09-15 the text called the shift exact on either branch.
+    """
+    e = F_min_exact(kht / aH, kdt / aD, gamma)[0]
+    return float(e + np.log(bH) - gamma * np.log(bD))
+
+
 def observed_two(x, cf, cr, eie):
     """Northrop form: K_obs = (x + Cf + Cr*EIE) / (1 + Cf + Cr)."""
     return (x + cf + cr * eie) / (1.0 + cf + cr)

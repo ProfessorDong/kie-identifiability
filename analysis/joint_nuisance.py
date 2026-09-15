@@ -350,3 +350,85 @@ def check_counterexamples(verbose=True):
                   f"reproduces {reproduces}, on envelope {on_env}, "
                   f"excluded by bound {excluded}")
     return bad
+
+
+# ------------------------------------------- the joint line over a range of r
+# The envelope above was computed at r = 1.31, the observed secondary ratio.
+# That ratio is only a LOWER bound on r (Supplementary Note 5), and solved
+# jointly with Klinman's commitment r runs from 1.36 to 1.57.  Every tolerance
+# shrinks as r grows, so the r = 1.31 line is the most permissive case, not a
+# sufficient condition at the corrected r: at r = 1.569, F_bind = 0, phi_H = 0.14
+# lies under it yet admits F_int = -0.0494 < F0.  The line below is built at the
+# largest r the published commitment implies and checked directly at every r in
+# R_RANGE.  It is a CONDITIONAL sensitivity statement: r is stipulated in that
+# range, not refitted together with the secondary effects under the enlarged
+# (bypass plus binding) model.
+R_RANGE = (1.31, 1.5686945585570817)     # completion.yadh_joint_r(1.3), guarded
+
+
+def envelope_r(phi_H):
+    return 0.164 - 1.465 * phi_H
+
+
+ENVELOPE_R_PHI_MAX = 0.164 / 1.465       # beyond this the line is negative, hence vacuous
+
+
+def worst_corner_endpoint(F_bind, phi_H, r, n=120000):
+    """Worst-case endpoint over the corners of BIND_BOX at stipulated r."""
+    lo, hi = BIND_BOX
+    worst = np.inf
+    for aH in (lo, hi):
+        for bH in (lo, hi):
+            lr = (np.log(aH / bH) - F_bind) / G
+            for aD in (lo, hi):
+                bD = aD * np.exp(-lr)
+                if lo - 1e-15 <= bD <= hi + 1e-15:
+                    e = _endpoint_ab(aH, bH, aD, bD, phi_H, r, n=n)
+                    if np.isfinite(e):
+                        worst = min(worst, e)
+    return worst
+
+
+def check_envelope_r(nphi=241, rs=None, verbose=True):
+    """The r-range line must survive the profiled worst case at every stipulated r.
+
+    Also checks the two facts that make that meaningful: the worst case sits on
+    the box corners at the largest r (against the interior grid), and the
+    worst-case endpoint does not increase with r.  Returns (failures, tightest
+    slack, phi at which it occurs).
+    """
+    from completion import yadh_joint_r
+    bad = 0
+    if abs(float(yadh_joint_r(1.3)) - R_RANGE[1]) > 1e-9:
+        bad += 1
+        if verbose:
+            print("  FAIL envelope_r: R_RANGE upper end is not yadh_joint_r(1.3)")
+    rs = np.linspace(R_RANGE[0], R_RANGE[1], 6) if rs is None else rs
+    tight, where = np.inf, np.nan
+    for r in rs:
+        for phi in np.linspace(0.0, ENVELOPE_R_PHI_MAX, nphi):
+            s = worst_corner_endpoint(envelope_r(phi), phi, r) - F0
+            if s <= 0:
+                bad += 1
+            if s < tight:
+                tight, where = s, phi
+    for fb, phi in ((0.04, 0.08), (0.09, 0.04), (0.01, 0.10)):
+        full = endpoint_profiled(fb, phi, r=R_RANGE[1], n=9)
+        if abs(full - worst_corner_endpoint(fb, phi, R_RANGE[1])) > 1e-6:
+            bad += 1
+    grid = np.linspace(R_RANGE[0], 1.80, 15)
+    for phi in (0.0, 0.04, 0.08, 0.12):
+        for fb in (0.0, 0.03, 0.06, 0.10):
+            v = np.array([worst_corner_endpoint(fb, phi, r, n=40000) for r in grid])
+            bad += int(np.any(np.diff(v) > 1e-9))
+    # the reviewer's point: admitted by the r = 1.31 line, fatal at the largest r
+    e = _endpoint_ab(1.0, 1.0, 1.0, 1.0, 0.14, R_RANGE[1])
+    if not (e < F0 and envelope(0.14) > 0 and envelope_r(0.14) < 0):
+        bad += 1
+        if verbose:
+            print(f"  FAIL envelope_r: F_bind=0, phi=0.14 at r={R_RANGE[1]:.4f} gives "
+                  f"{e:+.5f}; the r-range line must exclude it")
+    if verbose:
+        print(f"  r-range joint line F_bind <= 0.164 - 1.465 phi: {bad} failures over "
+              f"{len(rs)} r x {nphi} bypasses; tightest slack {tight:.2e} at phi={where:.3f}")
+    return bad, tight, where

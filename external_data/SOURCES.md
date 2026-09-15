@@ -79,7 +79,7 @@ single-condition records, and every script that needs them reads that list.
 
 | Source | File | Where in the source | Records |
 |---|---|---|---|
-| Cha, Murray & Klinman, *Science* **243**, 1325 (1989), [10.1126/science.2646716](https://doi.org/10.1126/science.2646716) | `data/cha1989_yadh.csv` | Table 2: three determinations and their average; the average is the record | 1 |
+| Cha, Murray & Klinman, *Science* **243**, 1325 (1989), [10.1126/science.2646716](https://doi.org/10.1126/science.2646716) | `data/cha1989_yadh.csv`, `data/cha1989_yadh_dt_only.csv` | Table 2: three matched H/T and D/T determinations and their average (the average is the record), plus a fourth D/T-only determination, 1.72 ± 0.05, with no H/T partner, kept separately because it is not a matched pair | 1 |
 | Bahnson et al., *Biochemistry* **32**, 5503 (1993), [10.1021/bi00072a003](https://doi.org/10.1021/bi00072a003) | `data/ladh_adh_primary.csv` | Table I | 5 |
 | Bahnson et al., *Proc. Natl. Acad. Sci. USA* **94**, 12797 (1997) | `data/ladh_adh_primary.csv` | Table 1 | 4 |
 | Tsai & Klinman, *Biochemistry* **40**, 2303 (2001), [10.1021/bi002075l](https://doi.org/10.1021/bi002075l) | `data/ladh_adh_primary.csv` | Tables 2 and 4, aqueous rows at 3 °C | 2 |
@@ -94,11 +94,11 @@ source: an observed matched pair is admitted when both effects are stated as
 numbers with their uncertainties.
 
 Both amine oxidase sources report the primary H/T and D/T effects together with
-the secondary effects on the same references; the latter fix the ratio `r` of
-the two commitments used in the unequal-reference check of `analysis/curvature.py`
-(`r = 1.14` at 25 °C for bovine serum amine oxidase and for monoamine oxidase B
-at pH 7.5, and 1.18 at pH 6.1; the monoamine oxidase series runs from 1.02 to
-1.21 over temperature). Those secondary effects are held in
+the secondary effects on the same references; the ratio `R` of those observed
+effects is a lower bound on the ratio `r` of the two commitments used in the
+unequal-reference check of `analysis/curvature.py` (`R = 1.14` at 25 °C for
+bovine serum amine oxidase and for monoamine oxidase B at pH 7.5, and 1.18 at
+pH 6.1; the monoamine oxidase series runs from 1.02 to 1.21 over temperature). Those secondary effects are held in
 `data/secondary_reference.csv`, and `analysis/reference_asymmetry.py` computes every r
 from them.
 
@@ -163,8 +163,8 @@ quantity that turns a half-line into a point, and are read by
 
 | Source | Quantity taken | Used for |
 |---|---|---|
-| Klinman, *Biochemistry* **15**, 2018 (1976), [10.1021/bi00654a032](https://doi.org/10.1021/bi00654a032) | `k_-1/k_cat = 1.3–7.3` for benzyl alcohol at 25 °C, pH 8.5 (Table IV; Table III gives the underlying Michaelis-constant effects) | completes yeast ADH, whose isotope effects are Cha et al. (1989) |
-| Grant & Klinman, *Biochemistry* **28**, 6597 (1989) | Table IV, pre-steady-state beside steady-state isotope effects, 15–45 °C | masking factor 0.948 ± 0.044, completes bovine serum amine oxidase |
+| Klinman, *Biochemistry* **15**, 2018 (1976), [10.1021/bi00654a032](https://doi.org/10.1021/bi00654a032) | `k_-1/k_cat = 1.3–7.3` at 25 °C, pH 8.5: Table IV's conversion of Michaelis-constant isotope effects of 1.1–1.5 (observed across para-substituted alcohols), assuming an isotope effect of 4 on `k_cat` and none on binding; for benzyl alcohol itself Table III gives 1.3 on `K_A` (maps to 2.3) and an inverse 0.80 on `K_B` | completes yeast ADH conditionally on that conversion; isotope effects are Cha et al. (1989) |
+| Grant & Klinman, *Biochemistry* **28**, 6597 (1989) | Table IV, pre-steady-state beside steady-state isotope effects, 15–45 °C | masking factor at 25 °C, 0.839 ± 0.097; the six temperatures are inhomogeneous (Q = 17.9, p = 0.003), so the completion is **withdrawn**: F_int = −0.038, 95% [−0.267, +0.242] |
 | Sekhar & Plapp, *Biochemistry* **29**, 4289 (1990), [10.1021/bi00470a005](https://doi.org/10.1021/bi00470a005) | `K_m` = 0.03 mM (benzyl alcohol) against 0.08 mM (α,α-`d2`) | shows the alcohol Michaelis effect is inverse in horse liver ADH, which is why that system admits no completion |
 
 These are rate ratios and Michaelis constants read from the printed tables, not

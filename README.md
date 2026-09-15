@@ -42,8 +42,9 @@ set lies above zero. Hence:
   that bound is still excluded.
 
 This makes exact the criterion of Saunders (1985), used by Cha et al. (1989) and
-Bahnson et al. (1993). Across 94 matched primary records comprising 29
-independent systems, 28 systems fall on the uninformative side.
+Bahnson et al. (1993). Across 97 matched primary records in 32
+analysis units, 27 lie at their reported values on the uninformative side and
+four more are limited by precision alone.
 
 **Why it is one-sided: curvature against homogeneity.** The theorem above is a
 computation; this is the reason behind it, and it is more general than the
@@ -77,14 +78,15 @@ an above-reference observation". *Curvature fixes the direction*: `V/K` is a
 conductance and a commitment puts the isotope-sensitive step in SERIES with an
 isotope-blind one (`1/(V/K) = 1/k_on + k_off/(k_on k_i)`), which saturates and so
 is concave; an isotope-blind route in PARALLEL adds conductances, makes `h`
-convex, and pushes observations ABOVE the ray instead. *Sharing is a hypothesis*:
-if `h_H != h_D` nothing follows.
+convex, and pushes observations ABOVE the ray instead. *Sharing, or ordering, is a
+hypothesis*: if `h_H` and `h_D` are unrelated nothing follows, but ordered
+commitments (`c_D >= c_H`) suffice.
 
 **Sharing is approximate even in the primary protocol, and harmlessly so.** The
 H/T and D/T effects use tritium references that differ at the non-transferred
 position, so `c_D = r c_H` with `r` the secondary H/D effect on the reference.
-What matters is the sign of `r-1`. Secondary effects here are normal (`r ~ 1.14`
-in every source used), so the H comparison is the MORE masked one and the
+What matters is the sign of `r-1`. Observed secondary ratios here are normal
+(`R = 1.02-1.31`, a lower bound on `r`), so the H comparison is the MORE masked one and the
 imbalance pushes `F_obs` down: over 3e5 draws with `r` in [1,2] there is no case
 with `F_obs > F_int`. An INVERSE secondary effect would reverse this and break
 the argument (3e5 draws with `r` in [0.2,1] give violations in a third of cases,
@@ -154,7 +156,7 @@ corner `Cf* = (v-u)/d`, `Cr* = (a-b)/d`, `d = av-bu` lies in the physical
 quadrant, which needs BOTH `d > 0` and `v >= u`:
 
 ```
-window = [E_D*, E_D**],   E_D* = (K_HT/K_DT)^(1/(gamma-1))
+window = [E_D*, E_D**),   E_D* = (K_HT/K_DT)^(1/(gamma-1))
 E_D** = root above E_D* of  a(K_DT/E - 1) = b(K_HT/E^gamma - 1)
 window is nonempty  <=>  F_obs < 0
 ```
@@ -176,18 +178,22 @@ temperatures; see Bounds below).
 **But yeast ADH does.** The primary effects of Cha, Murray & Klinman (1989)
 give `F_obs = +0.129` against `F0 = -0.042`, with a 95% bound of `+0.063`
 (rising to `+0.079` at rho = 0.9, falling to `+0.049` at the maximally adverse
-rho = -1). Singled out from 29 systems it also deserves a multiplicity
-adjustment: one-sided Bonferroni across 29 gives `+0.012` at rho = 0 and
-`-0.013` at rho = -1, so the exclusion of the SEMICLASSICAL LOCUS survives
+rho = -1). Singled out from 32 analysis units it also deserves a
+multiplicity adjustment: one-sided Bonferroni across 32 gives `+0.011` at rho = 0
+and `-0.015` at rho = -1, so the exclusion of the SEMICLASSICAL LOCUS survives
 multiplicity and survives adverse correlation but not both at once, while the
 exclusion of the GATED ENVELOPE survives every combination since all four bounds
-exceed `F0`. Because `L_H = 8.40 > gamma_SC` the identified
-set is the *open* half-line, so no commitment can explain it away -- which
-vindicates their 1989 argument against the later kinetic-complexity objection.
-It clears `F0`, clears the semiclassical locus, and clears `B_vib` for
-lambda > 10 kcal/mol, but not at lambda = 5 with strong driving force. Because
-`F_obs > 0` its vacuity window is empty, so the conclusion is unconditional in
-the equilibrium isotope effect rather than conditional on a bound.
+exceed `F0` -- though with little room: under both at once the published
+errors need only be understated by 19.1% to overturn it. These bounds use a
+normal approximation that treats the published errors as standard errors. Cha
+et al.'s Table 2 lists four D/T determinations, three paired with H/T (the
+fourth is in `data/cha1989_yadh_dt_only.csv`). Because `L_H = 8.40 > gamma_SC`
+the identified set is the *open* half-line, so no forward commitment can explain
+it away, which is the exact form of the argument Cha et al. made from Northrop's
+expressions. No exclusion of the summed vibronic model is claimed at any
+reorganization energy. Because `F_obs > 0` the vacuity window is empty for
+equilibrium isotope effects on the mass-scaled relation; effects off that
+relation are not covered.
 
 **Two obstacles, and only one yields to more measurement.** Precision is the
 tractable one: the signal is 0.042 and the median sampling sd of F is 0.028, so
@@ -203,18 +209,23 @@ with weight `(gamma-1)^2 = 5.52` instead of `1 + gamma^2 = 12.21`, a factor 2.2
 for measuring H/T and D/T in one triple-label mixture. No source reports the
 covariance, so this is currently discarded.
 
-**The argument does NOT reach the mixed-labeling secondary record.** Theorem 1
-needs one commitment shared by both isotope pairs. That holds for the primary
-experiment. It fails for the mixed-labeling design behind most secondary
-measurements, where (Kohen & Jensen 2002) the secondary H/T effect is measured
-for C-H cleavage while the secondary D/T effect accompanies C-D cleavage, so the
-two ratios are referred to different molecules whose rates differ by the PRIMARY
-isotope effect. With `c_H != c_D` the inequality fails outright: an intrinsic
-pair sitting exactly on their 4.8 locus (`x_D = 1.10`, `x_H = x_D^4.8`) returns
-an observed exponent of **7.85** at `c_H = 5`, `c_D = 1`. We therefore draw no
-identification inference from that record in either direction; the observed
-exponents are tabulated without inference. A single-label secondary design, with
-both ratios against a common primary background, does satisfy the condition.
+**Forward masking in the mixed-labeling secondary record is ordered, and it
+deflates.** In that design (Kohen & Jensen 2002) the secondary H/T effect is
+measured for C-H cleavage and the secondary D/T effect for C-D cleavage, so the
+two reference molecules (HT and DT, transferred isotope first) differ at the
+transferred position and `c_D/c_H = k_HT/k_DT`, the primary H/D effect: above
+one for a normal primary effect. That is the ordering of Proposition S4, whose
+proof needs only a reference exponent above one, so forward masking can only
+lower an observed secondary exponent. An intrinsic pair on the 4.8 locus
+(`x_D = 1.10`) returns 2.57 at `c_H = 1`, `c_D = 5`; only the anti-ordered
+`c_H = 5`, `c_D = 1` gives 7.85, and that needs an inverse primary effect of
+five. No ordered map in 4e5 random draws raises the offset (`mixed_label.py`).
+Kohen and Jensen's inflation comes from a reverse commitment acting with a
+secondary equilibrium isotope effect, outside forward masking. No envelope
+inference is drawn from that record, because the reverse commitment and
+equilibrium effect are unbounded and the ground-channel envelope has no
+secondary coordinate. (Until 2026-09-15 this file presented the anti-ordered
+example as what masking does in that design.)
 
 **Two amine oxidases test the direction, and the classical reading fails both.**
 Bovine serum amine oxidase (Grant & Klinman 1989) is close to commitment free --
@@ -268,8 +279,10 @@ bounded. The curvature switches at `x* = sqrt(BD/(AC))`; at given rate constants
 the offset along the mass-scaling ray takes both signs exactly when `x* > 1`,
 but its sign change is not at `x*`. (An earlier version of this table gave the
 third row as "upper above x*, lower below".) Both schemes in this work have
-`B = 0`; the reversible result is now a corollary rather than a separate
-calculation.
+`B = 0` for each map, but the reversible scheme inherits the half-line only when
+its equilibrium isotope effects are unity. When they depend on isotope, the H/T
+and D/T comparisons carry different maps, and the set is the vacuity-window
+result above: inside the window it is unbounded below (`reversible.py`).
 
 What a bypass does to the identified set follows from an exact reduction, not
 from curvature. With `phi = k_b/k_T` the bypass fraction and `q = k_2/k_T` the
@@ -289,7 +302,21 @@ bypass and reference asymmetry must be profiled jointly. The tolerance falls as
 (masking lowers it). Solving `r` jointly with the published commitment gives
 1.36-1.57, and the one exclusion in the record then survives an isotope-blind
 route below **13-17%** of the isotope-sensitive flux (10-12% against the
-semiclassical locus); propagated, median 16% with 95% interval 8-25%. An earlier version of this file claimed a bound of "a fifth to a half"
+semiclassical locus); propagated, median 16% with 95% interval 8-25%. Because
+that `r` was solved without a bypass, these are sensitivities at stipulated `r`,
+not a joint fit under the enlarged model. The closed form
+`E_r(phi) = ln[K_HT + (K_HT-1)phi] - gamma ln[K_DT + (K_DT-1) r phi]` is the
+endpoint only when the commitment infimum sits at `c -> infinity`; otherwise the
+minimum is interior and lower, and `network_geometry.endpoint_exact` gives it
+from a stationarity quadratic (it matches direct profiling to 1e-9 on 3000
+random triples; the yeast system is in the `c -> infinity` branch throughout).
+Through v1.8.1, `network_geometry.endpoint` profiled the D side at the H-side
+commitment rather than at `r(1+phi)/(1+r phi)` times it, wrong for `r != 1` in
+the interior branch only; no reported number was in that branch. With binding
+effects in [0.90, 1.10] as well, the joint condition
+`F_bind <= 0.164 - 1.465 phi` holds at every stipulated `r` from 1.31 to 1.57
+(`joint_nuisance.check_envelope_r`); the older `0.1656 - 1.0866 phi` holds at
+`r = 1.31` only. An earlier version of this file claimed a bound of "a fifth to a half"
 derived from the curvature switch evaluated at the SMALLEST admissible competing
 rate; that is the infimum of the switch, not a bound above it, and it established
 nothing. (`analysis/network_geometry.py`)
@@ -303,21 +330,25 @@ x = K c / (1 + c - K)          finite above unity exactly when c > K - 1
 ```
 
 and the offset follows as a point rather than a bound, once the reference
-asymmetry `r = c_D/c_H` is known. One system in the record completes from
-kinetics already published, with no new experiment; a second is attempted and
+asymmetry `r = c_D/c_H` is known. One system in the record completes, conditionally, from
+a published kinetic estimate, with no new experiment; a second is attempted and
 fails, instructively:
 
-* *Yeast ADH completes.* Klinman (1976) measured `k_-1/k_cat = 1.3-7.3` for
-  benzyl alcohol on the same enzyme, in the same laboratory, at the conditions
-  Cha, Murray & Klinman (1989) used thirteen years later. Referenced to tritium
+* *Yeast ADH completes, conditionally.* Klinman (1976) inferred
+  `k_-1/k_cat = 1.3-7.3` on the same enzyme, in the same laboratory, at the
+  conditions Cha, Murray & Klinman (1989) used thirteen years later. It is not a
+  measurement: her Table IV converts Michaelis-constant isotope effects into
+  `k_-1/k_cat` assuming an isotope effect of 4 on `k_cat` and none on binding,
+  and 1.3-7.3 is the span over the effects (1.1-1.5) seen across her
+  para-substituted alcohols, not an interval for benzyl alcohol. Referenced to tritium
   that ratio is `c_H = (K_HT - 1) + K_HT a`, giving `c_H = 15.4-58.2`, well above
   the singular value `K_HT - 1 = 6.13`. With `c_D = r c_H` and `r` solved jointly
   from the primary and secondary effects at the same commitment (1.36-1.57), the
   identified set narrows from `F > +0.129` to the interval
   `F_int = +0.209 to +0.534`, an intrinsic exponent of 3.72-4.27 against a
   semiclassical 3.349. Propagating every measured input (both primary and both
-  secondary effects, and `a`) by Monte Carlo leaves `P(F_int > 0) = 1.0000` at
-  every `a`: the conclusion is unchanged in direction and strengthened in size.
+  secondary effects, and `a` uniform on its span as a sensitivity choice) by
+  Monte Carlo gives no draw of 4e5 with `F_int <= 0` at any `a`.
 * *Bovine serum amine oxidase does not.* Grant & Klinman's Table IV (1989) sets
   the pre-steady-state isotope effect beside the steady-state one at **six**
   temperatures, and their ratio is a masking factor directly. But the six are not
@@ -331,7 +362,8 @@ fails, instructively:
   what the data reject.
 
 A commitment closes the half-line only when it is precise enough AND measured at
-the condition of the isotope pair. Yeast ADH meets both; the amine oxidase meets
+the condition of the isotope pair. Yeast ADH meets both, conditional on Klinman's model-based
+conversion; the amine oxidase meets
 neither. Two further systems resist completion for reasons that are diagnostic
 rather than accidental.
 Monoamine oxidase B does not complete because the stopped-flow comparison Jonsson
@@ -348,14 +380,16 @@ Klinman's Table III reports 1.3 on the coenzyme constant, which maps to `a = 2.3
 but 0.80 on the alcohol constant, which the two-step partition model cannot
 produce at all, since `K_m = (k_off + k)/k_on` with `k_H > k_D` forces that ratio
 above unity. The inverse alcohol effect is systematic in these enzymes rather
-than an outlier, and the mapping inherits the model risk. What survives it is the
-direction, which survives completely: for *any* admissible commitment the
+than an outlier, and the mapping inherits the model risk. What does not depend on the estimate is
+the direction, within the base map: for *any* admissible commitment the
 completed yeast offset exceeds the half-line endpoint.
 
-The precision required of `c` is mild. Writing `c = m(K_HT - 1)`, recovering the
-yeast offset to within half the mechanistic signal needs `c_H` to only **5.3%**
-at `m = 3`, relaxing to 11.2% at `m = 5` (with `c_D = r c_H`). Commitments are routinely measured to that
-precision. The bound is not merely loose; it is loose in the direction that hides
+The commitment's own precision budget is mild. Writing `c = m(K_HT - 1)`, its
+contribution to the yeast offset stays within half the mechanistic signal if `c_H`
+is known to **5.3%** at `m = 3` (11.2% at `m = 5`). That is not the whole budget:
+at known `c` the published isotope errors alone give `F` a standard error of
+0.044 (rho = 0) to 0.057 (rho = -1), above the 0.021 target, so the isotope pair
+must be remeasured too (`completion.isotope_error_budget`). The bound is not merely loose; it is loose in the direction that hides
 the signal.
 
 **The obvious alternative fails, instructively.** Since `k_off` is diffusional
@@ -430,6 +464,8 @@ analysis/
   completion.py         closing the half-line with one commitment measurement,
                         and what the closed offset measures about the gating mode
   curvature.py          WHY the evidence is one-sided: masking is concave
+  mixed_label.py        forward masking in the mixed-labeling secondary design is
+                        ordered by the primary effect, so it only deflates
                         through the origin in log-rate coordinates, mass scaling
                         is homogeneity; axioms, composition, direction, and the
                         unequal-reference check of the primary protocol
@@ -549,10 +585,19 @@ the uninformative side, four more fail on precision alone, and one clears.
 Bounds: 0 of 18 series exclude either mechanism, at correlation -1, 0, 0.5 or
 0.9. A series bound is on the largest endpoint over its temperatures: the
 per-temperature one-sided bounds at level 0.05/n_T, then their maximum, which
-covers that maximum with probability at least 95% by the union bound. Through
+covers that maximum with probability at least 95% by the union bound whenever
+each per-temperature bound has its nominal coverage. Each is the 0.05/n_T
+quantile of the endpoint over lognormal draws with median at the measurement and
+log-scale standard deviations `s/K` taken at the observed effects. Because the
+endpoint is monotone in each effect, that would be exact at rho = -1 if the
+log-scale standard deviations were known; estimated at the observation it is a
+plug-in bound with approximate coverage: in repeated sampling the nominal 5%
+bound fails 4.8% of the time for the yeast errors and 7.6% for a hypothetical
+`2.0 +- 0.2`, `1.1 +- 0.001` pair (`bounds_uncertainty.plugin_coverage`). Through
 v1.8.0 it was the 5% quantile of the resampled maximum, which is not a valid
 bound for a maximum: taking ecDHFR W133F as truth, it exceeded the true maximum
-in 20% of simulated trials (`bounds_uncertainty.coverage_check`); every
+in 20% of 2e4 simulated trials, against 2.4% for the corrected bound
+(`bounds_uncertainty.coverage_check`); every
 corrected bound is lower, and no verdict changes. Best 95% lower bound -0.145
 (rho = -1) to -0.108 (rho = 0.9), ecDHFR light enzyme in every case. Best point
 estimate -0.0596 (ecDHFR W133F), short of F0 by 0.0175; its own 95% lower bound

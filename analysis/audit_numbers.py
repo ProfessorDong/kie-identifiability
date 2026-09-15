@@ -676,10 +676,26 @@ def check_ecdhfr_assignment():
     return 0
 
 
-def check_envelope():
-    """The quoted joint envelope must survive the profiled worst case."""
+from functools import lru_cache
+
+
+@lru_cache(maxsize=1)
+def _envelope_r_result():
     import joint_nuisance as J
-    return J.check_envelope_safe()
+    return J.check_envelope_r(verbose=False)
+
+
+def check_envelope():
+    """Both quoted joint lines must survive the profiled worst case.
+
+    The r = 1.31 line at that r; the r-range line at every stipulated r from
+    1.31 to the largest jointly solved value (added 2026-09-15).
+    """
+    import joint_nuisance as J
+    bad = J.check_envelope_safe()
+    fails, tight, where = _envelope_r_result()
+    print(f"  r-range joint line: {fails} failures, tightest slack {tight:.2e} at phi={where:.3f}")
+    return bad + fails
 
 
 def check_joint_counterexamples():
@@ -752,7 +768,9 @@ def check_repo_metadata():
         if not f.exists():
             continue
         txt = " ".join(f.read_text().split())
-        if title not in txt:
+        # case-insensitive: a journal may require Title Case, the deposit keeps sentence
+        # case, and what must not drift is the wording
+        if title.lower() not in txt.lower():
             print(f"  FAIL {name} does not carry the article title")
             bad += 1
     print(f"  repo metadata: {2 - bad}/2 files carry the article title")
@@ -840,9 +858,15 @@ def check_reference_asymmetry():
         # Two phrasings.  The second ("$r$ running from $a$, for ..., to $b$")
         # escaped the first pattern, and a stale "1.14 ... to 1.31" survived in
         # it after the MAO-B correction (found 2026-09-14).
-        found = re.findall(r"\$r=(\d\.\d\d)\$ to \$(\d\.\d\d)\$", txt)
-        found += re.findall(r"\$r\$ (?:runs|running) from \$(\d\.\d\d)\$[^$]*?"
+        # Since 2026-09-15 the observed ratio is written R (a lower bound on r),
+        # so both letters are matched, and a document quoting no range fails
+        # rather than passing on nothing.
+        found = re.findall(r"\$[rR]=(\d\.\d\d)\$ to \$(\d\.\d\d)\$", txt)
+        found += re.findall(r"\$[rR]\$ (?:runs|running) from \$(\d\.\d\d)\$[^$]*?"
                             r"(?:\$[^$]*\$[^$]*?)*? to \$(\d\.\d\d)\$", txt)
+        if not found:
+            print(f"  FAIL reference asymmetry: {doc} quotes no range for the observed ratio")
+            bad += 1
         # a quoted range must be the overall one or that of a single family
         # (the monoamine oxidase series is quoted on its own)
         fams = {(f"{g.r.min():.2f}", f"{g.r.max():.2f}") for _, g in d.groupby("family")}
@@ -1018,9 +1042,18 @@ def check_corpus_consequences():
     # its simulated failure rate, Monte Carlo precision and assignment check
     import bounds_uncertainty as BU
     bu = pd.read_csv("../results/bounds_uncertainty.csv")
-    old_rate, _ = BU.coverage_check()
-    need("main", f"maximum in ${100 * old_rate:.0f}\\%$ of simulated trials",
-         "the simulated failure rate of the old procedure")
+    import inspect
+    reps = inspect.signature(BU.coverage_check).parameters["reps"].default
+    old_rate, new_rate = BU.coverage_check()
+    se = 100 * np.sqrt(old_rate * (1 - old_rate) / reps)
+    need("main", f"true maximum in ${100 * old_rate:.0f}\\%$ of $2\\times10^{{4}}$ simulated "
+                 f"trials (binomial standard error ${se:.1f}\\%$)",
+         "the simulated failure rate of the old procedure, with its trial count")
+    if reps != 20000:
+        print(f"  FAIL corpus consequences: coverage_check runs {reps} trials, text says 2x10^4")
+        bad += 1
+    need("main", f"and the corrected bound in ${100 * new_rate:.1f}\\%$",
+         "the simulated failure rate of the corrected procedure")
     mc = bu.lcb_mc_sd.max()
     e = int(np.floor(np.log10(mc)))
     need("main", f"largest Monte Carlo standard deviation ${mc / 10 ** e:.1f}\\times10^{{{e}}}$",
@@ -1033,8 +1066,9 @@ def check_corpus_consequences():
     t13 = 100 * float(bypass_tolerance(7.13, 1.73, yadh_completion_joint(1.3)["r"], F0))
     t73 = 100 * float(bypass_tolerance(7.13, 1.73, yadh_completion_joint(7.3)["r"], F0))
     need("main", f"less than ${t13:.0f}\\%$ to ${t73:.0f}\\%$ of the", "the yeast bypass tolerance")
-    need("main", f"carry ${t13:.0f}\\%$ to ${t73:.0f}\\%$ of the isotope-sensitive rate",
-         "the yeast bypass tolerance (Discussion)")
+    # the Discussion now gives both thresholds; this one is against F0
+    need("main", f"${t13:.0f}\\%$ to ${t73:.0f}\\%$ to reach the gated envelope",
+         "the yeast bypass tolerance against F0 (Discussion)")
     # the profile-likelihood stratification must say what its own table shows
     # (until 2026-09-14 it said no adequately fitting series discriminates)
     from scipy import stats as _st
@@ -1079,6 +1113,275 @@ def check_corpus_consequences():
     return bad
 
 
+def check_scope_corrections():
+    r"""Numbers added when the scope of four results was corrected (2026-09-15).
+
+    The joint binding-and-bypass line had been quoted without its r (it holds
+    only at r = 1.31); the bounded-bypass endpoint E(phi) had been given for the
+    interior branch, where it is only an upper bound; the envelope's convergence
+    rate was stated as w^-2 for every K; and the reversible extension was said
+    to open above for any equilibrium isotope effect.  Each replacement statement
+    carries numbers, and each is recomputed here and matched to its sentence.
+    """
+    import joint_nuisance as J
+    import network_geometry as NG
+    from completion import (yadh_completion_joint, bypass_tolerance, yadh_joint_r,
+                            check_joint_r_quadratic, mc_yadh_tolerance,
+                            bsao_completion, bsao_masking_by_temperature)
+    main = " ".join(DOCS["main"].read_text().split())
+    si = " ".join(DOCS["si"].read_text().split())
+    bad = 0
+
+    def need(doc, text, what):
+        nonlocal bad
+        if text not in (main if doc == "main" else si):
+            print(f"  FAIL scope corrections: {doc} lacks {what}: {text!r}")
+            bad += 1
+
+    # the joint line over the stipulated range of r
+    ic, sl = J.envelope_r(0.0), J.envelope_r(0.0) - J.envelope_r(1.0)
+    rhi = float(yadh_joint_r(1.3))
+    fails, tight, where = _envelope_r_result()   # failures are counted by check_envelope
+    need("main", f"$r$ stipulated anywhere from ${J.R_RANGE[0]:.2f}$ to ${rhi:.2f}$",
+         "the stipulated r range")
+    need("main", f"$F_{{\\mathrm{{bind}}}}\\le{ic:.3f}-{sl:.3f}\\,\\phi$", "the r-range joint line")
+    need("si", f"\\ge\\ {ic:.3f}-{sl:.3f}\\,\\phi_{{\\mathrm H}}", "the r-range joint line")
+    need("si", f"nonvacuous for $\\phi_{{\\mathrm H}}\\le{ic / sl:.3f}$", "where the line is nonvacuous")
+    e = int(np.floor(np.log10(tight)))
+    need("si", f"smallest slack of ${tight / 10 ** e:.1f}\\times10^{{{e}}}$ at "
+               f"$\\phi_{{\\mathrm H}}={where:.3f}$", "the tightest slack of the r-range line")
+    ce = J._endpoint_ab(1.0, 1.0, 1.0, 1.0, 0.14, rhi)
+    need("si", f"the profiled endpoint there is ${ce:.4f}$", "the r = 1.57 counterexample")
+    # the yeast tolerance against zero, now distinguished from the one against F0
+    z13 = 100 * float(bypass_tolerance(7.13, 1.73, yadh_completion_joint(1.3)["r"], 0.0))
+    z73 = 100 * float(bypass_tolerance(7.13, 1.73, yadh_completion_joint(7.3)["r"], 0.0))
+    need("main", f"have to carry ${z13:.0f}\\%$ to ${z73:.0f}\\%$ of the isotope-sensitive rate to do so",
+         "the yeast bypass tolerance against the semiclassical locus")
+    t = mc_yadh_tolerance()
+    need("si", f"intact with probability ${t['F0']['p10']:.2f}$, and one of a twentieth with "
+               f"probability ${t['F0']['p05']:.3f}$", "the tolerance probabilities")
+    # the bounded-bypass endpoint in both branches
+    n, worst, interior, crit, n1 = NG.check_endpoint_exact(n=3000)
+    if worst > 1e-7 or crit:
+        print(f"  FAIL scope corrections: endpoint_exact differs by {worst:.1e}, "
+              f"criterion disagreements {crit}")
+        bad += 1
+    e = int(np.floor(np.log10(worst)))
+    need("si", f"On ${n}$ random admissible triples, ${interior}$ of them with an interior "
+               f"minimum, it agrees with direct profiling to ${worst / 10 ** e:.0f}\\times10^{{{e}}}$",
+         "the endpoint_exact validation")
+    need("si", f"on all ${n1}$ of those with a single reference", "the r = 1 triple count")
+    need("si", f"$E={NG.endpoint_closed(2.0, 1.5, 0.1):.3f}$ while the profiled endpoint is "
+               f"${NG.endpoint_exact(2.0, 1.5, 0.1):.3f}$", "the interior-branch example")
+    # the yeast r quadratic
+    _, nan_mismatch, diff, prod = check_joint_r_quadratic()
+    if nan_mismatch or diff > 1e-10:
+        print("  FAIL scope corrections: the r quadratic disagrees with bisection")
+        bad += 1
+    need("si", f"is below ${np.ceil(prod * 1000) / 1000:.3f}$ over $2\\times10^{{5}}$",
+         "the largest product of the r roots")
+    # BSAO: the observed ratio is only a lower bound on r
+    mm = bsao_masking_by_temperature()[1][3]
+    dF = bsao_completion(mm, r=2.0)["F"] - bsao_completion(mm, r=1.1370)["F"]
+    need("si", f"raising it to $2.0$ moves the point value at $m={mm:.3f}$ by ${dF:+.3f}$",
+         "the BSAO sensitivity to r")
+    # the envelope's convergence coefficient at K = 7
+    d, tt = M.mu_ratios("C")[1:]        # already square-root mass ratios
+    coef = (d - 1) / d * (np.log(7.0) - 0.5 * np.log(tt))
+    need("si", f"with coefficient ${coef:.4f}$ at $K=7$", "the 1/w convergence coefficient")
+    # the reversible corner path inside the Proposition S7 window
+    H, K, E = 5.04, 1.65, 1.64
+    EH = E ** GSC
+    a, b, u, v = H - 1, K - 1, H / EH - 1, K / E - 1
+    cf, cr = (v - u) / (a * v - b * u), (a - b) / (a * v - b * u)
+    eps = 0.01
+    CF, CR = (1 - eps) * cf, (1 - eps) * cr
+    DH, DD = 1 + CF * (1 - H) + CR * (1 - H / EH), 1 + CF * (1 - K) + CR * (1 - K / E)
+    Fr = np.log(H / DH) - GSC * np.log(K / DD)
+    need("si", f"which is ${Fr:.2f}$ at $\\varepsilon=0.01$", "the reversible corner path")
+    if not bad:
+        print(f"  scope corrections: r-range line {ic:.3f} - {sl:.3f} phi (slack {tight:.1e}), "
+              f"endpoint_exact on {n} triples, reversible corner {Fr:.2f}")
+    return bad
+
+
+def check_source_fidelity():
+    r"""Statements corrected against the primary sources on 2026-09-15.
+
+    A detailed audit read Cha et al. (1989), Klinman (1976), Kohen and Jensen
+    (2002), Northrop and Duggleby (1990) and Kohen et al. (1999) against the text
+    and found: the mixed-labeling counterexample used an anti-ordered pair of
+    commitments that the design cannot have; Cha's Table 2 has a fourth, D/T-only
+    determination the error discussion omitted; the commitment-precision
+    percentages were a commitment-only budget presented as the whole; the
+    combined multiplicity-and-correlation margin was not stated; an Arrhenius
+    prefactor combination was called the offset; and a Monte Carlo fraction was
+    printed as probability one.  Each replacement carries numbers, recomputed
+    here and matched to its sentence, and the deposit README must carry the
+    current corpus counts rather than an earlier release's.
+    """
+    from scipy.stats import norm
+    import corpus
+    import mixed_label as ML
+    from completion import isotope_error_budget, _mc_yadh
+    from pathlib import Path
+    main = " ".join(DOCS["main"].read_text().split())
+    si = " ".join(DOCS["si"].read_text().split())
+    bad = 0
+
+    def need(doc, text, what):
+        nonlocal bad
+        if text not in (main if doc == "main" else si):
+            print(f"  FAIL source fidelity: {doc} lacks {what}: {text!r}")
+            bad += 1
+
+    # combined error-inflation margin: Bonferroni over the units, at rho = -1
+    ya = pd.read_csv("../data/cha1989_yadh.csv")
+    avg = ya[ya.note.str.contains("average")].iloc[0]
+    u = corpus.counts()["units"]
+    Fh = np.log(avg.K_HT) - GSC * np.log(avg.K_DT)
+    s1 = avg.K_HT_se / avg.K_HT + GSC * avg.K_DT_se / avg.K_DT
+    k = (Fh - F0) / (norm.ppf(1 - 0.05 / u) * s1)
+    need("main", f"or by ${100 * (k - 1):.0f}\\%$ once the multiplicity adjustment", "the combined margin")
+    need("si", f"an understatement of only ${100 * (k - 1):.1f}\\%$ brings the bound down to $\\Fz$",
+         "the combined margin")
+    # Cha Table 2: four D/T determinations, three paired
+    det = ya[ya.note.str.contains("determination")]
+    d4 = pd.read_csv("../data/cha1989_yadh_dt_only.csv")
+    dt = np.r_[det.K_DT.to_numpy(), d4.K_DT.to_numpy()]
+    need("si", f"the fourth, ${d4.K_DT.iloc[0]:.2f}\\pm{d4.K_DT_se.iloc[0]:.2f}$, has no H/T partner",
+         "the fourth D/T determination")
+    need("si", f"the three H/T determinations, ${det.K_HT.std(ddof=1) / np.sqrt(len(det)):.3f}$",
+         "the H/T standard error")
+    need("si", f"the three paired D/T determinations, ${det.K_DT.std(ddof=1) / np.sqrt(len(det)):.3f}$",
+         "the paired D/T standard error")
+    need("si", f"exceeds that of all four, ${dt.std(ddof=1) / np.sqrt(len(dt)):.3f}$",
+         "the four-determination D/T standard error")
+    # the isotope-error budget of the commitment design
+    b3, b5 = (isotope_error_budget(avg.K_HT, avg.K_DT, avg.K_HT_se, avg.K_DT_se,
+                                   m * (avg.K_HT - 1), 1.3107) for m in (3, 5))
+    for doc in ("main", "si"):
+        need(doc, f"${b3[0]:.3f}$ at $\\rho=0$ and ${b3[1]:.3f}$ at $\\rho=-1$", "the isotope-error budget at m = 3")
+    need("si", f"${b5[0]:.3f}$ and ${b5[1]:.3f}$ at $m=5$", "the isotope-error budget at m = 5")
+    need("si", f"cut to ${100 * abs(F0) / 2 / b3[0]:.0f}\\%$ ($\\rho=0$) or ${100 * abs(F0) / 2 / b3[1]:.0f}\\%$ ($\\rho=-1$)",
+         "the isotope precision required")
+    need("main", f"already above $|\\Fz|/2={abs(F0) / 2:.3f}$", "the design target")
+    # mixed labeling: ordered maps deflate, anti-ordered inflate
+    n, nbad, worst, lifted = ML.check_ordered()
+    if nbad:
+        print(f"  FAIL source fidelity: {nbad} ordered maps raise F_obs above F_int")
+        bad += 1
+    need("si", f"$c_{{\\mathrm D}}=5$ return an observed exponent of ${ML.observed_exponent(1.10, 4.8, 1.0, 5.0):.2f}$",
+         "the ordered mixed-label example")
+    need("si", f"$c_{{\\mathrm D}}=1$ return ${ML.observed_exponent(1.10, 4.8, 5.0, 1.0):.2f}$",
+         "the anti-ordered mixed-label example")
+    need("si", f"Over $4\\times10^{{5}}$ random ordered maps", "the ordered-map count")
+    if n != 400000:
+        print(f"  FAIL source fidelity: check_ordered draws {n}, text says 4x10^5")
+        bad += 1
+    # the Arrhenius prefactor combination, which is not the offset
+    FA = np.log(4.3) - GSC * np.log(1.73)
+    sFA = np.hypot(0.6 / 4.3, GSC * 0.26 / 1.73)
+    need("si", f"is ${FA:.2f}\\pm{sFA:.2f}$, but it is not the offset", "the prefactor combination")
+    # zero nonpositive completed offsets, and the 95% bound that implies
+    zero = all(int(np.sum(_mc_yadh(400000, 20260815, a)[0] <= 0)) == 0
+               for a in (1.3, 2.3, 7.3, (1.3, 7.3)))
+    if not zero:
+        print("  FAIL source fidelity: a completed yeast offset at or below zero was drawn")
+        bad += 1
+    e = 3 / 400000
+    ex = int(np.floor(np.log10(e)))
+    need("si", f"probability below ${e / 10 ** ex:.1f}\\times10^{{{ex}}}$ at $95\\%$ confidence",
+         "the zero-count bound")
+    # the deposit README carries the current corpus, not an earlier release's
+    c = corpus.counts()
+    readme = " ".join((Path(__file__).resolve().parent.parent / "README.md").read_text().split())
+    for stale in ("94 matched", "29 independent systems", "28 systems fall",
+                  "Singled out from 29", "Bonferroni across 29", "completes bovine serum"):
+        if stale in readme:
+            print(f"  FAIL source fidelity: README still says {stale!r}")
+            bad += 1
+    for want in (f"{c['records']} matched", f"{c['units']} analysis units"):
+        if want not in readme:
+            print(f"  FAIL source fidelity: README lacks {want!r}")
+            bad += 1
+    sources = (Path(__file__).resolve().parent.parent / "external_data" / "SOURCES.md").read_text()
+    if "completes bovine serum amine oxidase" in sources:
+        print("  FAIL source fidelity: SOURCES.md still lists the withdrawn BSAO completion")
+        bad += 1
+    if not bad:
+        print(f"  source fidelity: combined margin {100 * (k - 1):.1f}%, D/T SE of four "
+              f"{dt.std(ddof=1) / 2:.3f}, isotope budget {b3[0]:.3f}/{b3[1]:.3f}, ordered maps "
+              f"{nbad} of {n}, F_A {FA:.2f}")
+    return bad
+
+
+def check_readiness_scope():
+    r"""Scope corrections from a readiness review (2026-09-15).
+
+    The binding shift was stated as exact on any branch (it holds on the open
+    branch only); the single-record bound was called exact at rho = -1 (it is a
+    plug-in bound, exact only for known log-scale standard deviations); the
+    Conclusions still called a model-based commitment estimate a measurement;
+    and the Smedarchina-Siebrand comparison credited their calculation with the
+    value of F0.  The numbers that replace those statements are recomputed here,
+    and the retired phrasings must not reappear.
+    """
+    from scipy.stats import t as tdist
+    import corpus
+    import bounds_uncertainty as BU
+    from partial_id import F_min_binding, F_min_exact as _fme
+    main = " ".join(DOCS["main"].read_text().split())
+    si = " ".join(DOCS["si"].read_text().split())
+    bad = 0
+
+    def need(doc, text, what):
+        nonlocal bad
+        if text not in (main if doc == "main" else si):
+            print(f"  FAIL readiness scope: {doc} lacks {what}: {text!r}")
+            bad += 1
+
+    def forbid(doc, text, what):
+        nonlocal bad
+        # case-insensitive: a retired claim must not return at the start of a sentence
+        if text.lower() in (main if doc == "main" else si).lower():
+            print(f"  FAIL readiness scope: {doc} still says {what}: {text!r}")
+            bad += 1
+
+    # binding on the closed branch
+    args = (1.05, 1.05, 0.95, 0.95)
+    e0, e1 = _fme(3.0, 1.8)[0], F_min_binding(3.0, 1.8, *args)
+    need("main", f"still lower the endpoint by ${e0 - e1:.3f}$", "the closed-branch binding shift")
+    need("si", f"the endpoint falls from ${e0:.3f}$ to ${e1:.3f}$", "the closed-branch binding example")
+    if abs(F_min_binding(7.13, 1.73, *args) - _fme(7.13, 1.73)[0]) > 1e-12:
+        print("  FAIL readiness scope: yeast endpoint moves under an F_bind = 0 perturbation")
+        bad += 1
+    # plug-in coverage of the single-record bound
+    y = BU.plugin_coverage(7.13, 0.07, 1.73, 0.02, 0.05)
+    h = BU.plugin_coverage(2.0, 0.2, 1.1, 0.001, 0.05)
+    need("main", f"fails in ${100 * y:.1f}\\%$ of trials for the yeast errors", "the yeast coverage")
+    need("main", f"but in ${100 * h:.1f}\\%$ for a hypothetical pair", "the counterexample coverage")
+    # t-tail sensitivity of the multiplicity-adjusted yeast bound
+    u = corpus.counts()["units"]
+    F = np.log(7.13) - GSC * np.log(1.73)
+    s1 = 0.07 / 7.13 + GSC * 0.02 / 1.73
+    tb = F - tdist.ppf(1 - 0.05 / u, 10) * s1
+    need("main", f"bound at $\\rho=-1$ falls to ${tb:.3f}$, below $\\Fz$", "the t-tail sensitivity")
+    # retired phrasings
+    forbid("main", "endpoint moves by exactly", "the unconditional binding shift")
+    forbid("main", "however large", "binding effects harmless however large")
+    forbid("si", "moves by exactly $F_{\\mathrm{bind}}$", "the unconditional binding shift")
+    forbid("main", "commitment measurements already published", "a commitment estimate as a measurement")
+    forbid("main", "has exact coverage under that sampling model", "exact coverage of the plug-in bound")
+    forbid("si", "property of a published calculation", "F0 credited to the instanton calculation")
+    forbid("main", "settled by the mechanism assumed, not by the precision achieved",
+           "discrimination settled by topology alone")
+    if not bad:
+        print(f"  readiness scope: closed-branch binding shift {e0 - e1:.3f}, plug-in coverage "
+              f"{100 * y:.1f}%/{100 * h:.1f}%, t10 Bonferroni bound {tb:.3f}")
+    return bad
+
+
 def check_titles():
     """The supplement must carry the article's title.
 
@@ -1092,7 +1395,7 @@ def check_titles():
     main = _title(DOCS["main"])
     _si_doc = MR.one(ROOT / "si", "*_si.tex")
     si = _title(_si_doc)
-    ok = main == si
+    ok = main.lower() == si.lower()          # wording must match; case may follow house style
     print(f"  article title : {main[:58]}...")
     print(f"  supplement    : {'matches' if ok else 'DIFFERS: ' + si[:58]}")
     return 0 if ok else 1
@@ -1124,7 +1427,8 @@ _NEEDS_DOCS = {
     "check_cited_scripts", "check_no_ai_mentions", "check_methods_sources",
     "check_precision_limited_count", "check_ladh_zero_claim",
     "check_repo_metadata", "check_titles", "check_reference_asymmetry",
-    "check_promoting_mode", "check_corpus_consequences",
+    "check_promoting_mode", "check_corpus_consequences", "check_scope_corrections",
+    "check_source_fidelity", "check_readiness_scope",
 }
 
 
@@ -1192,7 +1496,9 @@ def run():
                 check_ladh_zero_claim, check_ecdhfr_assignment,
                 check_envelope, check_joint_counterexamples,
                 check_repo_metadata, check_titles, check_reference_asymmetry,
-                check_promoting_mode, check_corpus_consequences):
+                check_promoting_mode, check_corpus_consequences,
+                check_scope_corrections, check_source_fidelity,
+                check_readiness_scope):
         if not HAVE_DOCS and _fn.__name__ in _NEEDS_DOCS:
             print(f"  SKIPPED (needs the manuscript): {_fn.__name__}")
             continue
