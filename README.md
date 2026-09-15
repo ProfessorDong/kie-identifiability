@@ -562,6 +562,13 @@ the six figures build, `audit_numbers.py` passes, and no tracked file changes.
 The changes in `network_atlas.py` are to comments and docstrings only, and
 `offset_analysis.py` is untouched; neither was rerun.
 
+Re-verified for v1.8.2 on 2026-09-15 from a clean clone, same environment: the
+v1.8.1 list plus `joint_nuisance.py` and `mixed_label.py` exit 0,
+`verify_derivation.py` reports no failures in 16 sections, the transcription
+audit finds 130 of 130 pairs, the six figures build, `audit_numbers.py` passes,
+and no tracked file changes. `offset_analysis.py` and `network_atlas.py` are
+untouched and were not rerun.
+
 One caveat on timing: `offset_analysis.py` computes profile likelihoods by
 continuation over a 301-point grid for each of 18 series and takes roughly
 50 minutes on one core.
