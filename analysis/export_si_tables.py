@@ -21,17 +21,32 @@ OUT = str(_MS / "si_extra_tables.tex") if _MS.is_dir() else "../results/si_extra
 L = []
 
 b = pd.read_csv("../results/bounds_uncertainty.csv")
-top = b[b.rho == 0.0].sort_values("point", ascending=False).head(4).variant.tolist()
+import bounds_uncertainty as _bu
+_WORD = {5: "five", 72: "seventy-two", 64: "sixty-four"}
+
+
+def _sci(x, nd=0):
+    e = int(np.floor(np.log10(abs(x))))
+    m = x / 10 ** e
+    return (f"$10^{{{e}}}$" if nd == 0 and abs(m - 1) < 1e-9
+            else f"${m:.{nd}f}\\times10^{{{e}}}$")
+_top = b[b.rho == 0.0].sort_values("point", ascending=False).head(4)
+# the header below says "all ecDHFR"; fail rather than mislabel if that changes
+assert set(_top.family) == {"ecDHFR"}, f"top series now include {set(_top.family)}"
+top = _top.variant.tolist()
 L += [r"\begin{table}[!htbp]",
       r"\caption{One-sided $95\%$ lower confidence bounds on the offset for the "
       r"four series with the highest point estimates, bracketed over the unknown "
       r"correlation $\rho$ between the H/T and D/T effects induced by the shared "
       r"tritium reference. The threshold for excluding the ground-channel model "
-      r"is $\Fz=-0.0421$; no entry reaches it. Bounds are simultaneous over the "
-      r"temperatures of a series and averaged over five replications of "
-      r"$5\times10^{4}$ draws; the largest Monte Carlo standard deviation over "
-      r"all sixty-four cells is $7.4\times10^{-4}$. The bracket includes "
-      r"$\rho=-1$, the maximally adverse case.}",
+      r"is $\Fz=-0.0421$; no entry reaches it. Each bound is on the series "
+      r"maximum of the endpoint: the one-sided bound for each temperature at "
+      r"level $0.05/n_T$, then the largest of these, which has coverage at least "
+      r"$95\%$ by the union bound. Bounds average " + _WORD[_bu.N_REP] +
+      r" replications of " + _sci(_bu.N_DRAW) + r" draws; the largest Monte Carlo "
+      r"standard deviation over all " + _WORD[4 * len(b) // 4] + r" cells is " +
+      _sci(b.lcb_mc_sd.max(), 1) + r". The bracket includes $\rho=-1$, the "
+      r"maximally adverse case.}",
       r"\label{tab:unc-si}", r"\begin{center}\small",
       r"\begin{tabular}{lccccc}", r"\toprule",
       r"Series (all ecDHFR) & point & $\rho=-1$ & $\rho=0$ & $\rho=0.5$ & $\rho=0.9$\\",
@@ -39,9 +54,9 @@ L += [r"\begin{table}[!htbp]",
 for v in top:
     s = b[b.variant == v]
     L.append(f"{v} & ${s[s.rho==0].point.iloc[0]:.4f}$ & "
-             f"${s[s.rho==-1.0].lcb.iloc[0]:.4f}$ & "
-             f"${s[s.rho==0].lcb.iloc[0]:.4f}$ & ${s[s.rho==0.5].lcb.iloc[0]:.4f}$ & "
-             f"${s[s.rho==0.9].lcb.iloc[0]:.4f}$\\\\")
+             f"${s[s.rho==-1.0].lcb.iloc[0]:.3f}$ & "
+             f"${s[s.rho==0].lcb.iloc[0]:.3f}$ & ${s[s.rho==0.5].lcb.iloc[0]:.3f}$ & "
+             f"${s[s.rho==0.9].lcb.iloc[0]:.3f}$\\\\")
 L += [r"\bottomrule", r"\end{tabular}", r"\end{center}", r"\end{table}", ""]
 
 # The summed-vibronic table (tab:bvib-si) was withdrawn together with its data.

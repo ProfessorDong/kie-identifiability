@@ -198,8 +198,10 @@ def bypass_to_destroy(KH, KD, target, r=1.0):
     return 0.5 * (lo + hi)
 
 
-# (label, K_HT, K_DT, r).  r is the reference asymmetry of Table S4 where a
-# source reports secondary effects, and 1.0 where it is unmeasured; the ecDHFR
+# (label, K_HT, K_DT, r).  r is the observed secondary ratio of Table S4 where a
+# source reports secondary effects -- a LOWER bound on the reference asymmetry,
+# so these tolerances are upper limits; for yeast ADH the jointly solved r and
+# its tolerance are in completion.py -- and 1.0 for a shared tracer; the ecDHFR
 # light-enzyme entry is the 25 C record of Wang et al., an earlier version of
 # this list carried (3.10, 1.75), which is not any record in the benchmark.
 # The MAO-B entry takes r from its own secondary effects at the same pH and

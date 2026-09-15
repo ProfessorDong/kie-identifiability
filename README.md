@@ -170,7 +170,8 @@ and on 3000 random pairs.
 records in 18 series, one-sided 95% confidence bounds exclude neither mechanism
 at any assumed correlation, now bracketed over `rho` in {-1, 0, 0.5, 0.9} with
 `rho = -1` the maximally adverse case. The closest series falls short by 0.0175
-on the point estimate and 0.0634 on its 95% bound.
+on the point estimate and 0.105 on its 95% bound (Bonferroni over its
+temperatures; see Bounds below).
 
 **But yeast ADH does.** The primary effects of Cha, Murray & Klinman (1989)
 give `F_obs = +0.129` against `F0 = -0.042`, with a 95% bound of `+0.063`
@@ -257,10 +258,18 @@ partitions against another, which is what a commitment is. So:
 |---|---|---|
 | yes | no  | upper half-line |
 | no  | yes | lower half-line |
-| yes | yes | upper above `x* = sqrt(BD/(AC))`, lower below |
+| yes | yes | all of R; upper half-line once the bypass is bounded |
 
-Both schemes in this work have `B = 0`; the reversible result is now a corollary
-rather than a separate calculation.
+The identified sets are for unknown rate constants. With `K(1) = 1`, `B = 0`
+forces the one-parameter map `x(1+c)/(x+c)` and `C = 0` the one-parameter map
+`(x+phi)/(1+phi)`, whatever the network. With both present the map has two free
+parameters, commitment and bypass, and nothing is identified until one is
+bounded. The curvature switches at `x* = sqrt(BD/(AC))`; at given rate constants
+the offset along the mass-scaling ray takes both signs exactly when `x* > 1`,
+but its sign change is not at `x*`. (An earlier version of this table gave the
+third row as "upper above x*, lower below".) Both schemes in this work have
+`B = 0`; the reversible result is now a corollary rather than a separate
+calculation.
 
 What a bypass does to the identified set follows from an exact reduction, not
 from curvature. With `phi = k_b/k_T` the bypass fraction and `q = k_2/k_T` the
@@ -275,10 +284,12 @@ so a bypass does not change the FORM of the masking, it pulls the intrinsic
 effect toward unity first. Because `Y - 1 = (x-1)/(1+phi)`, the `L_H` case split
 is unchanged. The endpoint then falls smoothly with `phi`, with no threshold,
 and the two tritium references do not scale together: `phi_D = r phi_H`, so
-bypass and reference asymmetry must be profiled jointly. With the measured
-`r = 1.31`, the one exclusion in the record survives an isotope-blind route
-below **18%** of the isotope-sensitive flux (13% against the semiclassical
-locus). An earlier version of this file claimed a bound of "a fifth to a half"
+bypass and reference asymmetry must be profiled jointly. The tolerance falls as
+`r` grows, and the observed secondary ratio `1.31` is only a lower bound on `r`
+(masking lowers it). Solving `r` jointly with the published commitment gives
+1.36-1.57, and the one exclusion in the record then survives an isotope-blind
+route below **13-17%** of the isotope-sensitive flux (10-12% against the
+semiclassical locus); propagated, median 16% with 95% interval 8-25%. An earlier version of this file claimed a bound of "a fifth to a half"
 derived from the curvature switch evaluated at the SMALLEST admissible competing
 rate; that is the infimum of the switch, not a bound above it, and it established
 nothing. (`analysis/network_geometry.py`)
@@ -300,11 +311,13 @@ fails, instructively:
   benzyl alcohol on the same enzyme, in the same laboratory, at the conditions
   Cha, Murray & Klinman (1989) used thirteen years later. Referenced to tritium
   that ratio is `c_H = (K_HT - 1) + K_HT a`, giving `c_H = 15.4-58.2`, well above
-  the singular value `K_HT - 1 = 6.13`. With `c_D = 1.31 c_H` the identified set
-  collapses from `F > +0.129` to `F_int = +0.208 to +0.513`, an intrinsic
-  exponent of 3.72-4.23 against a semiclassical 3.349. Propagating every measured
-  input (both effects, `r`, and `a`) by Monte Carlo leaves `P(F_int > 0) = 1.0000`
-  at every `a`: the conclusion is unchanged in direction and strengthened in size.
+  the singular value `K_HT - 1 = 6.13`. With `c_D = r c_H` and `r` solved jointly
+  from the primary and secondary effects at the same commitment (1.36-1.57), the
+  identified set narrows from `F > +0.129` to the interval
+  `F_int = +0.209 to +0.534`, an intrinsic exponent of 3.72-4.27 against a
+  semiclassical 3.349. Propagating every measured input (both primary and both
+  secondary effects, and `a`) by Monte Carlo leaves `P(F_int > 0) = 1.0000` at
+  every `a`: the conclusion is unchanged in direction and strengthened in size.
 * *Bovine serum amine oxidase does not.* Grant & Klinman's Table IV (1989) sets
   the pre-steady-state isotope effect beside the steady-state one at **six**
   temperatures, and their ratio is a masking factor directly. But the six are not
@@ -406,7 +419,7 @@ analysis/
                         (KIE_MANUSCRIPT, or an untracked manuscript_root.local);
                         without one those checks are skipped
   holdout.py            leave-one-temperature-out stability; Theorem 1
-                        forecast checked against every record
+                        consistency check (algebraic, cannot fail)
   yadh_robustness.py    the yeast result under mass convention, error
                         inflation, pooling, reversibility and multiplicity
   audit_numbers.py      sweeps every derived number against both manuscript
@@ -527,15 +540,18 @@ identified-set figure is 97 records over 32 analysis units, of which 27 fall on
 the uninformative side, four more fail on precision alone, and one clears.
 
 Bounds: 0 of 18 series exclude either mechanism, at correlation -1, 0, 0.5 or
-0.9. Best 95% lower bound -0.0987 (rho = -1) to -0.0933 (rho = 0.9), ecDHFR light
-enzyme in every case. Best point estimate -0.0596 (ecDHFR W133F), short of F0 by
-0.0175; its own 95% lower bound is short by 0.0634 (rho = 0) and 0.0682 at the
-maximally adverse rho = -1. The shortfall is deliberately not quoted in standard
-errors: the series statistic is a maximum over temperatures and is strongly right
-skewed, so the sampling s.d. (0.0853) and the Gaussian back-calculation
-(point - bound)/1.645 (0.0279) differ by a factor of three. Bounds are averaged
-over 5 replications of 5e4 draws; largest Monte Carlo s.d. over all 72 cells is
-7.4e-4.
+0.9. A series bound is on the largest endpoint over its temperatures: the
+per-temperature one-sided bounds at level 0.05/n_T, then their maximum, which
+covers that maximum with probability at least 95% by the union bound. Through
+v1.8.0 it was the 5% quantile of the resampled maximum, which is not a valid
+bound for a maximum: taking ecDHFR W133F as truth, it exceeded the true maximum
+in 20% of simulated trials (`bounds_uncertainty.coverage_check`); every
+corrected bound is lower, and no verdict changes. Best 95% lower bound -0.145
+(rho = -1) to -0.108 (rho = 0.9), ecDHFR light enzyme in every case. Best point
+estimate -0.0596 (ecDHFR W133F), short of F0 by 0.0175; its own 95% lower bound
+is short by 0.105 (rho = 0) and 0.117 at the maximally adverse rho = -1. Bounds
+are averaged over 5 replications of 1e6 draws; largest Monte Carlo s.d. over all
+72 cells is 4.8e-4.
 
 ## Relation to recent work
 

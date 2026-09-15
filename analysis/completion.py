@@ -85,6 +85,73 @@ def yadh_completion(a, KH=7.13, KD=1.73, r=1.31):
                 F=np.log(xh) - GSC*np.log(xd))
 
 
+# ---------------------------------------------- reference asymmetry, jointly
+# The reference asymmetry r = c_D/c_H = k_TH/k_TD is a ratio of CHEMICAL rates.
+# The sources report OBSERVED competitive secondary effects, which the same
+# commitment masks.  In the scheme of main-text Eq. (2) with separable rates
+# k_ab = p_a s_b (a transferred, b non-transferred isotope), the observed ratio
+# R = S_HT/S_DT satisfies R <= r whenever r >= 1, and R < 1 whenever r < 1
+# (Supplementary Note 5), so R = 1.31 for yeast ADH is a LOWER bound on r.
+# Given Klinman's commitment a = k_-1/k_cat for the protiated substrate, the
+# primary and secondary effects determine r jointly:
+#     sigma_H = s_H/s_T = (S_HT (1 + a) - 1)/a                     (closed form)
+#     c = (K_HT - 1) + K_HT a,   c_D = r c,
+#     q = c_D/x_D = (c_D - (K_DT - 1))/K_DT,
+#     sigma_D = s_D/s_T = (S_DT (1 + q) - 1)/q,   and r = sigma_H/sigma_D.
+# Until 2026-09-14 the completion used R itself as r.
+
+SEC_YADH = dict(SHT=(1.350, 0.015), SDT=(1.030, 0.006))   # Cha et al. 1989 Table 3
+
+
+def yadh_joint_r(a, KH=7.13, KD=1.73, SHT=1.350, SDT=1.030, lo=1.0, hi=10.0):
+    """r implied jointly by primary and secondary effects at commitment a.
+
+    Vectorized bisection; entries without a sign change on [lo, hi] are nan.
+    """
+    a, KH, KD, SHT, SDT = np.broadcast_arrays(*(np.asarray(v, float)
+                                                for v in (a, KH, KD, SHT, SDT)))
+    c = (KH - 1.0) + KH * a
+    sH = (SHT * (a + 1.0) - 1.0) / a
+
+    def res(r):
+        cD = r * c
+        q = (cD - (KD - 1.0)) / KD
+        sD = (SDT * (q + 1.0) - 1.0) / q
+        return sH / sD - r
+
+    L, H = np.full(a.shape, lo), np.full(a.shape, hi)
+    fL, fH = res(L), res(H)
+    ok = (fL > 0) & (fH < 0)
+    for _ in range(80):
+        M_ = 0.5 * (L + H)
+        fm = res(M_)
+        L, H = np.where(fm > 0, M_, L), np.where(fm > 0, H, M_)
+    return np.where(ok, 0.5 * (L + H), np.nan)
+
+
+def bypass_tolerance(KH, KD, r, target):
+    """Largest bypass fraction phi_H keeping the endpoint above `target`.
+
+    Uses the closed form E_r(phi) = ln[K_HT + (K_HT-1)phi]
+    - gamma ln[K_DT + (K_DT-1) r phi], exact when the commitment infimum sits at
+    c -> infinity (Supplementary Note 3); vectorized bisection.
+    """
+    KH, KD, r = np.broadcast_arrays(*(np.asarray(v, float) for v in (KH, KD, r)))
+    E = lambda ph: np.log(KH + (KH - 1) * ph) - GSC * np.log(KD + (KD - 1) * r * ph)
+    L, H = np.zeros(KH.shape), np.full(KH.shape, 5.0)
+    for _ in range(80):
+        M_ = 0.5 * (L + H)
+        up = E(M_) > target
+        L, H = np.where(up, M_, L), np.where(up, H, M_)
+    return np.where(E(0.0) > target, 0.5 * (L + H), 0.0)
+
+
+def yadh_completion_joint(a, KH=7.13, KD=1.73):
+    """Yeast ADH completed with r determined jointly at the same commitment."""
+    r = float(yadh_joint_r(a, KH, KD))
+    return dict(yadh_completion(a, KH, KD, r=r), r=r)
+
+
 def bsao_completion(mask, KH=35.2, KD=3.07, r=1.14):
     """Bovine serum amine oxidase closed by a measured masking factor.
 
@@ -186,16 +253,44 @@ def _mc_bsao(n, seed, m_val, m_err, KH=(35.2, 0.8), KD=(3.07, 0.07), r=(1.1370, 
     return F[ok], g[ok]
 
 
-def _mc_yadh(n, seed, a, KH=(7.13, 0.07), KD=(1.73, 0.02), r=(1.3107, 0.0164)):
+def _draw_yadh(n, seed, a, KH=(7.13, 0.07), KD=(1.73, 0.02)):
+    """Primary and secondary effects drawn, r solved jointly in every draw.
+
+    Until 2026-09-14 r was drawn as 1.3107 +- 0.0164, the observed secondary
+    ratio, which is only a lower bound on r (see yadh_joint_r).
+    """
     rng = np.random.default_rng(seed)
-    kh, kd, rr = (rng.normal(*KH, n), rng.normal(*KD, n), rng.normal(*r, n))
-    aa = rng.uniform(*a, n) if isinstance(a, tuple) else np.full(n, a)
+    kh, kd = rng.normal(*KH, n), rng.normal(*KD, n)
+    sht, sdt = rng.normal(*SEC_YADH["SHT"], n), rng.normal(*SEC_YADH["SDT"], n)
+    aa = rng.uniform(*a, n) if isinstance(a, tuple) else np.full(n, float(a))
+    rr = yadh_joint_r(aa, kh, kd, sht, sdt)
+    return kh, kd, aa, rr
+
+
+def _mc_yadh(n, seed, a, KH=(7.13, 0.07), KD=(1.73, 0.02)):
+    kh, kd, aa, rr = _draw_yadh(n, seed, a, KH, KD)
     c = (kh - 1) + kh * aa
     xh, xd = intrinsic_from_commitment(kh, c), intrinsic_from_commitment(kd, rr * c)
     F = np.log(xh) - GSC * np.log(xd)
     g = np.log(xh) / np.log(xd)
-    ok = (kh > kd) & (kd > 1) & np.isfinite(F)
+    ok = (kh > kd) & (kd > 1) & np.isfinite(F) & np.isfinite(rr)
     return F[ok], g[ok]
+
+
+def mc_yadh_tolerance(n=200000, seed=20260914, a=(1.3, 7.3)):
+    """Bypass tolerance against F0 and against 0, every input propagated."""
+    kh, kd, aa, rr = _draw_yadh(n, seed, a)
+    ok = (kh > kd) & (kd > 1) & np.isfinite(rr)
+    out = {}
+    for lab, tgt in (("F0", F0), ("zero", 0.0)):
+        t = bypass_tolerance(kh[ok], kd[ok], rr[ok], tgt)
+        out[lab] = dict(median=float(np.median(t)),
+                        lo=float(np.percentile(t, 2.5)), hi=float(np.percentile(t, 97.5)),
+                        p10=float(np.mean(t > 0.10)), p05=float(np.mean(t > 0.05)))
+    out["r"] = dict(median=float(np.median(rr[ok])), lo=float(np.percentile(rr[ok], 2.5)),
+                    hi=float(np.percentile(rr[ok], 97.5)))
+    out["dropped"] = int((~ok).sum())
+    return out
 
 
 def report_uncertainty(n=400000, seed=20260815):
@@ -231,6 +326,21 @@ def report_uncertainty(n=400000, seed=20260815):
     q = np.percentile(F, [2.5, 50, 97.5])
     print(f"  YADH, a uniform on [1.3,7.3]: F_int {q[1]:+.3f} "
           f"95% [{q[0]:+.3f},{q[2]:+.3f}]  P(F>0) = {np.mean(F > 0):.4f}")
+    print("\nYADH reference asymmetry, solved jointly with the commitment")
+    for a in (1.3, 2.3, 7.3):
+        d = yadh_completion_joint(a)
+        print(f"  a = {a:.1f}: r = {d['r']:.4f}  F_int {d['F']:+.4f}  gamma_int "
+              f"{d['gamma']:.3f}  bypass tolerance {100*float(bypass_tolerance(7.13, 1.73, d['r'], F0)):.1f}% "
+              f"vs F0, {100*float(bypass_tolerance(7.13, 1.73, d['r'], 0.0)):.1f}% vs 0")
+    t = mc_yadh_tolerance()
+    print(f"  propagated, a uniform on [1.3,7.3]: r {t['r']['median']:.3f} "
+          f"95% [{t['r']['lo']:.3f},{t['r']['hi']:.3f}]")
+    for lab in ("F0", "zero"):
+        u = t[lab]
+        print(f"  tolerance vs {lab:4s}: median {100*u['median']:.1f}%  95% "
+              f"[{100*u['lo']:.1f}%,{100*u['hi']:.1f}%]  P(>10%) = {u['p10']:.3f}  "
+              f"P(>5%) = {u['p05']:.3f}")
+    print(f"  draws without a joint solution: {t['dropped']}")
 
 
 # ------------------------------------------------------- the two-viscosity route

@@ -57,12 +57,13 @@ def leave_one_out():
 
 
 def structural_prediction_check():
-    """A prediction made before the data: exclusion at stake implies an open set.
+    """Consistency check: a positive observed offset implies an open set.
 
-    Theorem 1 is proved from the map alone.  It forecasts that any record whose
-    observed offset is positive has L_H >= gamma, so its identified set is the
-    open half-line.  Checking that against every record is a genuine
-    out-of-sample test of a structural claim, since no record entered the proof.
+    Theorem 1 implies that any record whose observed offset is positive has
+    L_H >= gamma, so its identified set is the open half-line.  This cannot fail
+    on any data: ln K_HT > gamma ln K_DT gives K_HT - 1 > K_DT^gamma - 1 >=
+    gamma (K_DT - 1) by Bernoulli's inequality.  It checks the implementation,
+    not the theory.  (Described until 2026-09-14 as an out-of-sample test.)
     """
     import corpus
     frames = [corpus.series(), corpus.single_condition()]

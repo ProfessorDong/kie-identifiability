@@ -12,13 +12,18 @@ observation map whenever a single edge carries the isotope-sensitive constant,
 
     K(x) = (A x + B)/(C x + D),      K(1) = 1,
 
-and the geometry of the identified set for the offset F follows from the signs
-of B and C (Proposition S5 of the supplement):
+and the signs of B and C classify it (Proposition S5 of the supplement):
 
-    B = 0, C > 0   concave      identified set opens ABOVE
-    C = 0, B > 0   convex       identified set opens BELOW
-    B, C > 0       mixed        switches at x* = sqrt(BD/(AC))
+    B = 0, C > 0   concave      one-parameter map; identified set opens ABOVE
+    C = 0, B > 0   convex       one-parameter map; identified set opens BELOW
+    B, C > 0       mixed        forward offset on the mass-scaling ray takes both
+                                signs iff x* = sqrt(BD/(AC)) > 1 (the sign change
+                                is NOT at x*); with commitment and bypass both
+                                unknown the identified set is all of R
     B = C = 0      linear       no masking
+
+The "geometry" computed and checked here is the FORWARD one: the sign of
+F = ln K_HT - gamma ln K_DT along the mass-scaling ray at given rate constants.
 
 This module derives f symbolically for an enumerated family of mechanisms,
 extracts the coefficients, classifies each network, and checks every
@@ -137,7 +142,8 @@ def classify(coeffs, subs):
     det = A * D - B * C
     # K is constant exactly when the determinant vanishes.  A = 0 alone is not
     # constancy: K = B/(Cx+D) still decreases in x, which is an inverse observed
-    # effect, and its log is concave, so the set still opens above.  Labeling a
+    # effect.  Its log is concave, but for a DECREASING map the identified set
+    # opens below, not above (Supplementary Note 3).  Labeling a
     # dissociation step produces exactly this, which is why a family that labels
     # only forward steps never meets it.
     if abs(det) < tol:

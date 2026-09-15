@@ -111,12 +111,15 @@ def _den(E, kht, kdt, gamma=GSC):
 
 
 def vacuity_window(kht, kdt, gamma=GSC, emax=1e6):
-    """Closed interval of E_DT on which the identified set is unbounded below.
+    """Half-open interval [E_D*, E_D**) of E_DT on which the set is unbounded below.
 
     Vacuity requires the corner (C_f*, C_r*) to lie in the physical quadrant,
     which needs BOTH v >= u (giving E_DT >= E_D*) AND den = a v - b u > 0.
     The second condition fails again at large E_DT, because den -> -(a-b) < 0,
-    so the window is a bounded interval [E_D*, E_D**] rather than a half-line.
+    so the window is a bounded interval rather than a half-line.  The upper edge
+    is excluded: there den = 0, which forces D_D > 1 - b/a > 0 and a finite
+    endpoint (-0.257 for K_HT = 5.04, K_DT = 1.65).  E_D** is the unique root
+    above E_D*, since d(den)/dE changes sign at most once.
 
     At E_DT = E_D* one has v = u and hence den = u(a-b), so the window is
     nonempty exactly when u > 0 there, which reduces to K_DT^gamma > K_HT,

@@ -2,8 +2,9 @@
 UNCERTAINTY-AWARE ONE-SIDED BOUNDS ON THE OFFSET
 ================================================================================================
 gamma_SC = 3.34887 (C-H reduced masses),  F0 = -0.042086
-50000 replicates x 5 independent replications per cell;
-one-sided 95% bound, simultaneous over temperatures.
+1000000 replicates x 5 independent replications per cell;
+one-sided 95% bound on the series maximum: per-temperature
+bounds at 0.05/n_T (Bonferroni), then their maximum.
 
 A series refutes the ground-channel gated model only if its lower
 confidence bound exceeds the mechanism envelope at the relevant scale.
@@ -14,112 +15,115 @@ not reported, so results are bracketed over rho in {-1, 0, 0.5, 0.9}.
 
 --- rho = -1.0 ----------------------------------------------------------------------------
 series                                        point   95% LCB   MC sd  sd(stat)   P(>F0)  refutes?
-FDH V123A (hydride)                         -0.3969   -0.4309  0.0000    0.0206    0.000        no
-FDH V123G (hydride)                         -0.3220   -0.3710  0.0001    0.0298    0.000        no
-MAOB pH 6.1 (abstraction)                   -0.1720   -0.1648  0.0006    0.1071    0.554        no
-MAOB pH 7.5 (abstraction)                   -0.1944   -0.3205  0.0007    0.1104    0.170        no
-TSase WT (hydride)                          -0.4611   -0.4855  0.0001    0.0185    0.000        no
-TSase WT (proton)                           -0.2725   -0.3219  0.0003    0.0287    0.000        no
-TSase Y209W (proton)                        -0.1600   -0.2478  0.0004    0.0932    0.213        no
-ecDHFR F125M (hydride)                      -0.1681   -0.2042  0.0001    0.0227    0.000        no
-ecDHFR G121V-F125M (hydride)                -0.0740   -0.1624  0.0002    0.0617    0.316        no
-ecDHFR M42W-F125M (hydride)                 -0.1027   -0.2119  0.0001    0.0670    0.188        no
-ecDHFR W133F (hydride)                      -0.0596   -0.1103  0.0005    0.0934    0.643        no
-ecDHFR heavy enzyme (hydride)               -0.1576   -0.2053  0.0004    0.0907    0.233        no
-ecDHFR light enzyme (hydride)               -0.0759   -0.0987  0.0001    0.0383    0.389        no
-hsDHFR F32L (hydride)                       -0.2784   -0.3366  0.0005    0.1016    0.067        no
-hsDHFR F32L-PP26N-PEKN62G (hydride)         -0.6937   -0.7162  0.0001    0.0383    0.000        no
-hsDHFR F32M (hydride)                       -0.8782   -0.9383  0.0003    0.0764    0.000        no
-hsDHFR d26-PPLR-d62-PEKN (hydride)          -0.1343   -0.1615  0.0002    0.0231    0.002        no
-hsDHFR d62-PEKN (hydride)                   -0.2368   -0.2377  0.0003    0.0363    0.002        no
+FDH V123A (hydride)                         -0.3969   -0.4449  0.0000    0.0206    0.000        no
+FDH V123G (hydride)                         -0.3220   -0.3915  0.0000    0.0298    0.000        no
+MAOB pH 6.1 (abstraction)                   -0.1720   -0.4175  0.0002    0.1069    0.555        no
+MAOB pH 7.5 (abstraction)                   -0.1944   -0.4383  0.0004    0.1104    0.171        no
+TSase WT (hydride)                          -0.4611   -0.5096  0.0001    0.0185    0.000        no
+TSase WT (proton)                           -0.2725   -0.3428  0.0001    0.0287    0.000        no
+TSase Y209W (proton)                        -0.1600   -0.3389  0.0003    0.0932    0.213        no
+ecDHFR F125M (hydride)                      -0.1681   -0.2220  0.0000    0.0227    0.000        no
+ecDHFR G121V-F125M (hydride)                -0.0740   -0.1917  0.0000    0.0618    0.318        no
+ecDHFR M42W-F125M (hydride)                 -0.1027   -0.2623  0.0000    0.0670    0.189        no
+ecDHFR W133F (hydride)                      -0.0596   -0.1587  0.0001    0.0936    0.643        no
+ecDHFR heavy enzyme (hydride)               -0.1576   -0.2771  0.0001    0.0907    0.233        no
+ecDHFR light enzyme (hydride)               -0.0759   -0.1453  0.0001    0.0383    0.392        no
+hsDHFR F32L (hydride)                       -0.2784   -0.3789  0.0002    0.1018    0.067        no
+hsDHFR F32L-PP26N-PEKN62G (hydride)         -0.6937   -0.7684  0.0001    0.0383    0.000        no
+hsDHFR F32M (hydride)                       -0.8782   -1.1618  0.0005    0.0765    0.000        no
+hsDHFR d26-PPLR-d62-PEKN (hydride)          -0.1343   -0.1957  0.0001    0.0231    0.002        no
+hsDHFR d62-PEKN (hydride)                   -0.2368   -0.3084  0.0001    0.0363    0.002        no
 
 --- rho = 0.0 ----------------------------------------------------------------------------
 series                                        point   95% LCB   MC sd  sd(stat)   P(>F0)  refutes?
-FDH V123A (hydride)                         -0.3969   -0.4259  0.0001    0.0176    0.000        no
-FDH V123G (hydride)                         -0.3220   -0.3572  0.0002    0.0214    0.000        no
-MAOB pH 6.1 (abstraction)                   -0.1720   -0.1744  0.0005    0.0888    0.378        no
-MAOB pH 7.5 (abstraction)                   -0.1944   -0.3036  0.0006    0.0902    0.099        no
-TSase WT (hydride)                          -0.4611   -0.4842  0.0001    0.0160    0.000        no
-TSase WT (proton)                           -0.2725   -0.3081  0.0003    0.0208    0.000        no
-TSase Y209W (proton)                        -0.1600   -0.2354  0.0007    0.0723    0.125        no
-ecDHFR F125M (hydride)                      -0.1681   -0.1982  0.0001    0.0188    0.000        no
-ecDHFR G121V-F125M (hydride)                -0.0740   -0.1594  0.0002    0.0556    0.293        no
-ecDHFR M42W-F125M (hydride)                 -0.1027   -0.2041  0.0002    0.0615    0.165        no
-ecDHFR W133F (hydride)                      -0.0596   -0.1055  0.0005    0.0853    0.627        no
-ecDHFR heavy enzyme (hydride)               -0.1576   -0.2011  0.0003    0.0841    0.208        no
-ecDHFR light enzyme (hydride)               -0.0759   -0.0975  0.0002    0.0287    0.237        no
-hsDHFR F32L (hydride)                       -0.2784   -0.3286  0.0003    0.0702    0.022        no
-hsDHFR F32L-PP26N-PEKN62G (hydride)         -0.6937   -0.7132  0.0002    0.0280    0.000        no
-hsDHFR F32M (hydride)                       -0.8782   -0.9323  0.0005    0.0584    0.000        no
-hsDHFR d26-PPLR-d62-PEKN (hydride)          -0.1343   -0.1598  0.0001    0.0195    0.000        no
-hsDHFR d62-PEKN (hydride)                   -0.2368   -0.2383  0.0003    0.0322    0.001        no
+FDH V123A (hydride)                         -0.3969   -0.4380  0.0000    0.0177    0.000        no
+FDH V123G (hydride)                         -0.3220   -0.3718  0.0000    0.0214    0.000        no
+MAOB pH 6.1 (abstraction)                   -0.1720   -0.3469  0.0002    0.0889    0.379        no
+MAOB pH 7.5 (abstraction)                   -0.1944   -0.3989  0.0004    0.0902    0.099        no
+TSase WT (hydride)                          -0.4611   -0.5004  0.0001    0.0160    0.000        no
+TSase WT (proton)                           -0.2725   -0.3218  0.0000    0.0208    0.000        no
+TSase Y209W (proton)                        -0.1600   -0.3106  0.0001    0.0724    0.125        no
+ecDHFR F125M (hydride)                      -0.1681   -0.2123  0.0001    0.0188    0.000        no
+ecDHFR G121V-F125M (hydride)                -0.0740   -0.1835  0.0000    0.0557    0.295        no
+ecDHFR M42W-F125M (hydride)                 -0.1027   -0.2477  0.0001    0.0615    0.166        no
+ecDHFR W133F (hydride)                      -0.0596   -0.1470  0.0001    0.0855    0.628        no
+ecDHFR heavy enzyme (hydride)               -0.1576   -0.2601  0.0001    0.0841    0.208        no
+ecDHFR light enzyme (hydride)               -0.0759   -0.1291  0.0001    0.0286    0.236        no
+hsDHFR F32L (hydride)                       -0.2784   -0.3597  0.0001    0.0703    0.023        no
+hsDHFR F32L-PP26N-PEKN62G (hydride)         -0.6937   -0.7547  0.0001    0.0280    0.000        no
+hsDHFR F32M (hydride)                       -0.8782   -1.0930  0.0001    0.0583    0.000        no
+hsDHFR d26-PPLR-d62-PEKN (hydride)          -0.1343   -0.1853  0.0001    0.0195    0.000        no
+hsDHFR d62-PEKN (hydride)                   -0.2368   -0.2904  0.0001    0.0323    0.001        no
 
 --- rho = 0.5 ----------------------------------------------------------------------------
 series                                        point   95% LCB   MC sd  sd(stat)   P(>F0)  refutes?
-FDH V123A (hydride)                         -0.3969   -0.4231  0.0001    0.0160    0.000        no
-FDH V123G (hydride)                         -0.3220   -0.3477  0.0001    0.0156    0.000        no
-MAOB pH 6.1 (abstraction)                   -0.1720   -0.1801  0.0002    0.0793    0.263        no
-MAOB pH 7.5 (abstraction)                   -0.1944   -0.2931  0.0007    0.0786    0.059        no
-TSase WT (hydride)                          -0.4611   -0.4831  0.0001    0.0143    0.000        no
-TSase WT (proton)                           -0.2725   -0.2980  0.0002    0.0152    0.000        no
-TSase Y209W (proton)                        -0.1600   -0.2272  0.0005    0.0598    0.068        no
-ecDHFR F125M (hydride)                      -0.1681   -0.1947  0.0002    0.0164    0.000        no
-ecDHFR G121V-F125M (hydride)                -0.0740   -0.1579  0.0002    0.0521    0.279        no
-ecDHFR M42W-F125M (hydride)                 -0.1027   -0.1993  0.0002    0.0584    0.152        no
-ecDHFR W133F (hydride)                      -0.0596   -0.1025  0.0006    0.0809    0.618        no
-ecDHFR heavy enzyme (hydride)               -0.1576   -0.1986  0.0002    0.0805    0.195        no
-ecDHFR light enzyme (hydride)               -0.0759   -0.0960  0.0001    0.0226    0.134        no
-hsDHFR F32L (hydride)                       -0.2784   -0.3239  0.0003    0.0503    0.005        no
-hsDHFR F32L-PP26N-PEKN62G (hydride)         -0.6937   -0.7101  0.0001    0.0205    0.000        no
-hsDHFR F32M (hydride)                       -0.8782   -0.9257  0.0002    0.0445    0.000        no
-hsDHFR d26-PPLR-d62-PEKN (hydride)          -0.1343   -0.1584  0.0002    0.0174    0.000        no
-hsDHFR d62-PEKN (hydride)                   -0.2368   -0.2386  0.0002    0.0301    0.000        no
+FDH V123A (hydride)                         -0.3969   -0.4340  0.0000    0.0160    0.000        no
+FDH V123G (hydride)                         -0.3220   -0.3582  0.0000    0.0155    0.000        no
+MAOB pH 6.1 (abstraction)                   -0.1720   -0.2971  0.0001    0.0793    0.263        no
+MAOB pH 7.5 (abstraction)                   -0.1944   -0.3758  0.0002    0.0786    0.060        no
+TSase WT (hydride)                          -0.4611   -0.4948  0.0001    0.0143    0.000        no
+TSase WT (proton)                           -0.2725   -0.3077  0.0000    0.0152    0.000        no
+TSase Y209W (proton)                        -0.1600   -0.2942  0.0001    0.0598    0.068        no
+ecDHFR F125M (hydride)                      -0.1681   -0.2065  0.0000    0.0164    0.000        no
+ecDHFR G121V-F125M (hydride)                -0.0740   -0.1777  0.0000    0.0521    0.280        no
+ecDHFR M42W-F125M (hydride)                 -0.1027   -0.2398  0.0001    0.0584    0.152        no
+ecDHFR W133F (hydride)                      -0.0596   -0.1405  0.0002    0.0810    0.618        no
+ecDHFR heavy enzyme (hydride)               -0.1576   -0.2503  0.0001    0.0805    0.196        no
+ecDHFR light enzyme (hydride)               -0.0759   -0.1188  0.0001    0.0226    0.134        no
+hsDHFR F32L (hydride)                       -0.2784   -0.3488  0.0001    0.0504    0.005        no
+hsDHFR F32L-PP26N-PEKN62G (hydride)         -0.6937   -0.7463  0.0000    0.0205    0.000        no
+hsDHFR F32M (hydride)                       -0.8782   -1.0296  0.0003    0.0445    0.000        no
+hsDHFR d26-PPLR-d62-PEKN (hydride)          -0.1343   -0.1793  0.0001    0.0174    0.000        no
+hsDHFR d62-PEKN (hydride)                   -0.2368   -0.2785  0.0001    0.0301    0.000        no
 
 --- rho = 0.9 ----------------------------------------------------------------------------
 series                                        point   95% LCB   MC sd  sd(stat)   P(>F0)  refutes?
-FDH V123A (hydride)                         -0.3969   -0.4207  0.0001    0.0144    0.000        no
-FDH V123G (hydride)                         -0.3220   -0.3356  0.0000    0.0083    0.000        no
-MAOB pH 6.1 (abstraction)                   -0.1720   -0.1831  0.0002    0.0720    0.185        no
-MAOB pH 7.5 (abstraction)                   -0.1944   -0.2837  0.0006    0.0684    0.031        no
-TSase WT (hydride)                          -0.4611   -0.4814  0.0001    0.0124    0.000        no
-TSase WT (proton)                           -0.2725   -0.2863  0.0001    0.0083    0.000        no
-TSase Y209W (proton)                        -0.1600   -0.2190  0.0004    0.0482    0.023        no
-ecDHFR F125M (hydride)                      -0.1681   -0.1911  0.0002    0.0142    0.000        no
-ecDHFR G121V-F125M (hydride)                -0.0740   -0.1571  0.0003    0.0489    0.265        no
-ecDHFR M42W-F125M (hydride)                 -0.1027   -0.1950  0.0004    0.0557    0.141        no
-ecDHFR W133F (hydride)                      -0.0596   -0.0998  0.0003    0.0773    0.609        no
-ecDHFR heavy enzyme (hydride)               -0.1576   -0.1959  0.0003    0.0774    0.185        no
-ecDHFR light enzyme (hydride)               -0.0759   -0.0933  0.0001    0.0168    0.054        no
-hsDHFR F32L (hydride)                       -0.2784   -0.3201  0.0002    0.0312    0.000        no
-hsDHFR F32L-PP26N-PEKN62G (hydride)         -0.6937   -0.7046  0.0000    0.0105    0.000        no
-hsDHFR F32M (hydride)                       -0.8782   -0.9119  0.0002    0.0242    0.000        no
-hsDHFR d26-PPLR-d62-PEKN (hydride)          -0.1343   -0.1570  0.0002    0.0156    0.000        no
-hsDHFR d62-PEKN (hydride)                   -0.2368   -0.2389  0.0001    0.0284    0.000        no
+FDH V123A (hydride)                         -0.3969   -0.4306  0.0000    0.0145    0.000        no
+FDH V123G (hydride)                         -0.3220   -0.3413  0.0000    0.0083    0.000        no
+MAOB pH 6.1 (abstraction)                   -0.1720   -0.2336  0.0001    0.0721    0.184        no
+MAOB pH 7.5 (abstraction)                   -0.1944   -0.3553  0.0001    0.0684    0.031        no
+TSase WT (hydride)                          -0.4611   -0.4896  0.0000    0.0124    0.000        no
+TSase WT (proton)                           -0.2725   -0.2912  0.0000    0.0083    0.000        no
+TSase Y209W (proton)                        -0.1600   -0.2795  0.0001    0.0482    0.023        no
+ecDHFR F125M (hydride)                      -0.1681   -0.2012  0.0000    0.0142    0.000        no
+ecDHFR G121V-F125M (hydride)                -0.0740   -0.1701  0.0000    0.0489    0.265        no
+ecDHFR M42W-F125M (hydride)                 -0.1027   -0.2332  0.0002    0.0558    0.140        no
+ecDHFR W133F (hydride)                      -0.0596   -0.1348  0.0000    0.0773    0.610        no
+ecDHFR heavy enzyme (hydride)               -0.1576   -0.2417  0.0001    0.0774    0.185        no
+ecDHFR light enzyme (hydride)               -0.0759   -0.1082  0.0000    0.0168    0.054        no
+hsDHFR F32L (hydride)                       -0.2784   -0.3393  0.0000    0.0312    0.000        no
+hsDHFR F32L-PP26N-PEKN62G (hydride)         -0.6937   -0.7175  0.0001    0.0105    0.000        no
+hsDHFR F32M (hydride)                       -0.8782   -0.9473  0.0001    0.0242    0.000        no
+hsDHFR d26-PPLR-d62-PEKN (hydride)          -0.1343   -0.1737  0.0001    0.0156    0.000        no
+hsDHFR d62-PEKN (hydride)                   -0.2368   -0.2657  0.0000    0.0284    0.000        no
 
 ================================================================================================
 SUMMARY
 ================================================================================================
-rho = -1.0: series refuting the model = 0 of 18;  best lower bound -0.0987 (ecDHFR light enzyme)
-rho = 0.0: series refuting the model = 0 of 18;  best lower bound -0.0975 (ecDHFR light enzyme)
-rho = 0.5: series refuting the model = 0 of 18;  best lower bound -0.0960 (ecDHFR light enzyme)
-rho = 0.9: series refuting the model = 0 of 18;  best lower bound -0.0933 (ecDHFR light enzyme)
+rho = -1.0: series refuting the model = 0 of 18;  best lower bound -0.1453 (ecDHFR light enzyme)
+rho = 0.0: series refuting the model = 0 of 18;  best lower bound -0.1291 (ecDHFR light enzyme)
+rho = 0.5: series refuting the model = 0 of 18;  best lower bound -0.1188 (ecDHFR light enzyme)
+rho = 0.9: series refuting the model = 0 of 18;  best lower bound -0.1082 (ecDHFR light enzyme)
 
-Largest Monte Carlo s.d. over all cells: 0.00074
+Largest Monte Carlo s.d. over all cells: 0.00048
 Largest uninformative-replicate fraction: 0.00e+00
-So the bounds are reported to four decimals only where that exceeds
-the Monte Carlo scatter; three decimals are secure everywhere.
+Bounds are therefore secure to 3 decimals everywhere (Monte Carlo s.d. 4.8e-04).
 
 Closest series on the point estimate: ecDHFR W133F.
   point bound      -0.0596  (short of F0 by 0.0175)
-  95% lower bound  -0.1055  (short of F0 by 0.0634)
-  s.d. of the series statistic 0.0853
-  resampling frequency of clearing F0: 0.627
+  95% lower bound  -0.1470  (short of F0 by 0.1049)
+  s.d. of the series statistic 0.0855
+  resampling frequency of clearing F0: 0.628
 
-The series statistic is a maximum and is strongly right skewed: for
-this series (point - LCB)/1.645 = 0.0279 while the
-actual s.d. is 0.0853. Quoting the shortfall as a multiple of
-a standard error is therefore not meaningful, and we report the
-one-sided bound and the resampling frequency instead.
+The resampled series maximum is right skewed, which is why its quantile
+is not used as the bound; the bound is the Bonferroni maximum above.
 
-Ranking by confidence bound instead promotes ecDHFR light enzyme (LCB -0.0975),
+Ranking by confidence bound instead promotes ecDHFR light enzyme (LCB -0.1291),
 which has more temperatures and tighter errors.
+
+Coverage, ecDHFR W133F as recorded taken as truth, rho = -1:
+  P(bound > true maximum): quantile of resampled maximum 0.197, Bonferroni maximum 0.024 (nominal 0.05)
+
+The unpaired 10 C ecDHFR record (assigned by interpolation): over light,
+heavy and dropped, a bound moves by at most 0.0032 at rho = -1 and every
+bound stays at least 0.1012 below F0.

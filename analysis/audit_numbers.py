@@ -24,7 +24,8 @@ import pandas as pd
 
 import masses as M
 from completion import (bsao_homogeneity, bsao_masking_by_temperature,
-                        yadh_completion)
+                        yadh_completion, yadh_completion_joint, bypass_tolerance,
+                        mc_yadh_tolerance, _mc_yadh)
 from network_geometry import BENCH, bypass_to_destroy, endpoint, endpoint_closed
 from partial_id import F_min_exact
 
@@ -102,7 +103,9 @@ def derived():
     # Swain et al. 1958 wrote the relation as the 1.442 power of the H/D effect.
     out.append(("gamma/(gamma-1) bare (Swain 1.442)", g_bare / (g_bare - 1), 5, ("si",)))
     for a, lab in ((1.3, "hi"), (7.3, "lo")):
-        r = yadh_completion(a)
+        # r solved jointly with the commitment (completion.yadh_joint_r); the
+        # observed secondary ratio 1.31 is only a lower bound on it
+        r = yadh_completion_joint(a)
         out.append((f"YADH F_int {lab}", r["F"], 3, ("main", "si")))
         out.append((f"YADH gamma_int {lab}", r["gamma"], 2, ("main", "si")))
     # The BSAO completion detail moved to the supplement when the main text was
@@ -165,6 +168,26 @@ def derived():
     out.append(("LADH F93W 3C endpoint", _fme(10.3, 2.0)[0], 3, ("main", "si")))
     for lab, KH, KD, r in BENCH:
         out.append((f"endpoint {lab}", endpoint(KH, KD, 0.0, r), 4, ("si",)))
+    # yeast reference asymmetry and bypass tolerance at the jointly solved r
+    # (until 2026-09-14 quoted at r = 1.31, which overstates the tolerance)
+    for a in (1.3, 7.3):
+        j = yadh_completion_joint(a)
+        out.append((f"YADH joint r a={a}", j["r"], 3, ("si",)))
+        out.append((f"YADH tolerance vs F0 a={a} (%)",
+                    100 * float(bypass_tolerance(7.13, 1.73, j["r"], F0)), 1, ("si",)))
+        out.append((f"YADH tolerance vs 0 a={a} (%)",
+                    100 * float(bypass_tolerance(7.13, 1.73, j["r"], 0.0)), 1, ("si",)))
+    c23 = yadh_completion_joint(2.3)
+    out.append(("YADH F_int a=2.3", c23["F"], 3, ("main", "si")))
+    out.append(("YADH gamma_int a=2.3", c23["gamma"], 2, ("si",)))
+    t = mc_yadh_tolerance()
+    for lab in ("F0", "zero"):
+        for k in ("median", "lo", "hi"):
+            out.append((f"YADH tolerance MC {lab} {k} (%)", 100 * t[lab][k], 1, ("si",)))
+    out.append(("YADH tolerance MC F0 P(>10%)", t["F0"]["p10"], 2, ("si",)))
+    Fu, _ = _mc_yadh(400000, 20260815, (1.3, 7.3))
+    for q in (2.5, 50, 97.5):
+        out.append((f"YADH completion MC uniform a, q{q}", float(np.percentile(Fu, q)), 3, ("si",)))
     ya = pd.read_csv("../data/cha1989_yadh.csv")
     a = ya[ya.note.str.contains("average")].iloc[0]
     out.append(("YADH F_obs", F_min_exact(a.K_HT, a.K_DT)[0], 3, ("main", "si")))
@@ -779,6 +802,11 @@ def check_reference_asymmetry():
     for label, (f, v, T) in bypass.items():
         m = re.search(re.escape(label) + r" & \$[\d.]+\$ & \$([\d.]+)\$", si)
         want = f"{RA.r_at(f, v, T):.2f}"
+        if f == "YADH":
+            # the yeast row carries r solved jointly with the published commitment,
+            # tabulated as the range over Klinman's a; its lower end is checked here
+            from completion import yadh_joint_r
+            want = f"{float(yadh_joint_r(7.3)):.2f}"
         if m is None or m.group(1) != want:
             print(f"  FAIL reference asymmetry: bypass table {label!r} r = "
                   f"{m.group(1) if m else 'absent'}, data give {want}")
@@ -946,7 +974,7 @@ def check_corpus_consequences():
     tab = tab[:tab.index(r"\end{tabular}")]
     lines = [ln.rstrip() for ln in tab.splitlines()]
     inferred = sum(1 for ln in lines if ln.endswith(r"inferred$^{a}$\\"))
-    shared = sum(1 for ln in lines if ln.endswith(r"& 1 & shared tracer$^{b}$\\"))
+    shared = sum(1 for ln in lines if ln.endswith(r"& 1 & shared$^{b}$\\"))
     forms = inferred + shared
     # the table's statuses must be those deposited in tracer_design.csv, which
     # records the tracer each source used in the H/T and the D/T experiment
@@ -955,7 +983,7 @@ def check_corpus_consequences():
     # row by row, so a swap of two statuses cannot pass on the counts alone
     cells = {}
     for ln in lines:
-        if ln.endswith(r"inferred$^{a}$\\") or ln.endswith(r"shared tracer$^{b}$\\"):
+        if ln.endswith(r"inferred$^{a}$\\") or ln.endswith(r"& 1 & shared$^{b}$\\"):
             cells[ln.split(" & ")[0]] = "labeled" if "inferred" in ln else "shared"
     from corpus import display_family
     for _, x in td.iterrows():
@@ -986,6 +1014,43 @@ def check_corpus_consequences():
     need("si", f"For the remaining {W[shared]} the question does not arise", "the shared-tracer count")
     need("main", f"across {W[inferred]} of the {W[forms]} forms", "the form count")
     need("main", f"For the remaining {W[shared]} the question does not arise", "the shared-tracer count")
+    # the confidence procedure for temperature series (corrected 2026-09-14):
+    # its simulated failure rate, Monte Carlo precision and assignment check
+    import bounds_uncertainty as BU
+    bu = pd.read_csv("../results/bounds_uncertainty.csv")
+    old_rate, _ = BU.coverage_check()
+    need("main", f"maximum in ${100 * old_rate:.0f}\\%$ of simulated trials",
+         "the simulated failure rate of the old procedure")
+    mc = bu.lcb_mc_sd.max()
+    e = int(np.floor(np.log10(mc)))
+    need("main", f"largest Monte Carlo standard deviation ${mc / 10 ** e:.1f}\\times10^{{{e}}}$",
+         "the Monte Carlo precision of the bounds")
+    mv, gap = BU.assignment_sensitivity()
+    need("si", f"moves a bound by at most ${mv:.4f}$, and every bound stays at least ${gap:.4f}$",
+         "the ecDHFR assignment sensitivity")
+    # the yeast bypass tolerance quoted in the main text, at the jointly solved r
+    from completion import yadh_completion_joint, bypass_tolerance
+    t13 = 100 * float(bypass_tolerance(7.13, 1.73, yadh_completion_joint(1.3)["r"], F0))
+    t73 = 100 * float(bypass_tolerance(7.13, 1.73, yadh_completion_joint(7.3)["r"], F0))
+    need("main", f"less than ${t13:.0f}\\%$ to ${t73:.0f}\\%$ of the", "the yeast bypass tolerance")
+    need("main", f"carry ${t13:.0f}\\%$ to ${t73:.0f}\\%$ of the isotope-sensitive rate",
+         "the yeast bypass tolerance (Discussion)")
+    # the profile-likelihood stratification must say what its own table shows
+    # (until 2026-09-14 it said no adequately fitting series discriminates)
+    from scipy import stats as _st
+    pr = pd.read_csv("../results/offset_profiles.csv")
+    pr["p_fit"] = _st.chi2.sf(pr.chi2_min, (2 * pr.n_T - 5).clip(lower=1))
+    excl = pr[(pr.F_lo > 0) | (pr.F_hi < 0)]
+    adq = excl[excl.p_fit > 0.05]
+    above = adq[adq.F_lo > F0]
+    WS = {3: "three", 5: "five", 7: "seven", 12: "twelve", 18: "eighteen"}
+    need("si", f"profiles exclude $F=0$ in {WS[len(excl)]} of {WS[len(pr)]} series",
+         "the profile exclusion count")
+    need("si", f"{WS[len(excl) - len(adq)]} of those {WS[len(excl)]} belong to series the model",
+         "the misfit exclusion count")
+    need("si", f"The other {WS[len(adq)]} exclusions are in adequately fitting series",
+         "the adequate exclusion count")
+    need("si", f"{WS[len(above)]} ecDHFR and hsDHFR series", "the count wholly above F0")
     # the admitted E. coli thymidylate synthase record
     e = ya[ya.grp == "ectsase"].iloc[0]
     fe = F_min_exact(e.K_HT, e.K_DT)[0]
@@ -997,6 +1062,16 @@ def check_corpus_consequences():
     need("si", f"$L_H={lh:.2f}>\\gSC$", "the ecTSase L_H")
     need("si", f"$F_{{\\mathrm{{obs}}}}={fe:+.3f}$", "the ecTSase endpoint")
     need("si", f"at $\\rho=-1$ is ${fe - 1.645 * se:.3f}$", "the ecTSase bound")
+    # the yeast completion table, row by row: the prose beside it quotes F and
+    # gamma, so a stale table cell would otherwise pass the value-somewhere test
+    from completion import yadh_completion_joint
+    for a in (1.3, 7.3):
+        j = yadh_completion_joint(a)
+        xh = f"{float(j['xH']):.2f}"
+        xh = xh if len(xh) == 5 else f"\\phantom{{0}}{xh}"
+        need("si", f"${a}$ & ${j['r']:.3f}$ & ${j['c']:.1f}$ & ${j['cD']:.1f}$ & ${xh}$ & "
+                   f"${float(j['xD']):.3f}$ & ${j['gamma']:.2f}$ & ${j['F']:+.3f}$\\\\",
+             f"the yeast completion table row a={a}")
     if not bad:
         print(f"  corpus consequences: Bonferroni over {u} units ({b0:+.3f}, {b1:+.3f}, "
               f"margin {b1 - F0:.3f}); {forms} protocol forms; all {n} records "
