@@ -1409,6 +1409,36 @@ def check_readiness_scope():
     return bad
 
 
+def check_generated_tables():
+    """Generated table inputs beside the manuscript must match the deposit's outputs.
+
+    Scripts write these files to results/ and they are copied into the manuscript
+    tree by its build; nothing re-derives them there.  A regenerated caption or
+    row therefore reaches the PDF only if the copy is refreshed, and until
+    2026-09-16 two corrected captions in si_extra_tables.tex sat in results/ while
+    the supplement still printed the superseded ones.  Clean builds and the
+    numerical guards both miss that: the audit reads si_body.tex, not the files it
+    \\input.
+    """
+    from pathlib import Path as _P
+    res = _P(__file__).resolve().parent.parent / "results"
+    bad = 0
+    names = [f.name for f in sorted(res.glob("sm_table_*.tex"))] + ["si_extra_tables.tex"]
+    for name in names:
+        src = res / name
+        if not src.exists():
+            continue
+        for dst in (ROOT / name, ROOT / "si" / name):
+            if not dst.exists():
+                continue
+            if dst.read_text() != src.read_text():
+                print(f"  FAIL generated tables: {dst} differs from results/{name}")
+                bad += 1
+    if not bad:
+        print(f"  generated tables: {len(names)} inputs match the deposited outputs")
+    return bad
+
+
 def check_titles():
     """The supplement must carry the article's title.
 
@@ -1455,7 +1485,7 @@ _NEEDS_DOCS = {
     "check_precision_limited_count", "check_ladh_zero_claim",
     "check_repo_metadata", "check_titles", "check_reference_asymmetry",
     "check_promoting_mode", "check_corpus_consequences", "check_scope_corrections",
-    "check_source_fidelity", "check_readiness_scope",
+    "check_source_fidelity", "check_readiness_scope", "check_generated_tables",
 }
 
 
@@ -1525,7 +1555,7 @@ def run():
                 check_repo_metadata, check_titles, check_reference_asymmetry,
                 check_promoting_mode, check_corpus_consequences,
                 check_scope_corrections, check_source_fidelity,
-                check_readiness_scope):
+                check_readiness_scope, check_generated_tables):
         if not HAVE_DOCS and _fn.__name__ in _NEEDS_DOCS:
             print(f"  SKIPPED (needs the manuscript): {_fn.__name__}")
             continue

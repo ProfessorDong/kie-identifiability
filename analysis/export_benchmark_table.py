@@ -39,7 +39,9 @@ def main() -> None:
     d = pd.read_csv("../data/trinomial_benchmark.csv")
     lines, nrec = [], 0
     for (fam, var, step), g in d.groupby(["family", "variant", "step"], sort=False):
-        lines.append(f"\\textit{{{display_family(fam, var)} {var}, {step}}} & & & & & & \\\\")
+        # \\* forbids a page break after the group label, which otherwise strands
+        # it at the foot of a page in the long benchmark table
+        lines.append(f"\\textit{{{display_family(fam, var)} {var}, {step}}} & & & & & & \\\\*")
         for _, r in g.sort_values("T_C").iterrows():
             gam = np.log(r.K_HT) / np.log(r.K_DT)
             lh = (r.K_HT - 1.0) / (r.K_DT - 1.0)
