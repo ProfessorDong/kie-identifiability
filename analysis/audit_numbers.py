@@ -773,6 +773,14 @@ def check_repo_metadata():
         if title.lower() not in txt.lower():
             print(f"  FAIL {name} does not carry the article title")
             bad += 1
+    # a version-specific archive citation must name the release CITATION.cff describes
+    cff = (root / "CITATION.cff").read_text() if (root / "CITATION.cff").exists() else ""
+    mv = re.search(r"^version:\s*v?([\d.]+)", cff, re.M)
+    cited = set(re.findall(r"version analyzed here is v([\d.]+)|version v([\d.]+), doi", " ".join(DOCS["main"].read_text().split())))
+    cited = {a or b for a, b in cited}
+    if mv and cited and cited != {mv.group(1)}:
+        print(f"  FAIL manuscript cites deposit version {sorted(cited)}, CITATION.cff is v{mv.group(1)}")
+        bad += 1
     print(f"  repo metadata: {2 - bad}/2 files carry the article title")
     return bad
 
@@ -1367,7 +1375,19 @@ def check_readiness_scope():
     s1 = 0.07 / 7.13 + GSC * 0.02 / 1.73
     tb = F - tdist.ppf(1 - 0.05 / u, 10) * s1
     need("main", f"bound at $\\rho=-1$ falls to ${tb:.3f}$, below $\\Fz$", "the t-tail sensitivity")
+    # masking direction: an intrinsic pair ABOVE the reference can be carried below it
+    xD, Fi, c = 2.0, 0.10, 1.0
+    xH = xD ** GSC * np.exp(Fi)
+    K = lambda x: x * (1 + c) / (x + c)
+    Fo = float(np.log(K(xH)) - GSC * np.log(K(xD)))
+    need("main", f"an intrinsic offset of ${Fi:+.3f}$ at", "the masking-direction example")
+    need("main", f"is observed as ${Fo:.3f}$ at a commitment of $c={c:.0f}$",
+         "the masking-direction example")
     # retired phrasings
+    forbid("main", "toward the semiclassical reference, never past it", "masking never passing the reference")
+    forbid("main", "past the semiclassical reference\nat all", "masking never passing the reference")
+    forbid("main", "monotone observation map with one isotope-sensitive step and a commitment",
+           "the half-line under monotonicity alone")
     forbid("main", "endpoint moves by exactly", "the unconditional binding shift")
     forbid("main", "however large", "binding effects harmless however large")
     forbid("si", "moves by exactly $F_{\\mathrm{bind}}$", "the unconditional binding shift")

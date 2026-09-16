@@ -35,7 +35,7 @@ _top = b[b.rho == 0.0].sort_values("point", ascending=False).head(4)
 assert set(_top.family) == {"ecDHFR"}, f"top series now include {set(_top.family)}"
 top = _top.variant.tolist()
 L += [r"\begin{table}[!htbp]",
-      r"\caption{One-sided $95\%$ lower confidence bounds on the offset for the "
+      r"\caption{Nominal one-sided $95\%$ lower confidence bounds on the offset for the "
       r"four series with the highest point estimates, bracketed over the unknown "
       r"correlation $\rho$ between the H/T and D/T effects induced by the shared "
       r"tritium reference. The threshold for excluding the ground-channel model "
