@@ -1375,6 +1375,13 @@ def check_readiness_scope():
     s1 = 0.07 / 7.13 + GSC * 0.02 / 1.73
     tb = F - tdist.ppf(1 - 0.05 / u, 10) * s1
     need("main", f"bound at $\\rho=-1$ falls to ${tb:.3f}$, below $\\Fz$", "the t-tail sensitivity")
+    # house style: no em dashes in the manuscript or the supplement
+    for doc in ("main", "si"):
+        raw = DOCS[doc].read_text()
+        n_em = raw.count("---") + raw.count("\\textemdash") + raw.count("\u2014")
+        if n_em:
+            print(f"  FAIL readiness scope: {doc} contains {n_em} em dash(es)")
+            bad += n_em
     # masking direction: an intrinsic pair ABOVE the reference can be carried below it
     xD, Fi, c = 2.0, 0.10, 1.0
     xH = xD ** GSC * np.exp(Fi)
