@@ -34,7 +34,7 @@ Two documents cannot be fetched programmatically. Place them in
 `external_data/si/manual/` under the filenames shown, then rerun
 `python analysis/build_trinomial.py`.
 
-1. **Pagano et al. 2019** — <https://doi.org/10.1021/acscatal.9b03345>
+1. **Pagano et al. 2019**: <https://doi.org/10.1021/acscatal.9b03345>
    Supporting Information PDF → `cs9b03345_si_001.pdf`
    (PMC8118594 exists but is not in the open-access subset.)
 
