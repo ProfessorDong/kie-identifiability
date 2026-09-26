@@ -232,7 +232,10 @@ SI_EQREFS = {
 
 
 SI_FIGREFS = {
-    3: "Identified sets for the primary",   # endpoints, the benchmark figure
+    # accepted phrasings for the endpoints figure; a pointer check that admits
+    # only one wording silently stops checking when the caption is reworded
+    3: ("Identified sets for the primary",
+        "Compatible sets for the primary"),
 }
 
 
@@ -249,7 +252,7 @@ def check_si_figrefs():
     caps = []
     for fig in re.findall(r"\\begin\{figure\*?\}(.*?)\\end\{figure\*?\}",
                           main, re.S):
-        m = re.search(r"\\caption\{(.{0,120})", fig, re.S)
+        m = re.search(r"\\caption\{(.{0,220})", fig, re.S)
         if m:
             caps.append(m.group(1))
     si = DOCS["si"].read_text()
@@ -258,7 +261,7 @@ def check_si_figrefs():
                         re.findall(r"Fig\.~(\d+) of the main text", si))):
         want = SI_FIGREFS.get(n)
         got = caps[n - 1].replace("\n", " ") if n <= len(caps) else "<out of range>"
-        ok = want is not None and want in got
+        ok = want is not None and any(w in got for w in want)
         print(f"  SI cites main-text Fig. {n}: {got[:52].strip()!r} "
               f"{'OK' if ok else 'MISMATCH'}")
         if not ok:
@@ -586,16 +589,19 @@ def check_precision_limited_count():
     n = sum(1 for pt, l in pts if pt > F0 and l <= F0)
     word = NUM.get(n, str(n))
     ORD = {3: "third", 4: "fourth", 5: "fifth"}
-    need = {"main": (f"while {word},", f"remaining {word} the endpoint",
-                     f"and {word} more limited by precision alone",
-                     f"and {word} more are limited by precision alone"),
-            "si": (f"a {ORD.get(n, n)} unit whose endpoint exceeds",)}
+    # each entry is a tuple of accepted phrasings: the count must be stated, in
+    # one wording or another, in every place the documents state it
+    need = {"main": ((f"while {word},", f"{word} fail on precision alone"),
+                     (f"remaining {word} the endpoint",),
+                     (f"and {word} more limited by precision alone",),
+                     (f"and {word} more are limited by precision alone",)),
+            "si": ((f"a {ORD.get(n, n)} unit whose endpoint exceeds",),)}
     bad = 0
-    for tag, phrases in need.items():
+    for tag, groups in need.items():
         t = " ".join(DOCS[tag].read_text().split()).lower()
-        for ph in phrases:
-            if ph not in t:
-                print(f"  FAIL precision-limited: {tag} lacks '{ph}' "
+        for variants in groups:
+            if not any(ph in t for ph in variants):
+                print(f"  FAIL precision-limited: {tag} lacks '{variants[0]}' "
                       f"({n} units clear on the point estimate but not the bound)")
                 bad += 1
     if not bad:

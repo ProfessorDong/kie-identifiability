@@ -1,4 +1,4 @@
-# Network topology classifies what isotope effects can reveal about hydrogen tunneling in enzymes
+# Reaction network topology fixes what isotope experiments can reveal about hydrogen tunneling in enzymes
 
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.21913975.svg)](https://doi.org/10.5281/zenodo.21913975)
 
