@@ -574,6 +574,17 @@ the six figures build, `audit_numbers.py` passes, and no tracked file changes.
 The changes in `network_atlas.py` are to comments and docstrings only, and
 `offset_analysis.py` is untouched; neither was rerun.
 
+Re-verified for v1.8.6 on 2026-10-13 from a clean clone, same environment, with
+the fetched supplements in place: 35 scripts exit 0, namely every script in the
+reproduce list except `offset_analysis.py`, every `export_*` script, and
+`corpus.py`, `reference_asymmetry.py`, `holdout.py`, `decisive_case.py`,
+`yadh_robustness.py`, `mixed_label.py`, `pooling_check.py`, `profile_edges.py`,
+`vibronic_envelope.py`, `discriminate.py`, `design.py` and `audit_numbers.py`.
+`verify_derivation.py` reports no failures in 16 sections, the six figures
+build, the audit passes, and no tracked file changes. `offset_analysis.py` and
+`network_atlas.py`, whose computations this release does not touch, were not
+rerun.
+
 Re-verified for v1.8.5 on 2026-09-25 from a clean clone, same environment, with
 the fetched supplements in place: 31 scripts exit 0, namely every script in the
 reproduce list except `offset_analysis.py`, every `export_*` script, and

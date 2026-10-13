@@ -9,8 +9,8 @@ message: >-
 type: software
 doi: 10.5281/zenodo.21913975
 repository-code: 'https://github.com/ProfessorDong/kie-identifiability'
-version: v1.8.5
-date-released: '2026-09-25'
+version: v1.8.6
+date-released: '2026-10-13'
 authors:
   - given-names: Liang
     family-names: Dong
