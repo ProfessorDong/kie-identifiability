@@ -43,7 +43,7 @@ F0 = M.offset_F0("C")
 MU = dict(zip("HDT", M.mu_ratios("C")))
 KB_KCAL = 1.98720425e-3
 KTHRESH = math.sqrt(M.mu_ratios("C")[2])          # 1.2689
-CM_TO_KCAL = 2.8591e-3                            # kcal/mol per cm^-1
+CM_TO_KCAL = 2.859144e-3                          # kcal/mol per cm^-1 (hc N_A)
 
 
 def fc_gated(nmax, mu, A, w):
@@ -102,6 +102,39 @@ def B_vib(nu_cm, lam, dG, T, nmax=30, nA=26, nw=26, kmin=KTHRESH):
     if not np.isfinite(best):
         return np.nan, np.nan, np.nan, np.nan
     return best, arg[0], arg[1], arg[2]
+
+
+BVIB_CELLS = ((1500, 10, -5), (3000, 20, -5), (2500, 40, -5), (3600, 10, -15))
+
+
+def bvib_grid_max(nu_cm, lam, dG, T=298.15, A_hi=63.1, w_hi=25.1, nA=60, nw=60):
+    """Largest F on a log grid in (A, w), restricted to K_HT^int >= 1.2689.
+
+    A from 0.050 and w from 10^-2.6 upward.  A grid maximum is a LOWER bound on
+    the supremum and nothing more.  The defaults are the original 60 x 60 box;
+    bvib_extended() widens it.  Returns (F, A*, w*).
+    """
+    best = (-np.inf, np.nan, np.nan)
+    for A in np.logspace(math.log10(0.05), math.log10(A_hi), nA):
+        for w in np.logspace(-2.6, math.log10(w_hi), nw):
+            xh, xd = summed_X(A, w, nu_cm, lam, dG, T, 30)
+            if not np.isfinite(xh) or math.exp(xh) < KTHRESH:
+                continue
+            f = xh - GSC * xd
+            if f > best[0]:
+                best = (f, A, w)
+    return best
+
+
+def bvib_extended():
+    """Supplementary Note 14 table: the original box against A <= 1e5, w <= 1e3.
+
+    The extended values still move when the grid is refined or widened, so they
+    are reported as grid maxima, lower bounds on a supremum that is not located.
+    """
+    return {cell: (bvib_grid_max(*cell),
+                   bvib_grid_max(*cell, A_hi=1e5, w_hi=1e3, nA=160, nw=100))
+            for cell in BVIB_CELLS}
 
 
 # =============================================================== verification

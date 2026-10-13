@@ -140,7 +140,7 @@ accuracy: at 50 digits the supremum approaches `F0` strictly from below.
 
 **Neither the envelope nor the ordering is universal.** Summing over excited
 vibronic channels can carry the offset above zero; a worked parameter set gives
-`F = +0.00530`, stable from n=6 to n=30. So the gated family is not confined
+`F = +0.0051` (`K_HT = 1.5205`, `K_DT = 1.1316`), stable from n=6 to n=30. So the gated family is not confined
 below the semiclassical locus once excited channels contribute. The relaxation is
 not uniform either: what Jensen's inequality establishes is that the BOUND moves
 up, which is weaker than a statement about the attained maximum, and the sampled
@@ -243,12 +243,16 @@ the observation the same way, which is why neither can be read off the exponent.
 
 **What does NOT work.** Two recombinations of the existing data were tried and
 both are rejected. Pooling across temperatures within a series would gain ~sqrt(n)
-if the offset were constant; it is not (median chi2/dof = 7.8, up to 88), and the
-weighted means are LOWER than the maxima. Pooling the nine horse liver forms
-under a shared intrinsic pair with nine free commitments gives chi2 = 55.8 on 7
-dof, p = 1e-9: the mutations change the intrinsic chemistry, not merely the
-commitment, so the forms are not replicates. The obstacle is the systems, not the
-estimator.
+if the observed offset were constant; it is not (median chi2/dof = 7.4, up to
+71), and the weighted means are LOWER than the maxima. Pooling enzyme variants
+that share one intrinsic pair but differ in commitment cannot identify that pair
+even with exact data: with `z = 1 - 1/K`, `u = 1 - 1/x` and `s = c/(1+c)`, the
+map is exactly `z_Lj = u_L s_j`, so `(u, s) -> (lam u, s/lam)` leaves every
+observation unchanged (Proposition S9). Of 11 nominal parameters for the nine
+horse liver forms only 10 are identified; the identifiable refit gives
+chi2 = 55.8 on 8 dof, p = 3e-9, so the common-pair model is rejected, without
+saying which of its assumptions fails (`analysis/pooling_check.py`). The
+obstacle is the systems, not the estimator.
 
 **Network topology classifies the geometry.** For any steady-state mechanism with one
 isotope-sensitive step, each King-Altman term is a product of distinct rate
@@ -412,19 +416,23 @@ w(T) = w0 coth(hbar omega_g / 2 k_B T)
 
 a quantum expression in which zero-point motion holds `w` fixed below
 `theta = hbar omega_g / k_B`. The offset inherits that structure. Across
-250-350 K the predicted span of `F` at `A = 5`, `w0 = 0.5` is 0.12|F0| at
-50 cm-1, **1.26|F0| at 200**, **1.47|F0| at 400**, and 0.51|F0| at 800, while
-the Swain-Schaad exponent moves 0.01-0.02 over the same interval. Sensitivity peaks where the mode sits at the
+250-350 K the predicted span of `F` at `A = 5`, `w0 = 0.5` is 0.07|F0| at
+50 cm-1, **0.85|F0| at 200**, **1.00|F0| at 400**, and 0.35|F0| at 800, while
+the intrinsic Swain-Schaad exponent moves 0.009-0.035 over the same interval.
+These use the reduced masses in the tunneling model as well as in `gamma_SC`;
+until v1.8.6 `qtunnel.py` used integer masses 1:2:3, which made the spans and
+the Fisher example below too large. Sensitivity peaks where the mode sits at the
 quantum-classical crossover `hbar omega_g ~ 2 k_B T`, which at 300 K is
 417 cm-1; sweeping `A` over [1,50] and `w0` over [0.1,2] moves that peak only
-between 140 and 480 cm-1, so it tracks the crossover rather than the
-parameterization. Promoting modes invoked in this literature lie in that window.
+between 140 and 470 cm-1, so it tracks the crossover rather than the
+parameterization. The promoting-mode frequencies invoked in this literature lie
+mostly below that window (50 to 300 cm-1).
 (`analysis/completion.py`)
 
 Sensitivity is not identifiability, and only the first is claimed. `F` depends on
 `A`, `w0` and `theta` jointly and the three are badly confounded: for an
 11-point series over 250-350 K the Jacobian in `(ln A, ln w0, ln theta)` has
-singular values 0.60, 2.7e-2, 1.4e-4, so `cond(J'J) ~ 1.7e7`. Below `theta` the
+singular values 0.40, 1.8e-2, 1.2e-4, so `cond(J'J) ~ 1.0e7`. Below `theta` the
 data carry almost nothing about `theta`; above it only `w0/theta` is determined.
 No system supplies a completed `F(T)` series: yeast ADH gives one temperature,
 the amine oxidase one isotope pair. Recovering `omega_g` is therefore a design
@@ -469,7 +477,7 @@ analysis/
                         through the origin in log-rate coordinates, mass scaling
                         is homogeneity; axioms, composition, direction, and the
                         unequal-reference check of the primary protocol
-  qtunnel.py            exact gated-overlap model
+    qtunnel.py            exact gated-overlap model (reduced masses, from masses.py)
   ridge.py              ridge limit and the offset
   partial_id.py         envelope B(K), exact identified-set endpoint,
                         two-commitment exploration
@@ -484,7 +492,11 @@ analysis/
   decisive_case.py      yeast ADH primary effects (Cha, Murray & Klinman 1989)
   build_trinomial.py    parses primary SI tables -> benchmark + audit
   offset_analysis.py    profiles the offset per series (continuation method)
-  offset_summary.py     goodness-of-fit stratification of those profiles
+    offset_summary.py     goodness-of-fit stratification of those profiles
+  profile_edges.py      continues the four profiles whose grid optimum sat at
+                        the edge F = 1.5: none has a finite minimum
+  pooling_check.py      within-series pooling, and the variant-pooling scale
+                        symmetry with the identifiable horse liver refit
   vibronic.py           does the bound survive the full vibronic sum?
   verify_derivation.py  numerical + symbolic checks of every closed form
   audit_v3.py           adversarial audit of the reconstructed claims

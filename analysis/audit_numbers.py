@@ -234,6 +234,7 @@ SI_EQREFS = {
 SI_FIGREFS = {
     # accepted phrasings for the endpoints figure; a pointer check that admits
     # only one wording silently stops checking when the caption is reworded
+    2: ("Topology classifies what can be identified",),
     3: ("Identified sets for the primary",
         "Compatible sets for the primary"),
 }
@@ -782,7 +783,10 @@ def check_repo_metadata():
     # a version-specific archive citation must name the release CITATION.cff describes
     cff = (root / "CITATION.cff").read_text() if (root / "CITATION.cff").exists() else ""
     mv = re.search(r"^version:\s*v?([\d.]+)", cff, re.M)
-    cited = set(re.findall(r"version analyzed here is v([\d.]+)|version v([\d.]+), doi", " ".join(DOCS["main"].read_text().split())))
+    # a version number ends at its last digit: "v1.8.6." at the end of a
+    # sentence once read as "1.8.6." and failed against a matching CITATION.cff
+    cited = set(re.findall(r"version analyzed here is v(\d+(?:\.\d+)+)|version v(\d+(?:\.\d+)+)",
+                           " ".join(DOCS["main"].read_text().split())))
     cited = {a or b for a, b in cited}
     if mv and cited and cited != {mv.group(1)}:
         print(f"  FAIL manuscript cites deposit version {sorted(cited)}, CITATION.cff is v{mv.group(1)}")
@@ -1087,6 +1091,16 @@ def check_corpus_consequences():
     # (until 2026-09-14 it said no adequately fitting series discriminates)
     from scipy import stats as _st
     pr = pd.read_csv("../results/offset_profiles.csv")
+    # profiles with no finite optimum are judged at their infimum, with the
+    # lower end recomputed against it (profile_edges.py)
+    ed = pd.read_csv("../results/profile_edges.csv")
+    key = ["family", "system", "variant", "step"]
+    pr = pr.merge(ed[key + ["chi2_inf", "F_lo"]].rename(columns={"F_lo": "F_lo_inf"}),
+                  on=key, how="left")
+    hit = pr.chi2_inf.notna()
+    pr.loc[hit, "chi2_min"] = pr.loc[hit, "chi2_inf"]
+    pr.loc[hit, "F_lo"] = pr.loc[hit, "F_lo_inf"]
+    pr.loc[hit, "F_hi"] = np.inf
     pr["p_fit"] = _st.chi2.sf(pr.chi2_min, (2 * pr.n_T - 5).clip(lower=1))
     excl = pr[(pr.F_lo > 0) | (pr.F_hi < 0)]
     adq = excl[excl.p_fit > 0.05]
@@ -1415,6 +1429,134 @@ def check_readiness_scope():
     return bad
 
 
+def check_external_audit_2026_10_12():
+    r"""Numbers corrected or added after the PRX Life pre-submission audit.
+
+    That audit found the promoting-mode spans and the Fisher example computed
+    with bare integer masses in qtunnel.py against the reduced-mass gamma_SC and
+    F0; the horse liver pooling fit asserted, not deposited, and given one
+    degree of freedom too few (an exact scale symmetry removes a parameter);
+    the BSAO bound printed at rho = 0 without saying so; a stale vibronic
+    example; profile optima pinned at the grid edge reported as optima; and an
+    argument for the yeast r root that did not prove uniqueness.  Every
+    replacement number is recomputed here and matched to its sentence.
+    """
+    import completion as C
+    import pooling_check as P
+    import vibronic_envelope as VE
+    import yadh_robustness as YR
+    from partial_id import F_min_exact as _fme
+    main = " ".join(DOCS["main"].read_text().split())
+    si = " ".join(DOCS["si"].read_text().split())
+    bad = 0
+
+    def need(doc, text, what):
+        nonlocal bad
+        if text not in (main if doc == "main" else si):
+            print(f"  FAIL audit 2026-10-12: {doc} lacks {what}: {text!r}")
+            bad += 1
+
+    # one mass convention: the gated model must reproduce masses.py's limits
+    import qtunnel as Q
+    if abs(Q.gamma_rigid() - M.gamma_rigid("C")) > 1e-12 or \
+       abs(Q.gamma_fully_gated() - M.gamma_gated("C")) > 1e-12:
+        print("  FAIL audit 2026-10-12: qtunnel.py and masses.py use different masses")
+        bad += 1
+    sp = C.spans_250_350()
+    g = [v[1] for v in sp.values()]
+    need("si", f"moves by ${min(g):.3f}$ to ${max(g):.3f}$, against a distance of",
+         "the exponent span")
+    need("main", f"moves by at most ${max(g):.3f}$ over the same interval", "the exponent span")
+    sv, cond = C.fisher_example()
+    e1, e2 = (int(np.floor(np.log10(v))) for v in sv[1:])
+    ec = int(np.floor(np.log10(cond)))
+    need("si", f"${sv[0]:.2f}$, ${sv[1] / 10 ** e1:.1f}\\times10^{{{e1}}}$ and "
+               f"${sv[2] / 10 ** e2:.1f}\\times10^{{{e2}}}$", "the Fisher singular values")
+    need("si", f"\\simeq{cond / 10 ** ec:.1f}\\times10^{{{ec}}}$", "the Fisher condition number")
+    lo, hi, (q1, q3) = C.variance_sensitivity()
+    need("si", f"between ${lo:.2f}$ and ${hi:.1f}|\\Fz|$", "the 10% variance sweep")
+    need("si", f"interquartile range of ${q1:.2f}$ to ${q3:.2f}|\\Fz|$", "the 10% variance sweep")
+    # the yeast r root: negative at r = 1 in every draw, positive leading term
+    n, at1, lead = C.joint_r_value_at_one()
+    if not (at1 < 0 < lead):
+        print("  FAIL audit 2026-10-12: the r quadratic is not negative at r = 1 in every draw")
+        bad += 1
+    need("si", f"(its largest value there is ${at1:.2f}$)", "the value at r = 1")
+    # variant pooling
+    f = P.ladh_shared_pair_fit()
+    if f["rank"] != f["n_par"] - 1 or f["witness_diff"] > 1e-12:
+        print("  FAIL audit 2026-10-12: the pooling symmetry did not reproduce")
+        bad += 1
+    pe = int(np.floor(np.log10(f["p"])))
+    for doc in ("main", "si"):
+        need(doc, f"$\\chi^{{2}}={f['chi2']:.1f}$ on ${f['dof']}$ degrees of freedom", "the pooled fit")
+    need("si", f"$p={f['p'] / 10 ** pe:.0f}\\times10^{{{pe}}}$", "the pooled fit p value")
+    F1, F2 = f["witness_F"]
+    need("main", f"offsets ${F1:+.3f}$ and ${F2:+.3f}$", "the pooling witness")
+    need("si", f"offsets are ${F1:+.3f}$ and ${F2:+.3f}$", "the pooling witness")
+    need("si", f"commitments from ${f['witness_cmin']:.3f}$ to $5.0$", "the pooling witness")
+    # within-series pooling of the observed offsets (README once held 7.8 and 88)
+    import pandas as _pd
+    _bm = _pd.read_csv("../data/trinomial_benchmark.csv")
+    r0, r1 = P.series_chi2(_bm, 0.0), P.series_chi2(_bm, -1.0)
+    need("si", f"per degree of freedom of ${r0.chi2_dof.median():.1f}$, with values up to "
+               f"${r0.chi2_dof.max():.0f}$", "the within-series pooling statistic")
+    need("si", f"the median is ${r1.chi2_dof.median():.1f}$ and {int((r1.chi2_dof > 1).sum())} of the 18",
+         "the within-series pooling statistic at rho = -1")
+    # the correlation-free yeast bounds
+    import corpus
+    u = corpus.counts()["units"]
+    b1, bu = YR.correlation_free_bound(), YR.correlation_free_bound(units=u)
+    need("main", f"two effects gives ${b1:+.3f}$", "the correlation-free bound")
+    need("main", f"no assumption about the correlation at all (${bu:.3f}$)",
+         "the correlation-free multiplicity bound")
+    need("si", f"For the yeast average this gives ${b1:+.3f}$", "the correlation-free bound")
+    need("si", f"it gives ${bu:.3f}$, still above $\\Fz$ by ${bu - F0:.3f}$",
+         "the correlation-free multiplicity bound")
+    # BSAO at both correlations
+    G_ = GSC
+    fb = _fme(35.2, 3.07)[0]
+    a, b = 0.8 / 35.2, G_ * 0.07 / 3.07
+    need("si", f"bound of ${fb - 1.645 * (a + b):.3f}$ at the maximally adverse $\\rho=-1$ used "
+               f"throughout (${fb - 1.645 * np.hypot(a, b):.3f}$ under independence)", "the BSAO bound")
+    # the positive summed-vibronic example, from the printed parameters
+    xh, xd = VE.summed_X(2.011, 0.346, 3626.0, 11.55, -11.42, 284.8, nmax=30)
+    need("si", f"$\\KHT^{{\\mathrm{{int}}}}={np.exp(xh):.4f}$, $\\KDT^{{\\mathrm{{int}}}}={np.exp(xd):.4f}$",
+         "the positive vibronic example")
+    need("si", f"F={xh - GSC * xd:+.4f} .", "the positive vibronic example")
+    for cell, (gm, ex) in VE.bvib_extended().items():
+        e = int(np.floor(np.log10(ex[1])))
+        need("si", f"$({cell[0]},{cell[1]},{cell[2]})$ & ${gm[0]:+.3f}$ & ${ex[0]:+.3f}$ & "
+                   f"${ex[1] / 10 ** e:.1f}\\times10^{{{e}}}$", f"the extended B_vib row {cell}")
+    # profiles whose grid optimum sat on the edge
+    ed = pd.read_csv("../results/profile_edges.csv")
+    if ed.finite_optimum.any():
+        print("  FAIL audit 2026-10-12: an edge profile has a finite optimum")
+        bad += 1
+    d26 = ed[ed.variant == "d26-PPLR-d62-PEKN"].iloc[0]
+    need("si", f"falls toward ${d26.chi2_inf:.2f}$ as $F$ grows, and its set is "
+               f"$[{d26.F_lo:+.2f},+\\infty)$", "the d26 edge profile")
+    tp = ed[(ed.family == "TSase") & (ed.step == "proton")].iloc[0]
+    need("si", f"($\\chi^{{2}}={tp.chi2_inf:.0f}$ on three degrees of freedom", "the hsTSase proton misfit")
+    # the four mechanisms of the atlas figure
+    import export_fig_atlas as EA
+    for tag, name, sub in EA.CLASSES:
+        if tag not in ("mixed", "inverse"):
+            continue
+        co, sub, (A_, B_, C_, D_) = EA.resolve(name, sub)
+        from network_atlas import curvature_point
+        xs = curvature_point(co, sub)
+        fmt = (lambda v: f"{v:.2f}") if tag == "mixed" else (lambda v: f"{v:.1f}")
+        need("si", f"${fmt(A_)}$ & ${fmt(B_)}$ & ${fmt(C_)}$ & ${fmt(D_)}$ & ${xs:.2f}$",
+             f"the {tag} row of the atlas-rates table")
+        if tag == "mixed":
+            need("main", f"$x^{{*}}={xs:.2f}$", "the mixed-case x* in the Fig. 2 caption")
+    if not bad:
+        print(f"  audit 2026-10-12: spans, Fisher cond {cond:.2e}, pooled chi2 {f['chi2']:.1f}/{f['dof']}, "
+              f"correlation-free {b1:+.3f}/{bu:+.3f}, vibronic {xh - GSC * xd:+.4f}, edge profiles, atlas rates")
+    return bad
+
+
 def check_generated_tables():
     """Generated table inputs beside the manuscript must match the deposit's outputs.
 
@@ -1492,6 +1634,7 @@ _NEEDS_DOCS = {
     "check_repo_metadata", "check_titles", "check_reference_asymmetry",
     "check_promoting_mode", "check_corpus_consequences", "check_scope_corrections",
     "check_source_fidelity", "check_readiness_scope", "check_generated_tables",
+    "check_external_audit_2026_10_12",
 }
 
 
@@ -1561,7 +1704,8 @@ def run():
                 check_repo_metadata, check_titles, check_reference_asymmetry,
                 check_promoting_mode, check_corpus_consequences,
                 check_scope_corrections, check_source_fidelity,
-                check_readiness_scope, check_generated_tables):
+                check_readiness_scope, check_generated_tables,
+                check_external_audit_2026_10_12):
         if not HAVE_DOCS and _fn.__name__ in _NEEDS_DOCS:
             print(f"  SKIPPED (needs the manuscript): {_fn.__name__}")
             continue

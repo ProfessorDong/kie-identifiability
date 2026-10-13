@@ -37,6 +37,19 @@ def convention(kind):
     return g, P(h) - g * P(d), np.sqrt(t)
 
 
+def correlation_free_bound(KH=7.13, sH=0.07, KD=1.73, sD=0.02, units=1, alpha=0.05):
+    """Endpoint at the corner of a Bonferroni rectangle: no correlation assumed.
+
+    Each effect gets a one-sided log-normal limit at alpha/(2 units), H/T low and
+    D/T high; the endpoint falls in K_DT and rises in K_HT, so its value at that
+    corner bounds it below with probability at least 1 - alpha whatever the
+    joint distribution of the two errors (union bound), under the marginal
+    normal-log tail model.
+    """
+    z = stats.norm.ppf(1 - alpha / (2 * units))
+    return F_min_exact(KH * np.exp(-z * sH / KH), KD * np.exp(z * sD / KD))[0]
+
+
 def main():
     y = pd.read_csv("../data/cha1989_yadh.csv")
     dets = y.iloc[:3]
@@ -154,6 +167,10 @@ def main():
         bnd = f - z * np.sqrt(a * a + b * b - 2 * rho * a * b)
         say(f"  rho = {rho:+.0f}: Bonferroni bound {bnd:+.4f}, margin over F0 "
             f"{bnd - f0:+.4f}, over 0 {bnd:+.4f}")
+    for u in (1, m):
+        bnd = correlation_free_bound(avg.K_HT, avg.K_HT_se, avg.K_DT, avg.K_DT_se, units=u)
+        say(f"  no correlation assumed, {u:2d} unit(s): bound {bnd:+.4f}, "
+            f"margin over F0 {bnd - f0:+.4f}")
 
     with open("../results/yadh_robustness.txt", "w") as fh:
         fh.write("\n".join(OUT) + "\n")

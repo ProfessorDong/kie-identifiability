@@ -89,9 +89,10 @@ def reachable_gamma_range(lnKHT_target):
 
 def make_truth(gamma_target, lnKHT_int, T_obs, kht, sh, kdt, sd, theta_K=979.0):
     """(A, w0, theta, c0, Ec) reproducing the measured series at fixed gamma."""
-    A, w_ref = solve_Aw(gamma_target, lnKHT_int)
-    if A is None or not np.isfinite(A):
+    sol = solve_Aw(gamma_target, lnKHT_int)
+    if sol is None or not np.isfinite(sol[0]):
         return None
+    A, w_ref = sol
     # w(T) = w0 coth(theta/2T); pin w(298.15) = w_ref
     w0 = w_ref * np.tanh(theta_K / (2 * 298.15))
 

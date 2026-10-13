@@ -62,8 +62,15 @@ from __future__ import annotations
 
 import numpy as np
 
-# masses of the transferred particle in units of the protium mass
-M_H, M_D, M_T = 1.0, 2.0, 3.0
+import masses as M
+
+# Reduced masses of the C-H oscillator in units of the protium value, from the
+# one mass convention of masses.py.  Until 2026-10-12 this module used bare
+# integer masses 1:2:3 while every consumer measured its output against the
+# reduced-mass gamma_SC and F0: the mixed convention masses.py warns against.
+# The temperature spans and the Fisher-information example of the supplement
+# came from it and were wrong by up to half.
+M_H, M_D, M_T = (m / M.triple("C")[0] for m in M.triple("C"))
 MU_H, MU_D, MU_T = np.sqrt(M_H), np.sqrt(M_D), np.sqrt(M_T)
 
 

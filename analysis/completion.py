@@ -182,6 +182,25 @@ def check_joint_r_quadratic(n=200000, seed=20260915):
             float(np.max(np.abs(q[both] - b[both]))), float(prod.max()))
 
 
+def joint_r_value_at_one(n=200000, seed=20260915):
+    """Largest value at r = 1 of the quadratic in yadh_joint_r, over the same draws.
+
+    The roots multiply to a positive number, so a small product alone allows
+    both to lie below one.  What makes the admissible root unique is that the
+    quadratic is negative at r = 1 while its leading coefficient S_DT c is
+    positive: one root then lies above one and the other in (0, 1).  Returns
+    (draws, largest value at r = 1, smallest leading coefficient).
+    """
+    rng = np.random.default_rng(seed)
+    a = rng.uniform(1.3, 7.3, n)
+    KH, KD = rng.normal(7.13, 0.07, n), rng.normal(1.73, 0.02, n)
+    SH, SD = rng.normal(*SEC_YADH["SHT"], n), rng.normal(*SEC_YADH["SDT"], n)
+    c = KH * (1 + a) - 1
+    sH = (SH * (1 + a) - 1) / a
+    at_one = SD * c + (SD - KD - sH * c) + sH * (KD - 1)
+    return n, float(at_one.max()), float((SD * c).min())
+
+
 def bypass_tolerance(KH, KD, r, target):
     """Largest bypass fraction phi_H keeping the endpoint above `target`.
 
@@ -412,6 +431,61 @@ def offset_vs_T(A, w0, nu_cm, temps):
     """F(T) for a harmonic promoting mode of wavenumber nu_cm."""
     theta = nu_cm*CM_TO_K
     return np.array([offset_gated(A, gating_w(T, w0, theta)) for T in temps])
+
+
+def exponent_vs_T(A, w0, nu_cm, temps):
+    """Intrinsic Swain-Schaad exponent ln K_HT/ln K_DT along the same F(T) path."""
+    theta = nu_cm*CM_TO_K
+    out = []
+    for T in temps:
+        lh, ld = log_kie_intrinsic(A, gating_w(T, w0, theta))
+        out.append(lh/ld)
+    return np.array(out)
+
+
+def spans_250_350(A=5.0, w0=0.5, nus=(50, 200, 400, 800), n=1001):
+    """Span of F (in |F0|) and of the exponent over 250-350 K, dense in T.
+
+    The spans quoted in the text.  Endpoints and a dense grid agree for these
+    parameters, because both quantities are monotone in T here.
+    """
+    T = np.linspace(250.0, 350.0, n)
+    out = {}
+    for nu in nus:
+        F = offset_vs_T(A, w0, nu, T)
+        g = exponent_vs_T(A, w0, nu, T)
+        out[nu] = (float(np.ptp(F))/abs(F0), float(np.ptp(g)))
+    return out
+
+
+def fisher_example(A=5.0, w0=1.0, nu_cm=400.0, n_T=11, h=1e-5):
+    """Singular values of dF/d(ln A, ln w0, ln theta) over an eleven-point series.
+
+    F weighted equally at each temperature from 250 to 350 K.  Returns the three
+    singular values and cond(J^T J).
+    """
+    T = np.linspace(250.0, 350.0, n_T)
+    p = np.array([A, w0, nu_cm])
+    J = []
+    for j in range(3):
+        up, dn = p.copy(), p.copy()
+        up[j] *= np.exp(h); dn[j] *= np.exp(-h)
+        J.append((offset_vs_T(*up, T) - offset_vs_T(*dn, T))/(2*h))
+    s = np.linalg.svd(np.array(J).T, compute_uv=False)
+    return s, float((s[0]/s[-1])**2)
+
+
+def variance_sensitivity(rel=0.10, n=60):
+    """Change in F, in |F0|, for a 10% change in sigma^2 over A in [1,50], w in [0.1,2].
+
+    Returns (smallest, largest, interquartile range) over a log grid.
+    """
+    vals = []
+    for A in np.geomspace(1.0, 50.0, n):
+        for w in np.geomspace(0.1, 2.0, n):
+            vals.append(abs(offset_gated(A, (1 + rel)*w) - offset_gated(A, w))/abs(F0))
+    vals = np.array(vals)
+    return float(vals.min()), float(vals.max()), tuple(np.percentile(vals, [25, 75]))
 
 
 def sensitivity_peak(A, w0, T_lo=250.0, T_hi=350.0, nus=None):

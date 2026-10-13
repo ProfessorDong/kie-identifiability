@@ -1,0 +1,5 @@
+family,system,variant,step,chi2_grid,chi2_inf,F_lo_grid,F_lo,finite_optimum
+FDH,Candida boidinii formate dehydrogenase,V123A,hydride,145.58271819729853,139.76547660891472,1.0800000000000023,1.9,False
+FDH,Candida boidinii formate dehydrogenase,V123G,hydride,57.399558344403616,55.092111548549234,0.7300000000000022,1.08,False
+TSase,Homo sapiens thymidylate synthase,WT,proton,736.674403584316,733.6969620429583,0.7700000000000022,1.27,False
+hsDHFR,Homo sapiens dihydrofolate reductase,d26-PPLR-d62-PEKN,hydride,9.126457325569527,8.230696285456792,0.3500000000000016,0.47,False
