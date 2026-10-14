@@ -580,6 +580,15 @@ the six figures build, `audit_numbers.py` passes, and no tracked file changes.
 The changes in `network_atlas.py` are to comments and docstrings only, and
 `offset_analysis.py` is untouched; neither was rerun.
 
+Re-verified for v1.8.7 on 2026-10-13 from a clean clone, same environment, with
+the fetched supplements in place: the same 35 scripts exit 0, the six figures
+build, `verify_derivation.py` reports no failures in 16 sections, the audit
+passes, and no tracked file changes. Because the admitted methanol records
+change its inputs, `offset_analysis.py` was rerun from the clean clone as well
+(about 56 minutes): it exits 0 and reproduces its tracked outputs exactly.
+`network_atlas.py`, whose computation this release does not touch, was not
+rerun.
+
 Re-verified for v1.8.6 on 2026-10-13 from a clean clone, same environment, with
 the fetched supplements in place: 35 scripts exit 0, namely every script in the
 reproduce list except `offset_analysis.py`, every `export_*` script, and
