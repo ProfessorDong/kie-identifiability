@@ -1451,6 +1451,12 @@ def check_readiness_scope():
     forbid("main", "commitment measurements already published", "a commitment estimate as a measurement")
     forbid("main", "has exact coverage under that sampling model", "exact coverage of the plug-in bound")
     forbid("si", "property of a published calculation", "F0 credited to the instanton calculation")
+    # "classifies", never "determines": topology fixes which geometries are
+    # available and the rates select among them; a rewrite put it back in a heading
+    for doc in ("main", "si"):
+        for w in ("pathways determine which", "topology determines", "topology determine ",
+                  "network determines which", "structure determines which"):
+            forbid(doc, w, "topology determining the geometry")
     forbid("main", "settled by the mechanism assumed, not by the precision achieved",
            "discrimination settled by topology alone")
     if not bad:
@@ -1669,9 +1675,9 @@ def check_source_review_2026_10_13():
     that the admission produced, the admissibility rule, and that corrected
     phrasings do not come back.
     """
-    import bounds_uncertainty as BU
     import corpus
     from partial_id import F_min_exact as _fme
+    from scipy import stats
     main = " ".join(DOCS["main"].read_text().split())
     si = " ".join(DOCS["si"].read_text().split())
     bad = 0
@@ -1700,19 +1706,33 @@ def check_source_review_2026_10_13():
             bad += 1
     # three units clear F0 at rho = -1: yeast and the two methanol series
     need("main", "Three units have confidence bounds above $\\Fz$", "the exclusion count")
-    # multiplicity for the methanol series, across all units
+    # multiplicity for the methanol series, across all units.  At alpha/(u n_T)
+    # a Monte Carlo quantile rests on a few hundred tail draws, so these are
+    # computed exactly, as the yeast multiplicity bounds are.  The endpoint never
+    # exceeds F_obs, so each record's closed-form F_obs bound is an upper limit on
+    # its own bound; when the record attaining the largest of them stays on the
+    # open branch (L_H >= gamma) at its perturbed pair, that value IS the series
+    # bound.  Records with no admissible central pair contribute -inf.
     u = corpus.counts()["units"]
     s = corpus.series()
-    a0 = BU.ALPHA
-    try:
-        BU.ALPHA = 0.05 / u
-        for v in ("F93W (40% MeOH)", "F93W (60% MeOH)"):
-            g = s[(s.family == "LADH") & (s.variant == v)]
-            for rho in (0.0, -1.0):
-                m = BU.series_bound(g, rho, n=1_000_000, reps=3)[0]
-                need("main", f"${m:+.3f}$", f"the {v} multiplicity bound at rho = {rho:+.0f}")
-    finally:
-        BU.ALPHA = a0
+    for v in ("F93W (40% MeOH)", "F93W (60% MeOH)"):
+        g = s[(s.family == "LADH") & (s.variant == v)]
+        z = stats.norm.ppf(1 - 0.05 / (u * len(g)))
+        for rho in (0.0, -1.0):
+            best = None
+            for _, a in g.iterrows():
+                if not (a.K_HT > a.K_DT > 1):
+                    continue
+                x, y = a.K_HT_se / a.K_HT, a.K_DT_se / a.K_DT
+                sd = np.hypot(x, GSC * y) if rho == 0.0 else x + GSC * y
+                m = np.log(a.K_HT) - GSC * np.log(a.K_DT) - z * sd
+                if best is None or m > best[0]:
+                    best = (m, a.K_HT * np.exp(-z * x), a.K_DT * np.exp(z * y))
+            m, hl, dh = best
+            if not (hl > dh > 1 and (hl - 1) / (dh - 1) >= GSC):
+                print(f"  FAIL source review: {v} multiplicity bound leaves the open branch")
+                bad += 1
+            need("main", f"${m:+.3f}$", f"the {v} multiplicity bound at rho = {rho:+.0f}")
     # credit and convention fixes that must not regress
     for doc, text, what in (
             ("main", "Eq.~(7) of Siebrand and Smedarchina", "credit for the averaged overlap"),
