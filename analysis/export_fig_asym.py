@@ -28,7 +28,8 @@ _TB = pd.read_csv("../data/trinomial_benchmark.csv")
 _FAM = {"FDH": "formate dehydrogenase", "TSase": "thymidylate synthase",
         "ecDHFR": "Escherichia coli dihydrofolate reductase",
         "hsDHFR": "Homo sapiens dihydrofolate reductase",
-        "MAOB": "monoamine oxidase"}
+        "MAOB": "monoamine oxidase",
+        "LADH": "horse liver alcohol dehydrogenase"}
 
 
 def _series_closed(r):
@@ -118,10 +119,21 @@ with open(OUT + "fa_rays.tex", "w") as fh:
         wcol = "cPro!45" if r.lcb > F0 else "cGrey!40"
         lw = "0.9pt" if r.lcb > F0 else "0.6pt"
         start = max(r.point, XMIN)
-        fh.write(f"\\draw[{col}, line width={lw}, -{{Straight Barb[length=1.9pt,"
-                 f"width=2.8pt]}}] (axis cs:{start:.5f},{r.y}) -- "
-                 f"(axis cs:{start+RAY:.5f},{r.y});\n")
-        if r.point >= XMIN:
+        right = r.point > XMAX            # endpoint beyond the right edge
+        if not right:
+            fh.write(f"\\draw[{col}, line width={lw}, -{{Straight Barb[length=1.9pt,"
+                     f"width=2.8pt]}}] (axis cs:{start:.5f},{r.y}) -- "
+                     f"(axis cs:{min(start+RAY, XMAX):.5f},{r.y});\n")
+        if right:
+            # off the right edge: whisker to the edge and a chevron there; the
+            # endpoint is printed in the row label, as for the left edge
+            fh.write(f"\\draw[{wcol}, line width={lw}] "
+                     f"(axis cs:{max(r.lcb,XMIN):.5f},{r.y}) -- "
+                     f"(axis cs:{XMAX:.5f},{r.y});\n")
+            fh.write(f"\\node[font=\\fontsize{{8.2}}{{9.6}}\\selectfont, color={col}, "
+                     f"anchor=east, inner sep=0.6pt] at (axis cs:{XMAX:.5f},{r.y}) "
+                     f"{{$\\gg$}};\n")
+        elif r.point >= XMIN:
             fh.write(f"\\draw[{wcol}, line width={lw}] "
                      f"(axis cs:{max(r.lcb,XMIN):.5f},{r.y}) -- "
                      f"(axis cs:{r.point:.5f},{r.y});\n")
@@ -138,7 +150,9 @@ with open(OUT + "fa_rays.tex", "w") as fh:
             fh.write(f"\\node[font=\\fontsize{{8.2}}{{9.6}}\\selectfont, color={col}, "
                      f"anchor=east, inner sep=0.6pt] at (axis cs:{XMIN:.5f},{r.y}) "
                      f"{{$\\ll$}};\n")
-        lab = r.label if r.point >= XMIN else f"{r.label} ({r.point:.2f})"
+        lab = (f"{r.label} ({r.point:+.2f})" if r.point > XMAX else
+               r.label if r.point >= XMIN else f"{r.label} ({r.point:.2f})")
+        lab = lab.replace("%", "\\%")   # solvent rows carry a percent sign
         # off-scale rows carry a chevron at XMIN, so their labels sit further
         # left to keep clear of it
         dx = 0.032 if r.point >= XMIN else 0.060

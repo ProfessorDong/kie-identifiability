@@ -219,7 +219,7 @@ def derived():
 # criteria ever change.
 # The corpus size appears in prose in both documents and is not otherwise a
 # derived quantity, so it grew stale when records were added.  Pinned here.
-CORPUS = {"records": 97, "units": 32}
+CORPUS = {"records": 108, "units": 35}
 
 
 GENERAL_CENSUS = {"networks": 764, "edges": 5538, "mixed": 3415,
@@ -234,7 +234,8 @@ SI_EQREFS = {
 SI_FIGREFS = {
     # accepted phrasings for the endpoints figure; a pointer check that admits
     # only one wording silently stops checking when the caption is reworded
-    2: ("Topology classifies what can be identified",),
+    2: ("Topology classifies what can be identified",
+        "Reaction pathways constrain the possible bounds"),
     3: ("Identified sets for the primary",
         "Compatible sets for the primary"),
 }
@@ -443,7 +444,7 @@ def check_provenance_split():
            "10.1021/acscatal.9b03345", "10.1021/ja501936d",
            "10.3390/ijms16047304"}
     XLSX = {"10.1371/journal.pone.0196506"}
-    HAND = {"10.1021/bi00253a026"}
+    HAND = {"10.1021/bi00253a026", "10.1021/bi002075l"}
     d = pd.read_csv("../data/trinomial_benchmark.csv")
     n_pdf = int(d.source_DOI.isin(PDF).sum())
     n_xls = int(d.source_DOI.isin(XLSX).sum())
@@ -593,9 +594,11 @@ def check_precision_limited_count():
     # each entry is a tuple of accepted phrasings: the count must be stated, in
     # one wording or another, in every place the documents state it
     need = {"main": ((f"while {word},", f"{word} fail on precision alone"),
-                     (f"remaining {word} the endpoint",),
-                     (f"and {word} more limited by precision alone",),
-                     (f"and {word} more are limited by precision alone",)),
+                     (f"remaining {word} the endpoint", f"{word} of the remaining seven the endpoint"),
+                     (f"and {word} more limited by precision alone",
+                      f"and {word} more are limited by precision"),
+                     (f"and {word} more are limited by precision alone",
+                      f"{word} more are limited by precision")),
             "si": ((f"a {ORD.get(n, n)} unit whose endpoint exceeds",),)}
     bad = 0
     for tag, groups in need.items():
@@ -734,10 +737,13 @@ def check_corpus():
     for d, phrases in (("main", (f"benchmark of {R} matched", f"{R} matched records in {U} analysis units",
                                  f"We assembled {R} matched primary records", f"giving {U} analysis units",
                                  f"${R}$ records in ${U}$ analysis units")),
-                       ("si", (f"all ${R}$ records",))):
+                       ("si", (f"the ${R}$ matched records",))):
         t = " ".join(DOCS[d].read_text().split())
         for ph in phrases:
-            if ph not in t:
+            if ph not in t and not ((ph == f"benchmark of {R} matched" and
+                    f"Reanalysis of {R} matched records in {U} analysis units" in t) or
+                    (ph == f"${R}$ records in ${U}$ analysis units" and
+                     f"{R} matched records in {U} analysis units" in t)):
                 print(f"  FAIL corpus: {d} lacks {ph!r}")
                 bad += 1
     # the README drifted once, holding 94/29/28 after the corpus grew
@@ -825,7 +831,7 @@ def check_reference_asymmetry():
               f"rows, data hold {d.groupby(['family', 'variant']).ngroups} forms")
         bad += 1
     for f, v, cell in rows:
-        want = expect(fam[f], v)
+        want = expect(fam[f], v.replace("\\%", "%"))   # LaTeX-escaped solvent rows
         if cell != want:
             print(f"  FAIL reference asymmetry: protocol table {f} {v} says {cell}, "
                   f"data give {want}")
@@ -959,7 +965,8 @@ def check_corpus_consequences():
     from scipy import stats
     from holdout import structural_prediction_check
     _W = {0: "zero", 13: "thirteen", 16: "sixteen", 17: "seventeen", 29: "twenty-nine",
-          30: "thirty", 31: "thirty-one", 32: "thirty-two", 33: "thirty-three"}
+          30: "thirty", 31: "thirty-one", 32: "thirty-two", 33: "thirty-three",
+          34: "thirty-four", 35: "thirty-five"}
 
     class _Words(dict):
         # a count with no word is written as digits, so an unexpected count
@@ -971,9 +978,10 @@ def check_corpus_consequences():
     si = " ".join(DOCS["si"].read_text().split())
     bad = 0
 
-    def need(doc, text, what):
+    def need(doc, text, what, alternatives=()):
         nonlocal bad
-        if text not in (main if doc == "main" else si):
+        if not any(candidate in (main if doc == "main" else si)
+                   for candidate in (text, *alternatives)):
             print(f"  FAIL corpus consequences: {doc} lacks {what}: {text!r}")
             bad += 1
 
@@ -996,19 +1004,25 @@ def check_corpus_consequences():
     need("si", f"singled out from {W[u]} examined", "the multiplicity denominator")
     need("main", f"applied uniformly to all {W[u]} systems", "the unit count")
     # the monotonicity condition of E(phi), and the Theorem 1 forecast
+    # over the admissible records (K_HT > K_DT > 1); since 2026-10-13 one
+    # record (wild type in 50% methanol at -50 C, K_DT = 0.99) is not, and it
+    # has no compatible set under the map
     rows = pd.concat([corpus.series(), corpus.single_condition()])
+    rows = rows[(rows.K_HT > rows.K_DT) & (rows.K_DT > 1)]
+    n_adm = len(rows)
     holds = sum(1 for _, r in rows.iterrows()
                 if (r.K_HT - 1) - GSC * (r.K_DT - 1) < (r.K_HT - 1) * (r.K_DT - 1) * (GSC - 1))
-    if holds == n:
-        need("si", f"holds for all ${n}$ records here", "the E(phi) monotonicity count")
+    if holds == n_adm:
+        need("si", f"holds for all ${n_adm}$ admissible records here",
+             "the E(phi) monotonicity count")
     else:
-        print(f"  FAIL corpus consequences: E(phi) monotone for {holds} of {n}")
+        print(f"  FAIL corpus consequences: E(phi) monotone for {holds} of {n_adm}")
         bad += 1
     chk, viol = structural_prediction_check()
-    if viol or chk != n:
+    if viol or chk != n_adm:
         print(f"  FAIL corpus consequences: Theorem 1 forecast {chk} checked, {viol} violations")
         bad += 1
-    need("si", f"Checked against all ${chk}$ records, there are no violations",
+    need("si", f"Checked against all ${chk}$ admissible records, there are no violations",
          "the Theorem 1 forecast count")
     # the protocol table: one row per distinct series or form
     tab = DOCS["si"].read_text()
@@ -1026,7 +1040,8 @@ def check_corpus_consequences():
     cells = {}
     for ln in lines:
         if ln.endswith(r"inferred$^{a}$\\") or ln.endswith(r"& 1 & shared$^{b}$\\"):
-            cells[ln.split(" & ")[0]] = "labeled" if "inferred" in ln else "shared"
+            # row labels are LaTeX: unescape the percent sign of the solvent rows
+            cells[ln.split(" & ")[0].replace("\\%", "%")] = "labeled" if "inferred" in ln else "shared"
     from corpus import display_family
     for _, x in td.iterrows():
         if x.design == "labeled":
@@ -1054,8 +1069,10 @@ def check_corpus_consequences():
     need("si", f"{W[inferred].capitalize()} of the {W[forms]} report secondary", "the inferred count")
     need("si", f"the remaining {W[shared]} need no inference", "the shared-tracer count")
     need("si", f"For the remaining {W[shared]} the question does not arise", "the shared-tracer count")
-    need("main", f"across {W[inferred]} of the {W[forms]} forms", "the form count")
-    need("main", f"For the remaining {W[shared]} the question does not arise", "the shared-tracer count")
+    need("main", f"across {W[inferred]} of the {W[forms]} forms", "the form count",
+         (f"Across {W[inferred]} of the {W[forms]} enzyme forms",))
+    need("main", f"For the remaining {W[shared]} the question does not arise", "the shared-tracer count",
+         (f"For the remaining {W[shared]} forms the same tritiated molecule",))
     # the confidence procedure for temperature series (corrected 2026-09-14):
     # its simulated failure rate, Monte Carlo precision and assignment check
     import bounds_uncertainty as BU
@@ -1086,13 +1103,14 @@ def check_corpus_consequences():
     need("main", f"less than ${t13:.0f}\\%$ to ${t73:.0f}\\%$ of the", "the yeast bypass tolerance")
     # the Discussion now gives both thresholds; this one is against F0
     need("main", f"${t13:.0f}\\%$ to ${t73:.0f}\\%$ to reach the gated envelope",
-         "the yeast bypass tolerance against F0 (Discussion)")
+         "the yeast bypass tolerance against F0 (Discussion)",
+         (f"Removing exclusion of the gated envelope requires ${t13:.0f}\\%$ to ${t73:.0f}\\%$",))
     # the profile-likelihood stratification must say what its own table shows
     # (until 2026-09-14 it said no adequately fitting series discriminates)
     from scipy import stats as _st
     pr = pd.read_csv("../results/offset_profiles.csv")
-    # profiles with no finite optimum are judged at their infimum, with the
-    # lower end recomputed against it (profile_edges.py)
+    # Edge profiles use the smallest objective sampled through F=40, with the
+    # lower end recomputed against it (legacy column name chi2_inf).
     ed = pd.read_csv("../results/profile_edges.csv")
     key = ["family", "system", "variant", "step"]
     pr = pr.merge(ed[key + ["chi2_inf", "F_lo"]].rename(columns={"F_lo": "F_lo_inf"}),
@@ -1105,7 +1123,11 @@ def check_corpus_consequences():
     excl = pr[(pr.F_lo > 0) | (pr.F_hi < 0)]
     adq = excl[excl.p_fit > 0.05]
     above = adq[adq.F_lo > F0]
-    WS = {3: "three", 5: "five", 7: "seven", 12: "twelve", 18: "eighteen"}
+    WS = {1: "one", 2: "two", 3: "three", 4: "four", 5: "five", 6: "six",
+          7: "seven", 8: "eight", 9: "nine", 10: "ten", 11: "eleven",
+          12: "twelve", 13: "thirteen", 14: "fourteen", 15: "fifteen",
+          16: "sixteen", 17: "seventeen", 18: "eighteen", 19: "nineteen",
+          20: "twenty", 21: "twenty-one"}
     need("si", f"profiles exclude $F=0$ in {WS[len(excl)]} of {WS[len(pr)]} series",
          "the profile exclusion count")
     need("si", f"{WS[len(excl) - len(adq)]} of those {WS[len(excl)]} belong to series the model",
@@ -1136,7 +1158,7 @@ def check_corpus_consequences():
              f"the yeast completion table row a={a}")
     if not bad:
         print(f"  corpus consequences: Bonferroni over {u} units ({b0:+.3f}, {b1:+.3f}, "
-              f"margin {b1 - F0:.3f}); {forms} protocol forms; all {n} records "
+              f"margin {b1 - F0:.3f}); {forms} protocol forms; all {n_adm} admissible records "
               f"monotone and forecast; ecTSase endpoint {fe:+.3f}, bound {fe - 1.645 * se:.3f}")
     return bad
 
@@ -1160,9 +1182,10 @@ def check_scope_corrections():
     si = " ".join(DOCS["si"].read_text().split())
     bad = 0
 
-    def need(doc, text, what):
+    def need(doc, text, what, alternatives=()):
         nonlocal bad
-        if text not in (main if doc == "main" else si):
+        if not any(candidate in (main if doc == "main" else si)
+                   for candidate in (text, *alternatives)):
             print(f"  FAIL scope corrections: {doc} lacks {what}: {text!r}")
             bad += 1
 
@@ -1184,7 +1207,8 @@ def check_scope_corrections():
     z13 = 100 * float(bypass_tolerance(7.13, 1.73, yadh_completion_joint(1.3)["r"], 0.0))
     z73 = 100 * float(bypass_tolerance(7.13, 1.73, yadh_completion_joint(7.3)["r"], 0.0))
     need("main", f"have to carry ${z13:.0f}\\%$ to ${z73:.0f}\\%$ of the isotope-sensitive rate to do so",
-         "the yeast bypass tolerance against the semiclassical locus")
+         "the yeast bypass tolerance against the semiclassical locus",
+         (f"a bypass carrying ${z13:.0f}\\%$ to ${z73:.0f}\\%$ of the isotope-sensitive rate removes the yeast exclusion",))
     t = mc_yadh_tolerance()
     need("si", f"intact with probability ${t['F0']['p10']:.2f}$, and one of a twentieth with "
                f"probability ${t['F0']['p05']:.3f}$", "the tolerance probabilities")
@@ -1201,6 +1225,10 @@ def check_scope_corrections():
     need("si", f"on all ${n1}$ of those with a single reference", "the r = 1 triple count")
     need("si", f"$E={NG.endpoint_closed(2.0, 1.5, 0.1):.3f}$ while the profiled endpoint is "
                f"${NG.endpoint_exact(2.0, 1.5, 0.1):.3f}$", "the interior-branch example")
+    # A derivative sign at infinity is not a global endpoint criterion.
+    limiting, actual = NG.asymptotic_criterion_counterexample()
+    need("si", f"holds and $E={limiting:+.4f}$, but the endpoint is ${actual:.4f}$",
+         "the counterexample to the local bypass criterion")
     # the yeast r quadratic
     _, nan_mismatch, diff, prod = check_joint_r_quadratic()
     if nan_mismatch or diff > 1e-10:
@@ -1257,9 +1285,10 @@ def check_source_fidelity():
     si = " ".join(DOCS["si"].read_text().split())
     bad = 0
 
-    def need(doc, text, what):
+    def need(doc, text, what, alternatives=()):
         nonlocal bad
-        if text not in (main if doc == "main" else si):
+        if not any(candidate in (main if doc == "main" else si)
+                   for candidate in (text, *alternatives)):
             print(f"  FAIL source fidelity: {doc} lacks {what}: {text!r}")
             bad += 1
 
@@ -1363,9 +1392,10 @@ def check_readiness_scope():
     si = " ".join(DOCS["si"].read_text().split())
     bad = 0
 
-    def need(doc, text, what):
+    def need(doc, text, what, alternatives=()):
         nonlocal bad
-        if text not in (main if doc == "main" else si):
+        if not any(candidate in (main if doc == "main" else si)
+                   for candidate in (text, *alternatives)):
             print(f"  FAIL readiness scope: {doc} lacks {what}: {text!r}")
             bad += 1
 
@@ -1450,9 +1480,10 @@ def check_external_audit_2026_10_12():
     si = " ".join(DOCS["si"].read_text().split())
     bad = 0
 
-    def need(doc, text, what):
+    def need(doc, text, what, alternatives=()):
         nonlocal bad
-        if text not in (main if doc == "main" else si):
+        if not any(candidate in (main if doc == "main" else si)
+                   for candidate in (text, *alternatives)):
             print(f"  FAIL audit 2026-10-12: {doc} lacks {what}: {text!r}")
             bad += 1
 
@@ -1501,7 +1532,7 @@ def check_external_audit_2026_10_12():
     r0, r1 = P.series_chi2(_bm, 0.0), P.series_chi2(_bm, -1.0)
     need("si", f"per degree of freedom of ${r0.chi2_dof.median():.1f}$, with values up to "
                f"${r0.chi2_dof.max():.0f}$", "the within-series pooling statistic")
-    need("si", f"the median is ${r1.chi2_dof.median():.1f}$ and {int((r1.chi2_dof > 1).sum())} of the 18",
+    need("si", f"the median is ${r1.chi2_dof.median():.1f}$ and {int((r1.chi2_dof > 1).sum())} of the {len(r1)}",
          "the within-series pooling statistic at rho = -1")
     # the correlation-free yeast bounds
     import corpus
@@ -1531,11 +1562,12 @@ def check_external_audit_2026_10_12():
     # profiles whose grid optimum sat on the edge
     ed = pd.read_csv("../results/profile_edges.csv")
     if ed.finite_optimum.any():
-        print("  FAIL audit 2026-10-12: an edge profile has a finite optimum")
+        print("  FAIL audit 2026-10-12: an edge profile has a resolved optimum")
         bad += 1
     d26 = ed[ed.variant == "d26-PPLR-d62-PEKN"].iloc[0]
-    need("si", f"falls toward ${d26.chi2_inf:.2f}$ as $F$ grows, and its set is "
-               f"$[{d26.F_lo:+.2f},+\\infty)$", "the d26 edge profile")
+    need("si", f"falls toward ${d26.chi2_inf:.2f}$ over that range, and its explored confidence region "
+               f"extends from ${d26.F_lo:+.2f}$ through $+40$ without resolving an upper limit",
+         "the d26 edge profile")
     tp = ed[(ed.family == "TSase") & (ed.step == "proton")].iloc[0]
     need("si", f"($\\chi^{{2}}={tp.chi2_inf:.0f}$ on three degrees of freedom", "the hsTSase proton misfit")
     # the four mechanisms of the atlas figure
@@ -1626,6 +1658,91 @@ def _texts():
 
 # Guards that compare a computed quantity against the manuscript text.  Without
 # the manuscript they have nothing to compare against and are skipped, loudly.
+def check_source_review_2026_10_13():
+    r"""Corrections from reading every cited source in full (2026-10-13).
+
+    The review admitted the Tsai & Klinman methanol records (their stated
+    exclusion contradicted the source, which ran the competitive experiments at
+    saturating NAD+, and the paper's own theory, under which a random mechanism
+    with no bypass keeps the base map), and found that the closed-form endpoint
+    scored an inadmissible pair (K_DT < 1) as +0.822.  This checks the numbers
+    that the admission produced, the admissibility rule, and that corrected
+    phrasings do not come back.
+    """
+    import bounds_uncertainty as BU
+    import corpus
+    from partial_id import F_min_exact as _fme
+    main = " ".join(DOCS["main"].read_text().split())
+    si = " ".join(DOCS["si"].read_text().split())
+    bad = 0
+
+    def need(doc, text, what):
+        nonlocal bad
+        if text not in {"main": main, "si": si}[doc]:
+            print(f"  FAIL source review: {doc} lacks {what}: {text!r}")
+            bad += 1
+
+    # the admissibility rule of the scalar endpoint
+    if _fme(2.2, 0.99)[0] != -np.inf:
+        print("  FAIL source review: F_min_exact scores an inadmissible pair")
+        bad += 1
+    # the two methanol series that exclude: endpoints and nominal bounds
+    b = pd.read_csv("../results/bounds_uncertainty.csv")
+    for v, lo, hi in (("F93W (40% MeOH)", "$+0.183$", "40"), ("F93W (60% MeOH)", "$+0.395$", "60")):
+        s = b[(b.family == "LADH") & (b.variant == v)]
+        pt = s[s.rho == 0.0].point.iloc[0]
+        l1, l0 = s[s.rho == -1.0].lcb.iloc[0], s[s.rho == 0.0].lcb.iloc[0]
+        need("main", f"${pt:+.3f}$", f"the {hi}% methanol endpoint")
+        need("main", f"${l1:+.3f}$", f"the {hi}% methanol bound at rho = -1")
+        need("main", f"${l0:+.3f}$", f"the {hi}% methanol bound under independence")
+        if not (l1 > F0 and l1 > 0):
+            print(f"  FAIL source review: {v} no longer clears both thresholds")
+            bad += 1
+    # three units clear F0 at rho = -1: yeast and the two methanol series
+    need("main", "Three units have confidence bounds above $\\Fz$", "the exclusion count")
+    # multiplicity for the methanol series, across all units
+    u = corpus.counts()["units"]
+    s = corpus.series()
+    a0 = BU.ALPHA
+    try:
+        BU.ALPHA = 0.05 / u
+        for v in ("F93W (40% MeOH)", "F93W (60% MeOH)"):
+            g = s[(s.family == "LADH") & (s.variant == v)]
+            for rho in (0.0, -1.0):
+                m = BU.series_bound(g, rho, n=1_000_000, reps=3)[0]
+                need("main", f"${m:+.3f}$", f"the {v} multiplicity bound at rho = {rho:+.0f}")
+    finally:
+        BU.ALPHA = a0
+    # credit and convention fixes that must not regress
+    for doc, text, what in (
+            ("main", "Eq.~(7) of Siebrand and Smedarchina", "credit for the averaged overlap"),
+            ("si", "Proposition~S1 is Eq.~(7) of Siebrand and", "credit for Proposition S1"),
+            ("main", "\\cite{Sikorski2004,Wang2014}", "credit for the light-enzyme data"),
+            ("main", "\\cite{KingAltman1956}", "the King-Altman citation"),
+            ("main", "reciprocal of the commitment evaluated with the tritium rate",
+             "the commitment convention")):
+        need(doc, text, what)
+    for doc, text in (("main", "inverse of the commitment to catalysis in the usual convention"),
+                      ("main", "Northrop's inversion~\\cite{Northrop1975,Northrop2001"),
+                      ("main", "SoudackovHammesSchiffer2000,HammesSchifferSoudackov2008}. The transferred"),
+                      ("si", "``reduced relative to''"),
+                      ("si", "drift between columns"),
+                      ("main", "companion supplemental"), ("main", "this revision"),
+                      ("si", "excluded on a ground internal to this paper")):
+        if text in {"main": main, "si": si}[doc]:
+            print(f"  FAIL source review: {doc} still has the retired phrasing {text!r}")
+            bad += 1
+    bib = (DOCS["main"].parent / "references.bib").read_text()
+    for wrong in ("Kim, Kwangsoo", "Hothi, Poonam"):
+        if wrong in bib:
+            print(f"  FAIL source review: references.bib still has {wrong!r}")
+            bad += 1
+    if not bad:
+        print("  source review 2026-10-13: methanol series and multiplicity, admissibility "
+              "rule, credits and retired phrasings")
+    return bad
+
+
 _NEEDS_DOCS = {
     "check_si_figrefs", "check_si_eqrefs", "check_si_pointers",
     "check_general_census", "check_corpus", "check_provenance_split",
@@ -1635,6 +1752,7 @@ _NEEDS_DOCS = {
     "check_promoting_mode", "check_corpus_consequences", "check_scope_corrections",
     "check_source_fidelity", "check_readiness_scope", "check_generated_tables",
     "check_external_audit_2026_10_12",
+    "check_source_review_2026_10_13",
 }
 
 
@@ -1705,7 +1823,7 @@ def run():
                 check_promoting_mode, check_corpus_consequences,
                 check_scope_corrections, check_source_fidelity,
                 check_readiness_scope, check_generated_tables,
-                check_external_audit_2026_10_12):
+                check_external_audit_2026_10_12, check_source_review_2026_10_13):
         if not HAVE_DOCS and _fn.__name__ in _NEEDS_DOCS:
             print(f"  SKIPPED (needs the manuscript): {_fn.__name__}")
             continue

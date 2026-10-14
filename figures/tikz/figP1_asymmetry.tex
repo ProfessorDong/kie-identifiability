@@ -20,8 +20,8 @@
   annc/.style={font=\fontsize{8.4}{10}\selectfont, color=cInk, align=center},
 }
 
-\begin{axis}[asym, name=A, width=68mm, height=96mm,
-  xmin=-0.50, xmax=0.20, ymin=0.2, ymax=33.6,
+\begin{axis}[asym, name=A, width=68mm, height=101mm,
+  xmin=-0.50, xmax=0.20, ymin=0.2, ymax=35.6,
   xlabel={endpoint of the identified set, $F_{\min}$},
   ytick=\empty, ymajorgrids=false,
   y axis line style={draw=none}, ytick style={draw=none},
@@ -31,15 +31,15 @@
 
   % left of F0 the set contains both thresholds; right of it the set clears F0
   \addplot[draw=none, fill=cGrey!10] coordinates
-    {(-0.50,0.2) (-0.042086,0.2) (-0.042086,33.6) (-0.50,33.6)} \closedcycle;
+    {(-0.50,0.2) (-0.042086,0.2) (-0.042086,35.6) (-0.50,35.6)} \closedcycle;
   \addplot[draw=none, fill=cBandG!13] coordinates
-    {(-0.042086,0.2) (0.20,0.2) (0.20,33.6) (-0.042086,33.6)} \closedcycle;
+    {(-0.042086,0.2) (0.20,0.2) (0.20,35.6) (-0.042086,35.6)} \closedcycle;
 
   \input{data/fa_rays.tex}
 
   \draw[cBandG!60!black, line width=0.6pt] (axis cs:-0.042086,0.2) --
-       (axis cs:-0.042086,33.6);
-  \draw[cInk, line width=0.5pt, dashed] (axis cs:0,0.2) -- (axis cs:0,33.6);
+       (axis cs:-0.042086,35.6);
+  \draw[cInk, line width=0.5pt, dashed] (axis cs:0,0.2) -- (axis cs:0,35.6);
 
   % Short forms: the narrower axis leaves no room for the fuller wording, and
   % the caption carries it.  The red key is dropped for the same reason.

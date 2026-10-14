@@ -234,8 +234,12 @@ def check_endpoint_exact(n=3000, seed=20260915):
     """endpoint_exact against direct profiling on random admissible triples.
 
     Returns (number of triples, largest discrepancy, how many have an interior
-    minimum, disagreements of the c -> infinity criterion with the profile, and
-    how many triples have r = 1, the case that criterion is stated for).
+    minimum, disagreements of the local large-c derivative condition with the
+    global endpoint in this sampled range, and how many triples have r = 1).
+
+    Agreement of the local condition with the global minimum in this range is
+    not a theorem: asymptotic_criterion_counterexample() gives a counterexample
+    at smaller effects and larger bypass. endpoint_exact always checks roots.
     """
     rng = np.random.default_rng(seed)
     worst = 0.0
@@ -258,6 +262,25 @@ def check_endpoint_exact(n=3000, seed=20260915):
             crit = KH * a / (KH + a * phi) > GSC * KD * b / (KD + b * phi)
             crit_bad += crit != at_inf
     return done, worst, interior, crit_bad, n_r1
+
+
+def asymptotic_criterion_counterexample():
+    """A local derivative condition cannot locate the global bypass endpoint.
+
+    Two stationary points occur at these inputs. The large-c derivative is
+    negative, but the smaller stationary point lies below the large-c limit.
+    This case is outside the benchmark and guards against replacing the full
+    stationary-point comparison by that local sign test.
+    """
+    KH, KD, phi = 1.01, 1.001, 100.0
+    a, b = KH - 1.0, KD - 1.0
+    local = KH * a / (KH + a * phi) > GSC * KD * b / (KD + b * phi)
+    exact = endpoint_exact(KH, KD, phi)
+    numerical = endpoint(KH, KD, phi, n=500000)
+    limiting = endpoint_closed(KH, KD, phi)
+    assert local and exact < limiting - 1.0
+    assert abs(exact - numerical) < 1e-7
+    return limiting, exact
 
 
 def endpoint_closed(KH, KD, phi, r=1.0):

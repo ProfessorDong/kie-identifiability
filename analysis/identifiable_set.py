@@ -78,6 +78,9 @@ def F_min(kht, kdt):
 
 def main():
     d = pd.read_csv("../data/trinomial_benchmark.csv")
+    # admissible records only: the map needs K_HT > K_DT > 1 (one record, wild
+    # type in 50% methanol at -50 C, has K_DT = 0.99 and no compatible set)
+    d = d[(d.K_HT > d.K_DT) & (d.K_DT > 1)].reset_index(drop=True)
     say("=" * 84)
     say("THE MODEL-FREE IDENTIFIABLE SET FOR THE DISCRIMINATING INVARIANT")
     say("=" * 84)

@@ -10,6 +10,8 @@ series                                         n_T   F_hat         95% CI on F  
 ----------------------------------------------------------------------------------------------
 FDH V123A (hydride)                              5   1.500     [ 1.080, 1.500>   0.420    10.0
 FDH V123G (hydride)                              5   1.500     [ 0.730, 1.500>   0.770    18.3
+LADH F93W (40% MeOH) (hydride)                   4   1.500     [ 0.280, 1.500>   1.220    29.0
+LADH wild type (50% MeOH) (hydride)              5   0.650     [ 0.440, 0.890]   0.450    10.7
 MAOB pH 6.1 (abstraction)                        7  -0.210     [-0.280, 1.500>   1.780    42.3
 MAOB pH 7.5 (abstraction)                        3  -0.210     [-0.330,-0.030]   0.300     7.1
 TSase Y209W (proton)                             4  -0.140     [-0.230,-0.030]   0.200     4.8
@@ -30,12 +32,12 @@ hsDHFR d62-PEKN (hydride)                        5  -0.240     [-0.260, 1.500>  
 ==================================================================================
 VERDICT
 ==================================================================================
-series analysed                                : 18
-intervals excluding the semiclassical F = 0    : 12
-intervals excluding the tunneling ridge F = F0 : 9
+series analysed                                : 20
+intervals excluding the semiclassical F = 0    : 14
+intervals excluding the tunneling ridge F = F0 : 11
 intervals containing BOTH                      : 6
 narrowest interval on F                        : 0.030  (1x the signal)
-median interval on F                           : 0.390  (9x the signal)
+median interval on F                           : 0.435  (10x the signal)
 
 MASS-MODULATED CONTROL (Francis et al., light vs heavy ecDHFR)
 Heavy labelling perturbs the promoting mode at fixed electronic

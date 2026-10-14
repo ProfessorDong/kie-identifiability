@@ -5,9 +5,10 @@ Previously hand-maintained, which let it fall out of step with the benchmark
 when new series were added.
 
 Series whose grid optimum sat on the edge F = +1.5 are taken from
-results/profile_edges.csv (profile_edges.py): their profiles have no finite
-minimum, so they carry no point estimate, the set is [F_lo, +inf), and the fit
-is judged at the infimum of chi2 rather than at the grid edge.
+results/profile_edges.csv (profile_edges.py). No optimum or upper confidence
+limit was resolved through F=40. The table reports the explored portion of the
+confidence region and the smallest sampled objective, not a proven infimum or
+an infinite upper endpoint. Legacy CSV column names are retained.
 """
 from __future__ import annotations
 
@@ -21,6 +22,7 @@ import masses as M
 from corpus import display_family
 
 F0 = abs(M.offset_F0("C"))
+SEARCH_MAX = 40.0
 # The manuscript tree is not part of the public package; fall back to
 # results/ so the table is still reproducible from the shipped code.
 _MS = pathlib.Path("../manuscript")
@@ -35,9 +37,10 @@ def main() -> None:
         columns={"F_lo": "F_lo_inf"}), on=key, how="left")
     d["edge"] = d.chi2_inf.notna()
     if (d.edge & d.finite_optimum.fillna(False).astype(bool)).any():
-        raise SystemExit("an edge profile has a finite optimum: tabulate it properly")
+        raise SystemExit("an edge profile has a resolved optimum: tabulate it properly")
     d.loc[d.edge, "chi2_min"] = d.loc[d.edge, "chi2_inf"]
     d.loc[d.edge, "F_lo"] = d.loc[d.edge, "F_lo_inf"]
+    # Put profiles with an unresolved upper limit last within their fit class.
     d.loc[d.edge, "width"] = np.inf
     d["dof"] = 2 * d.n_T - 5
     d["p_fit"] = stats.chi2.sf(d.chi2_min, d.dof.clip(lower=1))
@@ -47,13 +50,16 @@ def main() -> None:
     lines = []
     for _, r in d.iterrows():
         if r.edge:
-            est, ci, wd = "none", f"[{r.F_lo:+.2f}, $+\\infty$)", "unbounded"
+            est = "--"   # an en dash: the writing carries no em dashes
+            ci = f"[{r.F_lo:+.2f}, {SEARCH_MAX:+.0f}]$^{{\\dagger}}$"
+            width = SEARCH_MAX - r.F_lo
+            wd = f"$\\ge${width:.2f} ({width/F0:.1f})"
         else:
             est = f"{r.F_hat:+.2f}"
             ci = f"[{r.F_lo:+.2f}, {r.F_hi:+.2f}]"
             wd = f"{r.width:.3f} ({r.width/F0:.1f})"
         lines.append(
-            f"{display_family(r.family, r.variant)} & {r.variant} & {r.step} & {int(r.n_T)} & "
+            f"{display_family(r.family, r.variant)} & {r.variant.replace('%', chr(92) + '%')} & {r.step} & {int(r.n_T)} & "
             f"{r.chi2_min:.1f}/{int(r.dof)} & {r.p_fit:.3f} & "
             f"{est} & {ci} & {wd}\\\\"
         )

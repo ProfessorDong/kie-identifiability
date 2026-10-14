@@ -5,16 +5,16 @@ smallest chi2 on that grid is at F = +1.5, so the tabulated "optimum" is a
 property of the grid, not of the fit.  This script continues each of those
 profiles outward, warm-started, to F = 40, and records
 
-    chi2_inf   the infimum of the profile beyond the edge,
-    F_lo       the 95% end recomputed against chi2_inf rather than the grid
-               minimum (a lower infimum can only raise this end),
-    finite     whether the profile has a finite minimum at all.
+    chi2_inf   the smallest sampled objective through F = 40 (legacy name),
+    F_lo       the 95% lower end recomputed against that sampled minimum,
+    finite     whether the last sampled objective exceeds the smallest one
+               by more than 1e-3, indicating a resolved minimum in the search.
 
-In every case found here chi2 falls monotonically and flattens as F grows: the
-data favor ever larger intrinsic offsets hidden by ever heavier masking, the
-same one-sidedness as the half-line of the main text.  There is then no point
-estimate, the profile set is [F_lo, +inf), and goodness of fit is judged at
-chi2_inf.
+In these cases chi2 falls and flattens as F grows. This suggests an asymptotic
+minimum, but a finite search cannot establish one or prove that an interval
+extends to infinity. False in the legacy finite_optimum column means only
+that this search does not resolve an interior optimum. The table reports the
+explored interval through F = 40, with its upper limit unresolved.
 
 Run from analysis/ after offset_analysis.py:   python profile_edges.py
 """
@@ -31,7 +31,7 @@ KEY = ["family", "system", "variant", "step"]
 
 
 def extend(T, kht, sh, kdt, sd):
-    """Continue the profile from the grid edge outward; return (chi2_inf, F_lo, finite)."""
+    """Return sampled minimum, lower end and resolved-minimum flag through F=40."""
     r = O.fit_at(T, kht, sh, kdt, sd, EDGE, n_rand=400)
     edge_sol, warm = r.x, r.x
     vals = [(EDGE, 2 * r.cost)]
@@ -41,9 +41,9 @@ def extend(T, kht, sh, kdt, sd):
         warm = rr.x
     vals = np.array(vals)
     chi2_inf = float(vals[:, 1].min())
-    # a finite optimum would show chi2 rising again before the far end
+    # This detects a rise within the search, not existence of a global minimum.
     finite = bool(vals[-1, 1] > chi2_inf + 1e-3)
-    # walk inward from the edge, then take the 95% end against the infimum
+    # walk inward from the edge, then take the 95% end against the sampled minimum
     # over both walks: the smallest F whose chi2 is within 3.841 of it
     warm = edge_sol
     for F in np.arange(EDGE - 0.01, -1.5001, -0.01):
@@ -73,8 +73,9 @@ def main():
                          chi2_grid=p.chi2_min, chi2_inf=chi2_inf, F_lo_grid=p.F_lo,
                          F_lo=F_lo, finite_optimum=finite))
         print(f"{p.family} {p.variant} ({p.step}): chi2 {p.chi2_min:.3f} at the edge, "
-              f"infimum {chi2_inf:.3f}, finite optimum {finite}; "
-              f"95% set [{F_lo:+.2f}, +inf) (grid gave {p.F_lo:+.2f})")
+              f"smallest sampled objective {chi2_inf:.3f}, resolved optimum {finite}; "
+              f"95% region reaches [{F_lo:+.2f}, +40], upper limit unresolved "
+              f"(original grid lower end {p.F_lo:+.2f})")
     pd.DataFrame(rows).to_csv("../results/profile_edges.csv", index=False)
 
 

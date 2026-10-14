@@ -22,7 +22,7 @@ MAOB pH 6.1                                  2.3/9    0.986   -0.21   1.780   42
 hsDHFR F32L                                  0.3/3    0.966   -0.22   1.840   43.7   YES
 TSase WT                                     3.0/3    0.394   -0.09   1.990   47.3   YES
 
-  adequate-fit series                : 11 of 18
+  adequate-fit series                : 11 of 20
   narrowest 95% interval on F        : 0.200  (4.8x the signal)
   median 95% interval on F           : 0.590  (14.0x the signal)
   series excluding BOTH 0 and F0     : 3
@@ -36,8 +36,10 @@ TSase WT                                   736.7/3    0.0e+00    1.50   0.730
 hsDHFR F32M                                400.7/3    0.0e+00   -0.70   0.050
 FDH V123A                                  145.6/5    0.0e+00    1.50   0.420
 ecDHFR F125M                                82.7/5    2.2e-16   -0.29   0.030
+LADH wild type (50% MeOH)                   67.6/5    3.2e-13    0.65   0.450
 ecDHFR light enzyme                         62.6/7    4.5e-11   -0.07   0.060
 FDH V123G                                   57.4/5    4.2e-11    1.50   0.770
+LADH F93W (40% MeOH)                        25.1/3    1.5e-05    1.50   1.220
 hsDHFR F32L-PP26N-PEKN62G                   14.0/3    3.0e-03   -0.71   0.040
 
   These are NOT measurements of F. Where the model misfits, F absorbs
@@ -46,9 +48,9 @@ hsDHFR F32L-PP26N-PEKN62G                   14.0/3    3.0e-03   -0.71   0.040
 ------------------------------------------------------------------------------------
 C. THE ARTEFACT, QUANTIFIED
 ------------------------------------------------------------------------------------
-  Spearman(log chi2_min, interval width) = -0.368  (p = 0.1325)
+  Spearman(log chi2_min, interval width) = -0.326  (p = 0.1603)
   median width, adequate fits   : 0.590
-  median width, inadequate fits : 0.060
+  median width, inadequate fits : 0.420
   Worse fits give TIGHTER intervals: the signature of misspecification,
   not of information.
 

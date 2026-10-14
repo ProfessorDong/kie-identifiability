@@ -4,8 +4,8 @@ THE MODEL-FREE IDENTIFIABLE SET FOR THE DISCRIMINATING INVARIANT
 gamma_SC = 3.34887   semiclassical F = 0   tunneling ridge F0 = -0.042086
 
 1. THE SHAPE OF THE SET IS DECIDED BY THE H-REFERENCE CONTRAST
-   records: 83   predicted interior minimum: 21   observed: 21
-   sign criterion L_H < gamma_SC agrees with the numerics on 83/83 records
+   records: 93   predicted interior minimum: 21   observed: 21
+   sign criterion L_H < gamma_SC agrees with the numerics on 93/93 records
    L_H range where the minimum is interior : [1.854, 3.342]
    L_H range where it is at c -> infinity  : [3.393, 14.710]
    the two ranges are separated by gamma_SC = 3.3489
@@ -16,9 +16,12 @@ gamma_SC = 3.34887   semiclassical F = 0   tunneling ridge F0 = -0.042086
    no gating model: only positivity of the commitment.
 
    series                                       n_T      F >=  gap to F0  excludes
+   LADH F93W (60% MeOH) (hydride)                 2    0.3945    -0.4366     RIDGE
+   LADH F93W (40% MeOH) (hydride)                 4    0.1833    -0.2254     RIDGE
    ecDHFR W133F (hydride)                         3   -0.0596     0.0175      none
    ecDHFR G121V-F125M (hydride)                   5   -0.0740     0.0319      none
    ecDHFR light enzyme (hydride)                  6   -0.0759     0.0339      none
+   LADH wild type (50% MeOH) (hydride)            4   -0.0813     0.0393      none
    ecDHFR M42W-F125M (hydride)                    5   -0.1027     0.0606      none
    hsDHFR d26-PPLR-d62-PEKN (hydride)             5   -0.1343     0.0923      none
    ecDHFR heavy enzyme (hydride)                  5   -0.1576     0.1155      none
@@ -35,10 +38,10 @@ gamma_SC = 3.34887   semiclassical F = 0   tunneling ridge F0 = -0.042086
    hsDHFR F32L-PP26N-PEKN62G (hydride)            4   -0.6937     0.6516      none
    hsDHFR F32M (hydride)                          4   -0.8782     0.8362      none
 
-   series excluding the tunneling ridge : 0 of 18
-   series excluding semiclassical       : 0 of 18
-   closest: ecDHFR W133F, bound -0.0596,
-            short of the ridge by 0.0175 log-KIE units.
+   series excluding the tunneling ridge : 2 of 21
+   series excluding semiclassical       : 2 of 21
+   closest: LADH F93W (60% MeOH), bound +0.3945,
+            short of the ridge by -0.4366 log-KIE units.
 
 3. WHAT A DECISIVE SINGLE MEASUREMENT WOULD REQUIRE
    One observation excludes the ridge iff F_obs > F0 with the minimum

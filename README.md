@@ -42,9 +42,10 @@ set lies above zero. Hence:
   that bound is still excluded.
 
 This makes exact the criterion of Saunders (1985), used by Cha et al. (1989) and
-Bahnson et al. (1993). Across 97 matched primary records in 32
-analysis units, 27 lie at their reported values on the uninformative side and
-four more are limited by precision alone.
+Bahnson et al. (1993). Across 108 matched primary records in 35
+analysis units, 28 lie at their reported values on the uninformative side and
+four more are limited by precision alone; three exclude the ground-channel
+envelope (yeast ADH, and horse liver ADH F93W in 40% and in 60% methanol).
 
 **Why it is one-sided: curvature against homogeneity.** The theorem above is a
 computation; this is the reason behind it, and it is more general than the
@@ -168,19 +169,21 @@ effect. Across the benchmark the lower edge runs 1.099-1.694 (median 1.465),
 upper edge median 1.971, median width 0.50. Verified against direct optimization
 and on 3000 random pairs.
 
-**Empirically, the temperature series exclude nothing.** Across 83 matched
-records in 18 series, one-sided 95% confidence bounds exclude neither mechanism
-at any assumed correlation, now bracketed over `rho` in {-1, 0, 0.5, 0.9} with
-`rho = -1` the maximally adverse case. The closest series falls short by 0.0175
-on the point estimate and 0.105 on its 95% bound (Bonferroni over its
-temperatures; see Bounds below).
+**Empirically, few temperature series exclude anything.** Across the 94 temperature-resolved
+records in 21 series, one-sided 95% confidence bounds exclude neither mechanism
+in 19 series at any assumed correlation, bracketed over `rho` in
+{-1, 0, 0.5, 0.9} with `rho = -1` the maximally adverse case. The two exceptions
+are horse liver ADH F93W in 40% and 60% methanol (Tsai & Klinman 2001), whose
+bounds are `+0.032` and `+0.071` at rho = -1. Among the rest the closest series
+falls short by 0.0175 on the point estimate and 0.105 on its 95% bound
+(Bonferroni over its temperatures; see Bounds below).
 
 **But yeast ADH does.** The primary effects of Cha, Murray & Klinman (1989)
 give `F_obs = +0.129` against `F0 = -0.042`, with a 95% bound of `+0.063`
 (rising to `+0.079` at rho = 0.9, falling to `+0.049` at the maximally adverse
-rho = -1). Singled out from 32 analysis units it also deserves a
-multiplicity adjustment: one-sided Bonferroni across 32 gives `+0.011` at rho = 0
-and `-0.015` at rho = -1, so the exclusion of the SEMICLASSICAL LOCUS survives
+rho = -1). Singled out from 35 analysis units it also deserves a
+multiplicity adjustment: one-sided Bonferroni across 35 gives `+0.010` at rho = 0
+and `-0.016` at rho = -1, so the exclusion of the SEMICLASSICAL LOCUS survives
 multiplicity and survives adverse correlation but not both at once, while the
 exclusion of the GATED ENVELOPE survives every combination since all four bounds
 exceed `F0` -- though with little room: under both at once the published
@@ -201,8 +204,8 @@ tractable one: the signal is 0.042 and the median sampling sd of F is 0.028, so
 not tractable. Replication locates `F_min` more precisely rather than higher, so
 an endpoint that masking has pushed down stays down: a system exactly
 semiclassical intrinsically but carrying `c = 1` has `F_min = -0.447` and cannot
-be made decisive at any sample size. The frequent case `L_H >= gamma` (62 of 83
-records) means the endpoint EQUALS `F_obs`, so computing it costs no assumption
+be made decisive at any sample size. The frequent case `L_H >= gamma` (72 of the
+93 admissible temperature-series records) means the endpoint EQUALS `F_obs`, so computing it costs no assumption
 about `c`; it does NOT mean masking is absent. The attainable margin is
 `F_min - B`, fixed by the enzyme rather than the experiment. The shared tritium reference *helps*: it enters Var(F)
 with weight `(gamma-1)^2 = 5.52` instead of `1 + gamma^2 = 12.21`, a factor 2.2
@@ -304,7 +307,7 @@ and the two tritium references do not scale together: `phi_D = r phi_H`, so
 bypass and reference asymmetry must be profiled jointly. The tolerance falls as
 `r` grows, and the observed secondary ratio `1.31` is only a lower bound on `r`
 (masking lowers it). Solving `r` jointly with the published commitment gives
-1.36-1.57, and the one exclusion in the record then survives an isotope-blind
+1.36-1.57, and the yeast exclusion then survives an isotope-blind
 route below **13-17%** of the isotope-sensitive flux (10-12% against the
 semiclassical locus); propagated, median 16% with 95% interval 8-25%. Because
 that `r` was solved without a bypass, these are sensitivities at stipulated `r`,
@@ -355,7 +358,10 @@ fails, instructively:
   Monte Carlo gives no draw of 4e5 with `F_int <= 0` at any `a`.
 * *Bovine serum amine oxidase does not.* Grant & Klinman's Table IV (1989) sets
   the pre-steady-state isotope effect beside the steady-state one at **six**
-  temperatures, and their ratio is a masking factor directly. But the six are not
+  temperatures. Their ratio would be a masking factor if the steady-state column
+  were measured independently; it was derived from the competitive effects
+  through the Swain-Schaad relation, so it is not an independent constraint.
+  Read naively anyway, the six are not
   consistent with one value (`Q = 17.9` on 5 dof, `p = 0.003`), and masking
   cannot exceed unity, which the 0 C ratio does by 3.5 sigma. The competitive
   effects exist only at 25 C, where the matched factor is `0.839 +/- 0.097`, the
@@ -452,7 +458,7 @@ analysis/
   masses.py             isotope mass convention, imported everywhere
   corpus.py             the matched primary record: the temperature series and
                         every single-condition record file, read by all
-                        scripts that need them (97 records, 32 units)
+                        scripts that need them (108 records, 35 units)
   reference_asymmetry.py  the reference asymmetry r: exactly 1 where one
                         tritiated isotopologue served both experiments
                         (data/tracer_design.csv), otherwise inferred from the
@@ -506,10 +512,10 @@ analysis/
   discriminate.py       model fits (superseded analysis, retained for the record)
   design.py             power calculation (superseded, retained)
   export_figs_v3.py     pgfplots tables for the figures
-  export_fig_asym.py    identified-set figure data (32 analysis units)
+  export_fig_asym.py    identified-set figure data (35 analysis units)
   export_si_tables.py   supplementary tables (results/)
   export_bounds_table.py     per-series bounds table (results/)
-  export_benchmark_table.py  complete 83-record temperature-series table
+  export_benchmark_table.py  complete 94-record temperature-series table
   export_profiles_table.py   per-series profile table
 data/                   curated inputs, never written by any script
 results/                generated reports and tables
@@ -615,8 +621,8 @@ and no tracked file changes. `offset_analysis.py` and `network_atlas.py` are
 untouched and were not rerun.
 
 One caveat on timing: `offset_analysis.py` computes profile likelihoods by
-continuation over a 301-point grid for each of 18 series and takes roughly
-50 minutes on one core.
+continuation over a 301-point grid for each of the 20 series with at least
+three temperatures and takes roughly 55 minutes on one core.
 
 ## Key numbers
 
@@ -628,14 +634,15 @@ the hydrogen isotopes; the bare-mass value 3.2628 is also in circulation.
 gamma_SC = 3.34887   rigid = 2.45884   F0 = -0.042086   threshold = 1.26890
 ```
 
-Temperature-series benchmark: 83 matched records, 18 series, 5 enzyme families,
-6 enzyme-organism systems, 2-45 C. Transcription audit: 260 values across the
+Temperature-series benchmark: 94 temperature-resolved records, 21 series, 6 enzyme families,
+7 enzyme-organism systems, -50 to 45 C. Transcription audit: 260 values across the
 five PDF-derived sources, each matched with its uncertainty, 0 misses. The wider matched-primary record used for the
-identified-set figure is 97 records over 32 analysis units, of which 27 fall on
-the uninformative side, four more fail on precision alone, and one clears.
+identified-set figure is 108 records over 35 analysis units, of which 28 fall on
+the uninformative side, four more fail on precision alone, and three clear.
 
-Bounds: 0 of 18 series exclude either mechanism, at correlation -1, 0, 0.5 or
-0.9. A series bound is on the largest endpoint over its temperatures: the
+Bounds: 2 of 21 series exclude both mechanisms, at every correlation -1, 0, 0.5
+and 0.9 (horse liver ADH F93W in 40% and 60% methanol); the other 19 exclude
+neither. A series bound is on the largest endpoint over its temperatures: the
 per-temperature one-sided bounds at level 0.05/n_T, then their maximum, which
 covers that maximum with probability at least 95% by the union bound whenever
 each per-temperature bound has its nominal coverage. Each is the 0.05/n_T

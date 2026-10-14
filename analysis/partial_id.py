@@ -66,7 +66,16 @@ def F_min_exact(kht, kdt, gamma=GSC):
     c* = a b (gamma - 1) / (gamma b - a) and the set is closed at F_min.
 
     Returns (F_min, c_star, interior, closed).
+
+    The closed form requires normal ordering, K_HT > K_DT > 1.  An observed
+    pair outside it has no admissible intrinsic pair (x_H > x_D > 1) under the
+    map, so it carries no information about the offset and returns -inf, the
+    convention F_min_vec uses for resampled pairs.  Until 2026-10-13 no record
+    violated the ordering; the wild-type horse liver series in 50% methanol
+    has K_DT = 0.99 at -50 C, which the bare closed form scored as +0.822.
     """
+    if not (kht > kdt > 1.0):
+        return -np.inf, np.nan, False, False
     a, b = kht - 1.0, kdt - 1.0
     F_obs = np.log(kht) - gamma * np.log(kdt)
     if a >= gamma * b:                       # L_H >= gamma

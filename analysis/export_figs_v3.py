@@ -76,7 +76,7 @@ w_("g2b_bounds.dat", b[["idx", "bound", "len"]])
 from corpus import display_family
 (OUT / "g2b_labels.tex").write_text("".join(
     f"\\node[font=\\fontsize{{6.4}}{{7.6}}\\selectfont,anchor=east] "
-    f"at (axis cs:-1.02,{r.idx:.0f}) {{{display_family(r.family, r.variant)} {r.variant}{' (' + r.step + ')' if r.family == 'TSase' else ''}}};\n"
+    f"at (axis cs:-1.02,{r.idx:.0f}) {{{display_family(r.family, r.variant)} {r.variant.replace('%', chr(92) + '%')}{' (' + r.step + ')' if r.family == 'TSase' else ''}}};\n"
     for _, r in b.iterrows()))
 print(f"  g2b_labels.tex          {len(b)} labels")
 print(f"\n  gamma_SC={GSC:.5f}  F0={F0:+.6f}")

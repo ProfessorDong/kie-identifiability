@@ -29,3 +29,6 @@ hsDHFR,F32L-PP26N-PEKN62G,hydride,shared,4R-3H-NADPH,4R-3H-NADPH,Li2021,Methods
 hsDHFR,F32M,hydride,shared,4R-3H-NADPH,4R-3H-NADPH,Li2021,Methods
 hsDHFR,d26-PPLR-d62-PEKN,hydride,shared,4R-3H-NADPH,4R-3H-NADPH,Li2021,Methods
 hsDHFR,d62-PEKN,hydride,shared,4R-3H-NADPH,4R-3H-NADPH,Li2021,Methods
+LADH,wild type (50% MeOH),hydride,labeled,[1-3H]benzyl alcohol,[1-2H 1-3H]benzyl alcohol,TsaiKlinman2001,Methods
+LADH,F93W (40% MeOH),hydride,labeled,[1-3H]benzyl alcohol,[1-2H 1-3H]benzyl alcohol,TsaiKlinman2001,Methods
+LADH,F93W (60% MeOH),hydride,labeled,[1-3H]benzyl alcohol,[1-2H 1-3H]benzyl alcohol,TsaiKlinman2001,Methods

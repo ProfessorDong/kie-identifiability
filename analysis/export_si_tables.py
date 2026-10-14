@@ -22,7 +22,7 @@ L = []
 
 b = pd.read_csv("../results/bounds_uncertainty.csv")
 import bounds_uncertainty as _bu
-_WORD = {5: "five", 72: "seventy-two", 64: "sixty-four"}
+_WORD = {5: "five", 72: "seventy-two", 64: "sixty-four", 84: "eighty-four"}
 
 
 def _sci(x, nd=0):
@@ -30,16 +30,22 @@ def _sci(x, nd=0):
     m = x / 10 ** e
     return (f"$10^{{{e}}}$" if nd == 0 and abs(m - 1) < 1e-9
             else f"${m:.{nd}f}\\times10^{{{e}}}$")
-_top = b[b.rho == 0.0].sort_values("point", ascending=False).head(4)
-# the header below says "all ecDHFR"; fail rather than mislabel if that changes
-assert set(_top.family) == {"ecDHFR"}, f"top series now include {set(_top.family)}"
-top = _top.variant.tolist()
+_top = b[b.rho == 0.0].sort_values("point", ascending=False).head(6)
+top = list(zip(_top.family, _top.variant))
+_NT = 6
+# how many of the listed series clear the threshold at the adverse rho = -1;
+# the caption states it rather than asserting a fixed answer
+_clear = [(f, v) for f, v in top
+          if b[(b.family == f) & (b.variant == v) & (b.rho == -1.0)].lcb.iloc[0] > F0]
+_WORD.update({0: "no entry reaches it", 1: "one entry clears it at every $\\rho$",
+              2: "two entries clear it at every $\\rho$"})
+_CLEARWORD = _WORD[len(_clear)] if len(_clear) <= 2 else f"{len(_clear)} entries clear it"
 L += [r"\begin{table}[!htbp]",
       r"\caption{Nominal one-sided $95\%$ lower confidence bounds on the offset for the "
-      r"four series with the highest point estimates, bracketed over the unknown "
+            r"six series with the highest point estimates, bracketed over the unknown "
       r"correlation $\rho$ between the H/T and D/T effects induced by the shared "
       r"tritium reference. The threshold for excluding the ground-channel model "
-      r"is $\Fz=-0.0421$; no entry reaches it. Each bound is on the series "
+            r"is $\Fz=-0.0421$; " + _CLEARWORD + r". Each bound is on the series "
       r"maximum of the endpoint: the one-sided bound for each temperature at "
       r"level $0.05/n_T$, then the largest of these, which by the union bound has "
       r"coverage at least $95\%$ whenever each per-temperature bound has its "
@@ -52,11 +58,12 @@ L += [r"\begin{table}[!htbp]",
       r"maximally adverse case.}",
       r"\label{tab:unc-si}", r"\begin{center}\small",
       r"\begin{tabular}{lccccc}", r"\toprule",
-      r"Series (all ecDHFR) & point & $\rho=-1$ & $\rho=0$ & $\rho=0.5$ & $\rho=0.9$\\",
+            r"Series & point & $\rho=-1$ & $\rho=0$ & $\rho=0.5$ & $\rho=0.9$\\",
       r"\midrule"]
-for v in top:
-    s = b[b.variant == v]
-    L.append(f"{v} & ${s[s.rho==0].point.iloc[0]:.4f}$ & "
+for fam, v in top:
+    s = b[(b.family == fam) & (b.variant == v)]
+    lab = f"{fam} {v}".replace("%", r"\%")
+    L.append(f"{lab} & ${s[s.rho==0].point.iloc[0]:.4f}$ & "
              f"${s[s.rho==-1.0].lcb.iloc[0]:.3f}$ & "
              f"${s[s.rho==0].lcb.iloc[0]:.3f}$ & ${s[s.rho==0.5].lcb.iloc[0]:.3f}$ & "
              f"${s[s.rho==0.9].lcb.iloc[0]:.3f}$\\\\")

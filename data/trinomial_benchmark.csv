@@ -13,14 +13,14 @@ Escherichia coli thymidylate synthase,TSase,Y209W,proton,C,5.0,5.21,0.13,1.93,0.
 Escherichia coli thymidylate synthase,TSase,Y209W,proton,C,15.0,4.97,0.21,1.81,0.02,10.3390/ijms16047304,PMC4425018,Table S2
 Escherichia coli thymidylate synthase,TSase,Y209W,proton,C,25.0,3.54,0.05,1.53,0.03,10.3390/ijms16047304,PMC4425018,Table S2
 Escherichia coli thymidylate synthase,TSase,Y209W,proton,C,35.0,1.93,0.09,1.29,0.04,10.3390/ijms16047304,PMC4425018,Table S2
-Homo sapiens thymidylate synthase,TSase,WT,hydride,C,5.0,2.362,0.0174355957741627,1.4900000000000002,0.0036514837167011,10.1371/journal.pone.0196506,PMC5929524,S4 Table
-Homo sapiens thymidylate synthase,TSase,WT,hydride,C,15.0,2.71,0.0192353840616713,1.566,0.0067823299831252,10.1371/journal.pone.0196506,PMC5929524,S4 Table
-Homo sapiens thymidylate synthase,TSase,WT,hydride,C,25.0,3.052,0.0139283882771841,1.614,0.004,10.1371/journal.pone.0196506,PMC5929524,S4 Table
-Homo sapiens thymidylate synthase,TSase,WT,hydride,C,35.0,3.4425,0.0165201896679991,1.6599999999999997,0.0083666002653407,10.1371/journal.pone.0196506,PMC5929524,S4 Table
-Homo sapiens thymidylate synthase,TSase,WT,proton,C,5.0,1.7920000000000005,0.0131909059582729,1.3675,0.0094648472430004,10.1371/journal.pone.0196506,PMC5929524,S5 Table
-Homo sapiens thymidylate synthase,TSase,WT,proton,C,15.0,1.7975,0.014361406616345,1.3457142857142856,0.0036885555678165,10.1371/journal.pone.0196506,PMC5929524,S5 Table
-Homo sapiens thymidylate synthase,TSase,WT,proton,C,25.0,1.5375,0.0110867789130417,1.2325,0.0047871355387816,10.1371/journal.pone.0196506,PMC5929524,S5 Table
-Homo sapiens thymidylate synthase,TSase,WT,proton,C,35.0,1.9057649663380751,0.0153606846376108,1.3095726493098137,0.0052428097831355,10.1371/journal.pone.0196506,PMC5929524,S5 Table
+Homo sapiens thymidylate synthase,TSase,WT,hydride,C,5.0,2.362,0.0174355957741627,1.4900000000000002,0.0036514837167011,10.1371/journal.pone.0196506,PMC5929524,S2 Table
+Homo sapiens thymidylate synthase,TSase,WT,hydride,C,15.0,2.71,0.0192353840616713,1.566,0.0067823299831252,10.1371/journal.pone.0196506,PMC5929524,S2 Table
+Homo sapiens thymidylate synthase,TSase,WT,hydride,C,25.0,3.052,0.0139283882771841,1.614,0.004,10.1371/journal.pone.0196506,PMC5929524,S2 Table
+Homo sapiens thymidylate synthase,TSase,WT,hydride,C,35.0,3.4425,0.0165201896679991,1.6599999999999997,0.0083666002653407,10.1371/journal.pone.0196506,PMC5929524,S2 Table
+Homo sapiens thymidylate synthase,TSase,WT,proton,C,5.0,1.7920000000000005,0.0131909059582729,1.3675,0.0094648472430004,10.1371/journal.pone.0196506,PMC5929524,S3 Table
+Homo sapiens thymidylate synthase,TSase,WT,proton,C,15.0,1.7975,0.014361406616345,1.3457142857142856,0.0036885555678165,10.1371/journal.pone.0196506,PMC5929524,S3 Table
+Homo sapiens thymidylate synthase,TSase,WT,proton,C,25.0,1.5375,0.0110867789130417,1.2325,0.0047871355387816,10.1371/journal.pone.0196506,PMC5929524,S3 Table
+Homo sapiens thymidylate synthase,TSase,WT,proton,C,35.0,1.9057649663380751,0.0153606846376108,1.3095726493098137,0.0052428097831355,10.1371/journal.pone.0196506,PMC5929524,S3 Table
 Escherichia coli dihydrofolate reductase,ecDHFR,F125M,hydride,C,5.0,3.07,0.02,1.61,0.01,10.1021/ja411998h,PMC3985941,Table S1-S4
 Escherichia coli dihydrofolate reductase,ecDHFR,F125M,hydride,C,15.0,4.55,0.04,1.76,0.01,10.1021/ja411998h,PMC3985941,Table S1-S4
 Escherichia coli dihydrofolate reductase,ecDHFR,F125M,hydride,C,25.0,5.2,0.09,1.8,0.01,10.1021/ja411998h,PMC3985941,Table S1-S4
@@ -82,3 +82,14 @@ Monoamine oxidase B (p-methoxybenzylamine),MAOB,pH 6.1,abstraction,C,30.0,21.49,
 Monoamine oxidase B (p-methoxybenzylamine),MAOB,pH 6.1,abstraction,C,35.0,18.52,0.99,2.569,0.07,10.1021/bi00253a026,,Table 3
 Monoamine oxidase B (p-methoxybenzylamine),MAOB,pH 6.1,abstraction,C,40.0,17.42,0.4,2.509,0.067,10.1021/bi00253a026,,Table 3
 Monoamine oxidase B (p-methoxybenzylamine),MAOB,pH 6.1,abstraction,C,43.0,17.02,0.52,2.507,0.133,10.1021/bi00253a026,,Table 3
+Horse liver alcohol dehydrogenase (benzyl alcohol),LADH,wild type (50% MeOH),hydride,C,3.0,6.7,0.4,2.2,0.1,10.1021/bi002075l,,Table 2
+Horse liver alcohol dehydrogenase (benzyl alcohol),LADH,wild type (50% MeOH),hydride,C,-20.0,6.1,0.2,2.3,0.1,10.1021/bi002075l,,Table 2
+Horse liver alcohol dehydrogenase (benzyl alcohol),LADH,wild type (50% MeOH),hydride,C,-30.0,6.6,0.3,1.8,0.2,10.1021/bi002075l,,Table 2
+Horse liver alcohol dehydrogenase (benzyl alcohol),LADH,wild type (50% MeOH),hydride,C,-40.0,3.0,0.2,1.5,0.1,10.1021/bi002075l,,Table 2
+Horse liver alcohol dehydrogenase (benzyl alcohol),LADH,wild type (50% MeOH),hydride,C,-50.0,2.2,0.1,0.99,0.03,10.1021/bi002075l,,Table 2
+Horse liver alcohol dehydrogenase (benzyl alcohol),LADH,F93W (40% MeOH),hydride,C,3.0,8.6,0.1,1.80,0.03,10.1021/bi002075l,,Table 4
+Horse liver alcohol dehydrogenase (benzyl alcohol),LADH,F93W (40% MeOH),hydride,C,-10.0,9.4,0.3,2.05,0.05,10.1021/bi002075l,,Table 4
+Horse liver alcohol dehydrogenase (benzyl alcohol),LADH,F93W (40% MeOH),hydride,C,-20.0,10.8,0.1,2.02,0.07,10.1021/bi002075l,,Table 4
+Horse liver alcohol dehydrogenase (benzyl alcohol),LADH,F93W (40% MeOH),hydride,C,-30.0,13.0,0.1,2.22,0.09,10.1021/bi002075l,,Table 4
+Horse liver alcohol dehydrogenase (benzyl alcohol),LADH,F93W (60% MeOH),hydride,C,3.0,8.6,0.4,1.69,0.06,10.1021/bi002075l,,Table 4
+Horse liver alcohol dehydrogenase (benzyl alcohol),LADH,F93W (60% MeOH),hydride,C,-20.0,10.7,0.9,1.9,0.6,10.1021/bi002075l,,Table 4

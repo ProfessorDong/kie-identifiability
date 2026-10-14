@@ -1,7 +1,10 @@
 family,variant,step,n_T,bound,any_interior
+LADH,F93W (60% MeOH),hydride,2,0.39451647263375,False
+LADH,F93W (40% MeOH),hydride,4,0.1833432008017606,False
 ecDHFR,W133F,hydride,3,-0.05962344512704121,False
 ecDHFR,G121V-F125M,hydride,5,-0.07395256266276817,False
 ecDHFR,light enzyme,hydride,6,-0.07594151888065426,False
+LADH,wild type (50% MeOH),hydride,4,-0.0813493535512193,False
 ecDHFR,M42W-F125M,hydride,5,-0.10265370154191378,False
 hsDHFR,d26-PPLR-d62-PEKN,hydride,5,-0.13434795273504974,False
 ecDHFR,heavy enzyme,hydride,5,-0.1576148687204122,True

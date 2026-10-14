@@ -260,6 +260,10 @@ def _benchmark():
     print("4. THRESHOLD ACROSS THE BENCHMARK")
     print("=" * 78)
     d = pd.read_csv("../data/trinomial_benchmark.csv")
+    # admissible records only (K_HT > K_DT > 1): the wild-type horse liver
+    # series in 50% methanol has K_DT = 0.99 at -50 C, which has no compatible
+    # set under the map and no window to speak of
+    d = d[(d.K_HT > d.K_DT) & (d.K_DT > 1)].reset_index(drop=True)
     d["E_star"] = eie_threshold(d.K_HT.values, d.K_DT.values)
     wins = [vacuity_window(r.K_HT, r.K_DT) for _, r in d.iterrows()]
     d["E_lo"] = [w[0] if w else np.nan for w in wins]

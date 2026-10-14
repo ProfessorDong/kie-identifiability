@@ -13,7 +13,7 @@ sources are paywalled and must be downloaded manually; see below.
 
 | Source | DOI | Contributes | Availability |
 |---|---|---|---|
-| Islam et al., *PLoS ONE* **13**, e0196506 (2018) | `10.1371/journal.pone.0196506` | hsTSase hydride + proton | PMC5929524, OA (S4/S5 Tables, .xlsx) |
+| Islam et al., *PLoS ONE* **13**, e0196506 (2018) | `10.1371/journal.pone.0196506` | hsTSase hydride + proton | PMC5929524, OA (S2/S3 Tables, files s004/s005 .xlsx) |
 | Abeysinghe & Kohen, *Int. J. Mol. Sci.* **16**, 7304 (2015) | `10.3390/ijms16047304` | ecTSase Y209W proton | PMC4425018, OA (Table S2) |
 | Singh et al., *JACS* **136**, 2575 (2014) | `10.1021/ja411998h` | 4 ecDHFR variants, 5 temperatures | PMC3985941, OA |
 | Li et al., *Biochemistry* **60**, 3822 (2021) | `10.1021/acs.biochem.1c00558` | 5 hsDHFR variants | PMC8697555, OA |
@@ -81,11 +81,23 @@ single-condition records, and every script that needs them reads that list.
 |---|---|---|---|
 | Cha, Murray & Klinman, *Science* **243**, 1325 (1989), [10.1126/science.2646716](https://doi.org/10.1126/science.2646716) | `data/cha1989_yadh.csv`, `data/cha1989_yadh_dt_only.csv` | Table 2: three matched H/T and D/T determinations and their average (the average is the record), plus a fourth D/T-only determination, 1.72 ± 0.05, with no H/T partner, kept separately because it is not a matched pair | 1 |
 | Bahnson et al., *Biochemistry* **32**, 5503 (1993), [10.1021/bi00072a003](https://doi.org/10.1021/bi00072a003) | `data/ladh_adh_primary.csv` | Table I | 5 |
-| Bahnson et al., *Proc. Natl. Acad. Sci. USA* **94**, 12797 (1997) | `data/ladh_adh_primary.csv` | Table 1 | 4 |
+| Bahnson et al., *Proc. Natl. Acad. Sci. USA* **94**, 12797 (1997), [10.1073/pnas.94.24.12797](https://doi.org/10.1073/pnas.94.24.12797) | `data/ladh_adh_primary.csv` | Table 1 | 4 |
 | Tsai & Klinman, *Biochemistry* **40**, 2303 (2001), [10.1021/bi002075l](https://doi.org/10.1021/bi002075l) | `data/ladh_adh_primary.csv` | Tables 2 and 4, aqueous rows at 3 °C | 2 |
+| Tsai & Klinman, *Biochemistry* **40**, 2303 (2001), [10.1021/bi002075l](https://doi.org/10.1021/bi002075l) | `data/trinomial_benchmark.csv` (family `LADH`, variants in 40%, 50% and 60% MeOH) | Table 2 (wild type, 50% MeOH, 3 to −50 °C) and Table 4 (F93W, 40% MeOH, 3 to −30 °C; 60% MeOH, 3 and −20 °C), all at 10 mM NAD+ | 11 |
 | Grant & Klinman, *Biochemistry* **28**, 6597 (1989), [10.1021/bi00442a010](https://doi.org/10.1021/bi00442a010) | `data/bsao_grant1989.csv` | Table I averages, 25 °C | 1 |
 | Jonsson, Edmondson & Klinman, *Biochemistry* **33**, 14871 (1994), [10.1021/bi00253a026](https://doi.org/10.1021/bi00253a026) | `data/trinomial_benchmark.csv` (family `MAOB`) | Tables 1 and 3 | 10 |
 | Agrawal, Hong, Mihai & Kohen, *Biochemistry* **43**, 1998 (2004), [10.1021/bi036124g](https://doi.org/10.1021/bi036124g) | `data/agrawal2004_ectsase.csv` | Results text, 20 °C: 6.91 ± 0.05 and 1.78 ± 0.02 (the other temperatures are plotted only and are not digitized) | 1 |
+
+The Tsai & Klinman methanol records were first excluded on the ground that a
+random component in the mechanism breaks the single shared observation map.
+That was wrong on both counts: the competitive runs were made at 10 mM NAD+,
+far above its 0.75 mM Michaelis constant, which the authors state ensures an
+ordered pathway, and a random mechanism with no route around the chemical step
+still gives the base map at fixed cosubstrate. They were admitted on
+2026-10-13 under the same rule as every other source. `data/ladh_bahnson.csv`
+is the 1997 re-tabulation of the Bahnson Table 1 values (L57F and F93W rounded
+as reprinted there); no script reads it, and the records it holds enter the
+corpus once, from `data/ladh_adh_primary.csv`.
 
 The Agrawal record was first excluded on the ground that all of that paper's
 isotope effects are in figures. That overlooked the 20 °C values stated in the
@@ -163,9 +175,9 @@ quantity that turns a half-line into a point, and are read by
 
 | Source | Quantity taken | Used for |
 |---|---|---|
-| Klinman, *Biochemistry* **15**, 2018 (1976), [10.1021/bi00654a032](https://doi.org/10.1021/bi00654a032) | `k_-1/k_cat = 1.3–7.3` at 25 °C, pH 8.5: Table IV's conversion of Michaelis-constant isotope effects of 1.1–1.5 (observed across para-substituted alcohols), assuming an isotope effect of 4 on `k_cat` and none on binding; for benzyl alcohol itself Table III gives 1.3 on `K_A` (maps to 2.3) and an inverse 0.80 on `K_B` | completes yeast ADH conditionally on that conversion; isotope effects are Cha et al. (1989) |
-| Grant & Klinman, *Biochemistry* **28**, 6597 (1989) | Table IV, pre-steady-state beside steady-state isotope effects, 15–45 °C | masking factor at 25 °C, 0.839 ± 0.097; the six temperatures are inhomogeneous (Q = 17.9, p = 0.003), so the completion is **withdrawn**: F_int = −0.038, 95% [−0.267, +0.242] |
-| Sekhar & Plapp, *Biochemistry* **29**, 4289 (1990), [10.1021/bi00470a005](https://doi.org/10.1021/bi00470a005) | `K_m` = 0.03 mM (benzyl alcohol) against 0.08 mM (α,α-`d2`) | shows the alcohol Michaelis effect is inverse in horse liver ADH, which is why that system admits no completion |
+| Klinman, *Biochemistry* **15**, 2018 (1976), [10.1021/bi00654a032](https://doi.org/10.1021/bi00654a032) | `k_-1/k_cat = 1.3–7.3` at 25 °C, pH 8.5: Table IV's conversion of Michaelis-constant isotope effects of 1.1–1.5 (the Table IV entries, spanning the normal effects of the para-substituted alcohols whose `k_cat` Klinman attributes to hydrogen transfer), assuming an isotope effect of 4 on `k_cat` (her measured value for benzyl alcohol is 3.4) and none on binding; for benzyl alcohol itself Table III gives 1.3 on the NAD+ constant `K_A` (maps to 2.3) and an inverse 0.80 on the alcohol constant `K_B` | completes yeast ADH conditionally on that conversion; isotope effects are Cha et al. (1989) |
+| Grant & Klinman, *Biochemistry* **28**, 6597 (1989) | Table IV, pre-steady-state beside steady-state isotope effects, 0–45 °C (six temperatures; the steady-state column is derived through the Swain–Schaad relation) | masking factor at 25 °C, 0.839 ± 0.097; the six temperatures are inhomogeneous (Q = 17.9, p = 0.003), so the completion is **withdrawn**: F_int = −0.038, 95% [−0.267, +0.242] |
+| Sekhar & Plapp, *Biochemistry* **29**, 4289 (1990), [10.1021/bi00470a005](https://doi.org/10.1021/bi00470a005) | apparent `K_m` for the transient oxidation at pH 8.0, 0.03 mM (benzyl alcohol) against 0.08 mM (α,α-`d2`) | shows the alcohol Michaelis effect is inverse in horse liver ADH, which is why that system admits no completion |
 
 These are rate ratios and Michaelis constants read from the printed tables, not
 isotope-effect records, so they are held as literals in `completion.py` at the

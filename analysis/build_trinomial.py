@@ -28,7 +28,7 @@ ROW4 = re.compile(r"^\s*([0-9]{1,2})\s+" + NUM + r"\s+" + NUM)
 
 # Sources whose records are transcribed by hand from scanned pages and so are never
 # produced by this parse.  Must agree with HAND in audit_numbers.check_provenance_split.
-HAND_TRANSCRIBED = {"10.1021/bi00253a026"}
+HAND_TRANSCRIBED = {"10.1021/bi00253a026", "10.1021/bi002075l"}
 
 
 def _xlsx_cells(path):
@@ -59,9 +59,8 @@ def _replicates(cells, r0, r1, avg, sd, tol=5e-6):
     """The replicate set inside rows [r0, r1] reproducing `avg` and `sd`.
 
     Ref. Islam 2018 ships a hand-made spreadsheet: each temperature block lists
-    its replicates, but the columns they sit in drift between blocks, so the
-    replicates cannot be read positionally.  They are instead identified by the
-    property that defines them -- their mean and population standard deviation
+    its replicates beneath the published mean and population standard
+    deviation.  The replicates are identified by the property that defines them -- their mean and population standard deviation
     must equal the values the paper publishes.  That makes the extraction
     self-validating: a wrong set does not reproduce both moments.  Returning the
     set also yields n, which the standard error needs.
@@ -121,8 +120,8 @@ def hstsase_records():
                             K_DT=row["D"][0], K_DT_se=row["D"][1],
                             source_DOI="10.1371/journal.pone.0196506",
                             PMCID="PMC5929524",
-                            source_table="S4 Table" if step == "hydride"
-                                         else "S5 Table"))
+                            source_table="S2 Table" if step == "hydride"
+                                         else "S3 Table"))
     return out
 
 

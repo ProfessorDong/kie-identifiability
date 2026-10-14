@@ -17,6 +17,9 @@ not reported, so results are bracketed over rho in {-1, 0, 0.5, 0.9}.
 series                                        point   95% LCB   MC sd  sd(stat)   P(>F0)  refutes?
 FDH V123A (hydride)                         -0.3969   -0.4449  0.0000    0.0206    0.000        no
 FDH V123G (hydride)                         -0.3220   -0.3915  0.0000    0.0298    0.000        no
+LADH F93W (40% MeOH) (hydride)               0.1833    0.0322  0.0002    0.0660    1.000       YES
+LADH F93W (60% MeOH) (hydride)               0.3945    0.0707  0.0003    0.5257    0.998       YES
+LADH wild type (50% MeOH) (hydride)         -0.0813   -1.0524  0.0017    0.4001    0.738        no
 MAOB pH 6.1 (abstraction)                   -0.1720   -0.4175  0.0002    0.1069    0.555        no
 MAOB pH 7.5 (abstraction)                   -0.1944   -0.4383  0.0004    0.1104    0.171        no
 TSase WT (hydride)                          -0.4611   -0.5096  0.0001    0.0185    0.000        no
@@ -38,6 +41,9 @@ hsDHFR d62-PEKN (hydride)                   -0.2368   -0.3084  0.0001    0.0363 
 series                                        point   95% LCB   MC sd  sd(stat)   P(>F0)  refutes?
 FDH V123A (hydride)                         -0.3969   -0.4380  0.0000    0.0177    0.000        no
 FDH V123G (hydride)                         -0.3220   -0.3718  0.0000    0.0214    0.000        no
+LADH F93W (40% MeOH) (hydride)               0.1833    0.0556  0.0001    0.0568    1.000       YES
+LADH F93W (60% MeOH) (hydride)               0.3945    0.1445  0.0002    0.4813    1.000       YES
+LADH wild type (50% MeOH) (hydride)         -0.0813   -0.8752  0.0011    0.4102    0.719        no
 MAOB pH 6.1 (abstraction)                   -0.1720   -0.3469  0.0002    0.0889    0.379        no
 MAOB pH 7.5 (abstraction)                   -0.1944   -0.3989  0.0004    0.0902    0.099        no
 TSase WT (hydride)                          -0.4611   -0.5004  0.0001    0.0160    0.000        no
@@ -59,6 +65,9 @@ hsDHFR d62-PEKN (hydride)                   -0.2368   -0.2904  0.0001    0.0323 
 series                                        point   95% LCB   MC sd  sd(stat)   P(>F0)  refutes?
 FDH V123A (hydride)                         -0.3969   -0.4340  0.0000    0.0160    0.000        no
 FDH V123G (hydride)                         -0.3220   -0.3582  0.0000    0.0155    0.000        no
+LADH F93W (40% MeOH) (hydride)               0.1833    0.0691  0.0001    0.0513    1.000       YES
+LADH F93W (60% MeOH) (hydride)               0.3945    0.1912  0.0003    0.4571    1.000       YES
+LADH wild type (50% MeOH) (hydride)         -0.0813   -0.7453  0.0005    0.4165    0.704        no
 MAOB pH 6.1 (abstraction)                   -0.1720   -0.2971  0.0001    0.0793    0.263        no
 MAOB pH 7.5 (abstraction)                   -0.1944   -0.3758  0.0002    0.0786    0.060        no
 TSase WT (hydride)                          -0.4611   -0.4948  0.0001    0.0143    0.000        no
@@ -80,6 +89,9 @@ hsDHFR d62-PEKN (hydride)                   -0.2368   -0.2785  0.0001    0.0301 
 series                                        point   95% LCB   MC sd  sd(stat)   P(>F0)  refutes?
 FDH V123A (hydride)                         -0.3969   -0.4306  0.0000    0.0145    0.000        no
 FDH V123G (hydride)                         -0.3220   -0.3413  0.0000    0.0083    0.000        no
+LADH F93W (40% MeOH) (hydride)               0.1833    0.0811  0.0001    0.0463    1.000       YES
+LADH F93W (60% MeOH) (hydride)               0.3945    0.2384  0.0002    0.4369    1.000       YES
+LADH wild type (50% MeOH) (hydride)         -0.0813   -0.6475  0.0003    0.4224    0.688        no
 MAOB pH 6.1 (abstraction)                   -0.1720   -0.2336  0.0001    0.0721    0.184        no
 MAOB pH 7.5 (abstraction)                   -0.1944   -0.3553  0.0001    0.0684    0.031        no
 TSase WT (hydride)                          -0.4611   -0.4896  0.0000    0.0124    0.000        no
@@ -100,25 +112,25 @@ hsDHFR d62-PEKN (hydride)                   -0.2368   -0.2657  0.0000    0.0284 
 ================================================================================================
 SUMMARY
 ================================================================================================
-rho = -1.0: series refuting the model = 0 of 18;  best lower bound -0.1453 (ecDHFR light enzyme)
-rho = 0.0: series refuting the model = 0 of 18;  best lower bound -0.1291 (ecDHFR light enzyme)
-rho = 0.5: series refuting the model = 0 of 18;  best lower bound -0.1188 (ecDHFR light enzyme)
-rho = 0.9: series refuting the model = 0 of 18;  best lower bound -0.1082 (ecDHFR light enzyme)
+rho = -1.0: series refuting the model = 2 of 21;  best lower bound +0.0707 (LADH F93W (60% MeOH))
+rho = 0.0: series refuting the model = 2 of 21;  best lower bound +0.1445 (LADH F93W (60% MeOH))
+rho = 0.5: series refuting the model = 2 of 21;  best lower bound +0.1912 (LADH F93W (60% MeOH))
+rho = 0.9: series refuting the model = 2 of 21;  best lower bound +0.2384 (LADH F93W (60% MeOH))
 
-Largest Monte Carlo s.d. over all cells: 0.00048
+Largest Monte Carlo s.d. over all cells: 0.00172
 Largest uninformative-replicate fraction: 0.00e+00
-Bounds are therefore secure to 3 decimals everywhere (Monte Carlo s.d. 4.8e-04).
+Bounds are therefore secure to 2 decimals everywhere (Monte Carlo s.d. 1.7e-03).
 
-Closest series on the point estimate: ecDHFR W133F.
-  point bound      -0.0596  (short of F0 by 0.0175)
-  95% lower bound  -0.1470  (short of F0 by 0.1049)
-  s.d. of the series statistic 0.0855
-  resampling frequency of clearing F0: 0.628
+Closest series on the point estimate: LADH F93W (60% MeOH).
+  point bound      +0.3945  (short of F0 by -0.4366)
+  95% lower bound  +0.1445  (short of F0 by -0.1866)
+  s.d. of the series statistic 0.4813
+  resampling frequency of clearing F0: 1.000
 
 The resampled series maximum is right skewed, which is why its quantile
 is not used as the bound; the bound is the Bonferroni maximum above.
 
-Ranking by confidence bound instead promotes ecDHFR light enzyme (LCB -0.1291),
+Ranking by confidence bound instead promotes LADH F93W (60% MeOH) (LCB +0.1445),
 which has more temperatures and tighter errors.
 
 Coverage, ecDHFR W133F as recorded taken as truth, rho = -1:
