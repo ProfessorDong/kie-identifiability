@@ -1,0 +1,164 @@
+\documentclass[border=2pt,tikz]{standalone}
+\input{icigstyle}
+\usetikzlibrary{arrows.meta,positioning,calc}
+\begin{document}
+\begin{tikzpicture}
+% Overview figure, full text width.  Panel B is computed by
+% analysis/export_fig_overview.py; panels A and C are schematics.
+\input{data/fo_levels.tex}
+\pgfplotsset{
+  ov/.style={icig, scale only axis,
+    label style={font=\fontsize{8.0}{9.6}\selectfont, color=cInk},
+    tick label style={font=\fontsize{7.2}{8.6}\selectfont, color=cInk},
+    title style={font=\fontsize{8.6}{10.4}\selectfont\bfseries, color=cInk,
+                 align=left}},
+}
+\tikzset{
+  ann/.style={font=\fontsize{7.2}{8.6}\selectfont, color=cInk, align=left,
+              inner sep=0pt},
+  annc/.style={font=\fontsize{7.2}{8.6}\selectfont, color=cInk, align=center,
+              inner sep=0pt},
+  hd/.style={font=\fontsize{8.6}{10.4}\selectfont\bfseries, color=cInk,
+             anchor=north west, inner sep=0pt},
+  box/.style={draw=#1, fill=#1!7, line width=0.45pt, rounded corners=1.5pt,
+              inner sep=3pt, font=\fontsize{7.2}{8.8}\selectfont, text=cInk,
+              align=left},
+  st/.style={circle, draw=cInk, line width=0.4pt, inner sep=0pt,
+             minimum size=5.0mm, font=\fontsize{6.4}{7.6}\selectfont},
+  fl/.style={-{Latex[length=1.3mm,width=0.95mm]}, line width=0.42pt, cInk},
+  lbl/.style={font=\fontsize{6.2}{7.2}\selectfont, color=cInk, inner sep=1.0pt},
+  setarr/.style={line width=1.5pt, -{Latex[length=2.0mm,width=1.9mm]}},
+}
+\hyphenpenalty=10000 \exhyphenpenalty=10000
+
+% =====================================================================
+% (A) the experiment
+% =====================================================================
+\node[hd] at (0,0) {(\textit{\textbf{A}})\ \ two ratios, three unknowns};
+
+\node[anchor=north west, inner sep=0pt, font=\fontsize{7.6}{9}\selectfont]
+  (rx) at (0.05,-0.62)
+  {$\mathrm{E}+\mathrm{S}_L\;
+    \underset{k_{\mathrm{off}}}{\overset{k_{\mathrm{on}}}{\rightleftharpoons}}\;
+    \mathrm{ES}_L\;\xrightarrow{\;k_L\;}\;\mathrm{E}+\mathrm{P}$};
+\node[ann, anchor=north west, text width=46mm] (cmp)
+  at ($(rx.south west)+(0,-0.16)$)
+  {Substrates labeled with H, D and T at the transferred position ($L$)
+   compete for one enzyme.};
+
+\node[box=cHyd, anchor=north west, text width=42mm] (meas)
+  at ($(cmp.south west)+(0,-0.20)$)
+  {\textbf{measured}\quad $\KHT$, $\KDT$\\[1pt]
+   ratios of $V/K$, for H and for D against T};
+\node[box=cGrey, anchor=north west, text width=42mm] (unk)
+  at ($(meas.south west)+(0,-0.16)$)
+  {\textbf{unknown}\quad $x_{\mathrm H}$, $x_{\mathrm D}$ and $c$\\[1pt]
+   intrinsic effects of the chemical step; reciprocal commitment
+   $c=k_{\mathrm{off}}/k_{\mathrm T}$};
+
+\node[anchor=north west, inner sep=0pt, font=\fontsize{7.6}{9}\selectfont]
+  (map) at ($(unk.south west)+(0.02,-0.22)$)
+  {$K_{L\mathrm T}=\dfrac{x_L\,(1+c)}{x_L+c}$};
+\node[ann, anchor=west, text width=24mm] at ($(map.east)+(0.25,0)$)
+  {two equations\\($L=\mathrm{H},\mathrm{D}$),\\three unknowns};
+
+% =====================================================================
+% (B) the compatible set as the range of a curve
+% =====================================================================
+\begin{axis}[ov, name=B, width=44mm, height=47mm,
+  at={(6.25cm,-0.62cm)}, anchor=north west,
+  xmin=0, xmax=1, ymin=-0.32, ymax=\foFtop,
+  xlabel={masking fraction $(\KHT-1)/c$},
+  ylabel={intrinsic offset $F^{\mathrm{int}}$},
+  xtick={0,0.25,0.5,0.75,1}, xticklabels={0,0.25,0.5,0.75,1},
+  ytick={-0.2,0,0.2,0.4,0.6},
+  yticklabels={$-0.2$,$0$,$0.2$,$0.4$,$0.6$},
+  clip=false,
+  title={(\textit{\textbf{B}})\ \ one intrinsic pair per commitment}]
+  % what the ground-channel model attains at these effect sizes
+  \fill[cAcc!13] (axis cs:0,-0.32) rectangle (axis cs:1,\foFzero);
+  \draw[cAcc, line width=0.8pt] (axis cs:0,\foFzero) -- (axis cs:1,\foFzero);
+  \draw[cInk, line width=0.6pt, densely dashed] (axis cs:0,0) -- (axis cs:1,0);
+  \node[ann, color=cAcc!85!black, anchor=north east] at (axis cs:0.985,-0.062)
+    {gated model:\\$F<\Fz$};
+  \node[ann, anchor=south east] at (axis cs:0.985,0.012) {$F=0$};
+
+  \addplot[cPro, line width=1.1pt] table[x=m,y=F] {data/fo_mask_yadh.dat};
+  \addplot[cHyd, line width=1.1pt, densely dashed] table[x=m,y=F]
+    {data/fo_mask_light.dat};
+  % the endpoints are approached as masking vanishes, not attained
+  \addplot[only marks, mark=o, mark size=2.0pt, cPro, line width=0.7pt]
+    table[x=m,y=F] {data/fo_obs_yadh.dat};
+  \addplot[only marks, mark=o, mark size=2.0pt, cHyd, line width=0.7pt]
+    table[x=m,y=F] {data/fo_obs_light.dat};
+  \node[ann, color=cPro, anchor=north west] at (axis cs:0.30,0.215) {yeast ADH};
+  \node[ann, color=cHyd, anchor=north west] at (axis cs:0.11,-0.255) {ecDHFR, $5\,^{\circ}$C};
+
+  % the compatible sets, projected onto the offset axis
+  \draw[setarr, cPro] (axis cs:1.075,\foYadhF) -- (axis cs:1.075,\foFtop);
+  \draw[cPro, fill=white, line width=0.7pt] (axis cs:1.075,\foYadhF) circle (1.6pt);
+  \draw[setarr, cHyd] (axis cs:1.16,\foLightF) -- (axis cs:1.16,\foFtop);
+  \draw[cHyd, fill=white, line width=0.7pt] (axis cs:1.16,\foLightF) circle (1.6pt);
+  \node[annc, rotate=90] at (axis cs:1.1175,0.40) {compatible sets};
+\end{axis}
+
+% =====================================================================
+% (C) topology fixes the direction
+% =====================================================================
+\def\cx{11.95}
+\node[hd] at (\cx-0.15,0) {(\textit{\textbf{C}})\ \ topology fixes the direction};
+
+% a short offset axis with the set drawn on it
+\newcommand{\faxis}[1]{%
+  \draw[cGrey!60, line width=0.5pt] (#1) ++(0,-0.50) -- ++(0,1.00);
+}
+\node[annc, color=cGrey] at (\cx+2.75,-0.47) {set of $F$};
+
+% ---- row 1: competition, no bypass -> concave, lower bound
+\begin{scope}[shift={(\cx,-1.05)}]
+  \node[st] (e) at (0,0) {E};  \node[st] (s) at (1.05,0) {ES};
+  \node[lbl,anchor=west] (p) at (1.95,0) {P};
+  \draw[fl] (s) -- node[lbl,above]{$k$} (p.west);
+  \draw[fl] (s) -- node[lbl,above]{$k_{\mathrm{off}}$} (e);
+  \faxis{2.75,0}
+  \draw[setarr, cHyd] (2.75,-0.20) -- (2.75,0.50);
+  \fill[cHyd] (2.75,-0.20) circle (1.5pt);
+  \node[ann, anchor=north west, text width=46mm] at (-0.30,-0.40)
+    {competing exit only:\\\textbf{lower bound}, no upper bound};
+\end{scope}
+
+% ---- row 2: bypass with fast dissociation -> convex, upper bound.  Without
+% the k_off arrow, product would be certain after binding and K = 1 (blind):
+% the convex map is the limit k_off >> k, k_b of the bypass map, not a
+% separate finite network (no network in the enumeration has C = 0).
+\begin{scope}[shift={(\cx,-2.55)}]
+  \node[st] (e) at (0,0) {E};  \node[st] (s) at (1.05,0) {ES};
+  \node[lbl,anchor=west] (p) at (1.95,0) {P};
+  \draw[fl] (s) -- node[lbl,above]{$k$} (p.west);
+  \draw[fl, line width=0.9pt] (s) -- node[lbl,above]{$k_{\mathrm{off}}$} (e);
+  \draw[fl,cPro] (s) to[bend right=50] node[lbl,below,color=cPro]{$k_{b}$}
+    (p.south west);
+  \faxis{2.75,0}
+  \draw[setarr, cPro] (2.75,0.20) -- (2.75,-0.50);
+  \fill[cPro] (2.75,0.20) circle (1.5pt);
+  \node[ann, anchor=north west, text width=46mm] at (-0.30,-0.62)
+    {blind route, $k_{\mathrm{off}}\gg k,k_b$ (limit):\\\textbf{upper bound}, no lower bound};
+\end{scope}
+
+% ---- row 3: both -> no finite bound when both strengths are free
+\begin{scope}[shift={(\cx,-4.20)}]
+  \node[st] (e) at (0,0) {E};  \node[st] (s) at (1.05,0) {ES};
+  \node[lbl,anchor=west] (p) at (1.95,0) {P};
+  \draw[fl] (s) -- node[lbl,above]{$k$} (p.west);
+  \draw[fl] (s) -- node[lbl,above]{$k_{\mathrm{off}}$} (e);
+  \draw[fl,cPro] (s) to[bend right=50] node[lbl,below,color=cPro]{$k_{b}$}
+    (p.south west);
+  \faxis{2.75,0}
+  \draw[line width=1.5pt, cAcc, {Latex[length=2.0mm,width=1.9mm]}-{Latex[length=2.0mm,width=1.9mm]}]
+    (2.75,-0.50) -- (2.75,0.50);
+  \node[ann, anchor=north west, text width=46mm] at (-0.30,-0.62)
+    {both, strengths unknown: \textbf{no finite}\\\textbf{bound}; a bound on $\phi=k_b/k_{\mathrm T}$\\restores the lower bound};
+\end{scope}
+
+\end{tikzpicture}
+\end{document}

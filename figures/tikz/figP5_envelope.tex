@@ -1,0 +1,123 @@
+\documentclass[border=2pt,tikz]{standalone}
+\input{icigstyle}
+\usepgfplotslibrary{fillbetween}
+\begin{document}
+\begin{tikzpicture}
+% Envelope figure, full text width.  Every curve is computed by
+% analysis/export_fig_envelope.py.
+\input{data/fe_levels.tex}
+\pgfplotsset{
+  env/.style={icig, scale only axis,
+    label style={font=\fontsize{8.0}{9.6}\selectfont, color=cInk},
+    tick label style={font=\fontsize{7.2}{8.6}\selectfont, color=cInk},
+    title style={font=\fontsize{8.6}{10.4}\selectfont\bfseries, color=cInk,
+                 align=left}},
+}
+\tikzset{
+  ann/.style={font=\fontsize{7.2}{8.6}\selectfont, color=cInk, align=left,
+              inner sep=0pt},
+  annc/.style={font=\fontsize{7.2}{8.6}\selectfont, color=cInk, align=center,
+              inner sep=0pt},
+}
+
+% =====================================================================
+% (A) the attainable region against two compatible sets
+% =====================================================================
+\begin{axis}[env, name=A, width=50mm, height=50mm,
+  xmin=0, xmax=3.0, ymin=-0.46, ymax=0.55,
+  xlabel={$X_{\mathrm H}=\ln x_{\mathrm H}$, intrinsic},
+  ylabel={intrinsic offset $F$},
+  xtick={0,0.5,1,1.5,2,2.5,3},
+  xticklabels={$0$,$0.5$,$1$,$1.5$,$2$,$2.5$,$3$},
+  ytick={-0.4,-0.2,0,0.2,0.4},
+  yticklabels={$-0.4$,$-0.2$,$0$,$0.2$,$0.4$},
+  clip=true,
+  title={(\textit{\textbf{A}})\ \ what the model attains, and what\\
+         \hspace*{1.2mm}two observations allow}]
+  \addplot[name path=ENV, draw=none] table[x=xh,y=F] {data/fe_env.dat};
+  \addplot[name path=RIG, draw=none] table[x=xh,y=rigid] {data/fe_env.dat};
+  \addplot[cAcc!15] fill between[of=ENV and RIG];
+  \addplot[cAcc, line width=0.9pt] table[x=xh,y=F] {data/fe_env.dat};
+  \addplot[cAcc!70, line width=0.6pt, densely dotted] table[x=xh,y=rigid]
+    {data/fe_env.dat};
+  \draw[cInk, line width=0.6pt, densely dashed] (axis cs:0,0) -- (axis cs:3,0);
+  \draw[cGrey, line width=0.4pt, densely dotted]
+    (axis cs:\feXthr,-0.46) -- (axis cs:\feXthr,0.55);
+
+  \addplot[cPro, line width=1.1pt] table[x=xh,y=F] {data/fe_obs_yadh.dat};
+  \addplot[cHyd, line width=1.1pt, densely dashed] table[x=xh,y=F]
+    {data/fe_obs_light.dat};
+  \addplot[only marks, mark=o, mark size=2.0pt, cPro, line width=0.7pt]
+    coordinates {(\feYadhX,\feYadhF)};
+  \addplot[only marks, mark=o, mark size=2.0pt, cHyd, line width=0.7pt]
+    coordinates {(\feLightX,\feLightF)};
+
+  \node[ann, anchor=south west] at (axis cs:0.30,0.012) {$F=0$, semiclassical};
+  \node[ann, color=cAcc!85!black, anchor=south east, text width=32mm,
+        align=right] at (axis cs:2.95,-0.445) {\mbox{ground-channel model:}\\attainable offsets};
+  \node[ann, color=cAcc!85!black, anchor=north east] at (axis cs:2.95,-0.058)
+    {envelope, $\Fz$};
+  \node[ann, color=cAcc!70!black, anchor=south, rotate=-47.1]
+    at (axis cs:0.62,-0.170) {rigid, $w\to0$};
+  \node[ann, color=cGrey, anchor=west] at (axis cs:\feXthr+0.04,0.50)
+    {$x_{\mathrm H}=1.27$};
+  \node[ann, color=cPro, anchor=east] at (axis cs:1.93,0.27) {yeast ADH};
+  \node[ann, color=cHyd, anchor=north west] at (axis cs:1.17,-0.275) {ecDHFR};
+\end{axis}
+
+% =====================================================================
+% (B) the offset against temperature
+% =====================================================================
+\begin{axis}[env, name=B, width=31mm, height=50mm,
+  at={($(A.east)+(16mm,0)$)}, anchor=west,
+  xmin=250, xmax=350, ymin=-0.04, ymax=1.12,
+  xlabel={temperature (K)},
+  ylabel={$[F(T)-F(250\,\mathrm K)]/|\Fz|$},
+  xtick={250,300,350}, ytick={0,0.25,0.5,0.75,1},
+  yticklabels={$0$,$0.25$,$0.5$,$0.75$,$1$},
+  title={(\textit{\textbf{B}})\ \ gating moves $F$\\
+         \hspace*{1.2mm}with temperature}]
+  \addplot[cGrey, line width=0.9pt] table[x=T,y=dF] {data/fe_T_50.dat};
+  \addplot[cHyd, line width=0.9pt] table[x=T,y=dF] {data/fe_T_200.dat};
+  \addplot[cPro, line width=0.9pt] table[x=T,y=dF] {data/fe_T_400.dat};
+  \addplot[cGold, line width=0.9pt] table[x=T,y=dF] {data/fe_T_800.dat};
+  \node[ann, anchor=south east] at (axis cs:347,1.005) {$400$};
+  \node[ann, anchor=south east, color=cHyd] at (axis cs:347,0.855) {$200$};
+  \node[ann, anchor=south east, color=cGold] at (axis cs:347,0.355) {$800$};
+  \node[ann, anchor=south east, color=cGrey] at (axis cs:347,0.080) {$50$};
+  \node[ann, anchor=north west] at (axis cs:254,1.07)
+    {mode (cm$^{-1}$)\\$\mathcal{A}=5$, $w_0=0.5$};
+\end{axis}
+
+% =====================================================================
+% (C) where the readout is sensitive
+% =====================================================================
+\begin{axis}[env, name=C, width=37mm, height=50mm,
+  at={($(B.east)+(15mm,0)$)}, anchor=west,
+  xmode=log, xmin=30, xmax=1200, ymin=0, ymax=1.32,
+  xlabel={promoting-mode wavenumber $\tilde\nu_g$ (cm$^{-1}$)},
+  ylabel={span of $F$, $250$--$350$~K, in $|\Fz|$},
+  xtick={30,100,300,1000}, xticklabels={$30$,$100$,$300$,$1000$},
+  ytick={0,0.25,0.5,0.75,1},
+  yticklabels={$0$,$0.25$,$0.5$,$0.75$,$1$},
+  log basis x=10, clip=false,
+  title={(\textit{\textbf{C}})\ \ most sensitive near\\
+         \hspace*{1.2mm}the crossover}]
+  % range of donor-acceptor frequencies invoked in the literature
+  \fill[cGrey!14] (axis cs:50,0) rectangle (axis cs:300,1.32);
+  \node[annc, color=cGrey!90!black] at (axis cs:122,0.07) {invoked\\$50$--$300$};
+  \draw[cInk, line width=0.5pt, densely dashed]
+    (axis cs:\feCross,0) -- (axis cs:\feCross,1.32);
+  \node[ann, anchor=north west, rotate=90] at (axis cs:\feCross*1.07,0.08)
+    {$hc\tilde\nu_g=2k_{\mathrm B}T$};
+  \addplot[cPro, line width=1.0pt] table[x=nu,y=span] {data/fe_span.dat};
+  \addplot[only marks, mark=*, mark size=1.5pt, cPro]
+    table[x=nu,y=span] {data/fe_span_pts.dat};
+  % where the peak sits over the sweep of A and w0
+  \draw[cAcc, line width=0.8pt, |-|] (axis cs:\fePeakLo,1.21) -- (axis cs:\fePeakHi,1.21);
+  \node[ann, color=cAcc!85!black, anchor=east, align=right] at (axis cs:130,1.21)
+    {peak over\\$\mathcal{A}$, $w_0$};
+\end{axis}
+
+\end{tikzpicture}
+\end{document}

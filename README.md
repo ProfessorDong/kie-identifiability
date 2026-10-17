@@ -84,10 +84,12 @@ hypothesis*: if `h_H` and `h_D` are unrelated nothing follows, but ordered
 commitments (`c_D >= c_H`) suffice.
 
 **Sharing is approximate even in the primary protocol, and harmlessly so.** The
-H/T and D/T effects use tritium references that differ at the non-transferred
-position, so `c_D = r c_H` with `r` the secondary H/D effect on the reference.
+H/T and D/T effects of 17 of the 33 forms use tritium references that differ at
+the non-transferred position, so `c_D = r c_H` with `r` the secondary H/D effect
+on the reference; the other 16 use one tritiated molecule for both, so `r = 1`
+(`data/tracer_design.csv`).
 What matters is the sign of `r-1`. Observed secondary ratios here are normal
-(`R = 1.02-1.31`, a lower bound on `r`), so the H comparison is the MORE masked one and the
+(`R = 1.02-1.38`, a lower bound on `r`), so the H comparison is the MORE masked one and the
 imbalance pushes `F_obs` down: over 3e5 draws with `r` in [1,2] there is no case
 with `F_obs > F_int`. An INVERSE secondary effect would reverse this and break
 the argument (3e5 draws with `r` in [0.2,1] give violations in a third of cases,
@@ -251,7 +253,7 @@ if the observed offset were constant; it is not (median chi2/dof = 7.4, up to
 that share one intrinsic pair but differ in commitment cannot identify that pair
 even with exact data: with `z = 1 - 1/K`, `u = 1 - 1/x` and `s = c/(1+c)`, the
 map is exactly `z_Lj = u_L s_j`, so `(u, s) -> (lam u, s/lam)` leaves every
-observation unchanged (Proposition S9). Of 11 nominal parameters for the nine
+observation unchanged (Proposition S8). Of 11 nominal parameters for the nine
 horse liver forms only 10 are identified; the identifiable refit gives
 chi2 = 55.8 on 8 dof, p = 3e-9, so the common-pair model is rejected, without
 saying which of its assumptions fails (`analysis/pooling_check.py`). The
@@ -496,6 +498,8 @@ analysis/
                         factors via tilted-Gaussian moments
   design_power.py       precision, correlation and commitment requirements
   decisive_case.py      yeast ADH primary effects (Cha, Murray & Klinman 1989)
+  adh_primary.py        alcohol dehydrogenase primary records; horse liver
+                        correlation bracket (results/sm_table_ladhprim.tex)
   build_trinomial.py    parses primary SI tables -> benchmark + audit
   offset_analysis.py    profiles the offset per series (continuation method)
     offset_summary.py     goodness-of-fit stratification of those profiles
@@ -503,7 +507,11 @@ analysis/
                         the edge F = 1.5: none has a finite minimum
   pooling_check.py      within-series pooling, and the variant-pooling scale
                         symmetry with the identifiable horse liver refit
-  vibronic.py           does the bound survive the full vibronic sum?
+  vibronic.py           does the bound survive the full vibronic sum? and the
+                        penalty table (results/sm_table_vibronic.tex)
+  published_intrinsic.py  published intrinsic pairs solved with an exponent
+                        (Stojkovic 2012): offsets fixed by construction
+                        (results/sm_table_stoj.tex)
   verify_derivation.py  numerical + symbolic checks of every closed form
   audit_v3.py           adversarial audit of the reconstructed claims
   audit_referee.py      independent check of a first review's claims
@@ -513,6 +521,13 @@ analysis/
   design.py             power calculation (superseded, retained)
   export_figs_v3.py     pgfplots tables for the figures
   export_fig_asym.py    identified-set figure data (35 analysis units)
+  export_fig_overview.py   overview figure: the compatible set as the range of
+                        the commitment curve, for two observations
+  export_fig_envelope.py   envelope figure: the region the ground-channel model
+                        fills (edges checked on a dense grid), and the
+                        promoting-mode readout
+  export_fig_design.py     design figure: joint bypass-binding region, the yeast
+                        completion, the pooling symmetry, the error budget
   export_si_tables.py   supplementary tables (results/)
   export_bounds_table.py     per-series bounds table (results/)
   export_benchmark_table.py  complete 94-record temperature-series table
@@ -543,10 +558,14 @@ python network_geometry.py   # topology -> curvature -> set direction
 python completion.py         # closing the set; the gating-mode readout
 python audit_r2.py           # reconfirms the second review's claims
 python audit_v3.py           # adversarial audit, must exit 0
-python vibronic.py           # the vibronic-sum penalty
+python vibronic.py           # the vibronic-sum penalty and its table
+python adh_primary.py        # alcohol dehydrogenase records, correlation bracket
+python published_intrinsic.py  # intrinsic pairs that cannot test the reference
 python offset_analysis.py    # per-series profiles                     (~50 min)
+python holdout.py            # deletion sensitivity: point and confidence (~1 min)
 python offset_summary.py     # stratified interpretation
 python export_figs_v3.py     # pgfplots tables
+python export_fig_overview.py; python export_fig_envelope.py; python export_fig_design.py
 cd ../figures/tikz && ./build.sh
 ```
 
@@ -645,7 +664,7 @@ gamma_SC = 3.34887   rigid = 2.45884   F0 = -0.042086   threshold = 1.26890
 
 Temperature-series benchmark: 94 temperature-resolved records, 21 series, 6 enzyme families,
 7 enzyme-organism systems, -50 to 45 C. Transcription audit: 260 values across the
-five PDF-derived sources, each matched with its uncertainty, 0 misses. The wider matched-primary record used for the
+six PDF-derived sources, each matched with its uncertainty, 0 misses. The wider matched-primary record used for the
 identified-set figure is 108 records over 35 analysis units, of which 28 fall on
 the uninformative side, four more fail on precision alone, and three clear.
 

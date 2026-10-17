@@ -17,7 +17,8 @@ sources are paywalled and must be downloaded manually; see below.
 | Abeysinghe & Kohen, *Int. J. Mol. Sci.* **16**, 7304 (2015) | `10.3390/ijms16047304` | ecTSase Y209W proton | PMC4425018, OA (Table S2) |
 | Singh et al., *JACS* **136**, 2575 (2014) | `10.1021/ja411998h` | 4 ecDHFR variants, 5 temperatures | PMC3985941, OA |
 | Li et al., *Biochemistry* **60**, 3822 (2021) | `10.1021/acs.biochem.1c00558` | 5 hsDHFR variants | PMC8697555, OA |
-| Wang et al., *JACS* **136**, 8333 (2014) | `10.1021/ja501936d` | light vs heavy ecDHFR | PMC4063187, OA |
+| Wang et al., *JACS* **136**, 8333 (2014) | `10.1021/ja501936d` | heavy ecDHFR | PMC4063187, OA |
+| Sikorski et al., *JACS* **126**, 4778 (2004) | `10.1021/ja031683w` | light (wild-type) ecDHFR | **paywalled** |
 | Pagano et al., *ACS Catal.* **9**, 11199 (2019) | `10.1021/acscatal.9b03345` | FDH V123A, V123G | **paywalled** |
 
 ## Sources examined and excluded
@@ -30,7 +31,7 @@ sources are paywalled and must be downloaded manually; see below.
 
 ## Manual downloads
 
-Two documents cannot be fetched programmatically. Place them in
+Three documents cannot be fetched programmatically. Place them in
 `external_data/si/manual/` under the filenames shown, then rerun
 `python analysis/build_trinomial.py`.
 
@@ -38,12 +39,17 @@ Two documents cannot be fetched programmatically. Place them in
    Supporting Information PDF → `cs9b03345_si_001.pdf`
    (PMC8118594 exists but is not in the open-access subset.)
 
-2. *(Optional, not used in the benchmark)* Stojković et al. 2012 and
+2. **Sikorski et al. 2004**: <https://doi.org/10.1021/ja031683w>
+   Supporting Information PDF → `ja031683w_si_002.pdf`
+   (its Table 1 prints the plus-minus sign as a dash; the parse reads it so)
+
+3. *(Optional, not used in the benchmark)* Stojković et al. 2012 and
    Austin-Kloppe et al. 2026, if you wish to reproduce the exclusion analysis
    in Supplemental Material §S4.2.
 
-Without the Pagano SI the build produces 16 series and 73 records instead of 18
-and 83; every other result is unaffected.
+Without the Pagano SI the parse produces 14 series and 63 records instead of 16
+and 73; without the Sikorski SI, 15 and 67; without both, 13 and 57. The shipped
+benchmark is never overwritten by a partial parse.
 
 ## Transcription discipline
 
@@ -52,19 +58,17 @@ layer rather than retyping them, and runs an audit confirming that every value i
 the shipped benchmark from a PDF source appears verbatim in that source together
 with its stated uncertainty. It reads the shipped file, not a fresh parse, so a
 hand edit to the CSV is caught. With all sources present it covers 260 values
-across five documents and passes with zero misses, and the script exits non-zero
+across six documents and passes with zero misses, and the script exits non-zero
 on any miss. It does not establish row or column assignment: a swap of the H/T
 and D/T columns within a row would pass. Those assignments were checked against
 the rendered tables.
 
-One judgment is documented rather than automated: in Wang et al. the light
-and heavy enzyme rows are distinguished only by colour in the original, which is
-lost in the text layer. Rows are assigned by order, the temperature-labelled row
-being the light enzyme, and the unpaired 10 °C row is assigned to the light
-series on interpolation (light runs 3.10 → 4.76 across that gap, heavy
-2.40 → 3.29, and the value is 3.69). The assignment has since been confirmed
-directly: rendering the table as an image preserves the colour, every paired row
-is blue then red, and the 10 °C row is blue. All eleven records agree.
+The ecDHFR light-enzyme series is parsed from its original report, Sikorski et
+al. 2004 (SI Table 1), which lists that series alone. Wang et al. 2014 reprint it
+beside their heavy enzyme, rounded (3.1 for 3.06 at 5 °C; 4.8 ± 0.1 for 4.82 ± 0.11
+and 4.80 ± 0.12 at 45 and 35 °C) and distinguished only by colour. Until
+2026-10-15 the benchmark took the light series from that reprint, with the 10 °C
+row assigned by interpolation; only Wang's heavy rows are now parsed.
 
 ## Records transcribed by hand
 
@@ -125,13 +129,13 @@ its baseline, so every complete run wrongly reported missing sources.)
 
 ## How each source made its two tritium references
 
-`data/tracer_design.csv` records, for all 30 enzyme forms, which tritiated
+`data/tracer_design.csv` records, for all 33 enzyme forms, which tritiated
 molecule served as the reference in the H/T and in the D/T experiment. It
 decides the reference asymmetry `r = c_D/c_H` of Proposition S4, and
 `analysis/reference_asymmetry.py` reads it. Each entry was read from the
 source's Methods (Cha 1989 from its note 27).
 
-**Shared tracer, 17 forms: r = 1 exactly.** One tritiated isotopologue serves
+**Shared tracer, 16 forms: r = 1 exactly.** One tritiated isotopologue serves
 both experiments and only the bulk substrate changes, so the two references are
 the same molecule.
 
@@ -143,29 +147,35 @@ the same molecule.
 | Abeysinghe & Kohen 2015 | ecTSase Y209W proton | [5-3H] dUMP | [2-14C] dUMP / [2-14C,5-2H] dUMP |
 | Agrawal et al. 2004 | ecTSase WT hydride | (R)-[6-3H]CH2H4folate | protiated / (R)-[6-2H]CH2H4folate |
 | Singh et al. 2014 | ecDHFR F125M, G121V-F125M, M42W-F125M, W133F | (4R)-[4-3H]-NADPH | [Ad-14C]-NADPH / (4R)-[Ad-14C,4-2H]-NADPH |
-| Wang et al. 2014 | ecDHFR light and heavy enzyme | [4R-T]-NADPH | [Ad-14C]-NADPH / [4R-D]-NADPH |
+| Wang et al. 2014 | ecDHFR heavy enzyme | [4R-T]-NADPH | [Ad-14C]-NADPH / [4R-D]-NADPH |
 | Li et al. 2021 | five hsDHFR forms | 4R-3H-NADPH | [carbonyl-14C]-NADPH / 4R-[carbonyl-14C,4-2H]-NADPH |
 
 Formate, C6 of the folate cofactor and C5 of dUMP each carry a single hydrogen.
-NADPH carries two at C4; the transferred one is 4R, and the 4S hydrogen is
-protium in both references.
+NADPH carries two at C4; the transferred one is 4R, and in these protocols the
+4S hydrogen is protium in both references.
 
-**Non-transferred position labeled, 13 forms: r inferred.** The D/T reference
+**Non-transferred position labeled, 17 forms: r inferred.** The D/T reference
 carries deuterium at the non-transferred position, so it differs from the H/T
 reference there. This is the same design that makes the secondary effects
-measurable, and these are exactly the 13 forms that report them.
+measurable, and these are exactly the 17 forms that report them.
 
 | Source | Forms | H/T reference | D/T reference |
 |---|---|---|---|
 | Cha et al. 1989 | yeast ADH | benzyl alcohol tritiated at C1 | benzyl alcohol "containing D and T at C-1" (note 27) |
 | Bahnson et al. 1993; 1997 (same protocol, "doubly labeled substrates as described") | nine horse liver ADH forms | [1-3H]benzyl alcohol, randomly tritiated | [1,1-2H2,1-3H]benzyl alcohol |
-| Tsai & Klinman 2001 | horse liver WT and F93W at 3 C | [1-3H]benzyl alcohol | [1-2H,1-3H]benzyl alcohol |
+| Tsai & Klinman 2001 | horse liver WT and F93W at 3 C, and the three methanol series | [1-3H]benzyl alcohol | [1-2H,1-3H]benzyl alcohol |
 | Grant & Klinman 1989 | bovine serum amine oxidase | randomly tritiated benzylamine from [1-1H]benzaldehyde | randomly tritiated benzylamine from [1-2H]benzaldehyde |
 | Jonsson et al. 1994 | monoamine oxidase B, both pH | [1,1-1H2-1-3H]-p-methoxybenzylamine | [1,1-2H2-1-3H]-p-methoxybenzylamine |
+| Sikorski et al. 2004 | ecDHFR light (wild-type) enzyme | (4R)-[4-3H]-NADPH vs [Ad-14C]-NADPH | (4R)-[4-3H]-NADPH with D at 4S ("4R [4,4-2H,3H]") vs [Ad-14C,4-2H2]-NADPH |
 
 Until 2026-09-14 the 17 shared-tracer forms were recorded as "assumed" and the
 text said the references always differ at the non-transferred position; reading
-the Methods showed the condition holds for them with equality.
+the Methods showed the condition holds for them with equality. Until 2026-10-15
+the ecDHFR light enzyme was among them, on the strength of Wang et al.'s Methods,
+which describe their own heavy-enzyme experiments; Sikorski et al.'s original
+protocol puts deuterium at 4S in the D/T reference, and their secondary effects
+(1.149 ± 0.005 H/T, 1.058 ± 0.003 D/T at 25 °C, in `data/secondary_reference.csv`)
+give R = 1.086.
 
 ## Auxiliary kinetics used to complete the identified set
 

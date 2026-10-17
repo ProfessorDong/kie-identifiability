@@ -117,14 +117,17 @@ def derived():
     out.append(("BSAO Q all six", Q, 1, ("si",)))
     out.append(("bypass phi* r=1.31 vs F0",
                 bypass_to_destroy(7.13, 1.73, F0, 1.31), 3, ("si",)))
-    out.append(("bypass phi* r=1.31 vs 0",
-                bypass_to_destroy(7.13, 1.73, 0.0, 1.31), 3, ("si",)))
+    # The text gives this one as a percentage ("to 13.2%").  Checked as 0.132
+    # until 2026-10-15, it passed only by matching the unrelated -0.1324 of the
+    # horse liver table; when that table moved to a generated file it failed.
+    out.append(("bypass phi* r=1.31 vs 0 (%)",
+                100 * bypass_to_destroy(7.13, 1.73, 0.0, 1.31), 1, ("si",)))
     out.append(("E_r(0.15) r=1.31", endpoint_closed(7.13, 1.73, 0.15, 1.31), 4, ("si",)))
     # The envelope threshold: mu_ratios() returns SQUARE-ROOT mass ratios, so the
     # code's t is sqrt(mu_T/mu_H) and the threshold sqrt(t) is (mu_T/mu_H)^(1/4).
     # Reading mu_ratios as a plain mass ratio once led to "fixing" the exponent
     # from 1/4 to 1/2, which is wrong; this pins the printed value.
-    # binding tolerance (Proposition S8): F_bind below which the exclusion survives
+    # binding tolerance (Proposition S7): F_bind below which the exclusion survives
     _Fo = 0.128726
     out.append(("binding tolerance vs F0", _Fo - F0, 3, ("main", "si")))
     out.append(("binding tolerance vs zero", _Fo, 3, ("main", "si")))
@@ -233,11 +236,15 @@ SI_EQREFS = {
 
 SI_FIGREFS = {
     # accepted phrasings for the endpoints figure; a pointer check that admits
-    # only one wording silently stops checking when the caption is reworded
-    2: ("Topology classifies what can be identified",
+    # only one wording silently stops checking when the caption is reworded.
+    # Renumbered 2026-10-14 when the overview and envelope figures were added
+    # ahead of these two (atlas 2 -> 3, compatible sets 3 -> 5).
+    3: ("Topology classifies what can be identified",
         "Reaction pathways constrain the possible bounds"),
-    3: ("Identified sets for the primary",
+    5: ("Identified sets for the primary",
         "Compatible sets for the primary"),
+    # the joint binding-bypass contour table takes its cells from Fig. 6 data
+    6: ("A bound becomes a measured offset",),
 }
 
 
@@ -259,8 +266,11 @@ def check_si_figrefs():
             caps.append(m.group(1))
     si = DOCS["si"].read_text()
     bad = 0
+    # both phrasings: "Fig.~N of the main text" and "main-text Fig.~N"; the
+    # second escaped this guard until 2026-10-14
     for n in sorted(set(int(m) for m in
-                        re.findall(r"Fig\.~(\d+) of the main text", si))):
+                        re.findall(r"Fig\.~(\d+) of the main text", si)
+                        + re.findall(r"main-text Fig\.~(\d+)", si))):
         want = SI_FIGREFS.get(n)
         got = caps[n - 1].replace("\n", " ") if n <= len(caps) else "<out of range>"
         ok = want is not None and any(w in got for w in want)
@@ -268,8 +278,41 @@ def check_si_figrefs():
               f"{'OK' if ok else 'MISMATCH'}")
         if not ok:
             bad += 1
+    # The number-to-caption map above cannot tell that a reference meant for one
+    # figure now names another valid figure: after the 2026-10-14 renumbering, a
+    # stale "Fig.~3" in a sentence about endpoints would still match the atlas
+    # caption.  Each reference is therefore also tied, by its own sentence, to
+    # the label of the figure it intends, and every reference must be covered.
+    order = [m for fig in re.findall(r"\\begin\{figure\*?\}(.*?)\\end\{figure\*?\}",
+                                       main, re.S)
+             for m in re.findall(r"\\label\{(fig:[^}]*)\}", fig)]
+    flat = " ".join(si.split())
+    covered = 0
+    for pat, label in SI_FIGCONTEXT:
+        hits = re.findall(pat, flat)
+        want = order.index(label) + 1 if label in order else None
+        if len(hits) != 1 or want is None or int(hits[0]) != want:
+            print(f"  FAIL SI figure context {pat!r}: found {hits}, "
+                  f"{label} is Fig. {want}")
+            bad += 1
+        covered += len(hits)
+    total = len(re.findall(r"Fig\.~\d+ of the main text|main-text Fig\.~\d+", flat))
+    if covered != total:
+        print(f"  FAIL SI figure context: {total - covered} main-text figure "
+              f"reference(s) not tied to a figure label")
+        bad += 1
     return bad
 
+
+# Each SI pointer to a main-text figure, by the sentence that carries it, and
+# the label of the figure it intends.  Numbers follow from the label order.
+SI_FIGCONTEXT = [
+    (r"mechanisms drawn in Fig\.~(\d+) of the main text", "fig:atlas"),
+    (r"mechanisms of main-text Fig\.~(\d+)\.", "fig:atlas"),
+    (r"Fig\.~(\d+) of the main text report endpoints", "fig:asym"),
+    (r"plotted in Fig\.~(\d+) of the main text", "fig:asym"),
+    (r"the data of main-text Fig\.~(\d+)\)", "fig:design"),
+]
 
 
 def check_si_eqrefs():
@@ -434,14 +477,14 @@ def _corpus_records():
 def check_provenance_split():
     """The SI's provenance counts must match the benchmark's own source DOIs.
 
-    Five sources are parsed from a publisher PDF, one from a published
+    Six sources are parsed from a publisher PDF, one from a published
     spreadsheet, and one was transcribed by hand from scanned pages.  Only the
     first two classes are evidence of transcription; quoting a larger parsed
     count than the data supports would overstate the audit.
     """
     import pandas as pd
     PDF = {"10.1021/ja411998h", "10.1021/acs.biochem.1c00558",
-           "10.1021/acscatal.9b03345", "10.1021/ja501936d",
+           "10.1021/acscatal.9b03345", "10.1021/ja501936d", "10.1021/ja031683w",
            "10.3390/ijms16047304"}
     XLSX = {"10.1371/journal.pone.0196506"}
     HAND = {"10.1021/bi00253a026", "10.1021/bi002075l"}
@@ -648,42 +691,32 @@ def check_ladh_zero_claim():
 
 
 def check_ecdhfr_assignment():
-    """The disputed 10 C ecDHFR row must not be able to move either series point.
+    """The ecDHFR light-enzyme series must come from its original source.
 
-    Ref. Wang2014 distinguishes the light and heavy enzyme rows only by color,
-    which the text layer loses, so the unpaired 10 C row is assigned by
-    interpolation.  The series statistic is a maximum over temperatures and
-    that record is interior to both series, so the assignment cannot select it.
-    This test fails if new data ever makes it the maximum.
+    Ref. Wang2014 reprints the light series beside its heavy one, rounded and
+    distinguished only by color, so until 2026-10-15 the unpaired 10 C row was
+    assigned to the light series by interpolation and three values carried the
+    reprint's rounding.  The light series is now parsed from Sikorski et al.
+    2004, SI Table 1, which reports that series alone, and the transcription
+    audit finds every value there; this check fails if a light record is
+    sourced elsewhere or if the heavy series acquires a 10 C row.
     """
     import pandas as pd
-    from partial_id import F_min_exact
     d = pd.read_csv("../data/trinomial_benchmark.csv")
-    m = (d.system.str.contains("Escherichia", na=False)
-         & d.variant.astype(str).str.contains("heavy|light", case=False, na=False))
-    r10 = m & d.T_C.eq(10.0)
-    if r10.sum() != 1:
-        print(f"  FAIL ecDHFR: expected one 10 C row, found {int(r10.sum())}")
-        return 1
-    pts = []
-    for tag in ("light enzyme", "heavy enzyme", None):
-        dd = d.copy()
-        if tag is None:
-            dd = dd[~r10]
-        else:
-            dd.loc[r10, "variant"] = tag
-        mm = (dd.system.str.contains("Escherichia", na=False)
-              & dd.variant.astype(str).str.contains("heavy|light", case=False,
-                                                    na=False))
-        pts.append({v: round(max(F_min_exact(r.K_HT, r.K_DT)[0]
-                                 for _, r in g.iterrows()), 10)
-                    for v, g in dd[mm].groupby("variant")})
-    if pts[0] != pts[1] or pts[0] != pts[2]:
-        print(f"  FAIL ecDHFR: the 10 C assignment moves a series point: {pts}")
-        return 1
-    print("  ecDHFR 10 C row: point endpoints invariant under all three "
-          "assignments")
-    return 0
+    light = d[(d.family == "ecDHFR") & (d.variant == "light enzyme")]
+    heavy = d[(d.family == "ecDHFR") & (d.variant == "heavy enzyme")]
+    bad = 0
+    if set(light.source_DOI) != {"10.1021/ja031683w"} or len(light) != 6:
+        print(f"  FAIL ecDHFR: light series must be Sikorski 2004's six records, "
+              f"found {len(light)} from {sorted(set(light.source_DOI))}")
+        bad += 1
+    if 10.0 in set(heavy.T_C) or 10.0 not in set(light.T_C):
+        print("  FAIL ecDHFR: the 10 C record is the light enzyme's (Sikorski SI Table 1)")
+        bad += 1
+    if not bad:
+        print("  ecDHFR light series: six records from Sikorski 2004 SI Table 1, "
+              "10 C included")
+    return bad
 
 
 from functools import lru_cache
@@ -816,7 +849,7 @@ def check_reference_asymmetry():
     import network_geometry as NG
     d = RA.table()
     bad = 0
-    fam = {"YADH": "YADH", "LADH": "LADH", "BSAO": "BSAO", "MAOB": "MAOB"}
+    fam = {"YADH": "YADH", "LADH": "LADH", "BSAO": "BSAO", "MAOB": "MAOB", "ecDHFR": "ecDHFR"}
 
     def expect(family, variant):
         lo, hi = RA.r_range(family, variant)
@@ -824,7 +857,7 @@ def check_reference_asymmetry():
         return a if a == b else f"{a}--{b}"
 
     si = DOCS["si"].read_text()
-    rows = re.findall(r"^(YADH|LADH|BSAO|MAOB) (.+?) & [^&\n]+ & yes & ([\d.\-]+) & inferred",
+    rows = re.findall(r"^(YADH|LADH|BSAO|MAOB|ecDHFR) (.+?) & [^&\n]+ & yes & ([\d.\-]+) & inferred",
                       si, re.M)
     if len(rows) != d.groupby(["family", "variant"]).ngroups:
         print(f"  FAIL reference asymmetry: protocol table has {len(rows)} inferred "
@@ -838,7 +871,7 @@ def check_reference_asymmetry():
             bad += 1
 
     bypass = {"Yeast alcohol dehydrogenase": ("YADH", "wild type", 25.0),
-              "Horse liver F93W": ("LADH", "F93W", 25.0),
+              "Horse liver F93W, $25\\,^{\\circ}$C": ("LADH", "F93W", 25.0),
               "Bovine serum amine oxidase": ("BSAO", "wild type", 25.0),
               "Monoamine oxidase~B, pH~6.1, $10\\,^{\\circ}$C": ("MAOB", "pH 6.1", 10.0)}
     for label, (f, v, T) in bypass.items():
@@ -854,21 +887,20 @@ def check_reference_asymmetry():
                   f"{m.group(1) if m else 'absent'}, data give {want}")
             bad += 1
 
-    # a shared-tracer row carries r = 1 exactly, from tracer_design.csv
+    # the light-enzyme row carries R from Sikorski's secondary effects; it was
+    # tabulated as a shared tracer, r = 1, until 2026-10-15
     m = re.search(r"DHFR light enzyme, \$25\\,\^\{\\circ\}\$C & \$[\d.]+\$ & \$?([\d.\-]+)\$?", si)
-    want = f"{RA.r_design('ecDHFR', 'light enzyme'):g}"
+    want = f"{RA.r_at('ecDHFR', 'light enzyme', 25.0):.2f}"
     if m is None or m.group(1) != want:
         print(f"  FAIL reference asymmetry: bypass table DHFR light r = "
-              f"{m.group(1) if m else 'absent'}, tracer design gives {want}")
+              f"{m.group(1) if m else 'absent'}, secondary effects give {want}")
         bad += 1
     bench = {"YADH (Cha 1989)": ("YADH", "wild type", 25.0),
              "BSAO (Grant 1989)": ("BSAO", "wild type", 25.0),
              "MAO-B pH 6.1, 10 C": ("MAOB", "pH 6.1", 10.0),
-             "LADH F93W": ("LADH", "F93W", 25.0)}
+             "LADH F93W": ("LADH", "F93W", 25.0),
+             "ecDHFR light, 25 C": ("ecDHFR", "light enzyme", 25.0)}
     for lab, _, _, r in NG.BENCH:
-        if lab == "ecDHFR light, 25 C" and r != RA.r_design("ecDHFR", "light enzyme"):
-            print(f"  FAIL reference asymmetry: BENCH {lab} r = {r}, tracer design gives 1")
-            bad += 1
         if lab in bench:
             want = RA.r_at(*bench[lab])
             if abs(r - want) > 0.005:
@@ -1074,7 +1106,7 @@ def check_corpus_consequences():
     need("main", f"For the remaining {W[shared]} the question does not arise", "the shared-tracer count",
          (f"For the remaining {W[shared]} forms the same tritiated molecule",))
     # the confidence procedure for temperature series (corrected 2026-09-14):
-    # its simulated failure rate, Monte Carlo precision and assignment check
+    # its simulated failure rate and Monte Carlo precision
     import bounds_uncertainty as BU
     bu = pd.read_csv("../results/bounds_uncertainty.csv")
     import inspect
@@ -1093,9 +1125,14 @@ def check_corpus_consequences():
     e = int(np.floor(np.log10(mc)))
     need("main", f"largest Monte Carlo standard deviation ${mc / 10 ** e:.1f}\\times10^{{{e}}}$",
          "the Monte Carlo precision of the bounds")
-    mv, gap = BU.assignment_sensitivity()
-    need("si", f"moves a bound by at most ${mv:.4f}$, and every bound stays at least ${gap:.4f}$",
-         "the ecDHFR assignment sensitivity")
+    # the light ecDHFR series under the source's stated protium contamination
+    pmax, plcb = BU.protium_sensitivity()
+    need("si", f"reach a point endpoint of ${pmax:+.4f}$", "the protium-sensitivity point")
+    need("si", f"at $\\rho=-1$ would be ${plcb:+.4f}$, still below $\\Fz$",
+         "the protium-sensitivity bound")
+    if not (pmax > 0 > F0 > plcb):
+        print("  FAIL corpus consequences: the protium sensitivity no longer reads as stated")
+        bad += 1
     # the yeast bypass tolerance quoted in the main text, at the jointly solved r
     from completion import yadh_completion_joint, bypass_tolerance
     t13 = 100 * float(bypass_tolerance(7.13, 1.73, yadh_completion_joint(1.3)["r"], F0))
@@ -1206,9 +1243,11 @@ def check_scope_corrections():
     # the yeast tolerance against zero, now distinguished from the one against F0
     z13 = 100 * float(bypass_tolerance(7.13, 1.73, yadh_completion_joint(1.3)["r"], 0.0))
     z73 = 100 * float(bypass_tolerance(7.13, 1.73, yadh_completion_joint(7.3)["r"], 0.0))
-    need("main", f"have to carry ${z13:.0f}\\%$ to ${z73:.0f}\\%$ of the isotope-sensitive rate to do so",
-         "the yeast bypass tolerance against the semiclassical locus",
-         (f"a bypass carrying ${z13:.0f}\\%$ to ${z73:.0f}\\%$ of the isotope-sensitive rate removes the yeast exclusion",))
+    # phi is a ratio to the TRITIUM chemical rate (2026-10-15 audit): the text
+    # names that rate rather than "the isotope-sensitive rate"
+    need("main", f"a bypass faster than ${z13:.0f}\\%$ to ${z73:.0f}\\%$ of the tritium chemical rate "
+                 f"removes the yeast exclusion",
+         "the yeast bypass tolerance against the semiclassical locus")
     t = mc_yadh_tolerance()
     need("si", f"intact with probability ${t['F0']['p10']:.2f}$, and one of a twentieth with "
                f"probability ${t['F0']['p05']:.3f}$", "the tolerance probabilities")
@@ -1245,7 +1284,7 @@ def check_scope_corrections():
     d, tt = M.mu_ratios("C")[1:]        # already square-root mass ratios
     coef = (d - 1) / d * (np.log(7.0) - 0.5 * np.log(tt))
     need("si", f"with coefficient ${coef:.4f}$ at $K=7$", "the 1/w convergence coefficient")
-    # the reversible corner path inside the Proposition S7 window
+    # the reversible corner path inside the Proposition S9 window
     H, K, E = 5.04, 1.65, 1.64
     EH = E ** GSC
     a, b, u, v = H - 1, K - 1, H / EH - 1, K / E - 1
@@ -1424,7 +1463,13 @@ def check_readiness_scope():
     F = np.log(7.13) - GSC * np.log(1.73)
     s1 = 0.07 / 7.13 + GSC * 0.02 / 1.73
     tb = F - tdist.ppf(1 - 0.05 / u, 10) * s1
+    import yadh_robustness as YR
+    if abs(YR.t_tail_bound(10, u) - tb) > 1e-12:
+        print("  FAIL readiness scope: yadh_robustness.t_tail_bound disagrees with the audit")
+        bad += 1
     need("main", f"bound at $\\rho=-1$ falls to ${tb:.3f}$, below $\\Fz$", "the t-tail sensitivity")
+    # the main text cites Note 18 for this number; until 2026-10-16 the SI gave none
+    need("si", f"at $\\rho=-1$ falls to ${tb:.3f}$, below $\\Fz$", "the t-tail sensitivity (SI)")
     # house style: no em dashes in the manuscript or the supplement
     for doc in ("main", "si"):
         raw = DOCS[doc].read_text()
@@ -1466,7 +1511,7 @@ def check_readiness_scope():
 
 
 def check_external_audit_2026_10_12():
-    r"""Numbers corrected or added after the PRX Life pre-submission audit.
+    r"""Numbers corrected or added after the pre-submission audit of 2026-10-12.
 
     That audit found the promoting-mode spans and the Fisher example computed
     with bare integer masses in qtunnel.py against the reduced-mass gamma_SC and
@@ -1625,6 +1670,54 @@ def check_generated_tables():
     return bad
 
 
+FIGURE_EXPORTERS = ("export_fig_overview", "export_fig_envelope", "export_fig_design")
+
+
+def check_figure_data():
+    """The data behind the three figures added on 2026-10-14 must be current.
+
+    Each exporter is rerun into a scratch directory, which also runs its own
+    checks against the values the text quotes, and every file it writes must
+    equal the copy the figure sources read.  Nothing else re-derives those
+    files, so without this a changed computation would leave a figure drawing
+    superseded numbers while every text guard still passed.  Runs without the
+    manuscript, so the archive checks it too.
+    """
+    import contextlib
+    import importlib
+    import io
+    import tempfile
+    from pathlib import Path as _P
+    data = _P(__file__).resolve().parent.parent / "figures" / "tikz" / "data"
+    bad = 0
+    nfiles = 0
+    for name in FIGURE_EXPORTERS:
+        mod = importlib.import_module(name)
+        with tempfile.TemporaryDirectory() as d:
+            saved, mod.OUT = mod.OUT, d + "/"
+            buf = io.StringIO()
+            try:
+                with contextlib.redirect_stdout(buf):
+                    rc = mod.main()
+            finally:
+                mod.OUT = saved
+            if rc:
+                print(f"  FAIL figure data: {name} reports {rc} failed checks")
+                print("    " + buf.getvalue().strip().replace("\n", "\n    "))
+                bad += 1
+            for f in sorted(_P(d).iterdir()):
+                nfiles += 1
+                ship = data / f.name
+                if not ship.exists() or ship.read_text() != f.read_text():
+                    print(f"  FAIL figure data: figures/tikz/data/{f.name} is not "
+                          f"what {name}.py writes")
+                    bad += 1
+    if not bad:
+        print(f"  figure data: {len(FIGURE_EXPORTERS)} exporters pass their checks "
+              f"and reproduce {nfiles} shipped files")
+    return bad
+
+
 def check_titles():
     """The supplement must carry the article's title.
 
@@ -1705,7 +1798,8 @@ def check_source_review_2026_10_13():
             print(f"  FAIL source review: {v} no longer clears both thresholds")
             bad += 1
     # three units clear F0 at rho = -1: yeast and the two methanol series
-    need("main", "Three units have confidence bounds above $\\Fz$", "the exclusion count")
+    need("main", "Three units have nominal per-unit confidence bounds above $\\Fz$",
+         "the exclusion count")
     # multiplicity for the methanol series, across all units.  At alpha/(u n_T)
     # a Monte Carlo quantile rests on a few hundred tail draws, so these are
     # computed exactly, as the yeast multiplicity bounds are.  The endpoint never
@@ -1737,7 +1831,7 @@ def check_source_review_2026_10_13():
     for doc, text, what in (
             ("main", "Eq.~(7) of Siebrand and Smedarchina", "credit for the averaged overlap"),
             ("si", "Proposition~S1 is Eq.~(7) of Siebrand and", "credit for Proposition S1"),
-            ("main", "\\cite{Sikorski2004,Wang2014}", "credit for the light-enzyme data"),
+            ("main", "\\cite{Sikorski2004}", "credit for the light-enzyme data"),
             ("main", "\\cite{KingAltman1956}", "the King-Altman citation"),
             ("main", "reciprocal of the commitment evaluated with the tritium rate",
              "the commitment convention")):
@@ -1763,7 +1857,345 @@ def check_source_review_2026_10_13():
     return bad
 
 
+def check_light_example():
+    """The ecDHFR light-enzyme 5 C example, as the geometry caption states it.
+
+    Until 2026-10-15 the caption gave c = 4.3 and x_H = 6.1 against "6.2 +- 0.4",
+    computed from the rounded reprint (3.10) and checked by nothing.  Sikorski et
+    al. 2004 report 3.06 and, at 5 C, an intrinsic H/T effect of 6.18 +- 0.39
+    (SI Table 2, 95% interval); their D/T reference carries deuterium at 4S, so
+    the crossing is also stated at the observed lower bound R on r.
+    """
+    import pandas as pd
+    from scipy.optimize import brentq
+    import corpus
+    import reference_asymmetry as RA
+    kh, kd = corpus.series_record("light enzyme", 5.0)
+    R = RA.r_at("ecDHFR", "light enzyme", 25.0)
+    t = RA.table()
+    rse = float(t[(t.family == "ecDHFR") & (t.variant == "light enzyme")].r_se.iloc[0])
+
+    def cross(r):
+        F = lambda c: (np.log(kh * c / (1 + c - kh))
+                       - GSC * np.log(kd * r * c / (1 + r * c - kd)))
+        return brentq(F, (kh - 1) * 1.000001, 1e6)
+    c1, cR = cross(1.0), cross(R)
+    xh = kh * c1 / (1 + c1 - kh)
+    main = " ".join(DOCS["main"].read_text().split())
+    si = " ".join(DOCS["si"].read_text().split())
+    bad = 0
+    for doc, text, need_ in (
+            ("main", main, f"crosses the ray at $c={c1:.1f}$ (open circle)"),
+            ("main", main, f"recovers an intrinsic H/T effect of ${xh:.1f}$, against the "
+                           f"$6.18\\pm0.39$ ($95\\%$ interval) the source reports"),
+            ("main", main, f"so $r\\ge{R:.2f}$ and the crossing moves to $c\\ge{cR:.1f}$"),
+            ("si", si, f"$R={R:.3f}\\pm{rse:.3f}$ at $25\\,^{{\\circ}}$C")):
+        if need_ not in text:
+            print(f"  FAIL light example: {doc} does not state {need_!r}")
+            bad += 1
+    # the series' profile fit, quoted in the SI prose (62.6/7 until 2026-10-15)
+    from scipy.stats import chi2 as _chi2
+    pr = pd.read_csv("../results/offset_profiles.csv")
+    row = pr[(pr.family == "ecDHFR") & (pr.variant == "light enzyme")].iloc[0]
+    dof = int(row.n_T) + 1
+    pv = float(_chi2.sf(row.chi2_min, dof))
+    want = (f"the light series does not ($\\chi^{{2}}={row.chi2_min:.1f}/{dof}$, "
+            f"$p={pv:.1e}".replace("e-", "\\times10^{-").replace("p=", "p=") + "}$)")
+    if want not in si:
+        print(f"  FAIL light example: si does not state {want!r}")
+        bad += 1
+    if not bad:
+        print(f"  ecDHFR 5 C: crossing c = {c1:.3f} (x_H {xh:.3f}), at R = {R:.4f} "
+              f"c = {cR:.3f}")
+    return bad
+
+
+def check_audit_2026_10_15():
+    """Corrections from the external audit of 2026-10-15, each recomputed.
+
+    Every number here comes from a deposited function, and every retired
+    phrasing is forbidden, so the corrections cannot silently regress.
+    """
+    import pandas as pd
+    import qtunnel as Q
+    import joint_nuisance as J
+    import network_geometry as NG
+    import bounds_uncertainty as BU
+    import corpus
+    main = " ".join(DOCS["main"].read_text().split())
+    si = " ".join(DOCS["si"].read_text().split())
+    bad = 0
+
+    def need(doc, text, what):
+        nonlocal bad
+        if text not in (main if doc == "main" else si):
+            print(f"  FAIL audit 2026-10-15: {doc} lacks {what}: {text!r}")
+            bad += 1
+
+    # C. deletion sensitivity of the confidence decision (holdout.py writes it)
+    path = "../results/deletion_sensitivity.csv"
+    try:
+        cd = pd.read_csv(path)
+    except FileNotFoundError:
+        print(f"  FAIL audit 2026-10-15: {path} missing; run holdout.py")
+        return bad + 1
+    for v, pct in (("F93W (40% MeOH)", "40"), ("F93W (60% MeOH)", "60")):
+        g = cd[cd.variant == v]
+        r3 = g[g.omitted_T == 3.0].iloc[0]
+        rest = g[g.omitted_T != 3.0]
+        if r3.excludes or not rest.excludes.all() or not r3.point > F0:
+            print(f"  FAIL audit 2026-10-15: {v} deletion pattern changed")
+            bad += 1
+        b3 = f"{r3.bound:+.3f}" if abs(r3.bound) < 1 else f"{r3.bound:+.2f}"
+        need("si", f"& $3\\,^{{\\circ}}$C & ${r3.point:+.3f}$ & ${b3}$ & no", f"the {pct}% deletion row")
+        need("si", f"& ${rest.point.iloc[0]:+.3f}$ & ${rest.bound.max():+.3f}$ & yes",
+             f"the {pct}% retained rows")
+    lo40 = cd[(cd.variant == "F93W (40% MeOH)") & (cd.omitted_T == 3.0)].bound.iloc[0]
+    lo60 = cd[(cd.variant == "F93W (60% MeOH)") & (cd.omitted_T == 3.0)].bound.iloc[0]
+    need("main", f"the bounds fall to ${lo40:+.3f}$ and ${lo60:+.2f}$", "the deletion bounds")
+    # D. nominal per-unit wording and the multiplicity survivor
+    need("main", "give three nominal per-unit exclusions", "the abstract qualifier")
+    need("main", "Only the yeast exclusion survives adjustment across all units", "the abstract multiplicity")
+    u = corpus.counts()["units"]
+    sc = corpus.single_condition()
+    if not BU.multiplicity_bound(sc[sc.grp == "yadh"], u, -1.0) > F0:
+        print("  FAIL audit 2026-10-15: yeast no longer survives multiplicity at rho = -1")
+        bad += 1
+    rays = open("../figures/tikz/data/fa_rays.tex").read()
+    stars = [l for l in rays.splitlines() if "^{\\ast}" in l]
+    dags = [l for l in rays.splitlines() if "^{\\dagger}" in l]
+    if len(stars) != 1 or "YADH" not in stars[0] or len(dags) != 1 or "50" not in dags[0]:
+        print("  FAIL audit 2026-10-15: Fig. 5 marks are not on yeast (*) and WT 50% MeOH (dagger)")
+        bad += 1
+    # F. a finite member of the model, not a pair on the unattained envelope
+    bad += J.check_finite_witness(verbose=False)
+    wt = J.finite_witness()
+    need("main", f"$\\mathcal{{A}}=3.2\\times10^{{5}}$ and $w={wt['w']:.0f}$", "the witness parameters")
+    need("main", f"$F^{{\\mathrm{{int}}}}={wt['F_int']:.4f}<\\Fz$", "the witness offset")
+    need("si", f"$x_{{\\mathrm H}}={wt['xH']:.4f}$ and $x_{{\\mathrm D}}={wt['xD']:.4f}$", "the witness pair")
+    need("si", f"$\\Ag={wt['A']/1e5:.2f}\\times10^{{5}}$ and $w={wt['w']:.0f}$", "the witness parameters (SI)")
+    # I. the large-commitment candidate equals the exact endpoint where used
+    worst = max(abs(NG.endpoint_exact(7.13, 1.73, ph, r) - NG.endpoint_closed(7.13, 1.73, ph, r))
+                for r in np.linspace(1.31, 1.60, 8) for ph in np.linspace(0, 1, 21))
+    if worst > 1e-9:
+        print(f"  FAIL audit 2026-10-15: E_r^infinity differs from the exact endpoint by {worst:.2e}")
+        bad += 1
+    # Note 1: the supremum zero needs w -> 0 as well
+    lh, ld = Q.log_kie_intrinsic(1e-12, 0.5)
+    need("si", f"${lh - GSC * ld:.3f}$ at $w=0.5$", "the fixed-w prefactor offset")
+    # replicate uniqueness (needs the fetched spreadsheet)
+    try:
+        import build_trinomial as BT
+        blocks = BT.replicate_uniqueness()
+        if blocks and not all(b[1] == 1 for b in blocks):
+            print("  FAIL audit 2026-10-15: a spreadsheet block has more than one matching replicate set")
+            bad += 1
+    except Exception as e:                        # sources not fetched
+        print(f"  replicate uniqueness skipped ({type(e).__name__})")
+    # retired phrasings
+    for doc, text in (("main", "a bounded $k_b$"), ("main", "of the isotope-sensitive rate"),
+                      ("main", "a test at level at most"), ("main", "standard errors at $5"),
+                      ("main", "What the data support directly"),
+                      ("main", "no general steady-state theory"),
+                      ("main", "intrinsic pair on the gated envelope reproduces both"),
+                      ("main", "envelope then reproduces both observed effects"),
+                      ("si", "under every leave-one-out"), ("si", "with no exceptions; equivalently"),
+                      ("si", "makes the extraction self-validating"),
+                      ("si", "for which the exponent and contrast are not defined"),
+                      ("si", "routinely measured to the required precision"),
+                      ("si", "that requires profile likelihoods"), ("si", "comparable to or above"),
+                      ("si", "largest offset measured"), ("si", "is the contrapositive"),
+                      ("si", "the one system in the record that excludes"),
+                      ("si", "being excluded in Supplementary Note"),
+                      ("si", "Why solvent viscosity does not work"),
+                      ("si", "Out-of-sample checks")):
+        if text in (main if doc == "main" else si):
+            print(f"  FAIL audit 2026-10-15: retired phrasing in {doc}: {text!r}")
+            bad += 1
+    if not bad:
+        print(f"  audit 2026-10-15: deletion bounds {lo40:+.3f}/{lo60:+.2f}, finite witness "
+              f"F = {wt['F_int']:+.4f}, E_r exact, marks on yeast and WT 50% MeOH")
+    return bad
+
+
+def check_tables_2026_10_15():
+    """Table-by-table audit of 2026-10-15: every corrected table recomputed.
+
+    Four supplementary tables had no deposited generator (the horse liver
+    correlation bracket, the Stojkovic intrinsic pairs, the vibronic penalty) or
+    printed values at the wrong precision (the benchmark: "13 +- 0.1" for the
+    published 13.0, "0.13" for 0.132).  Their bodies are now written by code and
+    recomputed here; the text claims drawn from them are tied to the same code.
+    The generated-file checks need no manuscript, so they also run on the
+    deposit alone.
+    """
+    import adh_primary as AP
+    import published_intrinsic as PI
+    import vibronic as VB
+    bad = 0
+
+    def same(path, text, what):
+        nonlocal bad
+        try:
+            shipped = open(path).read()
+        except FileNotFoundError:
+            shipped = None
+        if shipped != text:
+            print(f"  FAIL tables 2026-10-15: {path} differs from {what}; rerun it")
+            bad += 1
+
+    rb = AP.rho_bracket()
+    same("../results/sm_table_ladhprim.tex", AP.ladhprim_table(rb), "adh_primary.py")
+    same("../results/sm_table_stoj.tex", PI.table(), "published_intrinsic.py")
+    same("../results/sm_table_vibronic.tex", VB.penalty_table(), "vibronic.py")
+    lad = pd.read_csv("../data/ladh_adh_primary.csv")
+    f93 = lad[(lad.variant == "F93W") & (lad.T_C == 25)].iloc[0]
+    cr = AP.clearing_rho(f93.K_HT, f93.K_HT_se, f93.K_DT, f93.K_DT_se)
+    # the Monte Carlo bound must agree with the closed-form crossing
+    import bounds_uncertainty as BU
+    g = lad[(lad.variant == "F93W") & (lad.T_C == 25)]
+    if not (BU.series_bound(g, cr - 0.03)[0] < F0 < BU.series_bound(g, cr + 0.03)[0]):
+        print(f"  FAIL tables 2026-10-15: Monte Carlo bound does not cross F0 near rho = {cr:.3f}")
+        bad += 1
+    st = PI.summary()
+    if not st["within_rounding"] or round(st["ratio_max"]) != 3 or round(st["ratio_sd"]) != 7:
+        print(f"  FAIL tables 2026-10-15: Stojkovic summary changed {st}")
+        bad += 1
+    nu = VB.crossing_wavenumber()
+    data = open("../results/sm_table_data.tex").read()
+    for cell in ("$13.0\\pm0.1$", "$2.896\\pm0.132$", "$2.00\\pm0.02$", "$3.06\\pm0.10$",
+                 "$1.80\\pm0.003$", "& $-50$ &"):
+        if cell not in data:
+            print(f"  FAIL tables 2026-10-15: benchmark table lacks the as-published {cell!r}")
+            bad += 1
+    prof = open("../results/sm_table_profiles.tex").read().splitlines()
+    for line in prof:
+        if "+1.50]" in line and "$\\ge$" not in line:
+            print(f"  FAIL tables 2026-10-15: grid-edge width printed as exact: {line[:50]}")
+            bad += 1
+    if not HAVE_DOCS:
+        return bad
+
+    main = " ".join(DOCS["main"].read_text().split())
+    si = " ".join(DOCS["si"].read_text().split())
+
+    def need(doc, text, what):
+        nonlocal bad
+        if text not in (main if doc == "main" else si):
+            print(f"  FAIL tables 2026-10-15: {doc} lacks {what}: {text!r}")
+            bad += 1
+
+    for f in ("sm_table_ladhprim.tex", "sm_table_stoj.tex", "sm_table_vibronic.tex"):
+        need("si", f"\\input{{{f}}}", f"the generated {f}")
+    need("main", f"it clears $\\Fz$ only for $\\rho>{cr:.2f}$", "the F93W clearing correlation")
+    need("si", f"for $\\rho>{cr:.2f}$ (\\texttt{{adh\\_primary.clearing\\_rho}})",
+         "the F93W clearing correlation (SI)")
+    need("si", f"$\\langle F\\rangle={st['mean']:.3f}$ and $\\max|F|={st['max_abs']:.3f}$",
+         "the Stojkovic summary")
+    need("si", f"Below ${nu:.0f}$~cm$^{{-1}}$ the penalty exceeds", "the vibronic crossing")
+    need("si", "Supplementary Table~\\ref{tab:unc-si} gives", "a pointer to the correlation bracket")
+    need("si", "ecTSase & \\emph{E.\\ coli} thymidylate synthase", "the species-named family")
+    # the main text points at the atlas rate table by number
+    aux = MR.one(DOCS["si"].parent, "*_si.tex").with_suffix(".aux")
+    if aux.exists():
+        m = re.search(r"newlabel\{tab:atlasrates\}\{\{(\d+)\}", aux.read_text())
+        if not m or f"Supplementary Table~{m.group(1)}." not in main:
+            print("  FAIL tables 2026-10-15: main-text pointer to the atlas rate table is stale")
+            bad += 1
+    for doc, text in (("main", "$\\rho\\ge0.5$ and not below"), ("si", "for $\\rho\\ge0.5$"),
+                      ("si", "Below about $2600$"), ("si", "Tables carried from the main text"),
+                      ("si", "the paper reports the maximally adverse"),
+                      ("si", "are shown to two significant figures, except"),
+                      ("si", "where $X_L\\propto\\sqrt{\\mu_L}$")):
+        if text in (main if doc == "main" else si):
+            print(f"  FAIL tables 2026-10-15: retired phrasing in {doc}: {text!r}")
+            bad += 1
+    if re.search(r"(?<![a-z])TSase & \\emph\{", si):
+        print("  FAIL tables 2026-10-15: series table names a TSase family without its species")
+        bad += 1
+    if not bad:
+        print(f"  tables 2026-10-15: four generated tables reproduce; F93W clears F0 for "
+              f"rho > {cr:.3f}; vibronic crossing {nu:.0f} cm^-1; benchmark as published")
+    return bad
+
+
+def check_consistency_2026_10_16():
+    """Main text against supplement, 2026-10-16.
+
+    Propositions were hand-numbered and appeared S1-S6, S8, S9, S7; the main
+    text cited a Note 18 number the note did not contain; the methanol
+    multiplicity bounds were in the main text only; the joint binding-bypass
+    contour was typed from an older coarse profile (its r = 1.31 and r = 1.57
+    rows disagreed at phi = 0, where r cannot matter); the topology table still
+    listed the bypass-only row without its fast-dissociation qualifier.
+    """
+    import bounds_uncertainty as BU
+    import corpus
+    raw = DOCS["si"].read_text()
+    main = " ".join(DOCS["main"].read_text().split())
+    si = " ".join(raw.split())
+    bad = 0
+
+    def fail(msg):
+        nonlocal bad
+        print(f"  FAIL consistency 2026-10-16: {msg}")
+        bad += 1
+
+    nums = [int(n) for n in re.findall(r"\\textbf\{Proposition S(\d+)\.\}", raw)]
+    if nums != list(range(1, len(nums) + 1)):
+        fail(f"propositions appear out of order: {nums}")
+    m = re.search(r"\\textbf\{Proposition S(\d+)\.\} \\emph\{For the reversible scheme", raw)
+    if not m or f"(Supplementary Proposition~S{m.group(1)})" not in main:
+        fail("main text does not cite the reversible-scheme proposition by its number")
+    u = corpus.counts()["units"]
+    tb = pd.read_csv("../data/trinomial_benchmark.csv")
+    vals = []
+    for v in ("F93W (40% MeOH)", "F93W (60% MeOH)"):
+        g = tb[tb.variant == v]
+        vals.append([BU.multiplicity_bound(g, u, r) for r in (0.0, -1.0)])
+    want = (f"gives ${vals[0][0]:+.3f}$ and ${vals[1][0]:+.3f}$ under independence, above "
+            f"$\\Fz$, but ${vals[0][1]:+.3f}$ and ${vals[1][1]:+.3f}$ at $\\rho=-1$").replace("$+", "$")
+    if want not in si:
+        fail(f"SI lacks the methanol multiplicity bounds: {want!r}")
+    D = "../figures/tikz/data/"
+    for lab, f in (("1.31", "fd_joint_rlo.dat"), ("1.57", "fd_joint_rhi.dat")):
+        d = np.loadtxt(D + f, skiprows=1)
+        mp = {round(p, 2): v for p, v in d}
+        cells = " & ".join(f"${mp[p]:.4f}$" if mp[p] > 0 else "none"
+                           for p in np.round(np.arange(0, 0.161, 0.02), 2))
+        if f"$F_{{\\mathrm{{bind}}}}^{{\\max}}$, $r={lab}$ & {cells}" not in si:
+            fail(f"joint contour row r = {lab} differs from {f}")
+    if "lower half-line (fast-dissociation limit only)" not in si:
+        fail("topology table lacks the fast-dissociation qualifier")
+    if re.search(r"\\toprule\s*\\hline", raw) or re.search(r"\\hline\\hline\s*\\bottomrule", raw):
+        fail("a table stacks booktabs and \\hline rules")
+    for text in ("the tabulated contour gives", "the contour is $0.0787$",
+                 "mean the bisection floor was rejected", "that case is the mixed class"):
+        if text in si:
+            fail(f"retired phrasing in si: {text!r}")
+    # the front matter states how many notes and tables the SI holds; it said
+    # Tables 1--15 for a supplement with sixteen until 2026-10-16
+    front = MR.one(DOCS["si"].parent, "*_si.tex")
+    aux = MR.one(DOCS["si"].parent, "*_si.tex").with_suffix(".aux")
+    if front.exists() and aux.exists():
+        ft = " ".join(front.read_text().split())
+        ax = aux.read_text()
+        ntab = max(int(n) for n in re.findall(r"newlabel\{tab:[^}]*\}\{\{(\d+)\}", ax))
+        nsec = len(re.findall(r"\\contentsline \{section\}",
+                              front.with_suffix(".toc").read_text()))
+        if f"Supplementary Notes 1--{nsec}, Supplementary Tables 1--{ntab} " not in ft:
+            fail(f"SI front matter does not state Notes 1--{nsec} and Tables 1--{ntab}")
+    if "\\cite{DongZenodo}" not in raw + (front.read_text() if front.exists() else ""):
+        fail("the SI names deposited scripts but does not cite the deposit")
+    if not bad:
+        print(f"  consistency 2026-10-16: propositions S1-S{len(nums)} in order; "
+              f"methanol multiplicity and joint contour tied to code")
+    return bad
+
+
 _NEEDS_DOCS = {
+    "check_audit_2026_10_15", "check_consistency_2026_10_16",
+    "check_light_example",
     "check_si_figrefs", "check_si_eqrefs", "check_si_pointers",
     "check_general_census", "check_corpus", "check_provenance_split",
     "check_cited_scripts", "check_no_ai_mentions", "check_methods_sources",
@@ -1837,13 +2269,15 @@ def run():
                 check_general_census, check_corpus, check_provenance_split,
                 check_cited_scripts, check_no_ai_mentions,
                 check_methods_sources, check_precision_limited_count,
-                check_ladh_zero_claim, check_ecdhfr_assignment,
+                check_ladh_zero_claim, check_ecdhfr_assignment, check_light_example,
                 check_envelope, check_joint_counterexamples,
                 check_repo_metadata, check_titles, check_reference_asymmetry,
                 check_promoting_mode, check_corpus_consequences,
                 check_scope_corrections, check_source_fidelity,
                 check_readiness_scope, check_generated_tables,
-                check_external_audit_2026_10_12, check_source_review_2026_10_13):
+                check_external_audit_2026_10_12, check_source_review_2026_10_13,
+                check_figure_data, check_audit_2026_10_15,
+                check_tables_2026_10_15, check_consistency_2026_10_16):
         if not HAVE_DOCS and _fn.__name__ in _NEEDS_DOCS:
             print(f"  SKIPPED (needs the manuscript): {_fn.__name__}")
             continue

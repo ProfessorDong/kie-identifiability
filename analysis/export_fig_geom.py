@@ -15,6 +15,7 @@ from __future__ import annotations
 import numpy as np
 
 import masses as M
+from corpus import series_record
 
 G = M.gamma_sc("C"); F0 = M.offset_F0("C")
 PH, PD = M.ridge_P("C"); CH, CD = M.ridge_C("C")
@@ -31,7 +32,7 @@ def traj(kht, kdt, cmax=4000.0, n=400):
     return np.log(xd[keep]), np.log(xh[keep])
 
 
-CASES = [("yadh", 7.13, 1.73), ("light", 3.10, 1.51)]
+CASES = [("yadh", 7.13, 1.73), ("light", *series_record("light enzyme", 5.0))]
 for name, kh, kd in CASES:
     XD, XH = traj(kh, kd)
     with open(OUT + f"fg_{name}.dat", "w") as f:
@@ -47,7 +48,7 @@ for name, kh, kd in CASES:
 
 # where the negative-offset trajectory crosses the locus (F(c) = 0)
 from scipy.optimize import brentq
-kh, kd = 3.10, 1.51
+kh, kd = CASES[1][1:]
 F = lambda c: np.log(kh*c/(1+c-kh)) - G*np.log(kd*c/(1+c-kd))
 a = kh - 1.0
 c0 = brentq(F, a*1.0001, a*1e4)

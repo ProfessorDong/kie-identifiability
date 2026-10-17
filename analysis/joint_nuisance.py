@@ -13,7 +13,7 @@ through the isotope-sensitive step or through a blind route, and returns to free
 enzyme at an isotope-dependent rate, entered at an isotope-dependent rate.  With
 unequal tritium references, phi_D = r phi_H and q_D = r q_H.
 
-Setting phi = 0 recovers Proposition S8; setting alpha = beta = 1 recovers
+Setting phi = 0 recovers Proposition S7; setting alpha = beta = 1 recovers
 Proposition S6.  Holding one at its null while bounding the other is exactly
 the marginal calculation the supplement reports, and this module computes the
 joint region instead.
@@ -350,6 +350,66 @@ def check_counterexamples(verbose=True):
                   f"reproduces {reproduces}, on envelope {on_env}, "
                   f"excluded by bound {excluded}")
     return bad
+
+
+# ------------------------------------------------- a finite model witness
+# The counterexamples above, and the supplement until 2026-10-15, place the
+# intrinsic pair ON the gated envelope, F_int = F0.  F0 is a supremum that no
+# finite (A, w) attains (Theorem S1), so a pair there shows only that the
+# envelope argument fails, not that a member of the model fits.  An external
+# audit (2026-10-15) supplied a finite witness; this function constructs one
+# from our own model code.  At the stated nuisances the profiled endpoint lies
+# strictly below F0, so some commitment gives an intrinsic pair inside the
+# region the model fills, and (A, w) are solved for it: X_H fixes A at each w,
+# and w is found by bisection on F.  It is a mathematical witness under
+# stipulated nuisances, not a calibrated model of yeast ADH.
+def finite_witness(F_bind=0.090, phi_H=0.080, r=R_YADH, qH=5000.0):
+    from scipy.optimize import brentq
+    import qtunnel as Q
+    aH = aD = bH = 1.0
+    bD = float(np.exp(F_bind / G))           # F_bind carried by beta_D
+    if qH is None:                            # the most negative admissible F
+        qs = np.geomspace(1e-2, 1e8, 20001)
+        xH = x_from_obs(KH_OBS, phi_H, qs, aH, bH)
+        xD = x_from_obs(KD_OBS, r * phi_H, r * qs, aD, bD)
+        ok = np.isfinite(xH) & np.isfinite(xD) & (xH > 1) & (xD > 1)
+        F = np.where(ok, np.log(np.where(ok, xH, 2)) - G * np.log(np.where(ok, xD, 2)), np.inf)
+        qH = float(qs[int(np.argmin(F))])
+    xH = float(x_from_obs(KH_OBS, phi_H, qH, aH, bH))
+    xD = float(x_from_obs(KD_OBS, r * phi_H, r * qH, aD, bD))
+    LH, Ft = np.log(xH), np.log(xH) - G * np.log(xD)
+    if not Ft < F0:
+        raise ValueError(f"F_int {Ft:+.5f} is not below F0: no witness at these nuisances")
+
+    def A_of(w):                              # X_H is linear in A at fixed w
+        p0 = Q.log_kie_intrinsic(0.0, w)[0]
+        return (LH - p0) / (Q.log_kie_intrinsic(1.0, w)[0] - p0)
+
+    def gap(w):
+        lh, ld = Q.log_kie_intrinsic(A_of(w), w)
+        return (lh - G * ld) - Ft
+    w = brentq(gap, 1e-3, 1e7, xtol=1e-12, rtol=1e-14)
+    A = A_of(w)
+    lh, ld = Q.log_kie_intrinsic(A, w)
+    K = lambda x, ph, q, al, be: al * (x + ph) / (1 + ph) * (q + 1 + ph) / (be * q + x + ph)
+    kh = K(np.exp(lh), phi_H, qH, aH, bH)
+    kd = K(np.exp(ld), r * phi_H, r * qH, aD, bD)
+    return dict(A=float(A), w=float(w), qH=qH, xH=float(np.exp(lh)), xD=float(np.exp(ld)),
+                F_int=float(lh - G * ld), K_HT=float(kh), K_DT=float(kd), beta_D=bD,
+                in_box=all(BIND_BOX[0] <= v <= BIND_BOX[1] for v in (aH, bH, aD, bD)))
+
+
+def check_finite_witness(verbose=True):
+    """The witness must be finite, reproduce both ratios, lie strictly below F0."""
+    wt = finite_witness()
+    ok = (np.isfinite(wt["A"]) and np.isfinite(wt["w"]) and wt["A"] > 0 and wt["w"] > 0
+          and abs(wt["K_HT"] - KH_OBS) < 1e-9 and abs(wt["K_DT"] - KD_OBS) < 1e-9
+          and wt["F_int"] < F0 and wt["in_box"])
+    if verbose:
+        print(f"  finite witness: A = {wt['A']:.4g}, w = {wt['w']:.4g}, q_H = {wt['qH']:.4g}; "
+              f"(x_H, x_D) = ({wt['xH']:.4f}, {wt['xD']:.4f}), F_int = {wt['F_int']:+.5f} < F0; "
+              f"reproduces ({wt['K_HT']:.6f}, {wt['K_DT']:.6f}): {'OK' if ok else 'FAIL'}")
+    return 0 if ok else 1
 
 
 # ------------------------------------------- the joint line over a range of r

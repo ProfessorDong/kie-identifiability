@@ -37,7 +37,7 @@ hsDHFR F32M                                400.7/3    0.0e+00   -0.70   0.050
 FDH V123A                                  145.6/5    0.0e+00    1.50   0.420
 ecDHFR F125M                                82.7/5    2.2e-16   -0.29   0.030
 LADH wild type (50% MeOH)                   67.6/5    3.2e-13    0.65   0.450
-ecDHFR light enzyme                         62.6/7    4.5e-11   -0.07   0.060
+ecDHFR light enzyme                         58.9/7    2.5e-10   -0.07   0.060
 FDH V123G                                   57.4/5    4.2e-11    1.50   0.770
 LADH F93W (40% MeOH)                        25.1/3    1.5e-05    1.50   1.220
 hsDHFR F32L-PP26N-PEKN62G                   14.0/3    3.0e-03   -0.71   0.040
@@ -58,7 +58,7 @@ C. THE ARTEFACT, QUANTIFIED
 D. MASS-MODULATED CONTROL (light vs heavy ecDHFR)
 ------------------------------------------------------------------------------------
   heavy enzyme   F = +0.10 [-0.05,+0.26]   chi2 = 10.0/5  p = 0.075  adequate
-  light enzyme   F = -0.07 [-0.10,-0.04]   chi2 = 62.6/7  p = 0.000  INADEQUATE FIT
+  light enzyme   F = -0.07 [-0.10,-0.04]   chi2 = 58.9/7  p = 0.000  INADEQUATE FIT
   Heavy labelling moves the system along the ridge, where F is
   invariant, so both should return the same F. The light series does
   not fit, so the control is inconclusive as it stands.

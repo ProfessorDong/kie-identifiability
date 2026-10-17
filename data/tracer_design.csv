@@ -23,7 +23,7 @@ ecDHFR,G121V-F125M,hydride,shared,(4R)-[4-3H]-NADPH,(4R)-[4-3H]-NADPH,Singh2014,
 ecDHFR,M42W-F125M,hydride,shared,(4R)-[4-3H]-NADPH,(4R)-[4-3H]-NADPH,Singh2014,Methods
 ecDHFR,W133F,hydride,shared,(4R)-[4-3H]-NADPH,(4R)-[4-3H]-NADPH,Singh2014,Methods
 ecDHFR,heavy enzyme,hydride,shared,[4R-T]-NADPH,[4R-T]-NADPH,Wang2014,Methods
-ecDHFR,light enzyme,hydride,shared,[4R-T]-NADPH,[4R-T]-NADPH,Wang2014,Methods
+ecDHFR,light enzyme,hydride,labeled,(4R)-[4-3H]-NADPH,(4R)-[4-3H 4S-2H]-NADPH,Sikorski2004,text p. 4778
 hsDHFR,F32L,hydride,shared,4R-3H-NADPH,4R-3H-NADPH,Li2021,Methods
 hsDHFR,F32L-PP26N-PEKN62G,hydride,shared,4R-3H-NADPH,4R-3H-NADPH,Li2021,Methods
 hsDHFR,F32M,hydride,shared,4R-3H-NADPH,4R-3H-NADPH,Li2021,Methods

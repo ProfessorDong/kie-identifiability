@@ -55,3 +55,4 @@ integer 1:2:3      3.25725  -0.055522    0.1789   0.0389    0.1149    YES   YES
   rho = -1: Bonferroni bound -0.0160, margin over F0 +0.0261, over 0 -0.0160
   no correlation assumed,  1 unit(s): bound +0.0336, margin over F0 +0.0757
   no correlation assumed, 35 unit(s): bound -0.0260, margin over F0 +0.0160
+  Student t tail, 10 d.o.f., 35 units, rho = -1: bound -0.0616, margin over F0 -0.0195

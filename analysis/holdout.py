@@ -56,6 +56,38 @@ def leave_one_out():
     return pd.DataFrame(out)
 
 
+def confidence_deletion(rho=-1.0, only=None):
+    """Deletion sensitivity of the CONFIDENCE decision, not just the point.
+
+    For each series whose full-data bound clears F0, drop each temperature in
+    turn and recompute the one-sided series bound with the paper's procedure
+    (bounds_uncertainty.series_bound: per-temperature bounds at 0.05/n_T over the
+    remaining temperatures, maximum taken).  Until 2026-10-15 the supplement
+    said the two F93W methanol series "exclude under every leave-one-out", but
+    leave_one_out() above compares point endpoints only; an external audit
+    showed that both lose the confidence-level exclusion without their 3 C
+    record.  Returns one row per (series, omitted temperature).
+    """
+    import bounds_uncertainty as BU
+    tb = pd.read_csv("../data/trinomial_benchmark.csv")
+    out = []
+    for (sysname, variant, step), g in tb.groupby(["system", "variant", "step"]):
+        if only is not None and variant not in only:
+            continue
+        full = BU.series_bound(g, rho)[0]
+        if not full > F0:
+            continue
+        for i, (_, r) in enumerate(g.iterrows()):
+            sub = g.drop(index=r.name)
+            pts = [F_min_exact(a, b)[0] for a, b in zip(sub.K_HT, sub.K_DT)
+                   if a > b > 1]
+            b = BU.series_bound(sub, rho)[0]
+            out.append(dict(variant=variant, omitted_T=float(r.T_C),
+                            full_bound=full, point=max(pts), bound=b,
+                            excludes=bool(b > F0)))
+    return pd.DataFrame(out)
+
+
 def structural_prediction_check():
     """Consistency check: a positive observed offset implies an open set.
 
@@ -91,6 +123,14 @@ def main():
     print(f"\n   {'series':52s} {'n':>2s} {'endpoint':>9s} {'flips':>5s} {'spread':>7s}")
     for _, r in df.sort_values("full", ascending=False).iterrows():
         print(f"   {r.system[:52]:52s} {r.n:2d} {r.full:+9.4f} {r.flips:5d} {r.spread:7.4f}")
+
+    print("\nA2. Deletion sensitivity of the confidence-level exclusions (rho = -1)")
+    cd = confidence_deletion()
+    for _, r in cd.iterrows():
+        print(f"   {r.variant:22s} omit {r.omitted_T:+6.0f} C: point {r.point:+.4f}, "
+              f"bound {r.bound:+.4f} ({'excludes' if r.excludes else 'does not exclude'}; "
+              f"full bound {r.full_bound:+.4f})")
+    cd.to_csv("../results/deletion_sensitivity.csv", index=False)
 
     n, viol = structural_prediction_check()
     print(f"\nB. Structural prediction tested out of sample")

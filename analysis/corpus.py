@@ -54,6 +54,20 @@ def series() -> pd.DataFrame:
     return pd.read_csv(SERIES_FILE)
 
 
+def series_record(variant: str, T_C: float) -> tuple[float, float]:
+    """(K_HT, K_DT) of one temperature-series record, read from the benchmark.
+
+    The figure exporters take their worked examples from here rather than
+    typing them: the ecDHFR light-enzyme 5 C record was typed as (3.10, 1.51),
+    the rounded reprint, in three exporters until 2026-10-15.
+    """
+    d = series()
+    hit = d[(d.variant == variant) & (d.T_C == T_C)]
+    if len(hit) != 1:
+        raise KeyError(f"{len(hit)} benchmark records for {variant} at {T_C} C")
+    return float(hit.K_HT.iloc[0]), float(hit.K_DT.iloc[0])
+
+
 def single_condition() -> pd.DataFrame:
     """Every single-condition record, one row per analysis unit."""
     frames = []

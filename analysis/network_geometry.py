@@ -307,24 +307,25 @@ def bypass_to_destroy(KH, KD, target, r=1.0):
 # (label, K_HT, K_DT, r).  r is the observed secondary ratio of Table S4 where a
 # source reports secondary effects -- a LOWER bound on the reference asymmetry,
 # so these tolerances are upper limits; for yeast ADH the jointly solved r and
-# its tolerance are in completion.py -- and 1.0 for a shared tracer; the ecDHFR
-# light-enzyme entry is the 25 C record of Wang et al., an earlier version of
-# this list carried (3.10, 1.75), which is not any record in the benchmark.
+# its tolerance are in completion.py.  The ecDHFR light-enzyme entry is the 25 C
+# record of Sikorski et al. 2004; an earlier version of this list carried
+# (3.10, 1.75), which is not any record in the benchmark.
 # The MAO-B entry takes r from its own secondary effects at the same pH and
 # temperature (reference_asymmetry.py).  It was hard-coded as 1.14 until
 # 2026-09-14, the value shared by BSAO and by MAO-B at pH 7.5; at pH 6.1 and 10 C
 # the source gives 1.208.  The endpoint here lies below F0 at phi = 0, so no
 # computed result changed.  The other r are checked against the same module by
 # audit_numbers.check_reference_asymmetry.
-from reference_asymmetry import r_at as _r_at, r_design as _r_design
+from reference_asymmetry import r_at as _r_at
 
 BENCH = [("YADH (Cha 1989)", 7.13, 1.73, 1.31),
          ("BSAO (Grant 1989)", 35.2, 3.07, 1.14),
          ("MAO-B pH 6.1, 10 C", 28.89, 2.896, _r_at("MAOB", "pH 6.1", 10.0)),
          ("LADH F93W", 7.755, 1.858, 1.27),
-         # one tritiated cofactor, (4R)-[4-3H]NADPH, serves both experiments
-         # (Wang et al. 2014), so r = 1 identically rather than by assumption
-         ("ecDHFR light, 25 C", 4.85, 1.66, _r_design("ecDHFR", "light enzyme"))]
+         # the D/T reference carries deuterium at the non-transferred 4S position
+         # (Sikorski et al. 2004), so r is inferred from their secondary effects;
+         # until 2026-10-15 this entry took r = 1 from a shared-tracer record
+         ("ecDHFR light, 25 C", 4.85, 1.66, _r_at("ecDHFR", "light enzyme", 25.0))]
 
 
 def report_tolerance():

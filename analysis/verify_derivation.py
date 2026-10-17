@@ -147,7 +147,7 @@ check("reduces to Proposition S2 at r=1",
       sp.simplify(_stated.subs(_r, 1)
                   - (_c * (_g * _b - _a) - _a * _b * (_g - 1)) / (_c * (_c - _a) * (_c - _b))) == 0)
 
-print("\n11. binding-aware map (Proposition S8)")
+print("\n11. binding-aware map (Proposition S7)")
 _al,_be,_x,_c,_u = sp.symbols("alpha beta x c u", positive=True)
 _K = _al*_x*(1+_c)/(_x+_be*_c)
 check("reduces to the series map at alpha=beta=1",

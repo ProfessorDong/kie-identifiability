@@ -35,3 +35,17 @@ YADH  wild type        7.130   1.730   3.584   8.40   0.1287  0.0399   0.0630   
 
   The framework therefore predicts which systems can inform before any
   mechanism is assumed: those whose chemical step is rate limiting.
+
+  One-sided 95% bounds bracketed over the correlation rho (tab:ladhprim):
+  wild type     25 C  F_min -0.1719   rho=-1 -0.2154   rho=0 -0.2101   rho=0.9 -0.2047
+  ESE chimera   25 C  F_min -0.0725   rho=-1 -0.0980   rho=0 -0.0918   rho=0.9 -0.0837
+  L57V          25 C  F_min -0.1315   rho=-1 -0.1988   rho=0 -0.1926   rho=0.9 -0.1865
+  L57F          25 C  F_min -0.0293   rho=-1 -0.0642   rho=0 -0.0557   rho=0.9 -0.0445
+  F93W          25 C  F_min -0.0263   rho=-1 -0.0483   rho=0 -0.0428   rho=0.9 -0.0352
+  V203L         25 C  F_min -0.0751   rho=-1 -0.1211   rho=0 -0.1088   rho=0.9 -0.0909
+  V203A         25 C  F_min -0.1344   rho=-1 -0.2066   rho=0 -0.1945   rho=0.9 -0.1811
+  V203A-F93W    25 C  F_min -0.1324   rho=-1 -0.2029   rho=0 -0.1914   rho=0.9 -0.1788
+  V203G         25 C  F_min -0.1306   rho=-1 -0.1661   rho=0 -0.1603   rho=0.9 -0.1539
+  wild type      3 C  F_min -0.4432   rho=-1 -1.0715   rho=0 -0.9595   rho=0.9 -0.8328
+  F93W           3 C  F_min +0.0109   rho=-1 -0.2963   rho=0 -0.2661   rho=0.9 -0.2363
+  F93W at 25 C clears F0 for rho > 0.104

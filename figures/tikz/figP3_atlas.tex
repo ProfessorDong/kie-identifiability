@@ -71,7 +71,8 @@
       node[lbl,below,color=cPro,yshift=0.4mm]{$k_{b}$} (p.south west);
   \draw[fl,cGrey] (t) -- ++(0,0.52)
       node[lbl,above,color=cGrey,yshift=-0.4mm]{to E};
-  \node[ann, anchor=north west, text width=52mm] at (-0.30,-0.68)
+  % below the k_b label, which hangs under the bypass arc
+  \node[ann, anchor=north west, text width=52mm] at (-0.30,-0.86)
     {\textbf{inverse.} the label steers flux away from $k_{b}$: \mbox{$AD<BC$}};
 \end{scope}
 
@@ -108,6 +109,7 @@
   xlabel={$x_{\mathrm D}$ along $x_{\mathrm H}=x_{\mathrm D}^{\gamma}$},
   ylabel={offset $F$ implied}, clip=true,
   xtick={1,1.2,1.4,1.6,1.8,2,2.2}, ytick={-0.1,-0.05,0,0.05},
+  yticklabels={$-0.10$,$-0.05$,$0$,$0.05$},
   title={(\textit{\textbf{C}})\ \ offset along the mass-scaling ray}]
   \addplot[cGrey, line width=0.45pt, densely dotted, forget plot]
      coordinates {(1,0) (6,0)};

@@ -33,21 +33,27 @@ fetch () {                      # $1 = PMCID, $2 = expected file inside
 echo "open-access supplements:"
 fetch PMC3985941 ja411998h_si_001.pdf    # Singh 2014,    ecDHFR network variants
 fetch PMC8697555 bi1c00558_si_001.pdf    # Li 2021,       hsDHFR loop variants
-fetch PMC4063187 ja501936d_si_001.pdf    # Francis 2014,  light vs heavy ecDHFR
+fetch PMC4063187 ja501936d_si_001.pdf    # Wang 2014,     heavy ecDHFR
 fetch PMC5929524 pone.0196506.s004.xlsx  # Islam 2018,    hsTSase hydride + proton
 fetch PMC4425018 ijms-16-07304-s001.pdf  # Abeysinghe 2015, ecTSase Y209W proton
 
 echo
 echo "retrieved $ok, failed $fail"
-if [ ! -f si/manual/cs9b03345_si_001.pdf ]; then
-  cat <<'EOF'
-
-Still needed, and paywalled (see SOURCES.md):
+need=""
+[ -f si/manual/cs9b03345_si_001.pdf ] || need="$need
   Pagano et al., ACS Catal. 9, 11199 (2019)   doi:10.1021/acscatal.9b03345
-  Download the Supporting Information PDF and save it as
-      external_data/si/manual/cs9b03345_si_001.pdf
+      -> external_data/si/manual/cs9b03345_si_001.pdf"
+[ -f si/manual/ja031683w_si_002.pdf ] || need="$need
+  Sikorski et al., JACS 126, 4778 (2004)      doi:10.1021/ja031683w
+      -> external_data/si/manual/ja031683w_si_002.pdf"
+if [ -n "$need" ]; then
+  cat <<EOF
 
-Without it the benchmark builds with 14 series / 63 records instead of
-16 / 73.  No other result changes.
+Still needed, and paywalled (see SOURCES.md); save each Supporting Information
+PDF under the name shown:$need
+
+Without them the parse covers fewer series (16 / 73 with both; 14 / 63 without
+Pagano, 15 / 67 without Sikorski, 13 / 57 without either). The shipped
+benchmark is never overwritten, so no analysis result changes.
 EOF
 fi

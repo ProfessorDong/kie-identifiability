@@ -30,7 +30,7 @@ ecDHFR G121V-F125M (hydride)                -0.0740   -0.1917  0.0000    0.0618 
 ecDHFR M42W-F125M (hydride)                 -0.1027   -0.2623  0.0000    0.0670    0.189        no
 ecDHFR W133F (hydride)                      -0.0596   -0.1587  0.0001    0.0936    0.643        no
 ecDHFR heavy enzyme (hydride)               -0.1576   -0.2771  0.0001    0.0907    0.233        no
-ecDHFR light enzyme (hydride)               -0.0759   -0.1453  0.0001    0.0383    0.392        no
+ecDHFR light enzyme (hydride)               -0.0759   -0.1453  0.0001    0.0389    0.413        no
 hsDHFR F32L (hydride)                       -0.2784   -0.3789  0.0002    0.1018    0.067        no
 hsDHFR F32L-PP26N-PEKN62G (hydride)         -0.6937   -0.7684  0.0001    0.0383    0.000        no
 hsDHFR F32M (hydride)                       -0.8782   -1.1618  0.0005    0.0765    0.000        no
@@ -54,7 +54,7 @@ ecDHFR G121V-F125M (hydride)                -0.0740   -0.1835  0.0000    0.0557 
 ecDHFR M42W-F125M (hydride)                 -0.1027   -0.2477  0.0001    0.0615    0.166        no
 ecDHFR W133F (hydride)                      -0.0596   -0.1470  0.0001    0.0855    0.628        no
 ecDHFR heavy enzyme (hydride)               -0.1576   -0.2601  0.0001    0.0841    0.208        no
-ecDHFR light enzyme (hydride)               -0.0759   -0.1291  0.0001    0.0286    0.236        no
+ecDHFR light enzyme (hydride)               -0.0759   -0.1291  0.0001    0.0289    0.253        no
 hsDHFR F32L (hydride)                       -0.2784   -0.3597  0.0001    0.0703    0.023        no
 hsDHFR F32L-PP26N-PEKN62G (hydride)         -0.6937   -0.7547  0.0001    0.0280    0.000        no
 hsDHFR F32M (hydride)                       -0.8782   -1.0930  0.0001    0.0583    0.000        no
@@ -78,7 +78,7 @@ ecDHFR G121V-F125M (hydride)                -0.0740   -0.1777  0.0000    0.0521 
 ecDHFR M42W-F125M (hydride)                 -0.1027   -0.2398  0.0001    0.0584    0.152        no
 ecDHFR W133F (hydride)                      -0.0596   -0.1405  0.0002    0.0810    0.618        no
 ecDHFR heavy enzyme (hydride)               -0.1576   -0.2503  0.0001    0.0805    0.196        no
-ecDHFR light enzyme (hydride)               -0.0759   -0.1188  0.0001    0.0226    0.134        no
+ecDHFR light enzyme (hydride)               -0.0759   -0.1188  0.0001    0.0227    0.143        no
 hsDHFR F32L (hydride)                       -0.2784   -0.3488  0.0001    0.0504    0.005        no
 hsDHFR F32L-PP26N-PEKN62G (hydride)         -0.6937   -0.7463  0.0000    0.0205    0.000        no
 hsDHFR F32M (hydride)                       -0.8782   -1.0296  0.0003    0.0445    0.000        no
@@ -102,7 +102,7 @@ ecDHFR G121V-F125M (hydride)                -0.0740   -0.1701  0.0000    0.0489 
 ecDHFR M42W-F125M (hydride)                 -0.1027   -0.2332  0.0002    0.0558    0.140        no
 ecDHFR W133F (hydride)                      -0.0596   -0.1348  0.0000    0.0773    0.610        no
 ecDHFR heavy enzyme (hydride)               -0.1576   -0.2417  0.0001    0.0774    0.185        no
-ecDHFR light enzyme (hydride)               -0.0759   -0.1082  0.0000    0.0168    0.054        no
+ecDHFR light enzyme (hydride)               -0.0759   -0.1082  0.0000    0.0167    0.054        no
 hsDHFR F32L (hydride)                       -0.2784   -0.3393  0.0000    0.0312    0.000        no
 hsDHFR F32L-PP26N-PEKN62G (hydride)         -0.6937   -0.7175  0.0001    0.0105    0.000        no
 hsDHFR F32M (hydride)                       -0.8782   -0.9473  0.0001    0.0242    0.000        no
@@ -136,6 +136,5 @@ which has more temperatures and tighter errors.
 Coverage, ecDHFR W133F as recorded taken as truth, rho = -1:
   P(bound > true maximum): quantile of resampled maximum 0.197, Bonferroni maximum 0.024 (nominal 0.05)
 
-The unpaired 10 C ecDHFR record (assigned by interpolation): over light,
-heavy and dropped, a bound moves by at most 0.0032 at rho = -1 and every
-bound stays at least 0.1012 below F0.
+ecDHFR light series with 1.25% protium at the transferred position of the
+D/T comparator: largest point endpoint +0.0035, bound at rho = -1 -0.0658 (F0 -0.0421).

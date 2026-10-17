@@ -178,6 +178,7 @@ PDF_SOURCES = {
     "10.1021/acs.biochem.1c00558": "PMC8697555/bi1c00558_si_001.pdf",
     "10.1021/acscatal.9b03345": "manual/cs9b03345_si_001.pdf",
     "10.1021/ja501936d": "PMC4063187/ja501936d_si_001.pdf",
+    "10.1021/ja031683w": "manual/ja031683w_si_002.pdf",
     "10.3390/ijms16047304": "PMC4425018/ijms-16-07304-s001.pdf",
 }
 
@@ -185,6 +186,40 @@ PDF_SOURCES = {
 def _num(x):
     """Shortest decimal form, which is how a trailing zero is lost in the CSV."""
     return format(float(x), ".10g")
+
+
+def replicate_uniqueness():
+    """How many distinct replicate sets reproduce each spreadsheet block's moments.
+
+    Matching the published mean and population SD is a consistency check, not a
+    uniqueness theorem: distinct sets can share both moments ({1,4,4} and
+    {2,2,5}).  This enumerates every candidate subset the search considers and
+    counts distinct value multisets (rounded to 1e-9) that match.  Returns a
+    list of (n_candidates, n_matching_multisets, n_replicates) per block.
+    """
+    import itertools, statistics as st
+    found = []
+    orig = _replicates
+
+    def counting(cells, r0, r1, avg, sd, tol=5e-6):
+        lo, hi = avg - 6 * sd, avg + 6 * sd
+        cand = [v for (r, c), v in sorted(cells.items()) if r0 <= r <= r1 and lo <= v <= hi]
+        sols = set()
+        for k in range(0, min(3, len(cand)) + 1):
+            for drop in itertools.combinations(range(len(cand)), k):
+                keep = [v for i, v in enumerate(cand) if i not in drop]
+                if len(keep) >= 2 and abs(st.mean(keep) - avg) < tol \
+                        and abs(st.pstdev(keep) - sd) < tol:
+                    sols.add(tuple(sorted(round(v, 9) for v in keep)))
+        chosen = orig(cells, r0, r1, avg, sd, tol)
+        found.append((len(cand), len(sols), len(chosen)))
+        return chosen
+    globals()["_replicates"] = counting
+    try:
+        hstsase_records()
+    finally:
+        globals()["_replicates"] = orig
+    return found
 
 
 def transcription_audit(bench=OUT / "trinomial_benchmark.csv"):
@@ -216,6 +251,9 @@ def transcription_audit(bench=OUT / "trinomial_benchmark.csv"):
             print(f"  transcription audit: {rel} not present; skipped")
             continue
         txt = text_of(pdf).replace("\u00b1", "±")
+        if doi == "10.1021/ja031683w":
+            # this source's plus-minus glyph is encoded, and printed, as an en dash
+            txt = re.sub(r"(\d)\s*\u2013\s*(\d)", r"\1 ± \2", txt)
         # Collect every "number ± number" the source prints and compare
         # NUMERICALLY.  Matching formatted strings instead is brittle: the CSV
         # drops trailing zeros, so a printed "2.00 ± 0.05" does not contain "2".
@@ -292,11 +330,32 @@ def main():
                                  source_DOI="10.1021/acscatal.9b03345",
                                  PMCID="PMC8118594", source_table="Table S2"))
 
-    # ---- Francis et al. 2014, light vs heavy (mass-modulated) ecDHFR -----
-    # Two rows per temperature: the temperature-labelled row is l-DHFR, the
-    # continuation row h-DHFR.  10 C has a single row; linear interpolation of
-    # the neighbouring points (light 3.1->4.76 vs heavy 2.40->3.29) places the
-    # value 3.69 unambiguously on the light series.
+    # ---- Sikorski et al. 2004, light (wild-type) ecDHFR -------------------
+    # SI Table 1, columns T | observed D/T | observed H/T.  The text layer, and
+    # the rendered page, print the plus-minus sign as an en dash.  Wang et al.
+    # 2014 reprint this series beside their heavy enzyme, rounded (3.1 for 3.06
+    # at 5 C, 4.8 +- 0.1 for 4.82 +- 0.11 and 4.80 +- 0.12); the original is used.
+    p = SI / "manual" / "ja031683w_si_002.pdf"
+    if p.exists():
+        pair = r"([0-9]+(?:\.[0-9]+)?)\s*[\u2013\u00b1]\s*([0-9]+(?:\.[0-9]+)?)"
+        rx = re.compile(r"^\s*([0-9]{1,2})\s+" + pair + r"\s+" + pair + r"\s*$")
+        table1 = text_of(p).split("Table 1:")[1].split("Table 2:")[0]
+        for line in table1.splitlines():
+            m = rx.match(line)
+            if m:
+                T, kdt, sd, kht, sh = (float(x) for x in m.groups())
+                recs.append(dict(system="Escherichia coli dihydrofolate reductase",
+                                 family="ecDHFR", variant="light enzyme",
+                                 step="hydride", donor_atom="C", T_C=T,
+                                 K_HT=kht, K_HT_se=sh, K_DT=kdt, K_DT_se=sd,
+                                 source_DOI="10.1021/ja031683w",
+                                 PMCID="", source_table="SI Table 1"))
+
+    # ---- Wang et al. 2014, heavy (mass-modulated) ecDHFR -------------------
+    # Two rows per temperature: the temperature-labelled row reprints the light
+    # enzyme of Sikorski et al. 2004 (parsed above from the original), the
+    # continuation row is h-DHFR.  10 C has a single row, the light enzyme's
+    # (Sikorski SI Table 1 lists 3.69 +- 0.03 at 10 C).
     p = SI / "PMC4063187" / "ja501936d_si_001.pdf"
     if p.exists():
         pair = r"([0-9]+(?:\.[0-9]+)?)\s*±\s*([0-9]+(?:\.[0-9]+)?)"
@@ -307,13 +366,6 @@ def main():
             m = head.match(line)
             if m:
                 cur_T = float(m.group(1))
-                v = [float(x) for x in m.groups()[1:]]
-                recs.append(dict(system="Escherichia coli dihydrofolate reductase",
-                                 family="ecDHFR", variant="light enzyme",
-                                 step="hydride", donor_atom="C", T_C=cur_T,
-                                 K_HT=v[0], K_HT_se=v[1], K_DT=v[2], K_DT_se=v[3],
-                                 source_DOI="10.1021/ja501936d",
-                                 PMCID="PMC4063187", source_table="Table S1"))
                 continue
             m = cont.match(line)
             if m and cur_T is not None:

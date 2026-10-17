@@ -23,7 +23,7 @@
 % =====================================================================
 \begin{axis}[geo, name=A, width=62mm, height=62mm,
   xmin=0.34, xmax=0.72, ymin=0.95, ymax=3.45,
-  xlabel={$X_{\mathrm D}=\ln \KDT$}, ylabel={$X_{\mathrm H}=\ln \KHT$},
+  xlabel={$X_{\mathrm D}=\ln x_{\mathrm D}$}, ylabel={$X_{\mathrm H}=\ln x_{\mathrm H}$},
   xtick={0.4,0.5,0.6,0.7}, ytick={1,1.5,2,2.5,3}, clip=true,
   title={(\textit{\textbf{A}})\ \ the offset is a vertical distance,\\
          \hspace*{1.2mm}and here it can only increase}]
@@ -96,7 +96,7 @@
 \begin{axis}[geo, name=C, width=58mm, height=25mm,
   at={(B.south west)}, anchor=north west, yshift=-11mm,
   xmode=log, xmin=1e-2, xmax=1.6e4, ymin=-0.115, ymax=0.035,
-  xlabel={position along the gated ridge, $s=A/w^{2}$},
+  xlabel={position along the gated ridge, $s=\mathcal{A}/w^{2}$},
   ylabel={offset $F$}, ytick={-0.1,-0.042086,0},
   yticklabels={$-0.10$,$\Fz$,$0$}, clip=false,
   title={(\textit{\textbf{C}})\ \ \ldots and the offset does not}]

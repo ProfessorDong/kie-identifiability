@@ -23,3 +23,4 @@ LADH,F93W (40% MeOH),-20.0,1.39,0.02,1.05,0.02,TsaiKlinman2001,Table 4,secondary
 LADH,F93W (40% MeOH),-30.0,1.41,0.05,1.02,0.01,TsaiKlinman2001,Table 4,secondary H/T and D/T; errors from multiple determinations (source: deviations from averaged values); 10 mM NAD+
 LADH,F93W (60% MeOH),3.0,1.31,0.02,1.04,0.04,TsaiKlinman2001,Table 4,secondary H/T and D/T; errors from multiple determinations (source: deviations from averaged values); 10 mM NAD+
 LADH,F93W (60% MeOH),-20.0,1.38,0.01,1.04,0.02,TsaiKlinman2001,Table 4,secondary H/T and D/T; errors from multiple determinations (source: deviations from averaged values); 10 mM NAD+
+ecDHFR,light enzyme,25.0,1.149,0.005,1.058,0.003,Sikorski2004,text p. 4779,secondary H/T and D/T at 4S (observed V/K; pH 9.0); D/T from eight experiments; error type not stated

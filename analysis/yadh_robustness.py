@@ -50,6 +50,24 @@ def correlation_free_bound(KH=7.13, sH=0.07, KD=1.73, sD=0.02, units=1, alpha=0.
     return F_min_exact(KH * np.exp(-z * sH / KH), KD * np.exp(z * sD / KD))[0]
 
 
+def t_tail_bound(df=10, units=None, KH=7.13, sH=0.07, KD=1.73, sD=0.02, alpha=0.05):
+    """Multiplicity-adjusted bound at rho = -1 with a Student t tail.
+
+    The same standard error as the normal bound, a t quantile on `df` degrees of
+    freedom (a sensitivity choice, not a recovered sample size), Bonferroni over
+    the analysis units.  Every record here is on the open branch, so the bound
+    is F_obs minus the quantile times the rho = -1 standard error.  Until
+    2026-10-16 this was computed only inside the audit; the supplement quoted no
+    number for it.
+    """
+    if units is None:
+        import corpus
+        units = corpus.counts()["units"]
+    G = M.gamma_sc("C")
+    F = np.log(KH) - G * np.log(KD)
+    return F - stats.t.ppf(1 - alpha / units, df) * (sH / KH + G * sD / KD)
+
+
 def main():
     y = pd.read_csv("../data/cha1989_yadh.csv")
     dets = y.iloc[:3]
@@ -171,6 +189,9 @@ def main():
         bnd = correlation_free_bound(avg.K_HT, avg.K_HT_se, avg.K_DT, avg.K_DT_se, units=u)
         say(f"  no correlation assumed, {u:2d} unit(s): bound {bnd:+.4f}, "
             f"margin over F0 {bnd - f0:+.4f}")
+    tb = t_tail_bound(10, m, avg.K_HT, avg.K_HT_se, avg.K_DT, avg.K_DT_se)
+    say(f"  Student t tail, 10 d.o.f., {m} units, rho = -1: bound {tb:+.4f}, "
+        f"margin over F0 {tb - f0:+.4f}")
 
     with open("../results/yadh_robustness.txt", "w") as fh:
         fh.write("\n".join(OUT) + "\n")

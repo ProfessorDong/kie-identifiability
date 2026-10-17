@@ -101,30 +101,57 @@ def series_bound(g, rho, n=N_DRAW, reps=N_REP, seed=BASE_SEED):
             float(np.mean(sds)), float(np.mean(deads)), float(np.mean(abv)))
 
 
-def assignment_sensitivity(rho=-1.0):
-    """How far the unpaired 10 C ecDHFR record can move the two series bounds.
+def multiplicity_bound(g, units, rho=-1.0):
+    """Series (or single-record) bound adjusted across `units` analysis units.
 
-    Wang et al. distinguish light and heavy rows only by colour, so the record
-    is assigned by interpolation.  Returns (largest move of either bound over
-    the three assignments -- light, heavy, dropped -- and the smallest distance
-    of any of those bounds below F0).
+    Per-record level alpha / (units * n_T), n_T counting every recorded
+    temperature, then the maximum.  At that level a Monte Carlo quantile rests
+    on a few hundred tail draws, so the bound is computed in closed form: the
+    endpoint never exceeds F_obs, so each record's F_obs bound is an upper limit
+    on its own bound, and when the record attaining the largest of them stays on
+    the open branch (L_H >= gamma) at its perturbed pair, that value is the
+    series bound.  Returns nan if that check fails (not needed for any unit
+    drawn as excluding).  Records without an admissible central pair add -inf.
+    """
+    from scipy import stats
+    z = stats.norm.ppf(1 - ALPHA / (units * len(g)))
+    best = None
+    for kh, sh, kd, sd_ in zip(g.K_HT, g.K_HT_se, g.K_DT, g.K_DT_se):
+        if not kh > kd > 1:
+            continue
+        x, y = sh / kh, sd_ / kd
+        sd = np.sqrt(x ** 2 + (GSC * y) ** 2 - 2 * GSC * rho * x * y)
+        m = np.log(kh) - GSC * np.log(kd) - z * sd
+        if best is None or m > best[0]:
+            # perturbed pair along the adverse direction of the linear bound
+            wx = (x - rho * GSC * y) / sd if sd > 0 else 0.0
+            wy = (GSC * y - rho * x) / sd if sd > 0 else 0.0
+            best = (m, kh * np.exp(-z * x * wx), kd * np.exp(z * y * wy))
+    if best is None:
+        return -np.inf
+    m, hl, dh = best
+    if not (hl > dh > 1 and (hl - 1) / (dh - 1) >= GSC):
+        return float("nan")
+    return float(m)
+
+
+def protium_sensitivity(p=0.0125, rho=-1.0):
+    """The ecDHFR light series if its D/T comparator carried protium.
+
+    Sikorski et al. 2004 corrected their secondary effects for 1.25% protium in
+    the deuterated cofactor; the same comparator, [Ad-14C, 4-2H2]-NADPH, served
+    the primary D/T experiments, for which no correction is stated.  If that
+    protium sat at the transferred position, the comparator's V/K would be
+    (1 - p) k_D + p k_H, so each observed D/T is divided here by
+    (1 - p) + p K_HT/K_DT.  Returns (largest point endpoint, one-sided series
+    bound at rho) for the corrected series.
     """
     d = pd.read_csv("../data/trinomial_benchmark.csv")
-    eco = d.system.str.contains("Escherichia", na=False) & \
-        d.variant.astype(str).isin(["light enzyme", "heavy enzyme"])
-    r10 = eco & d.T_C.eq(10.0)
-    out = {}
-    for tag in ("light enzyme", "heavy enzyme", None):
-        dd = d[eco].copy()
-        if tag is None:
-            dd = dd[~r10[eco]]
-        else:
-            dd.loc[r10[eco], "variant"] = tag
-        out[tag] = {v: series_bound(g, rho)[0] for v, g in dd.groupby("variant")}
-    moves = [abs(out[a][v] - out[b][v]) for v in ("light enzyme", "heavy enzyme")
-             for a in out for b in out]
-    gap = min(F0 - x for o in out.values() for x in o.values())
-    return max(moves), gap
+    g = d[(d.family == "ecDHFR") & (d.variant == "light enzyme")].copy()
+    fac = (1.0 - p) + p * g.K_HT / g.K_DT
+    g["K_DT"], g["K_DT_se"] = g.K_DT / fac, g.K_DT_se / fac
+    pmax = max(F_min_exact(r.K_HT, r.K_DT)[0] for _, r in g.iterrows())
+    return float(pmax), series_bound(g, rho)[0]
 
 
 def coverage_check(family="ecDHFR", variant="W133F", rho=-1.0, reps=20000,
@@ -267,11 +294,12 @@ def main():
     say("Coverage, ecDHFR W133F as recorded taken as truth, rho = -1:")
     say(f"  P(bound > true maximum): quantile of resampled maximum {old:.3f}, "
         f"Bonferroni maximum {new:.3f} (nominal 0.05)")
-    mv, gap = assignment_sensitivity()
+
+    pmax, plcb = protium_sensitivity()
     say("")
-    say("The unpaired 10 C ecDHFR record (assigned by interpolation): over light,")
-    say(f"heavy and dropped, a bound moves by at most {mv:.4f} at rho = -1 and every")
-    say(f"bound stays at least {gap:.4f} below F0.")
+    say("ecDHFR light series with 1.25% protium at the transferred position of the")
+    say(f"D/T comparator: largest point endpoint {pmax:+.4f}, bound at rho = -1 "
+        f"{plcb:+.4f} (F0 {F0:+.4f}).")
 
     with open("../results/bounds_uncertainty.txt", "w") as f:
         f.write("\n".join(OUT) + "\n")

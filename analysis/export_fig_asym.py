@@ -82,7 +82,9 @@ for _, r in b.iterrows():
         lab = f"{r.family} {r.variant}"
         if r.family in multi:
             lab += f" ({r.step})"
-    rows.append((lab, r.point, r.lcb, "series", _series_closed(r)))
+    g = _TB[(_TB.family == r.family) & (_TB.variant.astype(str) == str(r.variant))
+            & (_TB.step.astype(str) == str(r.step))]
+    rows.append((lab, r.point, r.lcb, "series", _series_closed(r), g))
 
 single = corpus.single_condition()
 # A form measured by two studies at different temperatures is two analysis
@@ -98,9 +100,20 @@ for _, r in single.iterrows():
         lab = f"{r.family} {r.variant}"
         if (r.family, r.variant) in _dup:
             lab += f" {int(r.T_C)}$^\\circ$C"
-    rows.append((lab, f, _lcb(f, r.K_HT, r.K_HT_se, r.K_DT, r.K_DT_se), r.grp, cl))
+    rows.append((lab, f, _lcb(f, r.K_HT, r.K_HT_se, r.K_DT, r.K_DT_se), r.grp, cl,
+                 pd.DataFrame([r])))
 
-df = pd.DataFrame(rows, columns=["label", "point", "lcb", "grp", "closed"])
+df = pd.DataFrame(rows, columns=["label", "point", "lcb", "grp", "closed", "recs"])
+# Two marks, both computed (2026-10-15, after an external audit):
+#   dagger   - a series with a recorded pair outside the normal-order domain;
+#              its row summarizes the admissible temperatures only
+#   asterisk - a unit whose rho = -1 bound still clears F0 after adjustment
+#              across all analysis units (bounds_uncertainty.multiplicity_bound)
+import bounds_uncertainty as BU
+_U = corpus.counts()["units"]
+df["dagger"] = [bool(((g.K_HT <= g.K_DT) | (g.K_DT <= 1)).any()) for g in df.recs]
+df["star"] = [bool(lcb > F0 and BU.multiplicity_bound(g, _U, RHO) > F0)
+              for lcb, g in zip(df.lcb, df.recs)]
 df = df.sort_values("point").reset_index(drop=True)
 df["y"] = np.arange(len(df)) + 1
 inf_mask = df.lcb > F0
@@ -150,9 +163,11 @@ with open(OUT + "fa_rays.tex", "w") as fh:
             fh.write(f"\\node[font=\\fontsize{{8.2}}{{9.6}}\\selectfont, color={col}, "
                      f"anchor=east, inner sep=0.6pt] at (axis cs:{XMIN:.5f},{r.y}) "
                      f"{{$\\ll$}};\n")
-        lab = (f"{r.label} ({r.point:+.2f})" if r.point > XMAX else
-               r.label if r.point >= XMIN else f"{r.label} ({r.point:.2f})")
+        lab = (f"{r.label} (${r.point:+.2f}$)" if r.point > XMAX else
+               r.label if r.point >= XMIN else f"{r.label} (${r.point:.2f}$)")
         lab = lab.replace("%", "\\%")   # solvent rows carry a percent sign
+        lab += "$^{\\dagger}$" if r.dagger else ""
+        lab += "$^{\\ast}$" if r.star else ""
         # off-scale rows carry a chevron at XMIN, so their labels sit further
         # left to keep clear of it
         dx = 0.032 if r.point >= XMIN else 0.060
@@ -162,5 +177,6 @@ for _, r in off.iterrows():
     print(f"   off-scale: {r.label} at {r.point:+.4f}")
 
 print(f"panel: {int(inf_mask.sum())} informative of {len(df)}")
+print(f"panel: dagger on {list(df.label[df.dagger])}; asterisk on {list(df.label[df.star])}")
 print(f"panel: {int(df.closed.sum())} closed endpoints, "
       f"{int((~df.closed).sum())} open")

@@ -122,7 +122,7 @@ def F_min_vec(kht, kdt, gamma=GSC):
 def F_min_binding(kht, kdt, aH, bH, aD, bD, gamma=GSC):
     """Endpoint with isotope-sensitive association (alpha) and dissociation (beta).
 
-    Proposition S8: K/alpha is the series map acting on u = x/beta, so for a shared
+    Proposition S7: K/alpha is the series map acting on u = x/beta, so for a shared
     commitment and no bypass the endpoint is
 
         F_min(K_HT/alpha_H, K_DT/alpha_D) + ln beta_H - gamma ln beta_D,

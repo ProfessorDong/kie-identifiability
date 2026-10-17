@@ -22,7 +22,7 @@
 
 \begin{axis}[asym, name=A, width=68mm, height=101mm,
   xmin=-0.50, xmax=0.20, ymin=0.2, ymax=35.6,
-  xlabel={endpoint of the identified set, $F_{\min}$},
+  xlabel={endpoint of the compatible set, $F_{\min}$},
   ytick=\empty, ymajorgrids=false,
   y axis line style={draw=none}, ytick style={draw=none},
   xtick={-0.4,-0.2,0,0.2}, minor x tick num=1,
@@ -43,7 +43,9 @@
 
   % Short forms: the narrower axis leaves no room for the fuller wording, and
   % the caption carries it.  The red key is dropped for the same reason.
-  \node[annc, anchor=south, color=cGrey!70!black] at (axis cs:-0.30,31.6)
+  % above the F93W 3 C row, whose whisker runs under y = 32: only the three
+  % red rows lie higher, and their whiskers start right of F0
+  \node[annc, anchor=north, color=cGrey!70!black] at (axis cs:-0.30,35.45)
     {set contains\\both thresholds};
   % Placed below the three rows that reach past F0, not above them: at the top
   % it covered the yeast ray, the one row the region exists to show.

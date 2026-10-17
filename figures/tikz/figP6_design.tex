@@ -1,0 +1,171 @@
+\documentclass[border=2pt,tikz]{standalone}
+\input{icigstyle}
+\usepgfplotslibrary{fillbetween}
+\begin{document}
+\begin{tikzpicture}
+% Design figure, full text width.  Every curve is computed by
+% analysis/export_fig_design.py.
+\input{data/fd_levels.tex}
+\pgfplotsset{
+  des/.style={icig, scale only axis,
+    label style={font=\fontsize{8.0}{9.6}\selectfont, color=cInk},
+    tick label style={font=\fontsize{7.2}{8.6}\selectfont, color=cInk},
+    title style={font=\fontsize{8.6}{10.4}\selectfont\bfseries, color=cInk,
+                 align=left}},
+}
+\tikzset{
+  ann/.style={font=\fontsize{7.2}{8.6}\selectfont, color=cInk, align=left,
+              inner sep=0pt},
+  annc/.style={font=\fontsize{7.2}{8.6}\selectfont, color=cInk, align=center,
+              inner sep=0pt},
+}
+
+% =====================================================================
+% (A) bypass and binding act on one map
+% =====================================================================
+\begin{axis}[des, name=A, width=58mm, height=40mm,
+  xmin=0, xmax=0.24, ymin=0, ymax=0.20,
+  xlabel={bypass ratio $\phi=k_b/k_{\mathrm T}$},
+  ylabel={binding offset $F_{\mathrm{bind}}$},
+  xtick={0,0.05,0.1,0.15,0.2},
+  xticklabels={$0$,$0.05$,$0.10$,$0.15$,$0.20$},
+  ytick={0,0.05,0.1,0.15,0.2},
+  yticklabels={$0$,$0.05$,$0.10$,$0.15$,$0.20$},
+  clip=true,
+  title={(\textit{\textbf{A}})\ \ yeast: two nuisances, one map}]
+  \addplot[name path=HI, draw=none] table[x=phi,y=fb] {data/fd_joint_rhi.dat};
+  \path[name path=AX] (axis cs:0,0) -- (axis cs:0.2,0);
+  \addplot[cHyd!14] fill between[of=HI and AX, split,
+    every segment no 1/.style={fill=none}];
+  % the separate tolerances, which suggest a rectangle
+  \draw[cGrey, line width=0.6pt, densely dashed]
+    (axis cs:0,\fdFbTol) -- (axis cs:\fdPhiTolHi,\fdFbTol)
+    (axis cs:\fdPhiTolLo,0) -- (axis cs:\fdPhiTolLo,\fdFbTol)
+    (axis cs:\fdPhiTolHi,0) -- (axis cs:\fdPhiTolHi,\fdFbTol);
+  \addplot[cHyd, line width=1.0pt] table[x=phi,y=fb] {data/fd_joint_rhi.dat};
+  \addplot[cHyd, line width=0.8pt, densely dashed] table[x=phi,y=fb]
+    {data/fd_joint_rlo.dat};
+  \addplot[cInk, line width=0.7pt, densely dotted] table[x=phi,y=fb]
+    {data/fd_line.dat};
+  \addplot[only marks, mark=x, mark size=2.6pt, cPro, line width=1.0pt]
+    coordinates {(\fdPtPhi,\fdPtFb)};
+  \node[ann, color=cGrey!80!black, anchor=west] at (axis cs:0.172,0.150)
+    {separate\\tolerances};
+  \node[ann, color=cHyd!85!black, anchor=south, rotate=-41.8]
+    at (axis cs:0.050,0.129) {$r=1.31$};
+  \node[ann, color=cHyd!85!black, anchor=north, rotate=-51]
+    at (axis cs:0.064,0.052) {$r=1.57$};
+  \node[ann, color=cHyd!85!black, anchor=south west] at (axis cs:0.008,0.012)
+    {exclusion\\survives};
+  \node[ann, color=cPro, anchor=west] at (axis cs:0.088,0.098)
+    {finite model\\fits both};
+\end{axis}
+
+% =====================================================================
+% (B) completion with a commitment
+% =====================================================================
+\begin{axis}[des, name=B, width=58mm, height=40mm,
+  at={($(A.east)+(20mm,0)$)}, anchor=west,
+  xmode=log, log basis x=10, xmin=5, xmax=1e4, ymin=-0.10, ymax=0.82,
+  xlabel={reciprocal commitment $c$},
+  ylabel={completed offset $F^{\mathrm{int}}$},
+  xtick={10,100,1000,10000},
+  xticklabels={$10$,$10^{2}$,$10^{3}$,$10^{4}$},
+  ytick={0,0.2,0.4,0.6,0.8},
+  yticklabels={$0$,$0.2$,$0.4$,$0.6$,$0.8$},
+  clip=true,
+  title={(\textit{\textbf{B}})\ \ a commitment turns the bound into a value}]
+  \fill[cGold!16] (axis cs:\fdClo,-0.10) rectangle (axis cs:\fdChi,0.82);
+  \draw[cAcc, line width=0.7pt] (axis cs:5,\fdFzero) -- (axis cs:1e4,\fdFzero);
+  \draw[cInk, line width=0.6pt, densely dashed] (axis cs:5,0) -- (axis cs:1e4,0);
+  \draw[cPro, line width=0.5pt, densely dotted]
+    (axis cs:5,\fdFobs) -- (axis cs:1e4,\fdFobs);
+  \draw[cGrey, line width=0.5pt, densely dotted]
+    (axis cs:\fdCsing,-0.10) -- (axis cs:\fdCsing,0.82);
+  \addplot[cGrey, line width=0.8pt, densely dashed] table[x=c,y=F]
+    {data/fd_comp_r1.dat};
+  \addplot[cPro, line width=1.1pt] table[x=c,y=F] {data/fd_comp_joint.dat};
+  \addplot[only marks, mark=*, mark size=1.6pt, cPro]
+    coordinates {(\fdClo,\fdFhi) (\fdChi,\fdFlo)};
+  \node[annc, color=cGold!70!black, anchor=north] at (axis cs:30,0.80)
+    {Klinman\\1976};
+  \node[ann, color=cPro, anchor=north east] at (axis cs:9800,\fdFobs-0.012)
+    {endpoint, $c\to\infty$};
+  \node[ann, color=cAcc!85!black, anchor=north east] at (axis cs:9800,\fdFzero-0.008)
+    {$\Fz$};
+  \node[ann, color=cGrey, anchor=north west, rotate=90] at (axis cs:\fdCsing*1.07,0.30)
+    {$c=\KHT-1$};
+  \node[ann, color=cPro, anchor=west] at (axis cs:75,0.30) {$r$ solved jointly};
+  \node[ann, color=cGrey!90!black, anchor=west] at (axis cs:210,0.20) {$r=1$};
+\end{axis}
+
+% =====================================================================
+% (C) pooling cannot fix the scale
+% =====================================================================
+\begin{axis}[des, name=C, width=58mm, height=44mm,
+  at={($(A.south west)+(0,-22mm)$)}, anchor=north west,
+  xmin=0, xmax=0.82, ymin=0, ymax=3.2,
+  xlabel={$\ln K_{\mathrm{DT}}$ or $\ln x_{\mathrm D}$},
+  ylabel={$\ln K_{\mathrm{HT}}$ or $\ln x_{\mathrm H}$},
+  xtick={0,0.2,0.4,0.6,0.8}, ytick={0,1,2,3},
+  clip=true,
+  title={(\textit{\textbf{C}})\ \ nine variants fix a curve, not a point}]
+  \addplot[cInk, line width=0.6pt, densely dashed] table[x=xd,y=xh]
+    {data/fd_pool_ray.dat};
+  \addplot[cGrey!80, line width=0.7pt] table[x=xd,y=xh] {data/fd_pool_seen.dat};
+  \addplot[cAcc, line width=1.4pt] table[x=xd,y=xh] {data/fd_pool_open.dat};
+  \addplot[only marks, mark=*, mark size=1.25pt, cInk] table[x=xd,y=xh]
+    {data/fd_pool_obs.dat};
+  \addplot[only marks, mark=diamond*, mark size=2.6pt, cPro,
+    mark options={draw=white, line width=0.3pt}]
+    coordinates {(0.693147,2.484907)};
+  \addplot[only marks, mark=diamond*, mark size=2.6pt, cHyd,
+    mark options={draw=white, line width=0.3pt}]
+    coordinates {(0.510826,1.321756)};
+  \node[ann, color=cPro, anchor=east] at (axis cs:0.665,2.60)
+    {$(12,\,2)$, $F=+0.164$};
+  \node[ann, color=cHyd, anchor=west] at (axis cs:0.545,1.22)
+    {$(3.75,\,5/3)$,\\$F=-0.389$};
+  \node[ann, anchor=north west] at (axis cs:0.03,1.55)
+    {nine observed\\variants};
+  \draw[cInk!60, line width=0.4pt] (axis cs:0.15,1.02) -- (axis cs:0.29,0.66);
+  \node[ann, anchor=north, rotate=33] at (axis cs:0.70,2.27) {$F=0$};
+  \node[ann, color=cAcc!85!black, anchor=west] at (axis cs:0.59,0.55)
+    {compatible\\intrinsic pairs};
+  \draw[cAcc!70, line width=0.4pt] (axis cs:0.63,0.80) -- (axis cs:0.47,1.05);
+\end{axis}
+
+% =====================================================================
+% (D) the error budget at known commitment
+% =====================================================================
+\begin{axis}[des, name=D, width=58mm, height=44mm,
+  at={($(C.east)+(20mm,0)$)}, anchor=west,
+  xmode=log, log basis x=10, xmin=1.15, xmax=30, ymin=0, ymax=0.12,
+  xlabel={$m=c_{\mathrm H}/(\KHT-1)$},
+  ylabel={standard error of $F^{\mathrm{int}}$},
+  xtick={2,3,5,10,20}, xticklabels={$2$,$3$,$5$,$10$,$20$},
+  ytick={0,0.02,0.04,0.06,0.08,0.1,0.12},
+  yticklabels={$0$,$0.02$,$0.04$,$0.06$,$0.08$,$0.10$,$0.12$},
+  clip=true,
+  title={(\textit{\textbf{D}})\ \ the isotope errors set a floor}]
+  \fill[cBandG!12] (axis cs:1.15,0) rectangle (axis cs:30,\fdTarget);
+  \draw[cBandG, line width=0.7pt] (axis cs:1.15,\fdTarget) -- (axis cs:30,\fdTarget);
+  \addplot[cPro, line width=1.0pt] table[x=m,y=isom1] {data/fd_budget.dat};
+  \addplot[cPro, line width=1.0pt, densely dashed] table[x=m,y=iso0]
+    {data/fd_budget.dat};
+  \addplot[cGold, line width=1.0pt, densely dotted] table[x=m,y=comm10]
+    {data/fd_budget.dat};
+  \addplot[only marks, mark=*, mark size=1.5pt, cPro] table[x=m,y=isom1]
+    {data/fd_budget_m3.dat};
+  \addplot[only marks, mark=*, mark size=1.5pt, cPro] table[x=m,y=iso0]
+    {data/fd_budget_m3.dat};
+  \node[ann, color=cPro, anchor=south west] at (axis cs:3.15,0.058) {$0.057$ at $m=3$, $\rho=-1$};
+  \node[ann, color=cPro, anchor=north west] at (axis cs:5.5,0.0385) {$0.044$ at $m=3$, $\rho=0$};
+  \node[ann, color=cBandG!80!black, anchor=north east] at (axis cs:28,0.0195)
+    {target $|\Fz|/2$};
+  \node[ann, color=cGold!85!black, anchor=west] at (axis cs:1.55,0.105)
+    {commitment to $10\%$};
+\end{axis}
+
+\end{tikzpicture}
+\end{document}
