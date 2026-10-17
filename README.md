@@ -599,6 +599,17 @@ the six figures build, `audit_numbers.py` passes, and no tracked file changes.
 The changes in `network_atlas.py` are to comments and docstrings only, and
 `offset_analysis.py` is untouched; neither was rerun.
 
+Re-verified for v1.8.8 on 2026-10-16 from a clean clone, same environment, with
+the fetched supplements in place: 42 scripts exit 0 (the v1.8.7 list plus
+`adh_primary.py`, `published_intrinsic.py`, `export_fig_overview.py`,
+`export_fig_envelope.py`, `export_fig_design.py`, `joint_nuisance.py` and
+`reversible.py`), `verify_derivation.py` reports no failures in 16 sections, the
+figures build, the audit passes, and no tracked file changes. The light ecDHFR
+series changes the inputs of `offset_analysis.py`, so it was rerun from the clean
+clone (about 55 minutes): it exits 0 and reproduces its tracked outputs exactly.
+`network_atlas.py`, whose computation this release does not touch, was not
+rerun.
+
 Re-verified for v1.8.7 on 2026-10-13 from a clean clone, same environment, with
 the fetched supplements in place: the same 35 scripts exit 0, the six figures
 build, `verify_derivation.py` reports no failures in 16 sections, the audit
