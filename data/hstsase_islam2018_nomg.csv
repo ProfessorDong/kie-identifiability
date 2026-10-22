@@ -1,0 +1,2 @@
+family,variant,step,T_C,K_HT,K_HT_se,K_DT,K_DT_se,note,source
+hsTSase,WT (no Mg2+),hydride,25,3.19,0.03,1.64,0.01,"Table 2, without Mg2+ (1 mM EDTA); the temperature is not printed: the with-Mg2+ cell of the same table equals the 25 C record of S2 Table, so 25 C is inferred; error type not stated",Islam2018

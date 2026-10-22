@@ -1,0 +1,6 @@
+family,variant,step,T_C,K_HT,K_HT_se,K_DT,K_DT_se,note,source
+LADH,F93W (Chin 2000),hydride,25,7.61,0.03,1.85,0.01,"Table 1 primary; standard error of the mean, n = 38 (H/T) and 41 (D/T); recombinant enzyme, pH 7, 300 mM potassium phosphate, 300 mM semicarbazide, 10 mM NAD+; an independent determination of the form in ladh_adh_primary.csv (Bahnson 1993)",ChinKlinman2000
+LADH,F93W-I224A,hydride,25,7.77,0.04,1.86,0.01,"Table 1 primary; standard error of the mean, n = 21 (H/T) and 23 (D/T); conditions as F93W",ChinKlinman2000
+LADH,F93W-I224L,hydride,25,7.40,0.05,1.85,0.01,"Table 1 primary; standard error of the mean, n = 21 (H/T) and 19 (D/T); conditions as F93W",ChinKlinman2000
+LADH,F93W-I224G,hydride,25,7.51,0.11,1.81,0.01,"Table 1 primary; standard error of the mean, n = 14 (H/T) and 21 (D/T); conditions as F93W",ChinKlinman2000
+LADH,F93W-I224V,hydride,25,7.45,0.05,1.81,0.01,"Table 1 primary; standard error of the mean, n = 19 (H/T) and 22 (D/T); conditions as F93W",ChinKlinman2000

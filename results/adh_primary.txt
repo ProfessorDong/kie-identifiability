@@ -16,22 +16,30 @@ LADH  V203A-F93W       7.650   1.910   3.144   7.31  -0.1324  0.0359  -0.1915   
 LADH  V203G            7.530   1.900   3.145   7.26  -0.1306  0.0181  -0.1603       no      no
 LADH  wild type        9.000   2.200   2.787   6.67  -0.4432  0.3142  -0.9601       no      no
 LADH  F93W            10.300   2.000   3.365   9.30   0.0109  0.1686  -0.2664       no      no
+LADH  F93W (Chin 2000)   7.610   1.850   3.299   7.78  -0.0307  0.0185  -0.0612       no      no
+LADH  F93W-I224A       7.770   1.860   3.304   7.87  -0.0280  0.0187  -0.0588       no      no
+LADH  F93W-I224L       7.400   1.850   3.253   7.53  -0.0587  0.0193  -0.0905       no      no
+LADH  F93W-I224G       7.510   1.810   3.398   8.04   0.0293  0.0236  -0.0096      YES      no
+LADH  F93W-I224V       7.450   1.810   3.385   7.96   0.0212  0.0197  -0.0111      YES      no
 YADH  wild type        7.130   1.730   3.584   8.40   0.1287  0.0399   0.0630      YES     YES
+YADH  wild type (p-methoxybenzyl alcohol)   8.060   1.940   3.149   7.51  -0.1323  0.1037  -0.3029       no      no
 
-  every record has L_H > gamma_SC = 3.349, so every identified set is
-  the open half-line (F_obs, inf) and no commitment lowers an endpoint.
-  LADH: 11 records, offsets -0.4432 to +0.0109, 1 not negative.
-        0 of 11 exclude anything.
-        10 of 11 sets contain 0 and every positive value:
+  18 of 18 records have L_H > gamma_SC = 3.349; each such
+  identified set is the open half-line (F_obs, inf) and no commitment lowers
+  its endpoint.
+  LADH: 16 records, offsets -0.4432 to +0.0293, 3 not negative.
+        2 of 16 exclude anything.
+        13 of 16 sets contain 0 and every positive value:
         consistent with tunneling, with the semiclassical locus, and
         with the gated model alike, so uninformative rather than
-        contradictory. The other 1 lies above 0.
-  YADH: offset +0.1287, excludes both.
+        contradictory. The other 3 lie above 0.
+  YADH wild type: offset +0.1287, excludes both.
+  YADH wild type (p-methoxybenzyl alcohol): offset -0.1323, excludes nothing.
 
   Bahnson et al. (1993) give the reason: the LADH reaction is partially
   rate limited by benzaldehyde dissociation, whereas YADH has a rate-
   limiting chemical step. Commitment drives the observed offset down,
-  which is the sign of every LADH value.
+  which is the sign of 13 of the 16 LADH values.
 
   The framework therefore predicts which systems can inform before any
   mechanism is assumed: those whose chemical step is rate limiting.
@@ -48,4 +56,9 @@ YADH  wild type        7.130   1.730   3.584   8.40   0.1287  0.0399   0.0630   
   V203G         25 C  F_min -0.1306   rho=-1 -0.1661   rho=0 -0.1603   rho=0.9 -0.1539
   wild type      3 C  F_min -0.4432   rho=-1 -1.0715   rho=0 -0.9595   rho=0.9 -0.8328
   F93W           3 C  F_min +0.0109   rho=-1 -0.2963   rho=0 -0.2661   rho=0.9 -0.2363
+  F93W (Chin 2000)  25 C  F_min -0.0307   rho=-1 -0.0669   rho=0 -0.0612   rho=0.9 -0.0548
+  F93W-I224A    25 C  F_min -0.0280   rho=-1 -0.0660   rho=0 -0.0587   rho=0.9 -0.0503
+  F93W-I224L    25 C  F_min -0.0587   rho=-1 -0.0996   rho=0 -0.0905   rho=0.9 -0.0791
+  F93W-I224G    25 C  F_min +0.0293   rho=-1 -0.0252   rho=0 -0.0095   rho=0.9 +0.0156
+  F93W-I224V    25 C  F_min +0.0212   rho=-1 -0.0202   rho=0 -0.0111   rho=0.9 +0.0002
   F93W at 25 C clears F0 for rho > 0.104

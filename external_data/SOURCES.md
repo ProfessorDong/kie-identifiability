@@ -21,13 +21,52 @@ sources are paywalled and must be downloaded manually; see below.
 | Sikorski et al., *JACS* **126**, 4778 (2004) | `10.1021/ja031683w` | light (wild-type) ecDHFR | **paywalled** |
 | Pagano et al., *ACS Catal.* **9**, 11199 (2019) | `10.1021/acscatal.9b03345` | FDH V123A, V123G | **paywalled** |
 
+## Series admitted after the census of 2026-10-20
+
+The census queries, their date and the stopping rule are in
+`census_queries.md` beside this file.
+
+A census of the two laboratories' publications (SI, "Source census") found
+these further series. Every one is transcribed from the table named, and every
+value of the PDF supplements is checked, with its error, against the PDF text
+by the transcription audit (`TRANSCRIBED` in `analysis/build_trinomial.py`);
+the two Word supplements and the scanned Rucker table were checked against the
+document's table and the page image (`HAND_TRANSCRIBED`). Row and temperature
+assignment was checked for every record: each H/T and D/T pair sits on one line
+of the source beside its temperature, or was read from the rendered page.
+These supplements are paywalled or distributed as Word files and are placed by
+hand in `external_data/si/manual/` under the publisher's file names.
+
+| Source | DOI | Contributes | Table | Records |
+|---|---|---|---|---|
+| Wang & Kohen, *JACS* **132**, 9820 (2010) | `10.1021/ja103010b` | ecTSase WT proton, 50 mM Mg2+ | SI Table S1 | 4 |
+| Wang et al., *JACS* **134**, 17722 (2012) | `10.1021/ja307859m` | ecTSase Y209W hydride (no D/T at 15 °C) | SI Table S4 | 3 |
+| Wang et al., *JACS* **135**, 7583 (2013) | `10.1021/ja400761x` | ecTSase WT hydride, 50 mM Mg2+ | SI Table S2 | 4 |
+| Hong et al., *JACS* **128**, 5636 (2006) | `10.1021/ja060196o` | ecTSase W80M hydride (its WT 20 °C column reprints Agrawal 2004) | SI Table S1 | 4 |
+| Islam et al., *JACS* **136**, 9850 (2014) | `10.1021/ja504341g` | ecTSase R166K hydride | SI Table S2 | 4 |
+| Islam et al., *ACS Catal.* **5**, 6061 (2015) | `10.1021/acscatal.5b01332` | ecTSase R166K proton (its Table S2 reprints Islam 2014) | SI Table S1 | 4 |
+| Gurevic et al., *ACS Catal.* **8**, 10241 (2018) | `10.1021/acscatal.8b02554` | ecTSase N177D, N177S hydride (its Table S1 reprints Wang 2013) | SI Tables S2, S3 | 8 |
+| Wang et al., *Biochemistry* **45**, 1383 (2006) | `10.1021/bi0518242` | ecDHFR G121V, pH 8.0 (Word supplement) | SI Table 1S | 5 |
+| Wang et al., *Phil. Trans. R. Soc. B* **361**, 1307 (2006) | `10.1098/rstb.2006.1871` | ecDHFR M42W, pH 8.0 (Word supplement) | ESM Table 1 | 5 |
+| Stojković et al., *Chem. Commun.* **46**, 8974 (2010) | `10.1039/c0cc02988b` | ecDHFR I14A, pH 8.0 | ESI Table 1S | 5 |
+| Singh et al., *ACS Catal.* **5**, 3067 (2015) | `10.1021/acscatal.5b00331` | ecDHFR I14A-G121V | SI Table S1 | 5 |
+| Liu et al., *PNAS* **111**, 18231 (2014) | `10.1073/pnas.1415940111` | ecDHFR Y100F, D27S, D27S-Y100F (pH 9.0) and WT at pH 7.0 | SI Tables S5–S8 | 20 |
+| Li et al., *Biochemistry* **58**, 3861 (2019) | `10.1021/acs.biochem.9b00460` | hsDHFR M53W, S145V, M53W-S145V (5–35 °C) | SI Table S2 | 12 |
+| Bandaria et al., *JACS* **131**, 10151 (2009) | `10.1021/ja902120t` | FDH WT, commercial enzyme (a mixture of isozymes) | SI Table S2 | 5 |
+| Guo et al., *Biochemistry* **55**, 2760 (2016) | `10.1021/acs.biochem.6b00181` | FDH WT, recombinant | SI Table S1 | 5 |
+| Ranasinghe et al., *JACS* **139**, 17405 (2017) | `10.1021/jacs.7b08359` | FDH half-heavy and heavy enzymes (its light-enzyme Table S1 reprints Guo 2016) | SI Tables S2, S3 | 14 |
+| Rucker et al., *Biochemistry* **31**, 11489 (1992) | `10.1021/bi00161a030` | yeast ADH with p-chlorobenzyl alcohol, 0 and 25 °C (scanned) | Table IV | 2 |
+
+Single-condition records admitted at the same time are listed under "Records
+transcribed by hand".
+
 ## Sources examined and excluded
 
 | Source | DOI | Why excluded |
 |---|---|---|
 | Stojković et al., *JACS* **134**, 1738 (2012) | `10.1021/ja209425w` | Publishes only Northrop-derived *intrinsic* effects; the observed H/T and D/T values appear nowhere. Those intrinsic pairs are pinned to `F = 0` by construction and carry no information about the discriminating invariant. |
 | Austin-Kloppe et al., *Chem. Sci.* **17**, 12440 (2026) | `10.1039/D6SC01847E` | 38 solution-phase hydride transfers (34 from NADH/NAD+ models, analyzed quantitatively), but deuterium only. No second isotope pair, so the offset cannot be formed. |
-| Kohen et al., *Nature* **399**, 496 (1999) | `10.1038/20981` | ht-ADH. Its well-known anomalous Swain–Schaad result is the **secondary** exponent, outside the model class treated here. Primary data are published as Arrhenius ratios only, which constrain the offset to about ±0.5. |
+| Kohen et al., *Nature* **399**, 496 (1999) | `10.1038/20981` | ht-ADH. Its well-known anomalous Swain–Schaad result is the **secondary** exponent, outside the model class treated here. Primary data are published only as Arrhenius prefactor ratios (F_A = -0.38 ± 0.52), which is not the offset at any temperature because the activation-energy differences are not reported. |
 
 ## Manual downloads
 
@@ -91,12 +130,19 @@ single-condition records, and every script that needs them reads that list.
 | Grant & Klinman, *Biochemistry* **28**, 6597 (1989), [10.1021/bi00442a010](https://doi.org/10.1021/bi00442a010) | `data/bsao_grant1989.csv` | Table I averages, 25 °C | 1 |
 | Jonsson, Edmondson & Klinman, *Biochemistry* **33**, 14871 (1994), [10.1021/bi00253a026](https://doi.org/10.1021/bi00253a026) | `data/trinomial_benchmark.csv` (family `MAOB`) | Tables 1 and 3 | 10 |
 | Agrawal, Hong, Mihai & Kohen, *Biochemistry* **43**, 1998 (2004), [10.1021/bi036124g](https://doi.org/10.1021/bi036124g) | `data/agrawal2004_ectsase.csv` | Results text, 20 °C: 6.91 ± 0.05 and 1.78 ± 0.02 (the other temperatures are plotted only and are not digitized) | 1 |
+| Rucker, Cha, Jonsson, Grant & Klinman, *Biochemistry* **31**, 11489 (1992), [10.1021/bi00161a030](https://doi.org/10.1021/bi00161a030) | `data/trinomial_benchmark.csv` (family `YADH`), `data/yadh_rucker1992.csv`, `data/bsao_rucker1992.csv` | Table IV (yeast ADH, p-chlorobenzyl alcohol, 0 and 25 °C); Table V (yeast ADH, p-methoxybenzyl alcohol, 25 °C; its H/T is an extrapolation to zero enzyme concentration, Fig. 3); Table I and text (bovine serum amine oxidase, p-methoxybenzylamine, 25 °C: H/T 20.2 ± 1.9; D/T 2.86 ± 0.05 stated in the text, Table II giving the two determinations). D/T corrected by the authors for protium | 4 |
+| Chin & Klinman, *Biochemistry* **39**, 1278 (2000), [10.1021/bi9920331](https://doi.org/10.1021/bi9920331) | `data/ladh_chin2000.csv` | Table 1: F93W and the double mutants F93W:I224A, I224L, I224G, I224V at 25 °C, pH 7 (standard errors of the mean, 14 to 41 determinations) | 5 |
+| Hong, Maley & Kohen, *Biochemistry* **46**, 14188 (2007), [10.1021/bi701363s](https://doi.org/10.1021/bi701363s) | `data/ectsase_hong2007.csv` | Table 1: ecTSase wild type and Y94F, proton abstraction, 25 °C, at 5 µM CH2H4folate, no Mg2+ | 2 |
+| Islam et al., *PLoS ONE* **13**, e0196506 (2018), [10.1371/journal.pone.0196506](https://doi.org/10.1371/journal.pone.0196506) | `data/hstsase_islam2018_nomg.csv` | Table 2: hsTSase hydride without Mg2+ (temperature not printed; 25 °C inferred from the with-Mg2+ cell of the same table). Its two ecTSase pairs are quotations: 4.14/1.65 is Wang et al. 2013 SI Table S2 at 25 °C; 7.07/1.81 is printed in neither cited source and is not admitted | 1 |
+| Sen, Yahashiri & Kohen, *Biochemistry* **50**, 6462 (2011), [10.1021/bi2003873](https://doi.org/10.1021/bi2003873) | `data/dhfr_sen.csv` | Table 1: ecDHFR with dihydrofolate, ecDHFR with dihydrobiopterin, and R67 (type II) DHFR (standard deviations; the temperature of these runs is not printed) | 3 |
+| Sen, Stojković & Kohen, *Anal. Biochem.* **430**, 123 (2012), [10.1016/j.ab.2012.08.012](https://doi.org/10.1016/j.ab.2012.08.012) | `data/dhfr_sen.csv` | Table 2, [carbonyl-14C] row: ecDHFR wild type, 25 °C, pH 9.0 (its [Ad-14C] row reprints Sikorski 2004) | 1 |
 
 The Tsai & Klinman methanol records were first excluded on the ground that a
 random component in the mechanism breaks the single shared observation map.
 That was wrong on both counts: the competitive runs were made at 10 mM NAD+,
-far above its 0.75 mM Michaelis constant, which the authors state ensures an
-ordered pathway, and a random mechanism with no route around the chemical step
+for F93W far above its 0.75 mM Michaelis constant, which the authors state
+ensures an ordered pathway (no Michaelis constant is reported for the wild type
+in 50% methanol), and a random mechanism with no route around the chemical step
 still gives the base map at fixed cosubstrate. They were admitted on
 2026-10-13 under the same rule as every other source. `data/ladh_bahnson.csv`
 is the 1997 re-tabulation of the Bahnson Table 1 values (L57F and F93W rounded

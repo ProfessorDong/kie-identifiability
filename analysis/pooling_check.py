@@ -114,6 +114,32 @@ def pooled_compatible_set(zH, R, n=4000):
     return float(F.min())
 
 
+def pooled_means(d, rho=0.0, alpha=0.05):
+    """Inverse-variance mean of the observed offset within each series, with its
+    one-sided bound, for the series whose mean lies above F0.
+
+    Pooling is licensed only where a constant offset fits (chi2/dof near or
+    below one); this reports the means so the text can say which series a
+    pooled reading would bring into play, and whether its bound would.
+    """
+    from scipy import stats
+    import masses as M
+    G, F0 = M.gamma_sc("C"), M.offset_F0("C")
+    z = stats.norm.ppf(1 - alpha)
+    out = []
+    ok = d[(d.K_HT > d.K_DT) & (d.K_DT > 1)]
+    for k, g in ok.groupby(KEY):
+        f = np.log(g.K_HT) - G * np.log(g.K_DT)
+        a, b = g.K_HT_se / g.K_HT, G * g.K_DT_se / g.K_DT
+        w = 1 / (a * a + b * b - 2 * rho * a * b)
+        m = float((w * f).sum() / w.sum())
+        if m > F0:
+            se = float(np.sqrt(1 / w.sum()))
+            out.append(dict(series=" ".join(k), n_T=len(g), mean=m, lcb=m - z * se,
+                            chi2_dof=float(((f - m) ** 2 * w).sum() / max(len(g) - 1, 1))))
+    return pd.DataFrame(out)
+
+
 def main():
     d = pd.read_csv("../data/trinomial_benchmark.csv")
     print(f"constant-offset fit within each series, {d.groupby(KEY).ngroups} series")
@@ -128,6 +154,10 @@ def main():
     r0 = series_chi2(d, 0.0)
     print("\n  worst five at rho = 0:")
     print(r0.sort_values("chi2_dof", ascending=False).head(5).to_string(index=False))
+
+    pm = pooled_means(d, 0.0)
+    print("\n  series whose weighted mean offset exceeds F0 (rho = 0):")
+    print(pm.to_string(index=False, float_format=lambda v: f"{v:+.4f}"))
 
     f = ladh_shared_pair_fit()
     print(f"\nnine 25 C horse liver forms, one shared intrinsic pair:")

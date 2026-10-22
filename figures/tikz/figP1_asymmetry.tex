@@ -2,55 +2,53 @@
 \input{icigstyle}
 \begin{document}
 \begin{tikzpicture}
-% Double-column figure, ~130 mm wide and ~113 mm tall, drawn at final size so no rescaling
-% occurs in the manuscript and the type sizes below are the ones the reader sees.
-% Until 2026-09-15 it was drawn single-column at 87 mm with 6.2 pt row labels,
-% which a review measured as too small for print; double-column figures of
-% 300-504 pt are standard.  The axis is cut at -0.50; the two systems below it carry their
-% endpoints in the row label.  |F0| spans ~3.5 mm here, so the magnified inset
-% used by the earlier two-column version is unnecessary.
+% Two panels side by side, ~163 mm wide and ~112 mm tall, drawn at final size
+% so no rescaling occurs in the manuscript.  Until 2026-10-20 this was one panel
+% of 35 rows; the source census doubled the corpus to 73 analysis units, and a
+% single column of 73 rows would not fit a page with its caption.  Panel A holds
+% the lower half of the endpoints, panel B the upper half, which contains every
+% unit whose endpoint or bound reaches the model envelope.  The axis is cut at
+% -0.50 in both panels; rows below it carry their endpoints in the row label.
+\input{data/fa_rows.tex}
 \pgfplotsset{
-  asym/.style={icig, scale only axis,
-    label style={font=\fontsize{9}{10.8}\selectfont, color=cInk},
-    tick label style={font=\fontsize{8.5}{10.2}\selectfont, color=cInk}},
+  asym/.style={icig, scale only axis, width=31mm,
+    xmin=-0.50, xmax=0.20, ytick=\empty, ymajorgrids=false,
+    y axis line style={draw=none}, ytick style={draw=none},
+    xtick={-0.4,-0.2,0,0.2}, minor x tick num=1,
+    xticklabel style={/pgf/number format/.cd, fixed, precision=1, /tikz/.cd},
+    xlabel={endpoint $F_{\min}$}, clip=false,
+    label style={font=\fontsize{8.5}{10.2}\selectfont, color=cInk},
+    tick label style={font=\fontsize{8}{9.6}\selectfont, color=cInk}},
 }
 \tikzset{
-  rowlab/.style={font=\fontsize{8.2}{9.6}\selectfont, color=cInk,
-                 anchor=east, inner sep=1.2pt},
-  annc/.style={font=\fontsize{8.4}{10}\selectfont, color=cInk, align=center},
+  rowlab/.style={font=\fontsize{7.6}{9}\selectfont, color=cInk,
+                 anchor=east, inner sep=1.0pt},
+  annc/.style={font=\fontsize{7.8}{9.2}\selectfont, color=cInk, align=center},
+  plab/.style={font=\fontsize{9}{10.8}\selectfont\bfseries, color=cInk, anchor=north west},
+}
+\def\faPanel#1#2#3{%
+  % #1 rows, #2 data file, #3 panel letter
+  \addplot[draw=none, fill=cGrey!10] coordinates
+    {(-0.50,0.3) (-0.042086,0.3) (-0.042086,#1+0.7) (-0.50,#1+0.7)} \closedcycle;
+  \addplot[draw=none, fill=cBandG!13] coordinates
+    {(-0.042086,0.3) (0.20,0.3) (0.20,#1+0.7) (-0.042086,#1+0.7)} \closedcycle;
+  \input{#2}
+  \draw[cBandG!60!black, line width=0.6pt] (axis cs:-0.042086,0.3) --
+       (axis cs:-0.042086,#1+0.7);
+  \draw[cInk, line width=0.5pt, dashed] (axis cs:0,0.3) -- (axis cs:0,#1+0.7);
 }
 
-\begin{axis}[asym, name=A, width=68mm, height=101mm,
-  xmin=-0.50, xmax=0.20, ymin=0.2, ymax=35.6,
-  xlabel={endpoint of the compatible set, $F_{\min}$},
-  ytick=\empty, ymajorgrids=false,
-  y axis line style={draw=none}, ytick style={draw=none},
-  xtick={-0.4,-0.2,0,0.2}, minor x tick num=1,
-  xticklabel style={/pgf/number format/.cd, fixed, precision=1, /tikz/.cd},
-  clip=false]
-
-  % left of F0 the set contains both thresholds; right of it the set clears F0
-  \addplot[draw=none, fill=cGrey!10] coordinates
-    {(-0.50,0.2) (-0.042086,0.2) (-0.042086,35.6) (-0.50,35.6)} \closedcycle;
-  \addplot[draw=none, fill=cBandG!13] coordinates
-    {(-0.042086,0.2) (0.20,0.2) (0.20,35.6) (-0.042086,35.6)} \closedcycle;
-
-  \input{data/fa_rays.tex}
-
-  \draw[cBandG!60!black, line width=0.6pt] (axis cs:-0.042086,0.2) --
-       (axis cs:-0.042086,35.6);
-  \draw[cInk, line width=0.5pt, dashed] (axis cs:0,0.2) -- (axis cs:0,35.6);
-
-  % Short forms: the narrower axis leaves no room for the fuller wording, and
-  % the caption carries it.  The red key is dropped for the same reason.
-  % above the F93W 3 C row, whose whisker runs under y = 32: only the three
-  % red rows lie higher, and their whiskers start right of F0
-  \node[annc, anchor=north, color=cGrey!70!black] at (axis cs:-0.30,35.45)
-    {set contains\\both thresholds};
-  % Placed below the three rows that reach past F0, not above them: at the top
-  % it covered the yeast ray, the one row the region exists to show.
-  \node[annc, anchor=south, color=cBandG!55!black] at (axis cs:0.110,12.0)
-    {set clears\\$\Fz$};
+\begin{axis}[asym, name=A, height=\faRowsA*2.95mm, ymin=0.3, ymax=\faRowsA+0.7]
+  \faPanel{\faRowsA}{data/fa_rays_a.tex}{A}
+  % the shaded band right of F0 is empty in this panel, so the key sits there
+  \node[annc, anchor=center, color=cBandG!55!black] at (axis cs:0.079,\faRowsA/2)
+    {set\\clears\\$\Fz$};
 \end{axis}
+\begin{axis}[asym, name=B, at={($(A.south east)+(49mm,0)$)}, anchor=south west,
+  height=\faRowsB*2.95mm, ymin=0.3, ymax=\faRowsB+0.7]
+  \faPanel{\faRowsB}{data/fa_rays_b.tex}{B}
+\end{axis}
+\node[plab] at ($(A.north west)+(-45mm,6mm)$) {A};
+\node[plab] at ($(B.north west)+(-47mm,6mm)$) {B};
 \end{tikzpicture}
 \end{document}

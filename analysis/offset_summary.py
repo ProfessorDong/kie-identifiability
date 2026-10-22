@@ -38,8 +38,10 @@ def main():
     say("=" * 84)
     say(f"gamma_SC = {M.gamma_sc('C'):.5f} (C-H reduced masses)")
     say(f"semiclassical: F = 0     gated-tunneling ridge: F0 = {F0:+.6f}")
-    say(f"a series discriminates only if its 95% interval is narrower than")
-    say(f"|F0| = {abs(F0):.4f} and lands on one side of it.")
+    say("The gated model allows offsets at or below F0, the semiclassical")
+    say("reference is F = 0.  Conditional on one offset shared across temperature,")
+    say("an interval wholly below F0 is consistent with the former only, one wholly")
+    say("above F0 with the latter only (and with neither if it also excludes 0).")
     say("")
 
     say("-" * 84)
@@ -60,8 +62,14 @@ def main():
         f"  ({a.width.median()/abs(F0):.1f}x the signal)")
     say(f"  series excluding BOTH 0 and F0     : "
         f"{int((a.excludes_semiclassical & a.excludes_ridge).sum())}")
-    say(f"  series that DISCRIMINATE           : "
-        f"{int(((a.width < abs(F0)) & (a.excludes_semiclassical ^ a.excludes_ridge)).sum())}")
+    below = a[a.F_hi < F0]
+    above = a[a.F_lo > F0]
+    say(f"  intervals wholly below F0          : {len(below)}  "
+        f"({', '.join(below.family + ' ' + below.variant)})")
+    say(f"  intervals wholly above F0          : {len(above)}  "
+        f"({', '.join(above.family + ' ' + above.variant)})")
+    say(f"  narrower than |F0| and one side    : "
+        f"{int(((a.width < abs(F0)) & ((a.F_hi < F0) | (a.F_lo > F0))).sum())}")
     say("")
 
     say("-" * 84)
@@ -85,8 +93,8 @@ def main():
         f"  (p = {rho.pvalue:.4f})")
     say(f"  median width, adequate fits   : {a.width.median():.3f}")
     say(f"  median width, inadequate fits : {b.width.median():.3f}")
-    say("  Worse fits give TIGHTER intervals: the signature of misspecification,")
-    say("  not of information.")
+    say("  Where worse fits give tighter intervals, that is the signature of")
+    say("  misspecification, not of information.")
     say("")
 
     say("-" * 84)
@@ -105,18 +113,15 @@ def main():
     say("=" * 84)
     say("CONCLUSION")
     say("=" * 84)
-    say("Across every series the model can actually describe, the 95% interval")
-    say(f"on the discriminating invariant is at least {a.width.min()/abs(F0):.1f} times the")
-    say("separation between the two mechanisms. Not one series discriminates.")
-    say("")
-    say("The limitation is not the number of enzymes: four families, five")
-    say("systems, three organisms and two chemical steps all give the same")
-    say("answer. It is that F must be recovered through the commitment map,")
-    say("whose masking displaces the observed offset by up to 20x the signal.")
+    say("Across the series the model can describe, the narrowest 95% interval on")
+    say(f"the invariant is {a.width.min()/abs(F0):.2f} times the separation between the two")
+    say(f"references and the median {a.width.median()/abs(F0):.1f} times. The {len(below) + len(above)} intervals that")
+    say("lie wholly on one side of F0 rest on a shared offset, Arrhenius forms and")
+    say("chi-square calibration at n_T = 3 to 9, none of which the model-free")
+    say("bounds assume; they are not counted as exclusions.")
     say("")
     say(f"Precision target for a decisive experiment: a 95% interval on F")
-    say(f"inside {abs(F0):.3f} log-KIE units, i.e. at least "
-        f"{a.width.min()/abs(F0):.0f}-fold tighter than the best series here.")
+    say(f"inside {abs(F0):.3f} log-KIE units, which only the narrowest series here reaches.")
 
     d.to_csv("../results/offset_profiles_annotated.csv", index=False)
     with open("../results/offset_summary.txt", "w") as f:

@@ -1,0 +1,176 @@
+================================================================================================
+PROTIUM IN THE DEUTERATED COMPARATOR
+================================================================================================
+F0 = -0.0421; bounds one-sided 95% at rho = -1, exact quantiles of the
+endpoint with every correction applied draw by draw (series: Bonferroni over T).
+
+Sources (data/deuterium_purity.csv):
+  Cha1989              dideuterated    corrected                  p = 0.0065
+  Bahnson1993          dideuterated    corrected                  p = 0.0065
+  Bahnson1997          dideuterated    corrected_by_cited_method  
+  TsaiKlinman2001      dideuterated    uncorrected_measured       p = 0.0065
+  Grant1989            dideuterated    corrected                  p = 0.0065
+  Jonsson1994          dideuterated    corrected                  p = 0.0150
+  Pagano2019           monodeuterated  stated_purity              p = 0.0020
+  Sikorski2004         dideuterated    uncorrected_measured       p = 0.0125
+  Singh2014            monodeuterated  not_stated                 
+  Wang2014             monodeuterated  not_stated                 
+  Li2021               monodeuterated  not_stated                 
+  Islam2018            monodeuterated  not_stated                 
+  Abeysinghe2015       monodeuterated  stated_purity              p = 0.0050
+  Agrawal2004          monodeuterated  stated_purity              p = 0.0100
+  Rucker1992           dideuterated    corrected                  p = 0.0055
+  ChinKlinman2000      dideuterated    corrected_by_cited_method  
+  Hong2007             monodeuterated  stated_purity              p = 0.0050
+  Sen2011              monodeuterated  not_stated                 
+  Sen2012              monodeuterated  not_stated                 
+  Wang2010             monodeuterated  stated_purity              p = 0.0050
+  Wang2012             monodeuterated  stated_purity              p = 0.0050
+  Wang2013             monodeuterated  not_stated                 
+  Hong2006             monodeuterated  not_stated                 
+  Islam2014            monodeuterated  not_stated                 
+  Islam2015            monodeuterated  not_stated                 
+  Gurevic2018          monodeuterated  not_stated                 
+  WangTharp2006        dideuterated    stated_purity              p = 0.0010
+  WangGoodey2006PTRSB  dideuterated    stated_purity              p = 0.0010
+  Stojkovic2010        monodeuterated  not_stated                 
+  Singh2015            monodeuterated  not_stated                 
+  Liu2014              monodeuterated  not_stated                 
+  Li2019               monodeuterated  not_stated                 
+  Bandaria2009         monodeuterated  stated_purity              p = 0.0030
+  Guo2016              monodeuterated  stated_purity              p = 0.0020
+  Ranasinghe2017       monodeuterated  stated_purity              p = 0.0020
+  Rucker1992           dideuterated    corrected                  p = 0.0150
+
+Size of the bias, K_HT = 7.0, K_DT = 1.8, p = 0.01:
+  f = 0.0: reported D/T 1.8520
+  f = 0.2: reported D/T 1.8387
+  f = 0.5: reported D/T 1.8228
+  f = 0.8: reported D/T 1.8112
+
+Dideuterated designs: the HD contaminant against the TD tracer, chi = M(x_H, r c).
+  K_HT 7.13, c 22.529, r 1.4561: chi = 7.7729
+  K_HT 7.13, c 1e+06, r 1.4561: chi = 7.1300
+  K_HT 7.13, c 22.529, r 1.0000: chi = 7.1300
+  chi >= K_HT whenever r >= 1, so the two-component model is the smallest correction.
+
+Cha et al.'s own correction (note 28), as a factor on the D/T effect:
+  f = 0.0: 1.02015
+  f = 0.2: 1.01524
+  f = 0.5: 1.00942
+  f = 0.8: 1.00515
+
+f = 0.0, as stated: uninformative 57, precision-limited 8, excluding 8
+    LADH wild type (50% MeOH) (hydride)                  dideuterated    uninformative -> precision     point -0.0224 bound -1.0187
+    ecTSase Y209W (hydride)                              monodeuterated      precision -> excludes      point +0.0496 bound -0.0067
+    ecDHFR light enzyme (hydride)                        dideuterated    uninformative -> precision     point +0.0065 bound -0.0672
+    ecTSase wild type, 20 C (Agrawal2004)                monodeuterated      precision -> excludes      point +0.1009 bound +0.0231
+f = 0.0, 0.5% where uncorrected: uninformative 55, precision-limited 10, excluding 8
+    LADH wild type (50% MeOH) (hydride)                  dideuterated    uninformative -> precision     point -0.0362 bound -1.0266
+    ecTSase Y209W (hydride)                              monodeuterated      precision -> excludes      point +0.0496 bound -0.0067
+    ecDHFR G121V-F125M (hydride)                         monodeuterated  uninformative -> precision     point -0.0347 bound -0.1525
+    ecDHFR W133F (hydride)                               monodeuterated  uninformative -> precision     point -0.0249 bound -0.1259
+    ecTSase wild type, 20 C (Agrawal2004)                monodeuterated      precision -> excludes      point +0.0508 bound -0.0250
+    R67DHFR wild type, 25 C (Sen2011)                    monodeuterated  uninformative -> precision     point -0.0146 bound -0.0992
+f = 0.0, 1% where uncorrected: uninformative 52, precision-limited 12, excluding 9
+    LADH wild type (50% MeOH) (hydride)                  dideuterated    uninformative -> precision     point +0.0101 bound -1.0000
+    ecTSase W80M (hydride)                               monodeuterated      precision -> excludes      point +0.0993 bound -0.0060
+    ecTSase Y209W (hydride)                              monodeuterated      precision -> excludes      point +0.1102 bound +0.0474
+    ecDHFR G121V-F125M (hydride)                         monodeuterated  uninformative -> precision     point +0.0055 bound -0.1125
+    ecDHFR I14A-G121V (hydride)                          monodeuterated  uninformative -> precision     point -0.0171 bound -0.0847
+    ecDHFR M42W-F125M (hydride)                          monodeuterated  uninformative -> precision     point -0.0411 bound -0.2062
+    ecDHFR W133F (hydride)                               monodeuterated  uninformative -> precision     point +0.0106 bound -0.0924
+    ecDHFR light enzyme (hydride)                        dideuterated    uninformative -> precision     point -0.0103 bound -0.0831
+    ecTSase wild type, 20 C (Agrawal2004)                monodeuterated      precision -> excludes      point +0.1009 bound +0.0231
+    R67DHFR wild type, 25 C (Sen2011)                    monodeuterated  uninformative -> precision     point +0.0282 bound -0.0587
+f = 0.5, as stated: uninformative 58, precision-limited 7, excluding 8
+    ecTSase Y209W (hydride)                              monodeuterated      precision -> excludes      point +0.0127 bound -0.0379
+    ecDHFR light enzyme (hydride)                        dideuterated    uninformative -> precision     point -0.0308 bound -0.1013
+    ecTSase wild type, 20 C (Agrawal2004)                monodeuterated      precision -> excludes      point +0.0442 bound -0.0301
+f = 0.5, 0.5% where uncorrected: uninformative 57, precision-limited 9, excluding 7
+    ecTSase Y209W (hydride)                              monodeuterated      precision -> excludes      point +0.0127 bound -0.0379
+    ecDHFR W133F (hydride)                               monodeuterated  uninformative -> precision     point -0.0412 bound -0.1407
+    R67DHFR wild type, 25 C (Sen2011)                    monodeuterated  uninformative -> precision     point -0.0366 bound -0.1194
+f = 0.5, 1% where uncorrected: uninformative 54, precision-limited 11, excluding 8
+    LADH wild type (50% MeOH) (hydride)                  dideuterated    uninformative -> precision     point -0.0402 bound -1.0206
+    ecTSase Y209W (hydride)                              monodeuterated      precision -> excludes      point +0.0351 bound -0.0162
+    ecDHFR G121V-F125M (hydride)                         monodeuterated  uninformative -> precision     point -0.0349 bound -0.1526
+    ecDHFR W133F (hydride)                               monodeuterated  uninformative -> precision     point -0.0225 bound -0.1225
+    ecDHFR light enzyme (hydride)                        dideuterated    uninformative -> precision     point -0.0400 bound -0.1102
+    ecTSase wild type, 20 C (Agrawal2004)                monodeuterated      precision -> excludes      point +0.0442 bound -0.0301
+    R67DHFR wild type, 25 C (Sen2011)                    monodeuterated  uninformative -> precision     point -0.0164 bound -0.0996
+
+Smallest protium fraction at the transferred position that moves each
+uncorrected unit (f -> 0 | f = 0.5); for dideuterated comparators an upper limit:
+unit                                                        point > F0        bound > F0
+FDH V123A (hydride)                                      4.47% |   -         -   |   -  
+FDH V123G (hydride)                                      3.29% |   -       4.27% |   -  
+FDH WT (commercial) (hydride)                            2.55% | 4.02%       -   |   -  
+FDH WT (recombinant) (hydride)                           4.26% |   -         -   |   -  
+FDH half-heavy (hydride)                                 3.82% |   -         -   |   -  
+FDH heavy (hydride)                                      3.04% |   -       4.58% |   -  
+LADH F93W (40% MeOH) (hydride)                           0.00% | 0.00%     0.00% | 0.00%
+LADH F93W (60% MeOH) (hydride)                           0.00% | 0.00%     0.00% | 0.00%
+LADH wild type (50% MeOH) (hydride)                      0.44% | 0.95%       -   |   -  
+ecTSase N177D (hydride)                                    -   |   -         -   |   -  
+ecTSase N177S (hydride)                                    -   |   -         -   |   -  
+ecTSase R166K (hydride)                                  1.45% | 2.96%     3.69% |   -  
+ecTSase R166K (proton)                                   4.91% |   -         -   |   -  
+ecTSase W80M (hydride)                                   0.00% | 0.00%     0.63% | 1.40%
+hsTSase WT (hydride)                                       -   |   -         -   |   -  
+hsTSase WT (proton)                                        -   |   -         -   |   -  
+ecTSase WT (Mg2+) (hydride)                              3.94% |   -         -   |   -  
+ecTSase WT (Mg2+) (proton)                                 -   |   -         -   |   -  
+ecTSase Y209W (hydride)                                  0.00% | 0.00%     0.17% | 0.40%
+ecTSase Y209W (proton)                                   2.57% | 3.90%       -   |   -  
+ecDHFR D27S (hydride)                                      -   |   -         -   |   -  
+ecDHFR D27S-Y100F (hydride)                                -   |   -         -   |   -  
+ecDHFR F125M (hydride)                                   1.48% | 3.07%     2.16% | 4.38%
+ecDHFR G121V (hydride)                                   1.03% | 2.45%     1.56% | 3.63%
+ecDHFR G121V-F125M (hydride)                             0.41% | 0.82%     1.85% | 3.71%
+ecDHFR I14A (hydride)                                    2.04% | 4.05%     2.78% |   -  
+ecDHFR I14A-G121V (hydride)                              0.66% | 1.24%     1.60% | 2.96%
+ecDHFR M42W (hydride)                                    3.72% |   -         -   |   -  
+ecDHFR M42W-F125M (hydride)                              0.99% | 1.72%     3.73% |   -  
+ecDHFR W133F (hydride)                                   0.25% | 0.48%     1.73% | 3.14%
+ecDHFR WT (pH 7.0) (hydride)                             4.92% |   -         -   |   -  
+ecDHFR Y100F (hydride)                                     -   |   -         -   |   -  
+ecDHFR heavy enzyme (hydride)                            1.69% | 3.09%     3.68% |   -  
+ecDHFR light enzyme (hydride)                            0.52% | 0.94%     1.64% | 2.88%
+hsDHFR F32L (hydride)                                      -   |   -         -   |   -  
+hsDHFR F32L-PP26N-PEKN62G (hydride)                        -   |   -         -   |   -  
+hsDHFR F32M (hydride)                                      -   |   -         -   |   -  
+hsDHFR M53W (hydride)                                      -   |   -         -   |   -  
+hsDHFR M53W-S145V (hydride)                                -   |   -         -   |   -  
+hsDHFR S145V (hydride)                                     -   |   -         -   |   -  
+hsDHFR d26-PPLR-d62-PEKN (hydride)                       1.75% | 2.83%     2.99% | 4.73%
+hsDHFR d62-PEKN (hydride)                                3.61% |   -         -   |   -  
+LADH wild type, 3 C (TsaiKlinman2001)                    3.52% |   -         -   |   -  
+LADH F93W, 3 C (TsaiKlinman2001)                         0.00% | 0.00%     1.99% |   -  
+ecTSase wild type, 20 C (Agrawal2004)                    0.00% | 0.00%     0.32% | 0.72%
+ecTSase wild type, 25 C (Hong2007)                         -   |   -         -   |   -  
+ecTSase Y94F, 25 C (Hong2007)                              -   |   -         -   |   -  
+hsTSase WT (no Mg2+), 25 C (Islam2018)                     -   |   -         -   |   -  
+ecDHFR WT (Sen 2011), 25 C (Sen2011)                     1.19% | 2.15%     2.47% | 4.34%
+ecDHFR WT (dihydrobiopterin), 25 C (Sen2011)             3.42% |   -       4.37% |   -  
+R67DHFR wild type, 25 C (Sen2011)                        0.17% | 0.36%     1.20% | 2.42%
+ecDHFR WT (Sen 2012), 25 C (Sen2012)                     1.12% | 2.03%     1.99% | 3.52%
+
+The nominal exclusions: bounds per unit and across 73 units (rho = -1), as
+published and with any correction removed (published constants; for a source
+that only cites a correction, a correction of Bahnson et al.'s size):
+unit                                                                     status    unit     all   undo0     all  undo.5     all
+LADH F93W (40% MeOH) (hydride)                             uncorrected_measured  +0.032  -0.058    +nan    +nan    +nan    +nan
+LADH F93W (60% MeOH) (hydride)                             uncorrected_measured  +0.071  -0.167    +nan    +nan    +nan    +nan
+YADH wild type (p-chlorobenzyl alcohol) (hydride)                     corrected  +0.170  +0.051  +0.109  -0.010  +0.143  +0.024
+YADH wild type, 25 C (Cha1989)                                        corrected  +0.049  -0.027  -0.018  -0.093  +0.018  -0.058
+LADH F93W-I224G, 25 C (ChinKlinman2000)               corrected_by_cited_method  -0.025  -0.077  -0.097  -0.149  -0.057  -0.109
+LADH F93W-I224V, 25 C (ChinKlinman2000)               corrected_by_cited_method  -0.020  -0.059  -0.092  -0.131  -0.052  -0.091
+
+Protium the corrected material must have carried for the bound across 73 units
+at rho = -1 to clear F0 (the source measured 1.3% for benzyl alcohol, 1.1% for
+p-chlorobenzyl alcohol):
+  YADH wild type, 25 C (Cha1989)                       f = 0.0: at least 1.00%
+  YADH wild type, 25 C (Cha1989)                       f = 0.5: at least 0.66%
+  YADH wild type (p-chlorobenzyl alcohol) (hydride)    f = 0.0: clears with no protium
+  YADH wild type (p-chlorobenzyl alcohol) (hydride)    f = 0.5: clears with no protium

@@ -69,7 +69,7 @@ def main() -> None:
             ge = "$\\ge$" if r.F_hi >= GRID_EDGE - 1e-9 else ""
             wd = f"{ge}{r.width:.3f} ({r.width/F0:.1f})"
         lines.append(
-            f"{display_family(r.family, r.variant)} & {r.variant.replace('%', chr(92) + '%')} & {r.step} & {int(r.n_T)} & "
+            f"{display_family(r.family, r.variant)} & {r.variant.replace('%', chr(92) + '%').replace('Mg2+', 'Mg$^{2+}$')} & {r.step} & {int(r.n_T)} & "
             f"{r.chi2_min:.1f}/{int(r.dof)} & {_p(r.p_fit)} & "
             f"{est} & {ci} & {wd}\\\\"
         )

@@ -29,6 +29,16 @@ SINGLE_CONDITION = (
     # Agrawal et al. 2004: the one temperature whose effects are stated as
     # numbers (20 C); the others are plotted only and are not digitized.
     ("agrawal2004_ectsase.csv", None, "ectsase"),
+    # Admitted after the source census of 2026-10-20 (SI, "Further primary
+    # sources examined"): every paired observed H/T and D/T effect that a
+    # source states as numbers with uncertainties at a single condition.
+    # Appended after the records above, which several checks read by position.
+    ("ladh_chin2000.csv", None, "ladh"),
+    ("yadh_rucker1992.csv", None, "yadh"),
+    ("bsao_rucker1992.csv", None, "bsao"),
+    ("ectsase_hong2007.csv", None, "ectsase"),
+    ("hstsase_islam2018_nomg.csv", None, "hstsase"),
+    ("dhfr_sen.csv", None, "dhfr"),
 )
 
 

@@ -26,9 +26,37 @@ NUM = r"([0-9]+\.[0-9]+)\s*(?:±|\+-|\+/-)\s*([0-9]+\.[0-9]+)"
 ROW4 = re.compile(r"^\s*([0-9]{1,2})\s+" + NUM + r"\s+" + NUM)
 
 
-# Sources whose records are transcribed by hand from scanned pages and so are never
-# produced by this parse.  Must agree with HAND in audit_numbers.check_provenance_split.
-HAND_TRANSCRIBED = {"10.1021/bi00253a026", "10.1021/bi002075l"}
+# Sources whose records are transcribed by hand and so are never produced by this
+# parse: scanned pages (Jonsson 1994, Tsai and Klinman 2001, Rucker 1992) and two
+# supplements distributed only as Word documents (Wang et al. 2006, Biochemistry
+# and Phil. Trans. R. Soc. B).  Each record was checked against the page image
+# or the document's table.  Must agree with HAND in
+# audit_numbers.check_provenance_split.
+HAND_TRANSCRIBED = {"10.1021/bi00253a026", "10.1021/bi002075l", "10.1021/bi00161a030",
+                    "10.1021/bi0518242", "10.1098/rstb.2006.1871"}
+
+# Sources admitted after the census of 2026-10-20, transcribed from supplementary
+# PDFs that carry a text layer.  They are not parsed (each table has its own
+# layout), but the transcription audit below checks every value, with its error,
+# against the PDF text exactly as it does for the parsed sources.  Must agree with
+# AUDITED in audit_numbers.check_provenance_split.
+TRANSCRIBED = {
+    "10.1021/ja103010b": "manual/ja103010b_si_001.pdf",          # Wang 2010
+    "10.1021/ja307859m": "manual/ja307859m_si_001.pdf",          # Wang 2012
+    "10.1021/ja400761x": "manual/ja400761x_si_001.pdf",          # Wang 2013
+    "10.1021/ja060196o": "manual/ja060196o_si_001.pdf",          # Hong 2006
+    "10.1021/ja504341g": "manual/ja504341g_si_001.pdf",          # Islam 2014
+    "10.1021/acscatal.5b01332": "manual/cs5b01332_si_001.pdf",   # Islam 2015
+    "10.1021/acscatal.8b02554": "manual/cs8b02554_si_001.pdf",   # Gurevic 2018
+    "10.1039/c0cc02988b": "manual/c0cc02988b_suppl.pdf",         # Stojkovic 2010
+    "10.1021/acscatal.5b00331": "manual/cs5b00331_si_001.pdf",   # Singh 2015
+    "10.1073/pnas.1415940111": "manual/pnas.1415940111.sapp.pdf",  # Liu 2014
+    "10.1021/acs.biochem.9b00460": "manual/bi9b00460_si_001.pdf",  # Li 2019
+    "10.1021/ja902120t": "manual/ja902120t_si_001.pdf",          # Bandaria 2009
+    "10.1021/acs.biochem.6b00181": "manual/bi6b00181_si_001.pdf",  # Guo 2016
+    "10.1021/jacs.7b08359": "manual/ja7b08359_si_001.pdf",       # Ranasinghe 2017
+}
+NOT_PARSED = HAND_TRANSCRIBED | set(TRANSCRIBED)
 
 
 def _xlsx_cells(path):
@@ -245,7 +273,7 @@ def transcription_audit(bench=OUT / "trinomial_benchmark.csv"):
     d = pd.read_csv(bench)
     pairs = found = 0
     misses = []
-    for doi, rel in PDF_SOURCES.items():
+    for doi, rel in {**PDF_SOURCES, **TRANSCRIBED}.items():
         pdf = SI / rel
         if not pdf.exists():
             print(f"  transcription audit: {rel} not present; skipped")
@@ -413,8 +441,8 @@ def main():
         # 2026-09-14 the comparison below counted those in its baseline, so a
         # complete, exact rebuild still printed "Primary sources are missing" --
         # on every correct run.  Compare against the parseable subset instead.
-        hand = have[have["source_DOI"].isin(HAND_TRANSCRIBED)]
-        parseable = have[~have["source_DOI"].isin(HAND_TRANSCRIBED)]
+        hand = have[have["source_DOI"].isin(NOT_PARSED)]
+        parseable = have[~have["source_DOI"].isin(NOT_PARSED)]
         n_parse = parseable.groupby(keys).ngroups
         if n_series < n_have:
             # Never overwrite the complete file with a parse that lacks the
@@ -444,7 +472,7 @@ def main():
             print(f"\n  Rebuilt all {len(d)} parseable records / {n_series} series"
                   + (" and they reproduce the shipped values exactly." if same
                      else ", but they DIFFER from the shipped values; inspect before use."))
-            print(f"  The shipped benchmark also holds {len(hand)} hand-transcribed records"
+            print(f"  The shipped benchmark also holds {len(hand)} transcribed records"
                   f" / {n_have - n_parse} series")
             print("  that no parse produces (SOURCES.md), so this is written separately.")
         print(f"  Wrote {target.name}; the complete file is left intact.\n")

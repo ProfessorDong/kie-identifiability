@@ -1,0 +1,5 @@
+family,variant,step,T_C,K_HT,K_HT_se,K_DT,K_DT_se,note,source
+ecDHFR,WT (Sen 2011),hydride,25,4.84,0.04,1.66,0.02,"Table 1, cDHFR with dihydrofolate; standard deviations; the temperature and pH of the H/T and D/T runs are not printed (25 C and pH 9 are stated for the H/D runs of the same study)",Sen2011
+ecDHFR,WT (dihydrobiopterin),hydride,25,7.11,0.09,2.00,0.02,"Table 1, cDHFR with dihydrobiopterin as substrate; standard deviations; temperature not printed for these runs (see the dihydrofolate row)",Sen2011
+R67DHFR,wild type,hydride,25,6.04,0.07,1.74,0.02,"Table 1, type II (R67) DHFR with dihydrofolate; standard deviations; temperature not printed (25 C and pH 8 are stated for the H/D runs)",Sen2011
+ecDHFR,WT (Sen 2012),hydride,25,4.86,0.06,1.66,0.01,"Table 2, [carbonyl-14C] reference; 25 C, pH 9.0 stated; error type not stated; the [Ad-14C] row of the same table reprints Sikorski 2004 and is not a record",Sen2012

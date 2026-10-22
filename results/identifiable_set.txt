@@ -4,10 +4,10 @@ THE MODEL-FREE IDENTIFIABLE SET FOR THE DISCRIMINATING INVARIANT
 gamma_SC = 3.34887   semiclassical F = 0   tunneling ridge F0 = -0.042086
 
 1. THE SHAPE OF THE SET IS DECIDED BY THE H-REFERENCE CONTRAST
-   records: 93   predicted interior minimum: 21   observed: 21
-   sign criterion L_H < gamma_SC agrees with the numerics on 93/93 records
+   records: 202   predicted interior minimum: 49   observed: 49
+   sign criterion L_H < gamma_SC agrees with the numerics on 202/202 records
    L_H range where the minimum is interior : [1.854, 3.342]
-   L_H range where it is at c -> infinity  : [3.393, 14.710]
+   L_H range where it is at c -> infinity  : [3.383, 14.710]
    the two ranges are separated by gamma_SC = 3.3489
 
 2. THE ASSUMPTION-FREE BOUND PER SERIES
@@ -17,29 +17,53 @@ gamma_SC = 3.34887   semiclassical F = 0   tunneling ridge F0 = -0.042086
 
    series                                       n_T      F >=  gap to F0  excludes
    LADH F93W (60% MeOH) (hydride)                 2    0.3945    -0.4366     RIDGE
+   YADH wild type (p-chlorobenzyl alcohol) (hydride)   2    0.3326    -0.3747     RIDGE
    LADH F93W (40% MeOH) (hydride)                 4    0.1833    -0.2254     RIDGE
+   TSase W80M (hydride)                           4   -0.0010    -0.0411     RIDGE
+   TSase Y209W (hydride)                          3   -0.0094    -0.0327     RIDGE
    ecDHFR W133F (hydride)                         3   -0.0596     0.0175      none
    ecDHFR G121V-F125M (hydride)                   5   -0.0740     0.0319      none
    ecDHFR light enzyme (hydride)                  6   -0.0759     0.0339      none
    LADH wild type (50% MeOH) (hydride)            4   -0.0813     0.0393      none
+   ecDHFR I14A-G121V (hydride)                    5   -0.0887     0.0466      none
    ecDHFR M42W-F125M (hydride)                    5   -0.1027     0.0606      none
    hsDHFR d26-PPLR-d62-PEKN (hydride)             5   -0.1343     0.0923      none
+   ecDHFR G121V (hydride)                         5   -0.1491     0.1070      none
    ecDHFR heavy enzyme (hydride)                  5   -0.1576     0.1155      none
    TSase Y209W (proton)                           4   -0.1600     0.1180      none
+   TSase WT (Mg2+) (proton)                       4   -0.1614     0.1193      none
+   TSase R166K (hydride)                          4   -0.1618     0.1197      none
    ecDHFR F125M (hydride)                         5   -0.1681     0.1260      none
+   FDH WT (commercial) (hydride)                  5   -0.1703     0.1283      none
    MAOB pH 6.1 (abstraction)                      7   -0.1720     0.1299      none
    MAOB pH 7.5 (abstraction)                      3   -0.1944     0.1523      none
+   hsDHFR S145V (hydride)                         4   -0.1984     0.1563      none
+   ecDHFR WT (pH 7.0) (hydride)                   5   -0.2009     0.1588      none
+   ecDHFR I14A (hydride)                          5   -0.2053     0.1632      none
    hsDHFR d62-PEKN (hydride)                      5   -0.2368     0.1947      none
+   ecDHFR M42W (hydride)                          5   -0.2467     0.2046      none
+   FDH WT (recombinant) (hydride)                 5   -0.2496     0.2075      none
+   TSase WT (Mg2+) (hydride)                      4   -0.2563     0.2142      none
+   ecDHFR D27S-Y100F (hydride)                    5   -0.2605     0.2184      none
    TSase WT (proton)                              4   -0.2725     0.2304      none
    hsDHFR F32L (hydride)                          4   -0.2784     0.2363      none
+   FDH half-heavy (hydride)                       5   -0.2967     0.2546      none
+   FDH heavy (hydride)                            9   -0.3088     0.2667      none
    FDH V123G (hydride)                            5   -0.3220     0.2799      none
+   TSase R166K (proton)                           4   -0.3578     0.3157      none
+   hsDHFR M53W (hydride)                          4   -0.3580     0.3160      none
    FDH V123A (hydride)                            5   -0.3969     0.3549      none
+   ecDHFR D27S (hydride)                          5   -0.3978     0.3557      none
+   ecDHFR Y100F (hydride)                         5   -0.4311     0.3890      none
    TSase WT (hydride)                             4   -0.4611     0.4190      none
+   TSase N177D (hydride)                          4   -0.5273     0.4852      none
+   hsDHFR M53W-S145V (hydride)                    4   -0.5406     0.4985      none
+   TSase N177S (hydride)                          4   -0.5763     0.5343      none
    hsDHFR F32L-PP26N-PEKN62G (hydride)            4   -0.6937     0.6516      none
    hsDHFR F32M (hydride)                          4   -0.8782     0.8362      none
 
-   series excluding the tunneling ridge : 2 of 21
-   series excluding semiclassical       : 2 of 21
+   series excluding the tunneling ridge : 5 of 45
+   series excluding semiclassical       : 3 of 45
    closest: LADH F93W (60% MeOH), bound +0.3945,
             short of the ridge by -0.4366 log-KIE units.
 

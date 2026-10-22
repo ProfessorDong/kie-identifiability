@@ -74,8 +74,28 @@ def s_required(rho, alpha=0.05, power=0.80, gamma=GSC):
     return sd_required(alpha, power) / np.sqrt(1 + gamma ** 2 - 2 * gamma * rho)
 
 
+def benchmark_stats():
+    """Descriptive statistics of the temperature-resolved records, from the
+    corpus loader (the supplement's design note quotes them; until 2026-10-21 it
+    carried the values of the 93-record benchmark of an earlier corpus).
+
+    Returns n (records), n_adm (normally ordered), gaps (F_obs - F_min over the
+    admissible records), n_zero (gap exactly zero, L_H >= gamma), and the median
+    relative errors of the two effects over all records.
+    """
+    import corpus
+    d = corpus.series()
+    adm = d[(d.K_HT > d.K_DT) & (d.K_DT > 1)]
+    gaps = np.array([np.log(r.K_HT) - GSC * np.log(r.K_DT) - F_min_exact(r.K_HT, r.K_DT)[0]
+                     for r in adm.itertuples()])
+    return dict(n=len(d), n_adm=len(adm), gaps=gaps, n_zero=int((gaps == 0).sum()),
+                med_H=float(np.median(d.K_HT_se / d.K_HT)),
+                med_D=float(np.median(d.K_DT_se / d.K_DT)))
+
+
 def main():
-    d = pd.read_csv("../data/trinomial_benchmark.csv")
+    import corpus
+    d = corpus.series()
     s_H = (d.K_HT_se / d.K_HT).values
     s_D = (d.K_DT_se / d.K_DT).values
 
@@ -130,17 +150,13 @@ def main():
     say("-" * 84)
     say("3. THE COMMITMENT COSTS MORE THAN THE PRECISION")
     say("-" * 84)
-    gaps = []
-    for _, r in d.iterrows():
-        f_obs = np.log(r.K_HT) - GSC * np.log(r.K_DT)
-        f_min = F_min_exact(r.K_HT, r.K_DT)[0]
-        gaps.append(f_obs - f_min)
-    gaps = np.array(gaps)
-    say(f"  F_obs - F_min over 73 records: median {np.median(gaps):.4f}, "
-        f"max {gaps.max():.4f}")
+    st = benchmark_stats()
+    gaps = st["gaps"]
+    say(f"  F_obs - F_min over the {st['n_adm']} admissible of {st['n']} temperature-resolved"
+        f" records: median {np.median(gaps):.4f}, max {gaps.max():.4f}")
     say(f"  in units of |F0|: median {np.median(gaps)/abs(F0):.1f}, "
         f"max {gaps.max()/abs(F0):.1f}")
-    say(f"  {int((gaps==0).sum())} records have zero gap (L_H >= gamma, so the")
+    say(f"  {st['n_zero']} records have zero gap (L_H >= gamma, so the")
     say("  endpoint is the commitment-free value and nothing is lost).")
     say("  Where the gap is nonzero it dwarfs the signal, so suppressing the")
     say("  commitment matters more than improving precision.")

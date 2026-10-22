@@ -30,7 +30,13 @@ COMPUTED_SE = {"10.1371/journal.pone.0196506"}
 
 # The one printed pair whose value and error carry different decimal counts:
 # Singh et al. 2014 SI, G121V-F125M at 35 C, D/T "1.80 +- 0.003".
-AS_PRINTED = {(1.8, 0.003): "$1.80\\pm0.003$"}
+AS_PRINTED = {(1.8, 0.003): "$1.80\\pm0.003$",
+              (7.55, 0.03): "$7.550\\pm0.030$",
+              (1.89, 0.009): "$1.89\\pm0.009$"}     # Islam et al. 2014, R166K, 25 C
+# Pairs whose printed form depends on the record, not only on the value: Hong et
+# al. 2006 print the W80M D/T effect at 40 C as "1.8 +- 0.02" and at 5 C as
+# "1.80 +- 0.02", which are the same pair of floats.
+AS_PRINTED_RECORD = {("10.1021/ja060196o", 40.0, "K_DT"): "$1.8\\pm0.02$"}
 
 
 def _pair(v: float, e: float, computed: bool = False) -> str:
@@ -45,7 +51,9 @@ def _pair(v: float, e: float, computed: bool = False) -> str:
     "2.896 +- 0.13" for the published 13.0, 2.00 and 0.132.  Computed standard
     errors are rounded to two significant figures and the value is shown to at
     least that many decimals.  A check of every transcribed pair against the
-    source text found one exception, kept as printed (AS_PRINTED).
+    source text found one exception, kept as printed (AS_PRINTED), and a value
+    whose value and error both end in zeros (Bahnson et al. "7.550 +- 0.030")
+    cannot be recovered from floats, so it is listed there too.
     """
     if (v, e) in AS_PRINTED:
         return AS_PRINTED[(v, e)]
@@ -70,7 +78,11 @@ def main() -> None:
         # \\* forbids a page break after the group label, which otherwise strands
         # it at the foot of a page in the long benchmark table
         varx = var.replace("%", "\\%")       # solvent variants carry a percent sign
-        lines.append(f"\\textit{{{display_family(fam, var)} {varx}, {step}}} & & & & & & \\\\*")
+        varx = varx.replace("Mg2+", "Mg$^{2+}$")
+        # a zero-width heading that runs across the empty cells, so a long variant
+        # name does not widen column one; \multicolumn cannot open the first row,
+        # which follows a non-expandable \input
+        lines.append(f"\\rlap{{\\textit{{{display_family(fam, var)} {varx}, {step}}}}} & & & & & & \\\\*")
         for _, r in g.sort_values("T_C").iterrows():
             gam = np.log(r.K_HT) / np.log(r.K_DT)
             lh = (r.K_HT - 1.0) / (r.K_DT - 1.0)
@@ -82,9 +94,11 @@ def main() -> None:
             adm = r.K_HT > r.K_DT > 1.0
             gs, ls = (f"{gam:.3f}", f"{lh:.3f}") if adm else ("--", "--")
             cse = r.source_DOI in COMPUTED_SE
+            ph = AS_PRINTED_RECORD.get((r.source_DOI, r.T_C, "K_HT")) or _pair(r.K_HT, r.K_HT_se, cse)
+            pd_ = AS_PRINTED_RECORD.get((r.source_DOI, r.T_C, "K_DT")) or _pair(r.K_DT, r.K_DT_se, cse)
             lines.append(
-                f" & ${r.T_C:g}$ & {_pair(r.K_HT, r.K_HT_se, cse)}"
-                f" & {_pair(r.K_DT, r.K_DT_se, cse)}"
+                f" & ${r.T_C:g}$ & {ph}"
+                f" & {pd_}"
                 f" & {gs} & {ls} & {_signed(fobs, 4)}\\\\"
             )
             nrec += 1

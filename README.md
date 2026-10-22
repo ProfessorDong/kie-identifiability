@@ -1,4 +1,4 @@
-# Reaction network topology fixes what isotope experiments can reveal about hydrogen tunneling in enzymes
+# Reaction-network bounds on what isotope experiments reveal about enzyme hydrogen transfer
 
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.21913975.svg)](https://doi.org/10.5281/zenodo.21913975)
 
@@ -41,11 +41,16 @@ set lies above zero. Hence:
   bounded below, so a mechanism whose attainable offsets lie entirely beneath
   that bound is still excluded.
 
-This makes exact the criterion of Saunders (1985), used by Cha et al. (1989) and
-Bahnson et al. (1993). Across 108 matched primary records in 35
-analysis units, 28 lie at their reported values on the uninformative side and
-four more are limited by precision alone; three exclude the ground-channel
-envelope (yeast ADH, and horse liver ADH F93W in 40% and in 60% methanol).
+This makes exact the kinetic part of the criterion of Saunders (1985) as used by
+Cha et al. (1989) and Bahnson et al. (1993). Across 231 matched primary records in 73
+analysis units, gathered by a census of the two laboratories that report this
+design, 59 lie at their reported values on the uninformative side and eight more
+are limited by precision alone; six exclude the ground-channel envelope
+nominally (yeast ADH with benzyl and with p-chlorobenzyl alcohol, horse liver
+ADH F93W in 40% and in 60% methanol, and its F93W:I224G and I224V double
+mutants), and only the two yeast units survive adjustment across all 73 at
+rho = -1. Only the p-chlorobenzyl alcohol unit also survives removal of its
+isotopic-purity correction at the same time (`isotopic_purity.exclusions`).
 
 **Why it is one-sided: curvature against homogeneity.** The theorem above is a
 computation; this is the reason behind it, and it is more general than the
@@ -84,9 +89,10 @@ hypothesis*: if `h_H` and `h_D` are unrelated nothing follows, but ordered
 commitments (`c_D >= c_H`) suffice.
 
 **Sharing is approximate even in the primary protocol, and harmlessly so.** The
-H/T and D/T effects of 17 of the 33 forms use tritium references that differ at
+H/T and D/T effects of 27 of the 71 forms use tritium references that differ at
 the non-transferred position, so `c_D = r c_H` with `r` the secondary H/D effect
-on the reference; the other 16 use one tritiated molecule for both, so `r = 1`
+on the reference (25 of them report the secondary effects that check its sign);
+the other 44 use one tritiated molecule for both, so `r = 1`
 (`data/tracer_design.csv`).
 What matters is the sign of `r-1`. Observed secondary ratios here are normal
 (`R = 1.02-1.38`, a lower bound on `r`), so the H comparison is the MORE masked one and the
@@ -171,25 +177,29 @@ effect. Across the benchmark the lower edge runs 1.099-1.694 (median 1.465),
 upper edge median 1.971, median width 0.50. Verified against direct optimization
 and on 3000 random pairs.
 
-**Empirically, few temperature series exclude anything.** Across the 94 temperature-resolved
-records in 21 series, one-sided 95% confidence bounds exclude neither mechanism
-in 19 series at any assumed correlation, bracketed over `rho` in
-{-1, 0, 0.5, 0.9} with `rho = -1` the maximally adverse case. The two exceptions
-are horse liver ADH F93W in 40% and 60% methanol (Tsai & Klinman 2001), whose
-bounds are `+0.032` and `+0.071` at rho = -1. Among the rest the closest series
-falls short by 0.0175 on the point estimate and 0.105 on its 95% bound
-(Bonferroni over its temperatures; see Bounds below).
+**Empirically, few temperature series exclude anything.** Across the 203 temperature-resolved
+records in 45 series, one-sided 95% confidence bounds bracketed over `rho` in
+{-1, 0, 0.5, 0.9} (`rho = -1` the maximally adverse case) exclude both mechanisms
+at every correlation in three series: horse liver ADH F93W in 40% and 60%
+methanol (Tsai & Klinman 2001), bounds `+0.032` and `+0.071` at rho = -1, and
+yeast ADH with p-chlorobenzyl alcohol (Rucker et al. 1992), `+0.170`. Of the
+rest, only the thymidylate synthase Y209W hydride transfer clears `F0` at any
+correlation (`-0.039` at rho = 0.9); its point endpoint, `-0.009`, and that of
+W80M, `-0.001`, lie above `F0` (see Bounds below).
 
 **But yeast ADH does.** The primary effects of Cha, Murray & Klinman (1989)
 give `F_obs = +0.129` against `F0 = -0.042`, with a 95% bound of `+0.063`
 (rising to `+0.079` at rho = 0.9, falling to `+0.049` at the maximally adverse
-rho = -1). Singled out from 35 analysis units it also deserves a
-multiplicity adjustment: one-sided Bonferroni across 35 gives `+0.010` at rho = 0
-and `-0.016` at rho = -1, so the exclusion of the SEMICLASSICAL LOCUS survives
+rho = -1). Singled out from 73 analysis units it also deserves a
+multiplicity adjustment: one-sided Bonferroni across 73 gives `+0.001` at rho = 0
+and `-0.027` at rho = -1, so the exclusion of the SEMICLASSICAL LOCUS survives
 multiplicity and survives adverse correlation but not both at once, while the
 exclusion of the GATED ENVELOPE survives every combination since all four bounds
 exceed `F0` -- though with little room: under both at once the published
-errors need only be understated by 19.1% to overturn it. These bounds use a
+errors need only be understated by 10.0% to overturn it. The same enzyme with
+p-chlorobenzyl alcohol (Rucker et al. 1992, D/T corrected for protium) excludes
+more firmly: `+0.170` at rho = -1, and `+0.051` after the adjustment across 73
+units (`yadh_robustness.pchloro_series`). These bounds use a
 normal approximation that treats the published errors as standard errors. Cha
 et al.'s Table 2 lists four D/T determinations, three paired with H/T (the
 fourth is in `data/cha1989_yadh_dt_only.csv`). Because `L_H = 8.40 > gamma_SC`
@@ -434,7 +444,8 @@ quantum-classical crossover `hbar omega_g ~ 2 k_B T`, which at 300 K is
 417 cm-1; sweeping `A` over [1,50] and `w0` over [0.1,2] moves that peak only
 between 140 and 470 cm-1, so it tracks the crossover rather than the
 parameterization. The promoting-mode frequencies invoked in this literature lie
-mostly below that window (50 to 300 cm-1).
+mostly below the 417 cm-1 crossover, in the lower part of that window or beneath
+it (50 to 300 cm-1).
 (`analysis/completion.py`)
 
 Sensitivity is not identifiability, and only the first is claimed. `F` depends on
@@ -460,7 +471,7 @@ analysis/
   masses.py             isotope mass convention, imported everywhere
   corpus.py             the matched primary record: the temperature series and
                         every single-condition record file, read by all
-                        scripts that need them (108 records, 35 units)
+                        scripts that need them (231 records, 73 units)
   reference_asymmetry.py  the reference asymmetry r: exactly 1 where one
                         tritiated isotopologue served both experiments
                         (data/tracer_design.csv), otherwise inferred from the
@@ -491,7 +502,21 @@ analysis/
                         two-commitment exploration
   identifiable_set.py   the half-line result and the point-estimate bounds
   bounds_uncertainty.py one-sided confidence bounds with shared-reference
-                        correlation bracketed
+                        correlation bracketed; exact_bound gives the exact
+                        rho = -1 quantile of the endpoint (single records,
+                        purity scenarios, multiplicity)
+  isotopic_purity.py    protium in the deuterated comparators: fractional-
+                        conversion model by labeling design (exact for one
+                        shared tracer, a lower limit for dideuterated
+                        comparators), corrections applied draw by draw, each
+                        published correction undone with its own constants,
+                        and the six exclusions per unit and across all units
+                        (data/deuterium_purity.csv; results/sm_table_exclusions.tex)
+  repeat_determinations.py  independent determinations of one condition:
+                        do they detect an offset discrepancy?
+  synthetic_validation.py  the procedure run forward and back on known
+                        truths: false exclusions, power, coverage, and what
+                        a commitment measurement recovers
   reversible.py         reversible-scheme identified set and the vacuity
                         threshold E_D* = (K_HT/K_DT)^(1/(gamma-1))
   vibronic_envelope.py  summed envelope B_vib; exact gated Franck-Condon
@@ -503,7 +528,7 @@ analysis/
   build_trinomial.py    parses primary SI tables -> benchmark + audit
   offset_analysis.py    profiles the offset per series (continuation method)
     offset_summary.py     goodness-of-fit stratification of those profiles
-  profile_edges.py      continues the four profiles whose grid optimum sat at
+  profile_edges.py      continues the profiles whose grid optimum sat at
                         the edge F = 1.5: none has a finite minimum
   pooling_check.py      within-series pooling, and the variant-pooling scale
                         symmetry with the identifiable horse liver refit
@@ -520,7 +545,7 @@ analysis/
   discriminate.py       model fits (superseded analysis, retained for the record)
   design.py             power calculation (superseded, retained)
   export_figs_v3.py     pgfplots tables for the figures
-  export_fig_asym.py    identified-set figure data (35 analysis units)
+  export_fig_asym.py    identified-set figure data (73 analysis units, two panels)
   export_fig_overview.py   overview figure: the compatible set as the range of
                         the commitment curve, for two observations
   export_fig_envelope.py   envelope figure: the region the ground-channel model
@@ -530,7 +555,7 @@ analysis/
                         completion, the pooling symmetry, the error budget
   export_si_tables.py   supplementary tables (results/)
   export_bounds_table.py     per-series bounds table (results/)
-  export_benchmark_table.py  complete 94-record temperature-series table
+  export_benchmark_table.py  complete 203-record temperature-series table
   export_profiles_table.py   per-series profile table
 data/                   curated inputs, never written by any script
 results/                generated reports and tables
@@ -548,7 +573,7 @@ cd analysis
 
 python masses.py             # the mass convention and its consequences
 python verify_derivation.py  # must exit 0
-python build_trinomial.py    # benchmark + transcription audit (260 values)
+python build_trinomial.py    # benchmark + transcription audit (648 values)
 python ridge.py              # ridge limit, offset, finite-scale bound
 python partial_id.py         # envelope + exact endpoint, both verified
 python identifiable_set.py   # the half-line result, point bounds
@@ -561,8 +586,13 @@ python audit_v3.py           # adversarial audit, must exit 0
 python vibronic.py           # the vibronic-sum penalty and its table
 python adh_primary.py        # alcohol dehydrogenase records, correlation bracket
 python published_intrinsic.py  # intrinsic pairs that cannot test the reference
-python offset_analysis.py    # per-series profiles                     (~50 min)
+python offset_analysis.py    # per-series profiles   (about 3 min per series, ~2 h)
 python holdout.py            # deletion sensitivity: point and confidence (~1 min)
+python design_power.py       # precision requirements; benchmark statistics
+python repeat_determinations.py  # independent determinations of one condition
+python isotopic_purity.py    # purity scenarios and the exclusions table (~1 min)
+python synthetic_validation.py   # the procedure on synthetic data with a known truth
+python export_fig_asym.py    # data for the asymmetry figure (exact single-record bounds)
 python offset_summary.py     # stratified interpretation
 python export_figs_v3.py     # pgfplots tables
 python export_fig_overview.py; python export_fig_envelope.py; python export_fig_design.py
@@ -660,8 +690,9 @@ and no tracked file changes. `offset_analysis.py` and `network_atlas.py` are
 untouched and were not rerun.
 
 One caveat on timing: `offset_analysis.py` computes profile likelihoods by
-continuation over a 301-point grid for each of the 20 series with at least
-three temperatures and takes roughly 55 minutes on one core.
+continuation over a 301-point grid for each of the 43 series with at least
+three temperatures, about three minutes per series on one core (roughly 55
+minutes for the 20 series before the census of 2026-10-20).
 
 ## Key numbers
 
@@ -673,15 +704,16 @@ the hydrogen isotopes; the bare-mass value 3.2628 is also in circulation.
 gamma_SC = 3.34887   rigid = 2.45884   F0 = -0.042086   threshold = 1.26890
 ```
 
-Temperature-series benchmark: 94 temperature-resolved records, 21 series, 6 enzyme families,
-7 enzyme-organism systems, -50 to 45 C. Transcription audit: 260 values across the
-six PDF-derived sources, each matched with its uncertainty, 0 misses. The wider matched-primary record used for the
-identified-set figure is 108 records over 35 analysis units, of which 28 fall on
-the uninformative side, four more fail on precision alone, and three clear.
+Temperature-series benchmark: 203 temperature-resolved records, 45 series, -50 to 45 C.
+Transcription audit: 648 values across the twenty PDF supplements (six parsed, fourteen
+transcribed), each matched with its uncertainty, 0 misses. The wider matched-primary record used for the
+identified-set figure is 231 records over 73 analysis units, of which 59 fall on
+the uninformative side, eight more fail on precision alone, and six clear.
 
-Bounds: 2 of 21 series exclude both mechanisms, at every correlation -1, 0, 0.5
-and 0.9 (horse liver ADH F93W in 40% and 60% methanol); the other 19 exclude
-neither. A series bound is on the largest endpoint over its temperatures: the
+Bounds: 3 of 45 series exclude both mechanisms, at every correlation -1, 0, 0.5
+and 0.9 (horse liver ADH F93W in 40% and 60% methanol, yeast ADH with
+p-chlorobenzyl alcohol); of the other 42 only the Y209W thymidylate synthase
+hydride transfer clears F0 at any correlation, at rho = 0.9. A series bound is on the largest endpoint over its temperatures: the
 per-temperature one-sided bounds at level 0.05/n_T, then their maximum, which
 covers that maximum with probability at least 95% by the union bound whenever
 each per-temperature bound has its nominal coverage. Each is the 0.05/n_T
@@ -696,12 +728,13 @@ v1.8.0 it was the 5% quantile of the resampled maximum, which is not a valid
 bound for a maximum: taking ecDHFR W133F as truth, it exceeded the true maximum
 in 20% of 2e4 simulated trials, against 2.4% for the corrected bound
 (`bounds_uncertainty.coverage_check`); every
-corrected bound is lower, and no verdict changes. Best 95% lower bound -0.145
-(rho = -1) to -0.108 (rho = 0.9), ecDHFR light enzyme in every case. Best point
-estimate -0.0596 (ecDHFR W133F), short of F0 by 0.0175; its own 95% lower bound
-is short by 0.105 (rho = 0) and 0.117 at the maximally adverse rho = -1. Bounds
-are averaged over 5 replications of 1e6 draws; largest Monte Carlo s.d. over all
-72 cells is 4.8e-4.
+corrected bound is lower, and no verdict changes. Among the series that do not
+exclude, the best 95% lower bound is -0.059 (rho = -1) to -0.039 (rho = 0.9),
+thymidylate synthase Y209W hydride transfer in every case, and the best point
+estimate is -0.001 (W80M), above F0, with 95% lower bounds of -0.086 (rho = 0)
+and -0.101 (rho = -1). Bounds are averaged over 5 replications of 1e6 draws;
+largest Monte Carlo s.d. over all 180 cells is 1.7e-3 (the wild type in 50%
+methanol, whose inadmissible record leaves few finite tail draws).
 
 ## Relation to recent work
 
@@ -717,8 +750,9 @@ direction of the envelope result in 2005 by instanton methods on a 2D model of
 vibrationally assisted tunneling: assistance drives the tritium-referenced
 exponent *toward* the semiclassical value from below, opposite to the then-
 conventional assumption. Their Eq. (16) gives `e2` in [2.3032, 3.25725], and the
-upper limit is exactly the integer-mass semiclassical exponent 3.25725 that
-`masses.py` returns independently -- a five-decimal cross-check on both.
+upper limit is the integer-mass semiclassical exponent 3.25725 by construction
+(their Eq. 17 lower limit coincides with their Eq. 1); `masses.py` returns the
+same value.
 
 Their result is also the sharpest illustration of why the offset is the right
 coordinate. The exponent converges to the semiclassical value along the ray,
@@ -727,8 +761,9 @@ semiclassical locus. It does not merge: the offset is pinned at `F0 = -0.042086`
 for every point on that ray. A ratio of two diverging logarithms cannot resolve
 the bounded difference between them.
 
-Siebrand & Smedarchina (*J. Phys. Chem. B* **108**, 4185, 2004) is the
-full-length treatment of the same promoting-mode model class.
+Siebrand & Smedarchina (*J. Phys. Chem. B* **108**, 4185, 2004) give the
+gating-averaged overlap of Proposition S1 (their Eq. 7) and the quantum thermal
+width (their Eq. 4).
 
 Francis & Kohen (*Perspect. Sci.* **1**, 110, 2014) is the community reporting
 standard. It specifies error propagation but does not call for the covariance

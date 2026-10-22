@@ -222,7 +222,7 @@ def derived():
 # criteria ever change.
 # The corpus size appears in prose in both documents and is not otherwise a
 # derived quantity, so it grew stale when records were added.  Pinned here.
-CORPUS = {"records": 108, "units": 35}
+CORPUS = {"records": 231, "units": 73}
 
 
 GENERAL_CENSUS = {"networks": 764, "edges": 5538, "mixed": 3415,
@@ -475,48 +475,77 @@ def _corpus_records():
 
 
 def check_provenance_split():
-    """The SI's provenance counts must match the benchmark's own source DOIs.
+    """The provenance counts in both documents must match the benchmark's DOIs.
 
-    Six sources are parsed from a publisher PDF, one from a published
-    spreadsheet, and one was transcribed by hand from scanned pages.  Only the
-    first two classes are evidence of transcription; quoting a larger parsed
-    count than the data supports would overstate the audit.
+    Four classes: parsed from a publisher PDF, recovered from a published
+    spreadsheet, transcribed from a PDF supplement whose text layer the
+    transcription audit checks (the sources admitted by the census of
+    2026-10-20), and transcribed by hand from scanned pages or word-processor
+    supplements.  Quoting a larger audited count than the data support would
+    overstate the audit.  The classes are stated here independently and must
+    also equal the builder's own sets.
     """
     import pandas as pd
+    import build_trinomial as BT
     PDF = {"10.1021/ja411998h", "10.1021/acs.biochem.1c00558",
            "10.1021/acscatal.9b03345", "10.1021/ja501936d", "10.1021/ja031683w",
            "10.3390/ijms16047304"}
     XLSX = {"10.1371/journal.pone.0196506"}
-    HAND = {"10.1021/bi00253a026", "10.1021/bi002075l"}
+    AUDITED = {"10.1021/ja103010b", "10.1021/ja307859m", "10.1021/ja400761x",
+               "10.1021/ja060196o", "10.1021/ja504341g", "10.1021/acscatal.5b01332",
+               "10.1021/acscatal.8b02554", "10.1039/c0cc02988b", "10.1021/acscatal.5b00331",
+               "10.1073/pnas.1415940111", "10.1021/acs.biochem.9b00460",
+               "10.1021/ja902120t", "10.1021/acs.biochem.6b00181", "10.1021/jacs.7b08359"}
+    HAND = {"10.1021/bi00253a026", "10.1021/bi002075l", "10.1021/bi00161a030",
+            "10.1021/bi0518242", "10.1098/rstb.2006.1871"}
+    bad = 0
+    if set(BT.PDF_SOURCES) != PDF or set(BT.TRANSCRIBED) != AUDITED or BT.HAND_TRANSCRIBED != HAND:
+        print("  FAIL provenance: the classes here differ from build_trinomial.py's")
+        bad += 1
     d = pd.read_csv("../data/trinomial_benchmark.csv")
     n_pdf = int(d.source_DOI.isin(PDF).sum())
     n_xls = int(d.source_DOI.isin(XLSX).sum())
+    n_aud = int(d.source_DOI.isin(AUDITED).sum())
     n_hand = int(d.source_DOI.isin(HAND).sum())
     parsed = n_pdf + n_xls
-    bad = 0
-    if parsed + n_hand != len(d):
-        print(f"  FAIL provenance: {parsed}+{n_hand} != {len(d)}; "
+    if parsed + n_aud + n_hand != len(d):
+        print(f"  FAIL provenance: {parsed}+{n_aud}+{n_hand} != {len(d)}; "
               "a source DOI is unclassified")
         bad += 1
+    by_hand = _corpus_records() - parsed - n_aud
     si = " ".join(DOCS["si"].read_text().split())
     main = " ".join(DOCS["main"].read_text().split())
     for label, need, doc, text in (
-            ("SI parsed total", f"${parsed}$ of the ${len(d)}$", "si", si),
+            ("SI parsed total", f"${parsed}$ of the ${len(d)}$ benchmark records", "si", si),
             ("SI value count", f"${parsed * 4}$ values", "si", si),
             ("SI pdf values", f"{n_pdf * 4} values", "si", si),
-            ("main parsed total", f"{parsed} of the {len(d)} temperature-resolved records",
-             "main", main),
-            # every record not parsed was transcribed by hand, including all the
-            # single-condition records; the count follows from the corpus
-            ("main hand total", f"The remaining ${_corpus_records() - parsed}$ were "
-             f"transcribed by hand", "main", main)):
+            ("SI audited records", f"${n_aud}$ records, every one of the ${n_aud * 4}$ values", "si", si),
+            ("SI audit total", f"the audit covers ${(n_pdf + n_aud) * 4}$ values", "si", si),
+            ("SI series by hand", f"{_nw(n_hand)} temperature-resolved records were transcribed by hand", "si", si),
+            # since 2026-10-21 the main text keeps the accounting in Methods only
+            ("methods parsed total", f"{parsed} records in all", "main", main),
+            ("methods audited", f"A further {n_aud} records were transcribed from supplementary PDFs", "main", main),
+            ("methods audited values", f"each of their {n_aud * 4} values", "main", main),
+            ("methods hand", f"The remaining {by_hand} were transcribed by hand", "main", main)):
         if need not in text:
             print(f"  FAIL provenance: {doc} does not state {need!r} ({label})")
             bad += 1
     if not bad:
         print(f"  provenance: {n_pdf} PDF ({n_pdf*4} values) + {n_xls} spreadsheet "
-              f"({n_xls*4}) = {parsed} parsed, {n_hand} hand-transcribed")
+              f"({n_xls*4}) = {parsed} parsed, {n_aud} audited transcriptions "
+              f"({n_aud*4} values), {by_hand} by hand")
     return bad
+
+
+def _nw(n):
+    """A count in words, as the documents write counts below one hundred."""
+    ones = ("zero one two three four five six seven eight nine ten eleven twelve thirteen "
+            "fourteen fifteen sixteen seventeen eighteen nineteen").split()
+    tens = "_ _ twenty thirty forty fifty sixty seventy eighty ninety".split()
+    if n < 20:
+        return ones[n]
+    t, o = divmod(n, 10)
+    return tens[t] + (f"-{ones[o]}" if o else "")
 
 
 def check_cited_scripts():
@@ -570,37 +599,43 @@ def check_no_ai_mentions():
 
 
 def check_methods_sources():
-    """Every data file's own bib key must be cited in Materials and Methods.
+    """Every source of every corpus record must be cited in the main text.
 
-    Adding the two aqueous 3 C records brought TsaiKlinman2001 into the corpus
-    but not into the Methods source list, so the provenance of two records went
-    uncited.  The data files that name their source are checked against the
-    citation here.
+    Adding the two aqueous 3 C records once brought TsaiKlinman2001 into the
+    corpus but not into the Methods source list, so the provenance of two records
+    went uncited.  Since the census of 2026-10-20 the main text's data section
+    cites every source; this resolves each single-condition record's source key
+    and each series' DOI (through the bibliography) and requires a \\cite of it.
     """
-    import pandas as pd, glob, re
+    import re
+    import corpus
     main = DOCS["main"].read_text()
-    m = re.search(r"Isotope effects were taken from the published tables of\s*"
-                  r"refs\.?\\?\s*\\cite\{([^}]*)\}", main)
-    if not m:
-        print("  FAIL methods: could not locate the source citation")
-        return 1
-    cited = {k.strip() for k in m.group(1).split(",")}
-    needed = set()
-    for f in glob.glob("../data/*.csv"):
-        try:
-            d = pd.read_csv(f)
-        except Exception:
-            continue
-        if "source" in d.columns:
-            needed |= {str(v) for v in d["source"].dropna().unique()}
-    # only files that actually feed the benchmark matter
-    needed &= {"Grant1989", "Cha1989", "Bahnson1993", "Bahnson1997",
-               "TsaiKlinman2001"}
+    cited = set()
+    for grp in re.findall(r"\\cite\{([^}]*)\}", main):
+        cited |= {k.strip() for k in grp.split(",")}
+    bib = (ROOT / "references.bib").read_text()
+    doi2key = {}
+    # entries close in more than one style ("}" on its own line or "}}"), so
+    # split at each entry rather than match its closing brace
+    for chunk in re.split(r"\n(?=@)", bib):
+        k = re.match(r"\s*@\w+\{([^,]+),", chunk)
+        m = re.search(r"\bdoi\s*=\s*\{([^}]*)\}", chunk)
+        if k and m:
+            doi2key[m.group(1).strip().lower()] = k.group(1).strip()
+    needed = set(corpus.single_condition().source)
+    missing_doi = []
+    for doi in corpus.series().source_DOI.unique():
+        k = doi2key.get(doi.lower())
+        if k is None:
+            missing_doi.append(doi)
+        else:
+            needed.add(k)
     missing = sorted(needed - cited)
-    if missing:
-        print(f"  FAIL methods: data sources not cited in Methods: {missing}")
+    if missing or missing_doi:
+        print(f"  FAIL methods: corpus sources not cited in the main text: {missing}"
+              f"{'; series DOIs with no bibliography entry: ' + str(missing_doi) if missing_doi else ''}")
         return 1
-    print(f"  Methods source list: all {len(needed)} named data sources cited")
+    print(f"  data sources: all {len(needed)} sources of the corpus are cited in the main text")
     return 0
 
 
@@ -632,17 +667,17 @@ def check_precision_limited_count():
         p = F_min_exact(r.K_HT, r.K_DT)[0]
         pts.append((p, lcb(p, r.K_HT, r.K_HT_se, r.K_DT, r.K_DT_se)))
     n = sum(1 for pt, l in pts if pt > F0 and l <= F0)
-    word = NUM.get(n, str(n))
-    ORD = {3: "third", 4: "fourth", 5: "fifth"}
+    above = sum(1 for pt, l in pts if pt > F0)          # precision-limited + excluding
+    word, rest = _nw(n), _nw(above)
     # each entry is a tuple of accepted phrasings: the count must be stated, in
-    # one wording or another, in every place the documents state it
-    need = {"main": ((f"while {word},", f"{word} fail on precision alone"),
-                     (f"remaining {word} the endpoint", f"{word} of the remaining seven the endpoint"),
-                     (f"and {word} more limited by precision alone",
-                      f"and {word} more are limited by precision"),
-                     (f"and {word} more are limited by precision alone",
-                      f"{word} more are limited by precision")),
-            "si": ((f"a {ORD.get(n, n)} unit whose endpoint exceeds",),)}
+    # one wording or another, in every place the documents state it (the figure
+    # caption, the results paragraph, the abstract and the conclusions; the SI's
+    # Agrawal paragraph)
+    need = {"main": ((f"{word} fail on precision alone",),
+                     (f"for {word} of the remaining {rest} the endpoint",),
+                     (f"{word} more are limited by precision",),
+                     (f"and {word} more are limited by precision",)),
+            "si": ((f"one of the {word} units whose endpoint exceeds",),)}
     bad = 0
     for tag, groups in need.items():
         t = " ".join(DOCS[tag].read_text().split()).lower()
@@ -665,8 +700,9 @@ def check_ladh_zero_claim():
     """
     import pandas as pd
     from partial_id import F_min_exact
-    NUM = {10: "ten", 11: "eleven", 9: "nine", 8: "eight"}
-    d = pd.read_csv("../data/ladh_adh_primary.csv")
+    # every aqueous horse liver record, as adh_primary.py and the SI table hold them
+    from adh_primary import ladh_records
+    d = ladh_records()
     n_tot = len(d)
     n_zero = 0
     for _, r in d.iterrows():
@@ -677,7 +713,7 @@ def check_ladh_zero_claim():
     if n_zero == n_tot:
         want = "every"
     else:
-        want = f"{NUM.get(n_zero, n_zero)} of the {NUM.get(n_tot, n_tot)}"
+        want = f"{_nw(n_zero)} of the {_nw(n_tot)}"
     for tag, path in (("main", DOCS["main"]), ("si", DOCS["si"])):
         t = " ".join(path.read_text().split()).lower()
         if want not in t:
@@ -767,16 +803,15 @@ def check_corpus():
     # Phrases, not bare numbers: "97" occurs inside "1997", so the old bare test
     # passed on a document that still said 96 (found 2026-09-14).
     R, U = CORPUS["records"], CORPUS["units"]
-    for d, phrases in (("main", (f"benchmark of {R} matched", f"{R} matched records in {U} analysis units",
-                                 f"We assembled {R} matched primary records", f"giving {U} analysis units",
-                                 f"${R}$ records in ${U}$ analysis units")),
-                       ("si", (f"the ${R}$ matched records",))):
+    # The phrasings since the census of 2026-10-20 (abstract, the data section's
+    # opening count and unit count, and the SI's data note).
+    for d, phrases in (("main", (f"all {R} eligible matched records, in {U} analysis units",
+                                 f"The census yields {R} matched records",
+                                 f"single-condition record is one of {U} analysis units")),
+                       ("si", (f"the ${R}$ matched records form {U} analysis units",))):
         t = " ".join(DOCS[d].read_text().split())
         for ph in phrases:
-            if ph not in t and not ((ph == f"benchmark of {R} matched" and
-                    f"Reanalysis of {R} matched records in {U} analysis units" in t) or
-                    (ph == f"${R}$ records in ${U}$ analysis units" and
-                     f"{R} matched records in {U} analysis units" in t)):
+            if ph not in t:
                 print(f"  FAIL corpus: {d} lacks {ph!r}")
                 bad += 1
     # the README drifted once, holding 94/29/28 after the corpus grew
@@ -1034,7 +1069,7 @@ def check_corpus_consequences():
          "the simultaneous margin (joint-nuisance note)")
     need("main", f"singled out from {W[u]} examined", "the multiplicity denominator")
     need("si", f"singled out from {W[u]} examined", "the multiplicity denominator")
-    need("main", f"applied uniformly to all {W[u]} systems", "the unit count")
+    need("main", f"applied uniformly to all {W[u]} units", "the unit count")
     # the monotonicity condition of E(phi), and the Theorem 1 forecast
     # over the admissible records (K_HT > K_DT > 1); since 2026-10-13 one
     # record (wild type in 50% methanol at -50 C, K_DT = 0.99) is not, and it
@@ -1056,55 +1091,68 @@ def check_corpus_consequences():
         bad += 1
     need("si", f"Checked against all ${chk}$ admissible records, there are no violations",
          "the Theorem 1 forecast count")
-    # the protocol table: one row per distinct series or form
+    # the protocol table: one row per distinct series or form.  Since the census
+    # of 2026-10-20 it is a longtable with three statuses: inferred (labeled
+    # design, secondary effects reported), assumed (labeled design, none
+    # reported) and shared (one tritiated isotopologue, r = 1 exactly).
     tab = DOCS["si"].read_text()
     tab = tab[tab.index(r"\label{tab:protocol}"):]
-    tab = tab[:tab.index(r"\end{tabular}")]
+    tab = tab[:tab.index(r"\end{longtable}")]
     lines = [ln.rstrip() for ln in tab.splitlines()]
-    inferred = sum(1 for ln in lines if ln.endswith(r"inferred$^{a}$\\"))
-    shared = sum(1 for ln in lines if ln.endswith(r"& 1 & shared$^{b}$\\"))
-    forms = inferred + shared
-    # the table's statuses must be those deposited in tracer_design.csv, which
-    # records the tracer each source used in the H/T and the D/T experiment
-    import reference_asymmetry as RA
-    td = RA.tracer_design()
-    # row by row, so a swap of two statuses cannot pass on the counts alone
+    STATUS = {r"inferred$^{a}$\\": "inferred", r"assumed$^{c}$\\": "assumed",
+              r"& 1 & shared$^{b}$\\": "shared"}
     cells = {}
     for ln in lines:
-        if ln.endswith(r"inferred$^{a}$\\") or ln.endswith(r"& 1 & shared$^{b}$\\"):
-            # row labels are LaTeX: unescape the percent sign of the solvent rows
-            cells[ln.split(" & ")[0].replace("\\%", "%")] = "labeled" if "inferred" in ln else "shared"
+        for end, st in STATUS.items():
+            if ln.endswith(end):
+                # row labels are LaTeX: undo the escapes of the solvent and Mg rows
+                lab = ln.split(" & ")[0].replace("\\%", "%").replace("Mg$^{2+}$", "Mg2+")
+                cells[lab] = st
+    import reference_asymmetry as RA
+    td = RA.tracer_design()
+    sec = RA.table()
+    with2 = set(map(tuple, sec[["family", "variant"]].drop_duplicates().values))
     from corpus import display_family
+    # row by row, so a swap of two statuses cannot pass on the counts alone
     for _, x in td.iterrows():
         if x.design == "labeled":
             stem = f"{x.family} {x.variant}"
+            want = "inferred" if (x.family, x.variant) in with2 else "assumed"
         else:
             fam = display_family(x.family, x.variant) if x.family == "TSase" else x.family
-            var = "WT" if x.family == "ecTSase" else x.variant
+            var = "WT" if (x.family == "ecTSase" and x.variant == "wild type") else x.variant
             stem = f"{fam} {var} ({x.step}"
+            want = "shared"
         # labeled rows are named exactly; shared rows carry "(step" and may add a
         # temperature, so they match on that prefix (which includes the step)
         hit = [k for k in cells if (k == stem if x.design == "labeled" else k.startswith(stem))]
-        if len(hit) != 1 or cells[hit[0]] != x.design:
+        if len(hit) != 1 or cells[hit[0]] != want:
             print(f"  FAIL corpus consequences: protocol table row for {stem!r} is "
-                  f"{[cells[h] for h in hit] or 'absent'}, tracer_design.csv says {x.design}")
+                  f"{[cells[h] for h in hit] or 'absent'}, the data say {want}")
             bad += 1
-    if (inferred, shared) != (int((td.design == "labeled").sum()), int((td.design == "shared").sum())):
-        print(f"  FAIL corpus consequences: protocol table {inferred} inferred / {shared} shared, "
-              f"tracer_design.csv {(td.design == 'labeled').sum()} / {(td.design == 'shared').sum()}")
+    inferred = sum(1 for v in cells.values() if v == "inferred")
+    assumed = sum(1 for v in cells.values() if v == "assumed")
+    shared = sum(1 for v in cells.values() if v == "shared")
+    forms = inferred + assumed + shared
+    if (inferred + assumed, shared) != (int((td.design == "labeled").sum()),
+                                        int((td.design == "shared").sum())):
+        print(f"  FAIL corpus consequences: protocol table {inferred}+{assumed} labeled / "
+              f"{shared} shared, tracer_design.csv {(td.design == 'labeled').sum()} / "
+              f"{(td.design == 'shared').sum()}")
         bad += 1
     if forms != u - 2:
         print(f"  FAIL corpus consequences: protocol table has {forms} forms, "
               f"units minus the two repeat 3 C records give {u - 2}")
         bad += 1
-    need("si", f"outcome for the {W[forms]} distinct series and enzyme forms", "the form count")
-    need("si", f"{W[inferred].capitalize()} of the {W[forms]} report secondary", "the inferred count")
-    need("si", f"the remaining {W[shared]} need no inference", "the shared-tracer count")
-    need("si", f"For the remaining {W[shared]} the question does not arise", "the shared-tracer count")
-    need("main", f"across {W[inferred]} of the {W[forms]} forms", "the form count",
-         (f"Across {W[inferred]} of the {W[forms]} enzyme forms",))
-    need("main", f"For the remaining {W[shared]} the question does not arise", "the shared-tracer count",
-         (f"For the remaining {W[shared]} forms the same tritiated molecule",))
+    need("si", f"outcome for the {_nw(forms)} distinct series and enzyme forms", "the form count")
+    need("si", f"{_nw(inferred).capitalize()} of the {_nw(forms)} report secondary", "the inferred count")
+    need("si", f"{_nw(shared)} need no inference", "the shared-tracer count")
+    need("si", f"For the {_nw(shared)} the question does not arise", "the shared-tracer count")
+    need("si", f"and {_nw(assumed)} cannot be checked at all", "the assumed count")
+    need("si", f"The {_nw(inferred + assumed)} forms whose protocols place deuterium", "the labeled count")
+    need("main", f"Across {_nw(inferred)} of the {_nw(forms)} enzyme forms", "the form count")
+    need("main", f"For {_nw(shared)} forms the same tritiated molecule", "the shared-tracer count")
+    need("main", f"In the remaining {_nw(assumed)}, dihydrofolate reductase mutants", "the assumed count")
     # the confidence procedure for temperature series (corrected 2026-09-14):
     # its simulated failure rate and Monte Carlo precision
     import bounds_uncertainty as BU
@@ -1125,14 +1173,84 @@ def check_corpus_consequences():
     e = int(np.floor(np.log10(mc)))
     need("main", f"largest Monte Carlo standard deviation ${mc / 10 ** e:.1f}\\times10^{{{e}}}$",
          "the Monte Carlo precision of the bounds")
-    # the light ecDHFR series under the source's stated protium contamination
-    pmax, plcb = BU.protium_sensitivity()
-    need("si", f"reach a point endpoint of ${pmax:+.4f}$", "the protium-sensitivity point")
-    need("si", f"at $\\rho=-1$ would be ${plcb:+.4f}$, still below $\\Fz$",
-         "the protium-sensitivity bound")
-    if not (pmax > 0 > F0 > plcb):
-        print("  FAIL corpus consequences: the protium sensitivity no longer reads as stated")
+    # Isotopic purity (Supplementary Note on the deuterated comparators, added
+    # 2026-10-20; rebuilt 2026-10-21 after an external audit found the contaminant
+    # rate wrong for dideuterated designs, the H/T error dropped from corrected
+    # values, and per-unit robustness quoted as if it held across all units).
+    # Every number is recomputed from isotopic_purity.py.
+    import isotopic_purity as IP
+    U_ = {lab: (src, g) for lab, src, g in IP.units()}
+    ex = IP.exclusions().set_index("unit")
+    yb, yc = "YADH wild type, 25 C (Cha1989)", "YADH wild type (p-chlorobenzyl alcohol) (hydride)"
+    rb, rc = ex.loc[yb], ex.loc[yc]
+    # the stated conjunctions must be what the numbers say
+    if not (rb.undo0 > F0 and rb.undo5 > F0 and rb.undo0_all < F0 and rb.undo5_all < F0):
+        print("  FAIL corpus consequences: the benzyl alcohol purity/multiplicity pattern changed")
         bad += 1
+    if not (rc.undo0_all > F0 and rc.undo5_all > F0):
+        print("  FAIL corpus consequences: p-chlorobenzyl alcohol no longer survives all three checks")
+        bad += 1
+    if not all(ex.loc[u].undo0 < F0 for u in ex.index if "ChinKlinman2000" in u):
+        print("  FAIL corpus consequences: the double-mutant correction scenario changed sides")
+        bad += 1
+    need("si", f"falls from $+0.049$ to ${rb.undo0:+.3f}$ at small conversion and ${rb.undo5:+.3f}$ at $f=0.5$",
+         "the benzyl alcohol bound without the protium correction")
+    need("si", f"it falls to ${rb.undo0_all:+.3f}$ and ${rb.undo5_all:+.3f}$, below $\\Fz$",
+         "the benzyl alcohol bound without its correction, across all units",
+         (f"to ${rb.undo0_all:+.3f}$ and ${rb.undo5_all:+.3f}$, below $\\Fz$",))
+    need("si", f"from $+0.170$ to ${rc.undo0:+.3f}$ and ${rc.undo5:+.3f}$, and across the $73$ units to "
+               f"${rc.undo0_all:+.3f}$ and ${rc.undo5_all:+.3f}$",
+         "the p-chlorobenzyl alcohol bounds without the correction",
+         (f"${rc.undo0_all:+.3f}$ and ${rc.undo5_all:+.3f}$",))
+    need("main", f"leaves the benzyl alcohol bound at ${rb.undo0:+.3f}$",
+         "the benzyl alcohol bound without its correction (main)")
+    need("main", f"well it falls to ${rb.undo0_all:+.3f}$", "the combined benzyl alcohol bound (main)")
+    need("main", f"and removal of its correction together (${rc.undo0_all:+.3f}$)",
+         "the combined p-chlorobenzyl alcohol bound (main)")
+    pn0, pn5 = IP.protium_needed(yb, 0.0), IP.protium_needed(yb, 0.5)
+    need("si", f"at least ${100 * pn0:.2f}\\%$ protium (small conversion) or ${100 * pn5:.2f}\\%$",
+         "the protium level the combined benzyl alcohol claim needs",
+         (f"${100 * pn0:.2f}\\%$ protium (small conversion)",))
+    need("main", f"at least ${100 * pn0:.2f}\\%$ protium", "the protium level (main)")
+    for u in ex.index:
+        if "ChinKlinman2000" in u:
+            need("si", f"${ex.loc[u].undo0:+.3f}$", f"the double-mutant scenario bound {u}")
+    # the exclusion table the main text inputs must be the generated one
+    import os as _os
+    tex_tab = open("../results/sm_table_exclusions.tex").read()
+    if IP.exclusion_table(IP.exclusions()) != tex_tab:
+        print("  FAIL corpus consequences: results/sm_table_exclusions.tex is stale")
+        bad += 1
+    ta = IP.threshold(U_["ecTSase wild type, 20 C (Agrawal2004)"][1], "bound", 0.0)
+    tw = IP.threshold(U_["ecTSase Y209W (hydride)"][1], "bound", 0.0)
+    need("si", f"clear $\\Fz$ once protium of ${100 * ta:.2f}\\%$ and ${100 * tw:.2f}\\%$ is",
+         "the protium thresholds of the two units that move")
+    chi = IP.chi_contaminant(7.13, 22.529, 1.456134)
+    need("si", f"$\\chi={chi:.2f}$ against $\\KHT=7.13$", "the dideuterated contaminant rate example")
+    fac0 = IP.correction_factor(0.0065, 0.0065, 3.9, 1.2, 0.0) - 1
+    fac5 = IP.correction_factor(0.0065, 0.0065, 3.9, 1.2, 0.5) - 1
+    need("si", f"here ${100 * fac0:.1f}\\%$ at small conversion and ${100 * fac5:.1f}\\%$ at $f=0.5$",
+         "Cha's correction factor", (f"${100 * fac0:.1f}\\%$ at small conversion and ${100 * fac5:.1f}\\%$",))
+    pur = pd.read_csv("../results/isotopic_purity.csv")
+    st = pur[(pur.f == 0.0) & (pur.scenario == "as stated")]
+    n_ex = int((st.now == "excludes").sum())
+    n_ex0 = int((st.base == "excludes").sum())
+    if not ((st.base != st.now) <= ((st.now == "excludes") | (st.base == "uninformative"))).all() \
+            or (st[(st.base == "excludes")].now != "excludes").any():
+        print("  FAIL corpus consequences: a purity correction moved a unit toward the uninformative side")
+        bad += 1
+    need("si", f"the count of exclusions rises from {_nw(n_ex0)} to {_nw(n_ex)} and none falls",
+         "the purity scenario count",
+         (f"the count of exclusions rises from {_nw(n_ex0)} to {_nw(n_ex)} and none falls",))
+    # retired claims: robustness checks passed separately are not a joint pass
+    for bad_phrase in ("neither depends on a correction for isotopic impurity",
+                       "No exclusion reported here therefore depends on a correction",
+                       "neither rests on a correction for isotopic impurity",
+                       "The published errors are therefore adequate for the offset"):
+        for doc_name, doc_txt in (("main", main), ("si", si)):
+            if " ".join(bad_phrase.split()) in doc_txt:
+                print(f"  FAIL corpus consequences: retired claim in {doc_name}: {bad_phrase!r}")
+                bad += 1
     # the yeast bypass tolerance quoted in the main text, at the jointly solved r
     from completion import yadh_completion_joint, bypass_tolerance
     t13 = 100 * float(bypass_tolerance(7.13, 1.73, yadh_completion_joint(1.3)["r"], F0))
@@ -1160,26 +1278,30 @@ def check_corpus_consequences():
     excl = pr[(pr.F_lo > 0) | (pr.F_hi < 0)]
     adq = excl[excl.p_fit > 0.05]
     above = adq[adq.F_lo > F0]
-    WS = {1: "one", 2: "two", 3: "three", 4: "four", 5: "five", 6: "six",
-          7: "seven", 8: "eight", 9: "nine", 10: "ten", 11: "eleven",
-          12: "twelve", 13: "thirteen", 14: "fourteen", 15: "fifteen",
-          16: "sixteen", 17: "seventeen", 18: "eighteen", 19: "nineteen",
-          20: "twenty", 21: "twenty-one"}
-    need("si", f"profiles exclude $F=0$ in {WS[len(excl)]} of {WS[len(pr)]} series",
+    below = adq[adq.F_hi < F0]
+    need("si", f"profiles exclude $F=0$ in {_nw(len(excl))} of {_nw(len(pr))} series",
          "the profile exclusion count")
-    need("si", f"{WS[len(excl) - len(adq)]} of those {WS[len(excl)]} belong to series the model",
+    need("si", f"{_nw(len(excl) - len(adq))} of those {_nw(len(excl))} belong to series the model",
          "the misfit exclusion count")
-    need("si", f"The other {WS[len(adq)]} exclusions are in adequately fitting series",
+    need("si", f"The other {_nw(len(adq))} exclusions are in adequately fitting series",
          "the adequate exclusion count")
-    need("si", f"{WS[len(above)]} ecDHFR and hsDHFR series", "the count wholly above F0")
+    need("si", f"{_nw(len(above)).capitalize()} ecDHFR and hsDHFR series", "the count wholly above F0")
+    need("si", f"{_nw(len(below)).capitalize()} give intervals wholly below $\\Fz$", "the count wholly below F0")
     # the admitted E. coli thymidylate synthase record
     e = ya[ya.grp == "ectsase"].iloc[0]
     fe = F_min_exact(e.K_HT, e.K_DT)[0]
     se = np.sqrt((e.K_HT_se / e.K_HT) ** 2 + (GSC * e.K_DT_se / e.K_DT) ** 2
                  + 2 * GSC * (e.K_HT_se / e.K_HT) * (e.K_DT_se / e.K_DT))
     lh = (e.K_HT - 1) / (e.K_DT - 1)
-    need("main", f"endpoint of ${fe:+.3f}$", "the ecTSase endpoint")
-    need("main", f"bound of ${fe - 1.645 * se:.3f}$", "the ecTSase bound")
+    # the single-record bound is the exact quantile of the endpoint
+    # (bounds_uncertainty.exact_bound); on the open branch, as here, it equals
+    # the closed form for F_obs, and both are checked
+    eb = BU.exact_bound(e.K_HT, e.K_HT_se, e.K_DT, e.K_DT_se)
+    if abs(eb - (fe - 1.645 * se)) > 5e-4:
+        print("  FAIL corpus consequences: ecTSase exact bound departs from the open-branch form")
+        bad += 1
+    need("main", f"endpoint $+{fe:.3f}$", "the ecTSase endpoint", (f"endpoint of ${fe:+.3f}$",))
+    need("main", f"bound ${eb:.3f}$", "the ecTSase bound", (f"bound of ${eb:.3f}$",))
     need("si", f"$L_H={lh:.2f}>\\gSC$", "the ecTSase L_H")
     need("si", f"$F_{{\\mathrm{{obs}}}}={fe:+.3f}$", "the ecTSase endpoint")
     need("si", f"at $\\rho=-1$ is ${fe - 1.645 * se:.3f}$", "the ecTSase bound")
@@ -1467,7 +1589,8 @@ def check_readiness_scope():
     if abs(YR.t_tail_bound(10, u) - tb) > 1e-12:
         print("  FAIL readiness scope: yadh_robustness.t_tail_bound disagrees with the audit")
         bad += 1
-    need("main", f"bound at $\\rho=-1$ falls to ${tb:.3f}$, below $\\Fz$", "the t-tail sensitivity")
+    tp = YR.pchloro_series(u)["t10"]
+    need("main", f"bounds at $\\rho=-1$ then fall to ${tb:.3f}$ and ${tp:.3f}$,", "the t-tail sensitivity")
     # the main text cites Note 18 for this number; until 2026-10-16 the SI gave none
     need("si", f"at $\\rho=-1$ falls to ${tb:.3f}$, below $\\Fz$", "the t-tail sensitivity (SI)")
     # house style: no em dashes in the manuscript or the supplement
@@ -1797,8 +1920,15 @@ def check_source_review_2026_10_13():
         if not (l1 > F0 and l1 > 0):
             print(f"  FAIL source review: {v} no longer clears both thresholds")
             bad += 1
-    # three units clear F0 at rho = -1: yeast and the two methanol series
-    need("main", "Three units have nominal per-unit confidence bounds above $\\Fz$",
+    # the units whose rho = -1 bound clears F0, counted from the data (three
+    # until the census of 2026-10-20: yeast and the two methanol series)
+    _b1 = pd.read_csv("../results/bounds_uncertainty.csv")
+    _n = int((_b1[_b1.rho == -1.0].lcb > F0).sum())
+    for _, r_ in corpus.single_condition().iterrows():
+        _p = _fme(r_.K_HT, r_.K_DT)[0]
+        _a, _c = r_.K_HT_se / r_.K_HT, GSC * r_.K_DT_se / r_.K_DT
+        _n += int(_p - 1.645 * (_a + _c) > F0)
+    need("main", f"{_nw(_n).capitalize()} units have nominal per-unit confidence bounds above $\\Fz$",
          "the exclusion count")
     # multiplicity for the methanol series, across all units.  At alpha/(u n_T)
     # a Monte Carlo quantile rests on a few hundred tail draws, so these are
@@ -1888,7 +2018,7 @@ def check_light_example():
             ("main", main, f"crosses the ray at $c={c1:.1f}$ (open circle)"),
             ("main", main, f"recovers an intrinsic H/T effect of ${xh:.1f}$, against the "
                            f"$6.18\\pm0.39$ ($95\\%$ interval) the source reports"),
-            ("main", main, f"so $r\\ge{R:.2f}$ and the crossing moves to $c\\ge{cR:.1f}$"),
+            ("main", main, f"so $r\\ge{R:.3f}$ and the crossing moves to $c\\ge{cR:.1f}$"),
             ("si", si, f"$R={R:.3f}\\pm{rse:.3f}$ at $25\\,^{{\\circ}}$C")):
         if need_ not in text:
             print(f"  FAIL light example: {doc} does not state {need_!r}")
@@ -1954,18 +2084,29 @@ def check_audit_2026_10_15():
     lo60 = cd[(cd.variant == "F93W (60% MeOH)") & (cd.omitted_T == 3.0)].bound.iloc[0]
     need("main", f"the bounds fall to ${lo40:+.3f}$ and ${lo60:+.2f}$", "the deletion bounds")
     # D. nominal per-unit wording and the multiplicity survivor
-    need("main", "give three nominal per-unit exclusions", "the abstract qualifier")
-    need("main", "Only the yeast exclusion survives adjustment across all units", "the abstract multiplicity")
+    need("main", "Six units give nominal per-unit exclusions", "the abstract qualifier")
+    need("main", "Only the two yeast exclusions survive adjustment across all units",
+         "the abstract multiplicity")
     u = corpus.counts()["units"]
     sc = corpus.single_condition()
-    if not BU.multiplicity_bound(sc[sc.grp == "yadh"], u, -1.0) > F0:
-        print("  FAIL audit 2026-10-15: yeast no longer survives multiplicity at rho = -1")
+    # which units survive Bonferroni across all units at rho = -1, computed: it
+    # must be exactly the two yeast units the abstract names
+    surv = [f"single {r_.family} {r_.variant}" for _, r_ in sc.iterrows()
+            if BU.multiplicity_bound(pd.DataFrame([r_]), u, -1.0) > F0]
+    for (fam, var, st), g in corpus.series().groupby(["family", "variant", "step"]):
+        if BU.multiplicity_bound(g, u, -1.0) > F0:
+            surv.append(f"series {fam} {var}")
+    if sorted(surv) != ["series YADH wild type (p-chlorobenzyl alcohol)", "single YADH wild type"]:
+        print(f"  FAIL audit 2026-10-15: multiplicity survivors at rho = -1 are {surv}")
         bad += 1
-    rays = open("../figures/tikz/data/fa_rays.tex").read()
+    # the figure is two panels since 2026-10-20
+    rays = "\n".join(open(f"../figures/tikz/data/fa_rays_{k}.tex").read() for k in "ab")
     stars = [l for l in rays.splitlines() if "^{\\ast}" in l]
     dags = [l for l in rays.splitlines() if "^{\\dagger}" in l]
-    if len(stars) != 1 or "YADH" not in stars[0] or len(dags) != 1 or "50" not in dags[0]:
-        print("  FAIL audit 2026-10-15: Fig. 5 marks are not on yeast (*) and WT 50% MeOH (dagger)")
+    if (len(stars) != 2 or not all("YADH" in l for l in stars)
+            or len(dags) != 1 or "50" not in dags[0]):
+        print("  FAIL audit 2026-10-15: Fig. 5 marks are not on the two yeast units (*) "
+              "and WT 50% MeOH (dagger)")
         bad += 1
     # F. a finite member of the model, not a pair on the unattained envelope
     bad += J.check_finite_witness(verbose=False)
@@ -2193,6 +2334,147 @@ def check_consistency_2026_10_16():
     return bad
 
 
+def check_bounds_2026_10_21():
+    """Deposit-only regressions for the external audit of 2026-10-21.
+
+    * Single-record bounds are the exact rho = -1 quantile of the ENDPOINT.  The
+      shortcut F_min - 1.645 sd(F_obs) is right only on the open branch; for the
+      two closed-branch Hong 2007 records it drew whiskers 0.06 and 0.10 too
+      short.  Both records are regression cases: the exact bound must differ
+      from the shortcut there, agree with Monte Carlo draws, and be what the
+      figure data draw.
+    * endpoint_exact admits a large-commitment limit reached with equality.
+    * A bypass can raise the endpoint (the main text says so only of the yeast
+      pairs).
+    """
+    import bounds_uncertainty as BU
+    import corpus
+    import network_geometry as N
+    from pathlib import Path as _P
+    bad = 0
+
+    def fail(msg):
+        nonlocal bad
+        print(f"  FAIL bounds 2026-10-21: {msg}")
+        bad += 1
+    s = corpus.single_condition()
+    hong = s[s.source == "Hong2007"]
+    fig = (_P(__file__).resolve().parent.parent / "figures" / "tikz" / "data" / "fa_rays_b.tex")
+    figtxt = fig.read_text() if fig.exists() else ""
+    figtxt += (fig.parent / "fa_rays_a.tex").read_text() if (fig.parent / "fa_rays_a.tex").exists() else ""
+    for r in hong.itertuples():
+        fmin, _, _, closed = F_min_exact(r.K_HT, r.K_DT)
+        x, y = r.K_HT_se / r.K_HT, GSC * r.K_DT_se / r.K_DT
+        short = fmin - 1.645 * (x + y)
+        ex = BU.exact_bound(r.K_HT, r.K_HT_se, r.K_DT, r.K_DT_se)
+        mc = BU.single_bound(r.K_HT, r.K_HT_se, r.K_DT, r.K_DT_se, rho=-0.9999999)
+        if not closed or not ex < short - 0.05:
+            fail(f"Hong 2007 {r.variant}: the closed-branch regression case no longer differs "
+                 f"from the open-branch shortcut ({ex:+.4f} vs {short:+.4f})")
+        if abs(ex - mc) > 2e-3:
+            fail(f"Hong 2007 {r.variant}: exact bound {ex:+.4f} disagrees with draws {mc:+.4f}")
+        if figtxt and f"(axis cs:{ex:.5f}," not in figtxt:
+            fail(f"Hong 2007 {r.variant}: the figure does not draw the exact bound {ex:.5f}")
+    # every single record: exact quantile agrees with seeded Monte Carlo draws
+    worst = max(abs(BU.exact_bound(r.K_HT, r.K_HT_se, r.K_DT, r.K_DT_se)
+                    - BU.single_bound(r.K_HT, r.K_HT_se, r.K_DT, r.K_DT_se, rho=-0.9999999))
+                for r in s.itertuples())
+    if worst > 2e-3:
+        fail(f"exact single-record bounds depart from Monte Carlo by {worst:.4f}")
+    e, prof, lim = N.equality_limit_case()
+    if not (np.isfinite(e) and abs(e - lim) < 1e-9 and abs(prof - lim) < 1e-4):
+        fail(f"equality-limit endpoint {e} (profile {prof}, limit {lim})")
+    nm = dict(N.bypass_nonmonotone_case())
+    if not (nm[0.1] > nm[0.0] and nm[1.0] > nm[0.1] and nm[10.0] < nm[0.0]):
+        fail(f"the non-monotone bypass example changed: {nm}")
+    # the yeast endpoint does fall with phi over the range used
+    ph = np.linspace(0.0, 1.0, 21)
+    for r_ in (1.31, 1.57):
+        v = [N.endpoint_exact(7.13, 1.73, p_, r_) for p_ in ph]
+        if not all(b_ < a_ for a_, b_ in zip(v, v[1:])):
+            fail(f"the yeast bypass endpoint is not decreasing in phi at r = {r_}")
+    if not bad:
+        print(f"  bounds 2026-10-21: exact single-record quantiles (max |exact - MC| {worst:.1e}); "
+              "Hong 2007 regression cases drawn; equality limit and non-monotone bypass reproduced")
+    return bad
+
+
+def check_text_2026_10_21():
+    """Text guards for the external audit of 2026-10-21 (needs the documents)."""
+    import design_power as DP
+    import network_geometry as N
+    bad = 0
+    main = " ".join(DOCS["main"].read_text().split())
+    si = " ".join(DOCS["si"].read_text().split())
+
+    def need(doc, text, what):
+        nonlocal bad
+        if text not in (main if doc == "main" else si):
+            print(f"  FAIL text 2026-10-21: {doc} lacks {what}: {text!r}")
+            bad += 1
+    st = DP.benchmark_stats()
+    need("si", f"${100 * st['med_H']:.2f}\\%$ for $\\KHT$ and ${100 * st['med_D']:.2f}\\%$ for $\\KDT$ "
+               f"at the median of the ${st['n']}$", "the median published precision")
+    need("si", f"zero for {st['n_zero']} of the {st['n_adm']} admissible", "the zero-gap count")
+    need("si", f"${st['gaps'].max():.3f}$, or ${st['gaps'].max() / abs(F0):.1f}|\\Fz|$", "the largest gap")
+    need("si", f"Proposition~S2 on all {st['n_adm']} admissible temperature-resolved records",
+         "the verification scope")
+    for stale in ("72 of the 93", "all 93 admissible", "$0.99\\%$ for $\\KHT$"):
+        if stale in si:
+            print(f"  FAIL text 2026-10-21: the SI keeps a statistic of the old corpus: {stale!r}")
+            bad += 1
+    nm = dict(N.bypass_nonmonotone_case())
+    need("si", f"it rises from ${nm[0.0]:+.3f}$ at $\\phi=0$ to ${nm[0.1]:+.3f}$ at $\\phi=0.1$ and "
+               f"${nm[1.0]:+.3f}$ at $\\phi=1$ before falling, to ${nm[10.0]:+.3f}$ at $\\phi=10$",
+         "the non-monotone bypass example")
+    if "The endpoint falls smoothly with $\\phi$, with no threshold" in main:
+        print("  FAIL text 2026-10-21: main states bypass monotonicity as general")
+        bad += 1
+    need("main", "That is a property of these pairs, not of bypasses", "the bypass qualification")
+    # the synthetic validation
+    sv = pd.read_csv("../results/synthetic_validation.csv")
+    a32 = sv[(sv.truth == "above") & (sv.c == 32)].iloc[0]
+    a2 = sv[(sv.truth == "above") & (sv.c == 2)].iloc[0]
+    mod = sv[sv.truth == "model"]
+    if not ((mod.excl_1 == 0).all() and (mod.excl_03 == 0).all()
+            and (sv.cover_1 == 1).all() and (sv.cover_03 == 1).all()):
+        print("  FAIL text 2026-10-21: the synthetic validation no longer has zero false "
+              "exclusions and full coverage, which both documents state")
+        bad += 1
+    for doc in ("main", "si"):
+        need(doc, f"${100 * a32.excl_1:.1f}\\%$ of experiments at $1\\%$ errors", "the synthetic power")
+        need(doc, f"between ${a2.cal_lo:+.3f}$ and ${a2.cal_hi:+.3f}$ in $90\\%$ of experiments",
+             "the calibrated synthetic interval")
+    need("main", f"endpoint at ${a2.endpoint:+.3f}$, below $\\Fz$", "the synthetic masked endpoint")
+    # SM-only references: every key the SI cites and the main text does not must
+    # be listed in the main text's Supplemental Material statement (18 census
+    # sources were missing until 2026-10-21)
+    raw_m, raw_s = DOCS["main"].read_text(), DOCS["si"].read_text()
+    keys = lambda t: {k.strip() for g in re.findall(r"\\cite[pt]?\*?\{([^}]*)\}", t) for k in g.split(",")}
+    i = raw_m.find("The Supplemental Material also cites")
+    j = raw_m.find("which do not appear elsewhere", i)
+    listed = keys(raw_m[i:j]) if i >= 0 and j > i else set()
+    elsewhere = keys(raw_m[:i] + raw_m[j:]) if i >= 0 else keys(raw_m)
+    missing = keys(raw_s) - elsewhere - listed
+    extra = listed & elsewhere
+    if missing:
+        print(f"  FAIL text 2026-10-21: SI-only references not listed in the main text: {sorted(missing)}")
+        bad += 1
+    if extra:
+        print(f"  FAIL text 2026-10-21: listed as SI-only but cited in the main text: {sorted(extra)}")
+        bad += 1
+    # the census boundary and the repeat-condition caveat
+    need("si", "On 17 October 2026 we ran five queries against Europe PMC", "the census date")
+    need("si", "the pairing of their H/T and D/T effects with the other two determinations",
+         "the Sen 2011 condition caveat")
+    need("main", "We use it as a benchmark because the offsets it can attain are known exactly",
+         "the benchmark role of the tunneling model")
+    if not bad:
+        print("  text 2026-10-21: corpus statistics, bypass scope, synthetic validation, "
+              "SM-only references, census boundary")
+    return bad
+
+
 _NEEDS_DOCS = {
     "check_audit_2026_10_15", "check_consistency_2026_10_16",
     "check_light_example",
@@ -2204,7 +2486,7 @@ _NEEDS_DOCS = {
     "check_promoting_mode", "check_corpus_consequences", "check_scope_corrections",
     "check_source_fidelity", "check_readiness_scope", "check_generated_tables",
     "check_external_audit_2026_10_12",
-    "check_source_review_2026_10_13",
+    "check_source_review_2026_10_13", "check_text_2026_10_21",
 }
 
 
@@ -2277,7 +2559,8 @@ def run():
                 check_readiness_scope, check_generated_tables,
                 check_external_audit_2026_10_12, check_source_review_2026_10_13,
                 check_figure_data, check_audit_2026_10_15,
-                check_tables_2026_10_15, check_consistency_2026_10_16):
+                check_tables_2026_10_15, check_consistency_2026_10_16,
+                check_bounds_2026_10_21, check_text_2026_10_21):
         if not HAVE_DOCS and _fn.__name__ in _NEEDS_DOCS:
             print(f"  SKIPPED (needs the manuscript): {_fn.__name__}")
             continue

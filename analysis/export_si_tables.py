@@ -23,7 +23,28 @@ L = []
 
 b = pd.read_csv("../results/bounds_uncertainty.csv")
 import bounds_uncertainty as _bu
-_WORD = {5: "five", 72: "seventy-two", 64: "sixty-four", 84: "eighty-four"}
+_ONES = ("zero one two three four five six seven eight nine ten eleven twelve "
+         "thirteen fourteen fifteen sixteen seventeen eighteen nineteen").split()
+_TENS = "_ _ twenty thirty forty fifty sixty seventy eighty ninety".split()
+
+
+def _words(n: int) -> str:
+    """An integer below 1000 in words, as the captions print counts."""
+    if n < 20:
+        return _ONES[n]
+    if n < 100:
+        t, o = divmod(n, 10)
+        return _TENS[t] + (f"-{_ONES[o]}" if o else "")
+    h, r = divmod(n, 100)
+    return f"{_ONES[h]} hundred" + (f" and {_words(r)}" if r else "")
+
+
+class _Words(dict):
+    def __missing__(self, n):
+        return _words(n)
+
+
+_WORD = _Words()
 
 
 def _sci(x, nd=0):
@@ -40,12 +61,13 @@ _clear = [(f, v) for f, v in top
           if b[(b.family == f) & (b.variant == v) & (b.rho == -1.0)].lcb.iloc[0] > F0]
 _WORD.update({0: "no entry reaches it", 1: "one entry clears it at every $\\rho$",
               2: "two entries clear it at every $\\rho$"})
-_CLEARWORD = _WORD[len(_clear)] if len(_clear) <= 2 else f"{len(_clear)} entries clear it"
+_CLEARWORD = (_WORD[len(_clear)] if len(_clear) <= 2
+              else f"{_words(len(_clear))} entries clear it at every $\\rho$")
 L += [r"\begin{table}[!htbp]",
       r"\caption{Nominal one-sided $95\%$ lower confidence bounds on the offset for the "
             r"six series with the highest point estimates, bracketed over the unknown "
-      r"correlation $\rho$ between the H/T and D/T effects induced by the shared "
-      r"tritium reference. The threshold for excluding the ground-channel model "
+      r"correlation $\rho$ between the errors of the H/T and D/T effects, which no "
+      r"source reports. The threshold for excluding the ground-channel model "
             r"is $\Fz=-0.0421$; " + _CLEARWORD + r". Each bound is on the series "
       r"maximum of the endpoint: the one-sided bound for each temperature at "
       r"level $0.05/n_T$ ($n_T$ counts every recorded temperature; draws, and "

@@ -1,0 +1,439 @@
+unit,source,comparator,p,base,now,point,bound,f,scenario
+FDH V123A (hydride),Pagano2019,monodeuterated,0.002,uninformative,uninformative,-0.38248003501071737,-0.4309127493521441,0.0,as stated
+FDH V123G (hydride),Pagano2019,monodeuterated,0.002,uninformative,uninformative,-0.30618478325866394,-0.37656845413747564,0.0,as stated
+FDH WT (commercial) (hydride),Bandaria2009,monodeuterated,0.003,uninformative,uninformative,-0.1558690119222541,-0.3455173412512007,0.0,as stated
+FDH WT (recombinant) (hydride),Guo2016,monodeuterated,0.002,uninformative,uninformative,-0.24048805988174915,-0.3193162429580956,0.0,as stated
+FDH half-heavy (hydride),Ranasinghe2017,monodeuterated,0.002,uninformative,uninformative,-0.2843306990753123,-0.4299387020731762,0.0,as stated
+FDH heavy (hydride),Ranasinghe2017,monodeuterated,0.002,uninformative,uninformative,-0.29241649066199327,-0.4250158876512131,0.0,as stated
+LADH F93W (40% MeOH) (hydride),TsaiKlinman2001,dideuterated,0.0065,excludes,excludes,0.26715455786785336,0.10939985735451163,0.0,as stated
+LADH F93W (60% MeOH) (hydride),TsaiKlinman2001,dideuterated,0.0065,excludes,excludes,0.4853213786702222,0.14416297025025449,0.0,as stated
+LADH wild type (50% MeOH) (hydride),TsaiKlinman2001,dideuterated,0.0065,uninformative,precision,-0.02240687734891811,-1.0186509735454228,0.0,as stated
+MAOB pH 6.1 (abstraction),Jonsson1994,dideuterated,0.0,uninformative,uninformative,-0.17198507701379695,-0.4175041809538671,0.0,as stated
+MAOB pH 7.5 (abstraction),Jonsson1994,dideuterated,0.0,uninformative,uninformative,-0.1944240774291992,-0.4381406277654367,0.0,as stated
+ecTSase N177D (hydride),Gurevic2018,monodeuterated,0.0,uninformative,uninformative,-0.5273143422244242,-0.7703057909562347,0.0,as stated
+ecTSase N177S (hydride),Gurevic2018,monodeuterated,0.0,uninformative,uninformative,-0.5763403093747621,-0.6531844258340052,0.0,as stated
+ecTSase R166K (hydride),Islam2014,monodeuterated,0.0,uninformative,uninformative,-0.161770921383384,-0.3359353664963016,0.0,as stated
+ecTSase R166K (proton),Islam2015,monodeuterated,0.0,uninformative,uninformative,-0.35779128681137906,-0.5219994150789065,0.0,as stated
+ecTSase W80M (hydride),Hong2006,monodeuterated,0.0,precision,precision,-0.0009990995771156364,-0.1008311963870634,0.0,as stated
+hsTSase WT (hydride),Islam2018,monodeuterated,0.0,uninformative,uninformative,-0.4610664798144972,-0.50965467513434,0.0,as stated
+hsTSase WT (proton),Islam2018,monodeuterated,0.0,uninformative,uninformative,-0.2724914014740828,-0.3428773152038299,0.0,as stated
+ecTSase WT (Mg2+) (hydride),Wang2013,monodeuterated,0.0,uninformative,uninformative,-0.25633373983429286,-0.31265364050253663,0.0,as stated
+ecTSase WT (Mg2+) (proton),Wang2010,monodeuterated,0.005,uninformative,uninformative,-0.15120588220317988,-0.21675812076054202,0.0,as stated
+ecTSase Y209W (hydride),Wang2012,monodeuterated,0.005,precision,excludes,0.04955628437147608,-0.006687486906041595,0.0,as stated
+ecTSase Y209W (proton),Abeysinghe2015,monodeuterated,0.005,uninformative,uninformative,-0.13785680331658168,-0.31954757869693395,0.0,as stated
+YADH wild type (p-chlorobenzyl alcohol) (hydride),Rucker1992,dideuterated,0.0,excludes,excludes,0.33257009039704655,0.1700635630953813,0.0,as stated
+ecDHFR D27S (hydride),Liu2014,monodeuterated,0.0,uninformative,uninformative,-0.3977806325512274,-0.588067043627851,0.0,as stated
+ecDHFR D27S-Y100F (hydride),Liu2014,monodeuterated,0.0,uninformative,uninformative,-0.26050844909135484,-0.4181349743360214,0.0,as stated
+ecDHFR F125M (hydride),Singh2014,monodeuterated,0.0,uninformative,uninformative,-0.16805344758000218,-0.2219722237792785,0.0,as stated
+ecDHFR G121V (hydride),WangTharp2006,dideuterated,0.001,uninformative,uninformative,-0.13891203706691657,-0.19154510344083508,0.0,as stated
+ecDHFR G121V-F125M (hydride),Singh2014,monodeuterated,0.0,uninformative,uninformative,-0.07395256315083953,-0.19170360767284467,0.0,as stated
+ecDHFR I14A (hydride),Stojkovic2010,monodeuterated,0.0,uninformative,uninformative,-0.20526319355231148,-0.260054569952465,0.0,as stated
+ecDHFR I14A-G121V (hydride),Singh2015,monodeuterated,0.0,uninformative,uninformative,-0.08871246945353639,-0.15298023996349963,0.0,as stated
+ecDHFR M42W (hydride),WangGoodey2006PTRSB,dideuterated,0.001,uninformative,uninformative,-0.2415742639058498,-0.36990667951467016,0.0,as stated
+ecDHFR M42W-F125M (hydride),Singh2014,monodeuterated,0.0,uninformative,uninformative,-0.10265370195538925,-0.2622969371996009,0.0,as stated
+ecDHFR W133F (hydride),Singh2014,monodeuterated,0.0,uninformative,uninformative,-0.05962344558823851,-0.15867267421604492,0.0,as stated
+ecDHFR WT (pH 7.0) (hydride),Liu2014,monodeuterated,0.0,uninformative,uninformative,-0.20085528797719643,-0.263919514909538,0.0,as stated
+ecDHFR Y100F (hydride),Liu2014,monodeuterated,0.0,uninformative,uninformative,-0.43112407538987174,-0.46610912579693853,0.0,as stated
+ecDHFR heavy enzyme (hydride),Wang2014,monodeuterated,0.0,uninformative,uninformative,-0.15761486914159617,-0.2771204903726092,0.0,as stated
+ecDHFR light enzyme (hydride),Sikorski2004,dideuterated,0.0125,uninformative,precision,0.006464680836406833,-0.06717462650993555,0.0,as stated
+hsDHFR F32L (hydride),Li2021,monodeuterated,0.0,uninformative,uninformative,-0.27837528198666506,-0.3790007199190285,0.0,as stated
+hsDHFR F32L-PP26N-PEKN62G (hydride),Li2021,monodeuterated,0.0,uninformative,uninformative,-0.693701076650991,-0.768404077847112,0.0,as stated
+hsDHFR F32M (hydride),Li2021,monodeuterated,0.0,uninformative,uninformative,-0.878237958085893,-1.16150804227678,0.0,as stated
+hsDHFR M53W (hydride),Li2019,monodeuterated,0.0,uninformative,uninformative,-0.35803698506268233,-0.4103304972987083,0.0,as stated
+hsDHFR M53W-S145V (hydride),Li2019,monodeuterated,0.0,uninformative,uninformative,-0.5406014186478247,-0.6013205721731107,0.0,as stated
+hsDHFR S145V (hydride),Li2019,monodeuterated,0.0,uninformative,uninformative,-0.19842043283696364,-0.28810777635931184,0.0,as stated
+hsDHFR d26-PPLR-d62-PEKN (hydride),Li2021,monodeuterated,0.0,uninformative,uninformative,-0.13434795309016634,-0.1957190204018726,0.0,as stated
+hsDHFR d62-PEKN (hydride),Li2021,monodeuterated,0.0,uninformative,uninformative,-0.23681461930954661,-0.30834419008769953,0.0,as stated
+"LADH wild type, 25 C (Bahnson1993)",Bahnson1993,dideuterated,0.0,uninformative,uninformative,-0.1719183153990127,-0.21547876987273584,0.0,as stated
+"LADH ESE chimera, 25 C (Bahnson1993)",Bahnson1993,dideuterated,0.0,uninformative,uninformative,-0.07253716071302696,-0.09799086778376997,0.0,as stated
+"LADH L57V, 25 C (Bahnson1993)",Bahnson1993,dideuterated,0.0,uninformative,uninformative,-0.1314586081201501,-0.19881269187056017,0.0,as stated
+"LADH L57F, 25 C (Bahnson1993)",Bahnson1993,dideuterated,0.0,precision,precision,-0.029309338475445035,-0.0642329310686287,0.0,as stated
+"LADH F93W, 25 C (Bahnson1993)",Bahnson1993,dideuterated,0.0,precision,precision,-0.026287072899318975,-0.04832200505853024,0.0,as stated
+"LADH V203L, 25 C (Bahnson1997)",Bahnson1997,dideuterated,0.0,uninformative,uninformative,-0.07512618920905556,-0.12109828347324525,0.0,as stated
+"LADH V203A, 25 C (Bahnson1997)",Bahnson1997,dideuterated,0.0,uninformative,uninformative,-0.1344236262908063,-0.2066549569400118,0.0,as stated
+"LADH V203A-F93W, 25 C (Bahnson1997)",Bahnson1997,dideuterated,0.0,uninformative,uninformative,-0.13235664652496792,-0.202936988270094,0.0,as stated
+"LADH V203G, 25 C (Bahnson1997)",Bahnson1997,dideuterated,0.0,uninformative,uninformative,-0.1305878610863953,-0.16613261551392888,0.0,as stated
+"LADH wild type, 3 C (TsaiKlinman2001)",TsaiKlinman2001,dideuterated,0.0065,uninformative,uninformative,-0.3747976866644276,-1.0255868049693677,0.0,as stated
+"LADH F93W, 3 C (TsaiKlinman2001)",TsaiKlinman2001,dideuterated,0.0065,precision,precision,0.1030705035553856,-0.2167801766115871,0.0,as stated
+"BSAO wild type, 25 C (Grant1989)",Grant1989,dideuterated,0.0,uninformative,uninformative,-0.19530219721962672,-0.3582838176690437,0.0,as stated
+"YADH wild type, 25 C (Cha1989)",Cha1989,dideuterated,0.0,excludes,excludes,0.12872587506981215,0.04889637472554775,0.0,as stated
+"ecTSase wild type, 20 C (Agrawal2004)",Agrawal2004,monodeuterated,0.01,precision,excludes,0.10090569450379405,0.023066384821939456,0.0,as stated
+"LADH F93W (Chin 2000), 25 C (ChinKlinman2000)",ChinKlinman2000,dideuterated,0.0,precision,precision,-0.030711334848632532,-0.06697075433002153,0.0,as stated
+"LADH F93W-I224A, 25 C (ChinKlinman2000)",ChinKlinman2000,dideuterated,0.0,precision,precision,-0.027957574117709605,-0.06604031603568528,0.0,as stated
+"LADH F93W-I224L, 25 C (ChinKlinman2000)",ChinKlinman2000,dideuterated,0.0,uninformative,uninformative,-0.05869450651210295,-0.09958349057551086,0.0,as stated
+"LADH F93W-I224G, 25 C (ChinKlinman2000)",ChinKlinman2000,dideuterated,0.0,excludes,excludes,0.029263138849178416,-0.025262379463856455,0.0,as stated
+"LADH F93W-I224V, 25 C (ChinKlinman2000)",ChinKlinman2000,dideuterated,0.0,excludes,excludes,0.021241705464603244,-0.020230702268954737,0.0,as stated
+"YADH wild type (p-methoxybenzyl alcohol), 25 C (Rucker1992)",Rucker1992,dideuterated,0.0,uninformative,uninformative,-0.1323399196517312,-0.31086569746350756,0.0,as stated
+"BSAO p-methoxybenzylamine, 25 C (Rucker1992)",Rucker1992,dideuterated,0.0,uninformative,uninformative,-0.5133786106633798,-0.7643931778771815,0.0,as stated
+"ecTSase wild type, 25 C (Hong2007)",Hong2007,monodeuterated,0.005,uninformative,uninformative,-0.10685947853788513,-0.24699061135695566,0.0,as stated
+"ecTSase Y94F, 25 C (Hong2007)",Hong2007,monodeuterated,0.005,uninformative,uninformative,-0.11077165320270344,-0.29192415442940556,0.0,as stated
+"hsTSase WT (no Mg2+), 25 C (Islam2018)",Islam2018,monodeuterated,0.0,uninformative,uninformative,-0.4966506978222516,-0.546218115781377,0.0,as stated
+"ecDHFR WT (Sen 2011), 25 C (Sen2011)",Sen2011,monodeuterated,0.0,uninformative,uninformative,-0.12034971070663047,-0.20030974737096763,0.0,as stated
+"ecDHFR WT (dihydrobiopterin), 25 C (Sen2011)",Sen2011,monodeuterated,0.0,uninformative,uninformative,-0.3597550483865837,-0.4356599305537212,0.0,as stated
+"R67DHFR wild type, 25 C (Sen2011)",Sen2011,monodeuterated,0.0,uninformative,uninformative,-0.05648322438339548,-0.13886098280826875,0.0,as stated
+"ecDHFR WT (Sen 2012), 25 C (Sen2012)",Sen2012,monodeuterated,0.0,uninformative,uninformative,-0.1162259935227683,-0.16971593094172288,0.0,as stated
+FDH V123A (hydride),Pagano2019,monodeuterated,0.005,uninformative,uninformative,-0.3605594410063826,-0.4096234597628188,0.0,0.5% where uncorrected
+FDH V123G (hydride),Pagano2019,monodeuterated,0.005,uninformative,uninformative,-0.28216811458768754,-0.35393768779680124,0.0,0.5% where uncorrected
+FDH WT (commercial) (hydride),Bandaria2009,monodeuterated,0.005,uninformative,uninformative,-0.14613705479584915,-0.33762295647657314,0.0,0.5% where uncorrected
+FDH WT (recombinant) (hydride),Guo2016,monodeuterated,0.005,uninformative,uninformative,-0.22676454635218346,-0.30662550005716116,0.0,0.5% where uncorrected
+FDH half-heavy (hydride),Ranasinghe2017,monodeuterated,0.005,uninformative,uninformative,-0.2655750837743931,-0.4117527231689697,0.0,0.5% where uncorrected
+FDH heavy (hydride),Ranasinghe2017,monodeuterated,0.005,uninformative,uninformative,-0.267512321227825,-0.4011590699560976,0.0,0.5% where uncorrected
+LADH F93W (40% MeOH) (hydride),TsaiKlinman2001,dideuterated,0.005,excludes,excludes,0.24752862439247658,0.0913305623388303,0.0,0.5% where uncorrected
+LADH F93W (60% MeOH) (hydride),TsaiKlinman2001,dideuterated,0.005,excludes,excludes,0.4640407327822904,0.12689249375847278,0.0,0.5% where uncorrected
+LADH wild type (50% MeOH) (hydride),TsaiKlinman2001,dideuterated,0.005,uninformative,precision,-0.03617003297304677,-1.026581718753306,0.0,0.5% where uncorrected
+MAOB pH 6.1 (abstraction),Jonsson1994,dideuterated,0.0,uninformative,uninformative,-0.17198507701379695,-0.4175041809538671,0.0,0.5% where uncorrected
+MAOB pH 7.5 (abstraction),Jonsson1994,dideuterated,0.0,uninformative,uninformative,-0.1944240774291992,-0.4381406277654367,0.0,0.5% where uncorrected
+ecTSase N177D (hydride),Gurevic2018,monodeuterated,0.005,uninformative,uninformative,-0.49690276838412006,-0.7447269040941729,0.0,0.5% where uncorrected
+ecTSase N177S (hydride),Gurevic2018,monodeuterated,0.005,uninformative,uninformative,-0.5476525273959807,-0.6267220942217768,0.0,0.5% where uncorrected
+ecTSase R166K (hydride),Islam2014,monodeuterated,0.005,uninformative,uninformative,-0.12142094569614947,-0.29878595732193447,0.0,0.5% where uncorrected
+ecTSase R166K (proton),Islam2015,monodeuterated,0.005,uninformative,uninformative,-0.3411372200298344,-0.5074209007538517,0.0,0.5% where uncorrected
+ecTSase W80M (hydride),Hong2006,monodeuterated,0.005,precision,precision,0.048534662232203374,-0.053987559793367,0.0,0.5% where uncorrected
+hsTSase WT (hydride),Islam2018,monodeuterated,0.005,uninformative,uninformative,-0.4429472157651373,-0.4923006591474577,0.0,0.5% where uncorrected
+hsTSase WT (proton),Islam2018,monodeuterated,0.005,uninformative,uninformative,-0.2627723512040988,-0.33272956305959567,0.0,0.5% where uncorrected
+ecTSase WT (Mg2+) (hydride),Wang2013,monodeuterated,0.005,uninformative,uninformative,-0.23084126016296613,-0.2881870934816626,0.0,0.5% where uncorrected
+ecTSase WT (Mg2+) (proton),Wang2010,monodeuterated,0.005,uninformative,uninformative,-0.15120588220317988,-0.21675812076054202,0.0,0.5% where uncorrected
+ecTSase Y209W (hydride),Wang2012,monodeuterated,0.005,precision,excludes,0.04955628437147608,-0.006687486906041595,0.0,0.5% where uncorrected
+ecTSase Y209W (proton),Abeysinghe2015,monodeuterated,0.005,uninformative,uninformative,-0.13785680331658168,-0.31954757869693395,0.0,0.5% where uncorrected
+YADH wild type (p-chlorobenzyl alcohol) (hydride),Rucker1992,dideuterated,0.0,excludes,excludes,0.33257009039704655,0.1700635630953813,0.0,0.5% where uncorrected
+ecDHFR D27S (hydride),Liu2014,monodeuterated,0.005,uninformative,uninformative,-0.3884759050855724,-0.5764497936439521,0.0,0.5% where uncorrected
+ecDHFR D27S-Y100F (hydride),Liu2014,monodeuterated,0.005,uninformative,uninformative,-0.2502190951379064,-0.4068054114258157,0.0,0.5% where uncorrected
+ecDHFR F125M (hydride),Singh2014,monodeuterated,0.005,uninformative,uninformative,-0.12655842002919027,-0.18186509410317853,0.0,0.5% where uncorrected
+ecDHFR G121V (hydride),WangTharp2006,dideuterated,0.005,uninformative,uninformative,-0.09761618141076767,-0.1515626950561395,0.0,0.5% where uncorrected
+ecDHFR G121V-F125M (hydride),Singh2014,monodeuterated,0.005,uninformative,precision,-0.03468509627260463,-0.15254111510530177,0.0,0.5% where uncorrected
+ecDHFR I14A (hydride),Stojkovic2010,monodeuterated,0.005,uninformative,uninformative,-0.16664267989490944,-0.2227914688446102,0.0,0.5% where uncorrected
+ecDHFR I14A-G121V (hydride),Singh2015,monodeuterated,0.005,uninformative,uninformative,-0.05326587416995454,-0.11917798916195221,0.0,0.5% where uncorrected
+ecDHFR M42W (hydride),WangGoodey2006PTRSB,dideuterated,0.005,uninformative,uninformative,-0.22081469584257007,-0.35120441448344275,0.0,0.5% where uncorrected
+ecDHFR M42W-F125M (hydride),Singh2014,monodeuterated,0.005,uninformative,uninformative,-0.07218268953394658,-0.23452700036316543,0.0,0.5% where uncorrected
+ecDHFR W133F (hydride),Singh2014,monodeuterated,0.005,uninformative,precision,-0.024868860674530424,-0.12587725757485413,0.0,0.5% where uncorrected
+ecDHFR WT (pH 7.0) (hydride),Liu2014,monodeuterated,0.005,uninformative,uninformative,-0.18575805897201592,-0.24960855115697267,0.0,0.5% where uncorrected
+ecDHFR Y100F (hydride),Liu2014,monodeuterated,0.005,uninformative,uninformative,-0.4189780234684828,-0.45294051324038076,0.0,0.5% where uncorrected
+ecDHFR heavy enzyme (hydride),Wang2014,monodeuterated,0.005,uninformative,uninformative,-0.12428759108196008,-0.24714363209327117,0.0,0.5% where uncorrected
+ecDHFR light enzyme (hydride),Sikorski2004,dideuterated,0.005,uninformative,uninformative,-0.04346979828932751,-0.11446898324363186,0.0,0.5% where uncorrected
+hsDHFR F32L (hydride),Li2021,monodeuterated,0.005,uninformative,uninformative,-0.2686236418096526,-0.36860585639115817,0.0,0.5% where uncorrected
+hsDHFR F32L-PP26N-PEKN62G (hydride),Li2021,monodeuterated,0.005,uninformative,uninformative,-0.6783829507022199,-0.7518109189833233,0.0,0.5% where uncorrected
+hsDHFR F32M (hydride),Li2021,monodeuterated,0.005,uninformative,uninformative,-0.8664382345729864,-1.148407010056184,0.0,0.5% where uncorrected
+hsDHFR M53W (hydride),Li2019,monodeuterated,0.005,uninformative,uninformative,-0.3377401354219651,-0.39077173839779245,0.0,0.5% where uncorrected
+hsDHFR M53W-S145V (hydride),Li2019,monodeuterated,0.005,uninformative,uninformative,-0.5258436848982861,-0.5864793513476518,0.0,0.5% where uncorrected
+hsDHFR S145V (hydride),Li2019,monodeuterated,0.005,uninformative,uninformative,-0.18742157033566897,-0.2784156379790823,0.0,0.5% where uncorrected
+hsDHFR d26-PPLR-d62-PEKN (hydride),Li2021,monodeuterated,0.005,uninformative,uninformative,-0.10863159731664118,-0.17112386858520745,0.0,0.5% where uncorrected
+hsDHFR d62-PEKN (hydride),Li2021,monodeuterated,0.005,uninformative,uninformative,-0.2123135340001594,-0.28538374407098765,0.0,0.5% where uncorrected
+"LADH wild type, 25 C (Bahnson1993)",Bahnson1993,dideuterated,0.0,uninformative,uninformative,-0.1719183153990127,-0.21547876987273584,0.0,0.5% where uncorrected
+"LADH ESE chimera, 25 C (Bahnson1993)",Bahnson1993,dideuterated,0.0,uninformative,uninformative,-0.07253716071302696,-0.09799086778376997,0.0,0.5% where uncorrected
+"LADH L57V, 25 C (Bahnson1993)",Bahnson1993,dideuterated,0.0,uninformative,uninformative,-0.1314586081201501,-0.19881269187056017,0.0,0.5% where uncorrected
+"LADH L57F, 25 C (Bahnson1993)",Bahnson1993,dideuterated,0.0,precision,precision,-0.029309338475445035,-0.0642329310686287,0.0,0.5% where uncorrected
+"LADH F93W, 25 C (Bahnson1993)",Bahnson1993,dideuterated,0.0,precision,precision,-0.026287072899318975,-0.04832200505853024,0.0,0.5% where uncorrected
+"LADH V203L, 25 C (Bahnson1997)",Bahnson1997,dideuterated,0.0,uninformative,uninformative,-0.07512618920905556,-0.12109828347324525,0.0,0.5% where uncorrected
+"LADH V203A, 25 C (Bahnson1997)",Bahnson1997,dideuterated,0.0,uninformative,uninformative,-0.1344236262908063,-0.2066549569400118,0.0,0.5% where uncorrected
+"LADH V203A-F93W, 25 C (Bahnson1997)",Bahnson1997,dideuterated,0.0,uninformative,uninformative,-0.13235664652496792,-0.202936988270094,0.0,0.5% where uncorrected
+"LADH V203G, 25 C (Bahnson1997)",Bahnson1997,dideuterated,0.0,uninformative,uninformative,-0.1305878610863953,-0.16613261551392888,0.0,0.5% where uncorrected
+"LADH wild type, 3 C (TsaiKlinman2001)",TsaiKlinman2001,dideuterated,0.005,uninformative,uninformative,-0.3907902996048671,-1.0363877084299644,0.0,0.5% where uncorrected
+"LADH F93W, 3 C (TsaiKlinman2001)",TsaiKlinman2001,dideuterated,0.005,precision,precision,0.08146326866145648,-0.23543265215122622,0.0,0.5% where uncorrected
+"BSAO wild type, 25 C (Grant1989)",Grant1989,dideuterated,0.0,uninformative,uninformative,-0.19530219721962672,-0.3582838176690437,0.0,0.5% where uncorrected
+"YADH wild type, 25 C (Cha1989)",Cha1989,dideuterated,0.0,excludes,excludes,0.12872587506981215,0.04889637472554775,0.0,0.5% where uncorrected
+"ecTSase wild type, 20 C (Agrawal2004)",Agrawal2004,monodeuterated,0.005,precision,excludes,0.0508231961719412,-0.024954062134560306,0.0,0.5% where uncorrected
+"LADH F93W (Chin 2000), 25 C (ChinKlinman2000)",ChinKlinman2000,dideuterated,0.0,precision,precision,-0.030711334848632532,-0.06697075433002153,0.0,0.5% where uncorrected
+"LADH F93W-I224A, 25 C (ChinKlinman2000)",ChinKlinman2000,dideuterated,0.0,precision,precision,-0.027957574117709605,-0.06604031603568528,0.0,0.5% where uncorrected
+"LADH F93W-I224L, 25 C (ChinKlinman2000)",ChinKlinman2000,dideuterated,0.0,uninformative,uninformative,-0.05869450651210295,-0.09958349057551086,0.0,0.5% where uncorrected
+"LADH F93W-I224G, 25 C (ChinKlinman2000)",ChinKlinman2000,dideuterated,0.0,excludes,excludes,0.029263138849178416,-0.025262379463856455,0.0,0.5% where uncorrected
+"LADH F93W-I224V, 25 C (ChinKlinman2000)",ChinKlinman2000,dideuterated,0.0,excludes,excludes,0.021241705464603244,-0.020230702268954737,0.0,0.5% where uncorrected
+"YADH wild type (p-methoxybenzyl alcohol), 25 C (Rucker1992)",Rucker1992,dideuterated,0.0,uninformative,uninformative,-0.1323399196517312,-0.31086569746350756,0.0,0.5% where uncorrected
+"BSAO p-methoxybenzylamine, 25 C (Rucker1992)",Rucker1992,dideuterated,0.0,uninformative,uninformative,-0.5133786106633798,-0.7643931778771815,0.0,0.5% where uncorrected
+"ecTSase wild type, 25 C (Hong2007)",Hong2007,monodeuterated,0.005,uninformative,uninformative,-0.10685947853788513,-0.24699061135695566,0.0,0.5% where uncorrected
+"ecTSase Y94F, 25 C (Hong2007)",Hong2007,monodeuterated,0.005,uninformative,uninformative,-0.11077165320270344,-0.29192415442940556,0.0,0.5% where uncorrected
+"hsTSase WT (no Mg2+), 25 C (Islam2018)",Islam2018,monodeuterated,0.005,uninformative,uninformative,-0.48070784818572965,-0.5307569152469358,0.0,0.5% where uncorrected
+"ecDHFR WT (Sen 2011), 25 C (Sen2011)",Sen2011,monodeuterated,0.005,uninformative,uninformative,-0.08795586085549867,-0.16954345533243131,0.0,0.5% where uncorrected
+"ecDHFR WT (dihydrobiopterin), 25 C (Sen2011)",Sen2011,monodeuterated,0.005,uninformative,uninformative,-0.3164798891234708,-0.39460112001556547,0.0,0.5% where uncorrected
+"R67DHFR wild type, 25 C (Sen2011)",Sen2011,monodeuterated,0.005,uninformative,precision,-0.014635231480720767,-0.0992160666665074,0.0,0.5% where uncorrected
+"ecDHFR WT (Sen 2012), 25 C (Sen2012)",Sen2012,monodeuterated,0.005,uninformative,uninformative,-0.0836274139522335,-0.13859779144795104,0.0,0.5% where uncorrected
+FDH V123A (hydride),Pagano2019,monodeuterated,0.01,uninformative,uninformative,-0.32340372889556357,-0.37354702548519425,0.0,1% where uncorrected
+FDH V123G (hydride),Pagano2019,monodeuterated,0.01,uninformative,uninformative,-0.24142499578915433,-0.31556720608264865,0.0,1% where uncorrected
+FDH WT (commercial) (hydride),Bandaria2009,monodeuterated,0.01,uninformative,uninformative,-0.121509159668715,-0.317664647338916,0.0,1% where uncorrected
+FDH WT (recombinant) (hydride),Guo2016,monodeuterated,0.01,uninformative,uninformative,-0.20357981582322004,-0.28519446306433816,0.0,1% where uncorrected
+FDH half-heavy (hydride),Ranasinghe2017,monodeuterated,0.01,uninformative,uninformative,-0.233824679048529,-0.3809737041905612,0.0,1% where uncorrected
+FDH heavy (hydride),Ranasinghe2017,monodeuterated,0.01,uninformative,uninformative,-0.22524841926133443,-0.3606897487213856,0.0,1% where uncorrected
+LADH F93W (40% MeOH) (hydride),TsaiKlinman2001,dideuterated,0.01,excludes,excludes,0.31363589984133533,0.15216085362995702,0.0,1% where uncorrected
+LADH F93W (60% MeOH) (hydride),TsaiKlinman2001,dideuterated,0.01,excludes,excludes,0.5357638988289168,0.18501707465494954,0.0,1% where uncorrected
+LADH wild type (50% MeOH) (hydride),TsaiKlinman2001,dideuterated,0.01,uninformative,precision,0.010092951846166542,-0.9999866912855935,0.0,1% where uncorrected
+MAOB pH 6.1 (abstraction),Jonsson1994,dideuterated,0.0,uninformative,uninformative,-0.17198507701379695,-0.4175041809538671,0.0,1% where uncorrected
+MAOB pH 7.5 (abstraction),Jonsson1994,dideuterated,0.0,uninformative,uninformative,-0.1944240774291992,-0.4381406277654367,0.0,1% where uncorrected
+ecTSase N177D (hydride),Gurevic2018,monodeuterated,0.01,uninformative,uninformative,-0.4659010472988234,-0.7186897630648379,0.0,1% where uncorrected
+ecTSase N177S (hydride),Gurevic2018,monodeuterated,0.01,uninformative,uninformative,-0.5184233104076135,-0.5997784819394878,0.0,1% where uncorrected
+ecTSase R166K (hydride),Islam2014,monodeuterated,0.01,uninformative,uninformative,-0.08016376609913523,-0.26083820380301836,0.0,1% where uncorrected
+ecTSase R166K (proton),Islam2015,monodeuterated,0.01,uninformative,uninformative,-0.32423042656511214,-0.49281869775874143,0.0,1% where uncorrected
+ecTSase W80M (hydride),Hong2006,monodeuterated,0.01,precision,excludes,0.09932382503977388,-0.0059960364332829474,0.0,1% where uncorrected
+hsTSase WT (hydride),Islam2018,monodeuterated,0.01,uninformative,uninformative,-0.42454485763890815,-0.47467957441656683,0.0,1% where uncorrected
+hsTSase WT (proton),Islam2018,monodeuterated,0.01,uninformative,uninformative,-0.2530938259886578,-0.3226004445866839,0.0,1% where uncorrected
+ecTSase WT (Mg2+) (hydride),Wang2013,monodeuterated,0.01,uninformative,uninformative,-0.204892752473663,-0.26329059609563865,0.0,1% where uncorrected
+ecTSase WT (Mg2+) (proton),Wang2010,monodeuterated,0.01,uninformative,uninformative,-0.14088173624004685,-0.2069726937343198,0.0,1% where uncorrected
+ecTSase Y209W (hydride),Wang2012,monodeuterated,0.01,precision,excludes,0.11019834672821105,0.04739395249901612,0.0,1% where uncorrected
+ecTSase Y209W (proton),Abeysinghe2015,monodeuterated,0.01,uninformative,uninformative,-0.11530130334695743,-0.2999101080307427,0.0,1% where uncorrected
+YADH wild type (p-chlorobenzyl alcohol) (hydride),Rucker1992,dideuterated,0.0,excludes,excludes,0.33257009039704655,0.1700635630953813,0.0,1% where uncorrected
+ecDHFR D27S (hydride),Liu2014,monodeuterated,0.01,uninformative,uninformative,-0.37917587898328564,-0.564809380299315,0.0,1% where uncorrected
+ecDHFR D27S-Y100F (hydride),Liu2014,monodeuterated,0.01,uninformative,uninformative,-0.2399816315631207,-0.39547858638141187,0.0,1% where uncorrected
+ecDHFR F125M (hydride),Singh2014,monodeuterated,0.01,uninformative,uninformative,-0.0841156785448205,-0.1408592459816853,0.0,1% where uncorrected
+ecDHFR G121V (hydride),WangTharp2006,dideuterated,0.01,uninformative,uninformative,-0.044790138694579706,-0.10043984371577741,0.0,1% where uncorrected
+ecDHFR G121V-F125M (hydride),Singh2014,monodeuterated,0.01,uninformative,precision,0.0054520354896629986,-0.11251255875806843,0.0,1% where uncorrected
+ecDHFR I14A (hydride),Stojkovic2010,monodeuterated,0.01,uninformative,uninformative,-0.12717458470910126,-0.18472626658950486,0.0,1% where uncorrected
+ecDHFR I14A-G121V (hydride),Singh2015,monodeuterated,0.01,uninformative,precision,-0.017076232409487968,-0.084684367873614,0.0,1% where uncorrected
+ecDHFR M42W (hydride),WangGoodey2006PTRSB,dideuterated,0.01,uninformative,uninformative,-0.19444444960576845,-0.3274641129792044,0.0,1% where uncorrected
+ecDHFR M42W-F125M (hydride),Singh2014,monodeuterated,0.01,uninformative,precision,-0.04111981719258928,-0.20624081111042925,0.0,1% where uncorrected
+ecDHFR W133F (hydride),Singh2014,monodeuterated,0.01,uninformative,precision,0.010606817080413888,-0.09242127714250947,0.0,1% where uncorrected
+ecDHFR WT (pH 7.0) (hydride),Liu2014,monodeuterated,0.01,uninformative,uninformative,-0.1704389221271735,-0.23509067800993522,0.0,1% where uncorrected
+ecDHFR Y100F (hydride),Liu2014,monodeuterated,0.01,uninformative,uninformative,-0.40683215862024125,-0.43699305188938276,0.0,1% where uncorrected
+ecDHFR heavy enzyme (hydride),Wang2014,monodeuterated,0.01,uninformative,uninformative,-0.09028355448778624,-0.21658908561259382,0.0,1% where uncorrected
+ecDHFR light enzyme (hydride),Sikorski2004,dideuterated,0.01,uninformative,precision,-0.010347283236944227,-0.08309354653789525,0.0,1% where uncorrected
+hsDHFR F32L (hydride),Li2021,monodeuterated,0.01,uninformative,uninformative,-0.2589102919565507,-0.35822119534064845,0.0,1% where uncorrected
+hsDHFR F32L-PP26N-PEKN62G (hydride),Li2021,monodeuterated,0.01,uninformative,uninformative,-0.6630098373201858,-0.7351442667701054,0.0,1% where uncorrected
+hsDHFR F32M (hydride),Li2021,monodeuterated,0.01,uninformative,uninformative,-0.8545962075561309,-1.1352446887200405,0.0,1% where uncorrected
+hsDHFR M53W (hydride),Li2019,monodeuterated,0.01,uninformative,uninformative,-0.3171126144824463,-0.37089876222916596,0.0,1% where uncorrected
+hsDHFR M53W-S145V (hydride),Li2019,monodeuterated,0.01,uninformative,uninformative,-0.5110577700318961,-0.5715986928188674,0.0,1% where uncorrected
+hsDHFR S145V (hydride),Li2019,monodeuterated,0.01,uninformative,uninformative,-0.17615901299852965,-0.2687574403874664,0.0,1% where uncorrected
+hsDHFR d26-PPLR-d62-PEKN (hydride),Li2021,monodeuterated,0.01,uninformative,uninformative,-0.08245343615059864,-0.1460955332448708,0.0,1% where uncorrected
+hsDHFR d62-PEKN (hydride),Li2021,monodeuterated,0.01,uninformative,uninformative,-0.18663711937173977,-0.26203044868957925,0.0,1% where uncorrected
+"LADH wild type, 25 C (Bahnson1993)",Bahnson1993,dideuterated,0.0,uninformative,uninformative,-0.1719183153990127,-0.21547876987273584,0.0,1% where uncorrected
+"LADH ESE chimera, 25 C (Bahnson1993)",Bahnson1993,dideuterated,0.0,uninformative,uninformative,-0.07253716071302696,-0.09799086778376997,0.0,1% where uncorrected
+"LADH L57V, 25 C (Bahnson1993)",Bahnson1993,dideuterated,0.0,uninformative,uninformative,-0.1314586081201501,-0.19881269187056017,0.0,1% where uncorrected
+"LADH L57F, 25 C (Bahnson1993)",Bahnson1993,dideuterated,0.0,precision,precision,-0.029309338475445035,-0.0642329310686287,0.0,1% where uncorrected
+"LADH F93W, 25 C (Bahnson1993)",Bahnson1993,dideuterated,0.0,precision,precision,-0.026287072899318975,-0.04832200505853024,0.0,1% where uncorrected
+"LADH V203L, 25 C (Bahnson1997)",Bahnson1997,dideuterated,0.0,uninformative,uninformative,-0.07512618920905556,-0.12109828347324525,0.0,1% where uncorrected
+"LADH V203A, 25 C (Bahnson1997)",Bahnson1997,dideuterated,0.0,uninformative,uninformative,-0.1344236262908063,-0.2066549569400118,0.0,1% where uncorrected
+"LADH V203A-F93W, 25 C (Bahnson1997)",Bahnson1997,dideuterated,0.0,uninformative,uninformative,-0.13235664652496792,-0.202936988270094,0.0,1% where uncorrected
+"LADH V203G, 25 C (Bahnson1997)",Bahnson1997,dideuterated,0.0,uninformative,uninformative,-0.1305878610863953,-0.16613261551392888,0.0,1% where uncorrected
+"LADH wild type, 3 C (TsaiKlinman2001)",TsaiKlinman2001,dideuterated,0.01,uninformative,uninformative,-0.3369908212975914,-1.0001199348745895,0.0,1% where uncorrected
+"LADH F93W, 3 C (TsaiKlinman2001)",TsaiKlinman2001,dideuterated,0.01,precision,precision,0.15429562309975609,-0.17262607311212674,0.0,1% where uncorrected
+"BSAO wild type, 25 C (Grant1989)",Grant1989,dideuterated,0.0,uninformative,uninformative,-0.19530219721962672,-0.3582838176690437,0.0,1% where uncorrected
+"YADH wild type, 25 C (Cha1989)",Cha1989,dideuterated,0.0,excludes,excludes,0.12872587506981215,0.04889637472554775,0.0,1% where uncorrected
+"ecTSase wild type, 20 C (Agrawal2004)",Agrawal2004,monodeuterated,0.01,precision,excludes,0.10090569450379405,0.023066384821939456,0.0,1% where uncorrected
+"LADH F93W (Chin 2000), 25 C (ChinKlinman2000)",ChinKlinman2000,dideuterated,0.0,precision,precision,-0.030711334848632532,-0.06697075433002153,0.0,1% where uncorrected
+"LADH F93W-I224A, 25 C (ChinKlinman2000)",ChinKlinman2000,dideuterated,0.0,precision,precision,-0.027957574117709605,-0.06604031603568528,0.0,1% where uncorrected
+"LADH F93W-I224L, 25 C (ChinKlinman2000)",ChinKlinman2000,dideuterated,0.0,uninformative,uninformative,-0.05869450651210295,-0.09958349057551086,0.0,1% where uncorrected
+"LADH F93W-I224G, 25 C (ChinKlinman2000)",ChinKlinman2000,dideuterated,0.0,excludes,excludes,0.029263138849178416,-0.025262379463856455,0.0,1% where uncorrected
+"LADH F93W-I224V, 25 C (ChinKlinman2000)",ChinKlinman2000,dideuterated,0.0,excludes,excludes,0.021241705464603244,-0.020230702268954737,0.0,1% where uncorrected
+"YADH wild type (p-methoxybenzyl alcohol), 25 C (Rucker1992)",Rucker1992,dideuterated,0.0,uninformative,uninformative,-0.1323399196517312,-0.31086569746350756,0.0,1% where uncorrected
+"BSAO p-methoxybenzylamine, 25 C (Rucker1992)",Rucker1992,dideuterated,0.0,uninformative,uninformative,-0.5133786106633798,-0.7643931778771815,0.0,1% where uncorrected
+"ecTSase wild type, 25 C (Hong2007)",Hong2007,monodeuterated,0.01,uninformative,uninformative,-0.10054557929248231,-0.23891033823142083,0.0,1% where uncorrected
+"ecTSase Y94F, 25 C (Hong2007)",Hong2007,monodeuterated,0.01,uninformative,uninformative,-0.10460286739675084,-0.2837337984771786,0.0,1% where uncorrected
+"hsTSase WT (no Mg2+), 25 C (Islam2018)",Islam2018,monodeuterated,0.01,uninformative,uninformative,-0.464526535936473,-0.5152636980873855,0.0,1% where uncorrected
+"ecDHFR WT (Sen 2011), 25 C (Sen2011)",Sen2011,monodeuterated,0.01,uninformative,uninformative,-0.054913557523337486,-0.1381767624846557,0.0,1% where uncorrected
+"ecDHFR WT (dihydrobiopterin), 25 C (Sen2011)",Sen2011,monodeuterated,0.01,uninformative,uninformative,-0.2721923982523784,-0.3526101254668126,0.0,1% where uncorrected
+"R67DHFR wild type, 25 C (Sen2011)",Sen2011,monodeuterated,0.01,uninformative,precision,0.028173129093886917,-0.058688480174180935,0.0,1% where uncorrected
+"ecDHFR WT (Sen 2012), 25 C (Sen2012)",Sen2012,monodeuterated,0.01,uninformative,uninformative,-0.05037421931702579,-0.1068690030656887,0.0,1% where uncorrected
+FDH V123A (hydride),Pagano2019,monodeuterated,0.002,uninformative,uninformative,-0.3894383240747008,-0.43755174173489975,0.5,as stated
+FDH V123G (hydride),Pagano2019,monodeuterated,0.002,uninformative,uninformative,-0.31423004972986956,-0.3838905482722821,0.5,as stated
+FDH WT (commercial) (hydride),Bandaria2009,monodeuterated,0.003,uninformative,uninformative,-0.16118367879063333,-0.34921322703180135,0.5,as stated
+FDH WT (recombinant) (hydride),Guo2016,monodeuterated,0.002,uninformative,uninformative,-0.24367488855978037,-0.32209847452236584,0.5,as stated
+FDH half-heavy (hydride),Ranasinghe2017,monodeuterated,0.002,uninformative,uninformative,-0.28973088656340407,-0.4350706450802526,0.5,as stated
+FDH heavy (hydride),Ranasinghe2017,monodeuterated,0.002,uninformative,uninformative,-0.30093340583323225,-0.43297689217521906,0.5,as stated
+LADH F93W (40% MeOH) (hydride),TsaiKlinman2001,dideuterated,0.0065,excludes,excludes,0.2126878023139298,0.06100081430207016,0.5,as stated
+LADH F93W (60% MeOH) (hydride),TsaiKlinman2001,dideuterated,0.0065,excludes,excludes,0.42430917160112114,0.09883653415819205,0.5,as stated
+LADH wild type (50% MeOH) (hydride),TsaiKlinman2001,dideuterated,0.0065,uninformative,uninformative,-0.054685284180167715,-1.0319046285695885,0.5,as stated
+MAOB pH 6.1 (abstraction),Jonsson1994,dideuterated,0.0,uninformative,uninformative,-0.17198507701379695,-0.4175041809538671,0.5,as stated
+MAOB pH 7.5 (abstraction),Jonsson1994,dideuterated,0.0,uninformative,uninformative,-0.1944240774291992,-0.4381406277654367,0.5,as stated
+ecTSase N177D (hydride),Gurevic2018,monodeuterated,0.0,uninformative,uninformative,-0.5273143422244242,-0.7703057909562347,0.5,as stated
+ecTSase N177S (hydride),Gurevic2018,monodeuterated,0.0,uninformative,uninformative,-0.5763403093747621,-0.6531844258340052,0.5,as stated
+ecTSase R166K (hydride),Islam2014,monodeuterated,0.0,uninformative,uninformative,-0.161770921383384,-0.3359353664963016,0.5,as stated
+ecTSase R166K (proton),Islam2015,monodeuterated,0.0,uninformative,uninformative,-0.35779128681137906,-0.5219994150789065,0.5,as stated
+ecTSase W80M (hydride),Hong2006,monodeuterated,0.0,precision,precision,-0.0009990995771156364,-0.1008311963870634,0.5,as stated
+hsTSase WT (hydride),Islam2018,monodeuterated,0.0,uninformative,uninformative,-0.4610664798144972,-0.50965467513434,0.5,as stated
+hsTSase WT (proton),Islam2018,monodeuterated,0.0,uninformative,uninformative,-0.2724914014740828,-0.3428773152038299,0.5,as stated
+ecTSase WT (Mg2+) (hydride),Wang2013,monodeuterated,0.0,uninformative,uninformative,-0.25633373983429286,-0.31265364050253663,0.5,as stated
+ecTSase WT (Mg2+) (proton),Wang2010,monodeuterated,0.005,uninformative,uninformative,-0.15308097185603464,-0.21845498861356827,0.5,as stated
+ecTSase Y209W (hydride),Wang2012,monodeuterated,0.005,precision,excludes,0.012698694262699206,-0.03790016929396156,0.5,as stated
+ecTSase Y209W (proton),Abeysinghe2015,monodeuterated,0.005,uninformative,uninformative,-0.145516766497096,-0.3255659988680615,0.5,as stated
+YADH wild type (p-chlorobenzyl alcohol) (hydride),Rucker1992,dideuterated,0.0,excludes,excludes,0.33257009039704655,0.1700635630953813,0.5,as stated
+ecDHFR D27S (hydride),Liu2014,monodeuterated,0.0,uninformative,uninformative,-0.3977806325512274,-0.588067043627851,0.5,as stated
+ecDHFR D27S-Y100F (hydride),Liu2014,monodeuterated,0.0,uninformative,uninformative,-0.26050844909135484,-0.4181349743360214,0.5,as stated
+ecDHFR F125M (hydride),Singh2014,monodeuterated,0.0,uninformative,uninformative,-0.16805344758000218,-0.2219722237792785,0.5,as stated
+ecDHFR G121V (hydride),WangTharp2006,dideuterated,0.001,uninformative,uninformative,-0.14485823855898738,-0.19720994421719817,0.5,as stated
+ecDHFR G121V-F125M (hydride),Singh2014,monodeuterated,0.0,uninformative,uninformative,-0.07395256315083953,-0.19170360767284467,0.5,as stated
+ecDHFR I14A (hydride),Stojkovic2010,monodeuterated,0.0,uninformative,uninformative,-0.20526319355231148,-0.260054569952465,0.5,as stated
+ecDHFR I14A-G121V (hydride),Singh2015,monodeuterated,0.0,uninformative,uninformative,-0.08871246945353639,-0.15298023996349963,0.5,as stated
+ecDHFR M42W (hydride),WangGoodey2006PTRSB,dideuterated,0.001,uninformative,uninformative,-0.24355240435060588,-0.3715616360220366,0.5,as stated
+ecDHFR M42W-F125M (hydride),Singh2014,monodeuterated,0.0,uninformative,uninformative,-0.10265370195538925,-0.2622969371996009,0.5,as stated
+ecDHFR W133F (hydride),Singh2014,monodeuterated,0.0,uninformative,uninformative,-0.05962344558823851,-0.15867267421604492,0.5,as stated
+ecDHFR WT (pH 7.0) (hydride),Liu2014,monodeuterated,0.0,uninformative,uninformative,-0.20085528797719643,-0.263919514909538,0.5,as stated
+ecDHFR Y100F (hydride),Liu2014,monodeuterated,0.0,uninformative,uninformative,-0.43112407538987174,-0.46610912579693853,0.5,as stated
+ecDHFR heavy enzyme (hydride),Wang2014,monodeuterated,0.0,uninformative,uninformative,-0.15761486914159617,-0.2771204903726092,0.5,as stated
+ecDHFR light enzyme (hydride),Sikorski2004,dideuterated,0.0125,uninformative,precision,-0.030848910834871512,-0.10131437151368972,0.5,as stated
+hsDHFR F32L (hydride),Li2021,monodeuterated,0.0,uninformative,uninformative,-0.27837528198666506,-0.3790007199190285,0.5,as stated
+hsDHFR F32L-PP26N-PEKN62G (hydride),Li2021,monodeuterated,0.0,uninformative,uninformative,-0.693701076650991,-0.768404077847112,0.5,as stated
+hsDHFR F32M (hydride),Li2021,monodeuterated,0.0,uninformative,uninformative,-0.878237958085893,-1.16150804227678,0.5,as stated
+hsDHFR M53W (hydride),Li2019,monodeuterated,0.0,uninformative,uninformative,-0.35803698506268233,-0.4103304972987083,0.5,as stated
+hsDHFR M53W-S145V (hydride),Li2019,monodeuterated,0.0,uninformative,uninformative,-0.5406014186478247,-0.6013205721731107,0.5,as stated
+hsDHFR S145V (hydride),Li2019,monodeuterated,0.0,uninformative,uninformative,-0.19842043283696364,-0.28810777635931184,0.5,as stated
+hsDHFR d26-PPLR-d62-PEKN (hydride),Li2021,monodeuterated,0.0,uninformative,uninformative,-0.13434795309016634,-0.1957190204018726,0.5,as stated
+hsDHFR d62-PEKN (hydride),Li2021,monodeuterated,0.0,uninformative,uninformative,-0.23681461930954661,-0.30834419008769953,0.5,as stated
+"LADH wild type, 25 C (Bahnson1993)",Bahnson1993,dideuterated,0.0,uninformative,uninformative,-0.1719183153990127,-0.21547876987273584,0.5,as stated
+"LADH ESE chimera, 25 C (Bahnson1993)",Bahnson1993,dideuterated,0.0,uninformative,uninformative,-0.07253716071302696,-0.09799086778376997,0.5,as stated
+"LADH L57V, 25 C (Bahnson1993)",Bahnson1993,dideuterated,0.0,uninformative,uninformative,-0.1314586081201501,-0.19881269187056017,0.5,as stated
+"LADH L57F, 25 C (Bahnson1993)",Bahnson1993,dideuterated,0.0,precision,precision,-0.029309338475445035,-0.0642329310686287,0.5,as stated
+"LADH F93W, 25 C (Bahnson1993)",Bahnson1993,dideuterated,0.0,precision,precision,-0.026287072899318975,-0.04832200505853024,0.5,as stated
+"LADH V203L, 25 C (Bahnson1997)",Bahnson1997,dideuterated,0.0,uninformative,uninformative,-0.07512618920905556,-0.12109828347324525,0.5,as stated
+"LADH V203A, 25 C (Bahnson1997)",Bahnson1997,dideuterated,0.0,uninformative,uninformative,-0.1344236262908063,-0.2066549569400118,0.5,as stated
+"LADH V203A-F93W, 25 C (Bahnson1997)",Bahnson1997,dideuterated,0.0,uninformative,uninformative,-0.13235664652496792,-0.202936988270094,0.5,as stated
+"LADH V203G, 25 C (Bahnson1997)",Bahnson1997,dideuterated,0.0,uninformative,uninformative,-0.1305878610863953,-0.16613261551392888,0.5,as stated
+"LADH wild type, 3 C (TsaiKlinman2001)",TsaiKlinman2001,dideuterated,0.0065,uninformative,uninformative,-0.4152782035651481,-1.0476481711547594,0.5,as stated
+"LADH F93W, 3 C (TsaiKlinman2001)",TsaiKlinman2001,dideuterated,0.0065,precision,precision,0.04075672605872116,-0.2674408509709161,0.5,as stated
+"BSAO wild type, 25 C (Grant1989)",Grant1989,dideuterated,0.0,uninformative,uninformative,-0.19530219721962672,-0.3582838176690437,0.5,as stated
+"YADH wild type, 25 C (Cha1989)",Cha1989,dideuterated,0.0,excludes,excludes,0.12872587506981215,0.04889637472554775,0.5,as stated
+"ecTSase wild type, 20 C (Agrawal2004)",Agrawal2004,monodeuterated,0.01,precision,excludes,0.04423291856714551,-0.030118454073803536,0.5,as stated
+"LADH F93W (Chin 2000), 25 C (ChinKlinman2000)",ChinKlinman2000,dideuterated,0.0,precision,precision,-0.030711334848632532,-0.06697075433002153,0.5,as stated
+"LADH F93W-I224A, 25 C (ChinKlinman2000)",ChinKlinman2000,dideuterated,0.0,precision,precision,-0.027957574117709605,-0.06604031603568528,0.5,as stated
+"LADH F93W-I224L, 25 C (ChinKlinman2000)",ChinKlinman2000,dideuterated,0.0,uninformative,uninformative,-0.05869450651210295,-0.09958349057551086,0.5,as stated
+"LADH F93W-I224G, 25 C (ChinKlinman2000)",ChinKlinman2000,dideuterated,0.0,excludes,excludes,0.029263138849178416,-0.025262379463856455,0.5,as stated
+"LADH F93W-I224V, 25 C (ChinKlinman2000)",ChinKlinman2000,dideuterated,0.0,excludes,excludes,0.021241705464603244,-0.020230702268954737,0.5,as stated
+"YADH wild type (p-methoxybenzyl alcohol), 25 C (Rucker1992)",Rucker1992,dideuterated,0.0,uninformative,uninformative,-0.1323399196517312,-0.31086569746350756,0.5,as stated
+"BSAO p-methoxybenzylamine, 25 C (Rucker1992)",Rucker1992,dideuterated,0.0,uninformative,uninformative,-0.5133786106633798,-0.7643931778771815,0.5,as stated
+"ecTSase wild type, 25 C (Hong2007)",Hong2007,monodeuterated,0.005,uninformative,uninformative,-0.10747629269035763,-0.2476285387657996,0.5,as stated
+"ecTSase Y94F, 25 C (Hong2007)",Hong2007,monodeuterated,0.005,uninformative,uninformative,-0.111284659143839,-0.292448540616448,0.5,as stated
+"hsTSase WT (no Mg2+), 25 C (Islam2018)",Islam2018,monodeuterated,0.0,uninformative,uninformative,-0.4966506978222516,-0.546218115781377,0.5,as stated
+"ecDHFR WT (Sen 2011), 25 C (Sen2011)",Sen2011,monodeuterated,0.0,uninformative,uninformative,-0.12034971070663047,-0.20030974737096763,0.5,as stated
+"ecDHFR WT (dihydrobiopterin), 25 C (Sen2011)",Sen2011,monodeuterated,0.0,uninformative,uninformative,-0.3597550483865837,-0.4356599305537212,0.5,as stated
+"R67DHFR wild type, 25 C (Sen2011)",Sen2011,monodeuterated,0.0,uninformative,uninformative,-0.05648322438339548,-0.13886098280826875,0.5,as stated
+"ecDHFR WT (Sen 2012), 25 C (Sen2012)",Sen2012,monodeuterated,0.0,uninformative,uninformative,-0.1162259935227683,-0.16971593094172288,0.5,as stated
+FDH V123A (hydride),Pagano2019,monodeuterated,0.005,uninformative,uninformative,-0.3781165243555751,-0.42637341857449895,0.5,0.5% where uncorrected
+FDH V123G (hydride),Pagano2019,monodeuterated,0.005,uninformative,uninformative,-0.3024737876407755,-0.37241455311350147,0.5,0.5% where uncorrected
+FDH WT (commercial) (hydride),Bandaria2009,monodeuterated,0.005,uninformative,uninformative,-0.15504342207783073,-0.3438149259514687,0.5,0.5% where uncorrected
+FDH WT (recombinant) (hydride),Guo2016,monodeuterated,0.005,uninformative,uninformative,-0.2347962315151677,-0.3136364526982074,0.5,0.5% where uncorrected
+FDH half-heavy (hydride),Ranasinghe2017,monodeuterated,0.005,uninformative,uninformative,-0.2791947403539914,-0.4246948112668376,0.5,0.5% where uncorrected
+FDH heavy (hydride),Ranasinghe2017,monodeuterated,0.005,uninformative,uninformative,-0.28901106055913295,-0.42125162410758366,0.5,0.5% where uncorrected
+LADH F93W (40% MeOH) (hydride),TsaiKlinman2001,dideuterated,0.005,excludes,excludes,0.20587482883524633,0.05430905029714905,0.5,0.5% where uncorrected
+LADH F93W (60% MeOH) (hydride),TsaiKlinman2001,dideuterated,0.005,excludes,excludes,0.41739205114517075,0.09221742831137947,0.5,0.5% where uncorrected
+LADH wild type (50% MeOH) (hydride),TsaiKlinman2001,dideuterated,0.005,uninformative,uninformative,-0.06087531828384485,-1.0367355673175138,0.5,0.5% where uncorrected
+MAOB pH 6.1 (abstraction),Jonsson1994,dideuterated,0.0,uninformative,uninformative,-0.17198507701379695,-0.4175041809538671,0.5,0.5% where uncorrected
+MAOB pH 7.5 (abstraction),Jonsson1994,dideuterated,0.0,uninformative,uninformative,-0.1944240774291992,-0.4381406277654367,0.5,0.5% where uncorrected
+ecTSase N177D (hydride),Gurevic2018,monodeuterated,0.005,uninformative,uninformative,-0.5099993150773148,-0.7545156793962544,0.5,0.5% where uncorrected
+ecTSase N177S (hydride),Gurevic2018,monodeuterated,0.005,uninformative,uninformative,-0.5595348051668279,-0.6370924509801152,0.5,0.5% where uncorrected
+ecTSase R166K (hydride),Islam2014,monodeuterated,0.005,uninformative,uninformative,-0.14212815727467,-0.31694142291888183,0.5,0.5% where uncorrected
+ecTSase R166K (proton),Islam2015,monodeuterated,0.005,uninformative,uninformative,-0.3457538101350577,-0.5108424676290111,0.5,0.5% where uncorrected
+ecTSase W80M (hydride),Hong2006,monodeuterated,0.005,precision,precision,0.020095867339726237,-0.08010669530005465,0.5,0.5% where uncorrected
+hsTSase WT (hydride),Islam2018,monodeuterated,0.005,uninformative,uninformative,-0.44831451627052443,-0.49727048966599163,0.5,0.5% where uncorrected
+hsTSase WT (proton),Islam2018,monodeuterated,0.005,uninformative,uninformative,-0.26415380436653035,-0.33406156339529214,0.5,0.5% where uncorrected
+ecTSase WT (Mg2+) (hydride),Wang2013,monodeuterated,0.005,uninformative,uninformative,-0.2405737459211077,-0.2972595450280713,0.5,0.5% where uncorrected
+ecTSase WT (Mg2+) (proton),Wang2010,monodeuterated,0.005,uninformative,uninformative,-0.15308097185603464,-0.21845498861356827,0.5,0.5% where uncorrected
+ecTSase Y209W (hydride),Wang2012,monodeuterated,0.005,precision,excludes,0.012698694262699206,-0.03790016929396156,0.5,0.5% where uncorrected
+ecTSase Y209W (proton),Abeysinghe2015,monodeuterated,0.005,uninformative,uninformative,-0.145516766497096,-0.3255659988680615,0.5,0.5% where uncorrected
+YADH wild type (p-chlorobenzyl alcohol) (hydride),Rucker1992,dideuterated,0.0,excludes,excludes,0.33257009039704655,0.1700635630953813,0.5,0.5% where uncorrected
+ecDHFR D27S (hydride),Liu2014,monodeuterated,0.005,uninformative,uninformative,-0.38921967619960873,-0.5779175522589384,0.5,0.5% where uncorrected
+ecDHFR D27S-Y100F (hydride),Liu2014,monodeuterated,0.005,uninformative,uninformative,-0.2519851134744949,-0.4085392308418936,0.5,0.5% where uncorrected
+ecDHFR F125M (hydride),Singh2014,monodeuterated,0.005,uninformative,uninformative,-0.14819846816892657,-0.20237576094133636,0.5,0.5% where uncorrected
+ecDHFR G121V (hydride),WangTharp2006,dideuterated,0.005,uninformative,uninformative,-0.12776591942615623,-0.1802805692328131,0.5,0.5% where uncorrected
+ecDHFR G121V-F125M (hydride),Singh2014,monodeuterated,0.005,uninformative,uninformative,-0.054519789426791476,-0.17229169730310145,0.5,0.5% where uncorrected
+ecDHFR I14A (hydride),Stojkovic2010,monodeuterated,0.005,uninformative,uninformative,-0.18596043998152445,-0.24103609063199505,0.5,0.5% where uncorrected
+ecDHFR I14A-G121V (hydride),Singh2015,monodeuterated,0.005,uninformative,uninformative,-0.07010003471142667,-0.13476239658089395,0.5,0.5% where uncorrected
+ecDHFR M42W (hydride),WangGoodey2006PTRSB,dideuterated,0.005,uninformative,uninformative,-0.23081594663081573,-0.3595692379105806,0.5,0.5% where uncorrected
+ecDHFR M42W-F125M (hydride),Singh2014,monodeuterated,0.005,uninformative,uninformative,-0.08532174142583915,-0.24577782574886053,0.5,0.5% where uncorrected
+ecDHFR W133F (hydride),Singh2014,monodeuterated,0.005,uninformative,precision,-0.04117383257950813,-0.14070992038737828,0.5,0.5% where uncorrected
+ecDHFR WT (pH 7.0) (hydride),Liu2014,monodeuterated,0.005,uninformative,uninformative,-0.18962581058761085,-0.25311825970026913,0.5,0.5% where uncorrected
+ecDHFR Y100F (hydride),Liu2014,monodeuterated,0.005,uninformative,uninformative,-0.42114636724819055,-0.455624048374343,0.5,0.5% where uncorrected
+ecDHFR heavy enzyme (hydride),Wang2014,monodeuterated,0.005,uninformative,uninformative,-0.13951605061910577,-0.25993057416415555,0.5,0.5% where uncorrected
+ecDHFR light enzyme (hydride),Sikorski2004,dideuterated,0.005,uninformative,uninformative,-0.05806304205136237,-0.12782591222982043,0.5,0.5% where uncorrected
+hsDHFR F32L (hydride),Li2021,monodeuterated,0.005,uninformative,uninformative,-0.26999648865651893,-0.3699487866820963,0.5,0.5% where uncorrected
+hsDHFR F32L-PP26N-PEKN62G (hydride),Li2021,monodeuterated,0.005,uninformative,uninformative,-0.6818370116468004,-0.7559589999974279,0.5,0.5% where uncorrected
+hsDHFR F32M (hydride),Li2021,monodeuterated,0.005,uninformative,uninformative,-0.8675634726577575,-1.1499055492074817,0.5,0.5% where uncorrected
+hsDHFR M53W (hydride),Li2019,monodeuterated,0.005,uninformative,uninformative,-0.34429976813364505,-0.39691737534126137,0.5,0.5% where uncorrected
+hsDHFR M53W-S145V (hydride),Li2019,monodeuterated,0.005,uninformative,uninformative,-0.529327448829845,-0.5898453618514699,0.5,0.5% where uncorrected
+hsDHFR S145V (hydride),Li2019,monodeuterated,0.005,uninformative,uninformative,-0.18962545266542175,-0.27971381099665193,0.5,0.5% where uncorrected
+hsDHFR d26-PPLR-d62-PEKN (hydride),Li2021,monodeuterated,0.005,uninformative,uninformative,-0.11851014619272249,-0.18027820681722684,0.5,0.5% where uncorrected
+hsDHFR d62-PEKN (hydride),Li2021,monodeuterated,0.005,uninformative,uninformative,-0.22140795285736314,-0.29351602304898017,0.5,0.5% where uncorrected
+"LADH wild type, 25 C (Bahnson1993)",Bahnson1993,dideuterated,0.0,uninformative,uninformative,-0.1719183153990127,-0.21547876987273584,0.5,0.5% where uncorrected
+"LADH ESE chimera, 25 C (Bahnson1993)",Bahnson1993,dideuterated,0.0,uninformative,uninformative,-0.07253716071302696,-0.09799086778376997,0.5,0.5% where uncorrected
+"LADH L57V, 25 C (Bahnson1993)",Bahnson1993,dideuterated,0.0,uninformative,uninformative,-0.1314586081201501,-0.19881269187056017,0.5,0.5% where uncorrected
+"LADH L57F, 25 C (Bahnson1993)",Bahnson1993,dideuterated,0.0,precision,precision,-0.029309338475445035,-0.0642329310686287,0.5,0.5% where uncorrected
+"LADH F93W, 25 C (Bahnson1993)",Bahnson1993,dideuterated,0.0,precision,precision,-0.026287072899318975,-0.04832200505853024,0.5,0.5% where uncorrected
+"LADH V203L, 25 C (Bahnson1997)",Bahnson1997,dideuterated,0.0,uninformative,uninformative,-0.07512618920905556,-0.12109828347324525,0.5,0.5% where uncorrected
+"LADH V203A, 25 C (Bahnson1997)",Bahnson1997,dideuterated,0.0,uninformative,uninformative,-0.1344236262908063,-0.2066549569400118,0.5,0.5% where uncorrected
+"LADH V203A-F93W, 25 C (Bahnson1997)",Bahnson1997,dideuterated,0.0,uninformative,uninformative,-0.13235664652496792,-0.202936988270094,0.5,0.5% where uncorrected
+"LADH V203G, 25 C (Bahnson1997)",Bahnson1997,dideuterated,0.0,uninformative,uninformative,-0.1305878610863953,-0.16613261551392888,0.5,0.5% where uncorrected
+"LADH wild type, 3 C (TsaiKlinman2001)",TsaiKlinman2001,dideuterated,0.005,uninformative,uninformative,-0.42176371107634303,-1.0532800455951565,0.5,0.5% where uncorrected
+"LADH F93W, 3 C (TsaiKlinman2001)",TsaiKlinman2001,dideuterated,0.005,precision,precision,0.03382161049397636,-0.27418098595816565,0.5,0.5% where uncorrected
+"BSAO wild type, 25 C (Grant1989)",Grant1989,dideuterated,0.0,uninformative,uninformative,-0.19530219721962672,-0.3582838176690437,0.5,0.5% where uncorrected
+"YADH wild type, 25 C (Cha1989)",Cha1989,dideuterated,0.0,excludes,excludes,0.12872587506981215,0.04889637472554775,0.5,0.5% where uncorrected
+"ecTSase wild type, 20 C (Agrawal2004)",Agrawal2004,monodeuterated,0.005,precision,precision,0.02297378146708251,-0.05109698666682383,0.5,0.5% where uncorrected
+"LADH F93W (Chin 2000), 25 C (ChinKlinman2000)",ChinKlinman2000,dideuterated,0.0,precision,precision,-0.030711334848632532,-0.06697075433002153,0.5,0.5% where uncorrected
+"LADH F93W-I224A, 25 C (ChinKlinman2000)",ChinKlinman2000,dideuterated,0.0,precision,precision,-0.027957574117709605,-0.06604031603568528,0.5,0.5% where uncorrected
+"LADH F93W-I224L, 25 C (ChinKlinman2000)",ChinKlinman2000,dideuterated,0.0,uninformative,uninformative,-0.05869450651210295,-0.09958349057551086,0.5,0.5% where uncorrected
+"LADH F93W-I224G, 25 C (ChinKlinman2000)",ChinKlinman2000,dideuterated,0.0,excludes,excludes,0.029263138849178416,-0.025262379463856455,0.5,0.5% where uncorrected
+"LADH F93W-I224V, 25 C (ChinKlinman2000)",ChinKlinman2000,dideuterated,0.0,excludes,excludes,0.021241705464603244,-0.020230702268954737,0.5,0.5% where uncorrected
+"YADH wild type (p-methoxybenzyl alcohol), 25 C (Rucker1992)",Rucker1992,dideuterated,0.0,uninformative,uninformative,-0.1323399196517312,-0.31086569746350756,0.5,0.5% where uncorrected
+"BSAO p-methoxybenzylamine, 25 C (Rucker1992)",Rucker1992,dideuterated,0.0,uninformative,uninformative,-0.5133786106633798,-0.7643931778771815,0.5,0.5% where uncorrected
+"ecTSase wild type, 25 C (Hong2007)",Hong2007,monodeuterated,0.005,uninformative,uninformative,-0.10747629269035763,-0.2476285387657996,0.5,0.5% where uncorrected
+"ecTSase Y94F, 25 C (Hong2007)",Hong2007,monodeuterated,0.005,uninformative,uninformative,-0.111284659143839,-0.292448540616448,0.5,0.5% where uncorrected
+"hsTSase WT (no Mg2+), 25 C (Islam2018)",Islam2018,monodeuterated,0.005,uninformative,uninformative,-0.484975912569678,-0.5347034553328092,0.5,0.5% where uncorrected
+"ecDHFR WT (Sen 2011), 25 C (Sen2011)",Sen2011,monodeuterated,0.005,uninformative,uninformative,-0.10249167549344684,-0.1828942752962588,0.5,0.5% where uncorrected
+"ecDHFR WT (dihydrobiopterin), 25 C (Sen2011)",Sen2011,monodeuterated,0.005,uninformative,uninformative,-0.3395892970994947,-0.41588462466042375,0.5,0.5% where uncorrected
+"R67DHFR wild type, 25 C (Sen2011)",Sen2011,monodeuterated,0.005,uninformative,precision,-0.03656481105265086,-0.11935392942449119,0.5,0.5% where uncorrected
+"ecDHFR WT (Sen 2012), 25 C (Sen2012)",Sen2012,monodeuterated,0.005,uninformative,uninformative,-0.09831435414239542,-0.15220226252822955,0.5,0.5% where uncorrected
+FDH V123A (hydride),Pagano2019,monodeuterated,0.01,uninformative,uninformative,-0.3590675101068237,-0.4075661460804261,0.5,1% where uncorrected
+FDH V123G (hydride),Pagano2019,monodeuterated,0.01,uninformative,uninformative,-0.28269269919703377,-0.35310572708745114,0.5,1% where uncorrected
+FDH WT (commercial) (hydride),Bandaria2009,monodeuterated,0.01,uninformative,uninformative,-0.13956873535233116,-0.330211783728948,0.5,1% where uncorrected
+FDH WT (recombinant) (hydride),Guo2016,monodeuterated,0.01,uninformative,uninformative,-0.21986242573716175,-0.29940416797334746,0.5,1% where uncorrected
+FDH half-heavy (hydride),Ranasinghe2017,monodeuterated,0.01,uninformative,uninformative,-0.26146935438012187,-0.4072394785949689,0.5,1% where uncorrected
+FDH heavy (hydride),Ranasinghe2017,monodeuterated,0.01,uninformative,uninformative,-0.2689500984081181,-0.40152276366014483,0.5,1% where uncorrected
+LADH F93W (40% MeOH) (hydride),TsaiKlinman2001,dideuterated,0.01,excludes,excludes,0.22868209361706682,0.07671024671672066,0.5,1% where uncorrected
+LADH F93W (60% MeOH) (hydride),TsaiKlinman2001,dideuterated,0.01,excludes,excludes,0.4405482316003202,0.11437521534071471,0.5,1% where uncorrected
+LADH wild type (50% MeOH) (hydride),TsaiKlinman2001,dideuterated,0.01,uninformative,precision,-0.04015486607816521,-1.0205670531125877,0.5,1% where uncorrected
+MAOB pH 6.1 (abstraction),Jonsson1994,dideuterated,0.0,uninformative,uninformative,-0.17198507701379695,-0.4175041809538671,0.5,1% where uncorrected
+MAOB pH 7.5 (abstraction),Jonsson1994,dideuterated,0.0,uninformative,uninformative,-0.1944240774291992,-0.4381406277654367,0.5,1% where uncorrected
+ecTSase N177D (hydride),Gurevic2018,monodeuterated,0.01,uninformative,uninformative,-0.4924811281288115,-0.7385425970171906,0.5,1% where uncorrected
+ecTSase N177S (hydride),Gurevic2018,monodeuterated,0.01,uninformative,uninformative,-0.5425329369167098,-0.6208135444596674,0.5,1% where uncorrected
+ecTSase R166K (hydride),Islam2014,monodeuterated,0.01,uninformative,uninformative,-0.12225054739274399,-0.29772157123822773,0.5,1% where uncorrected
+ecTSase R166K (proton),Islam2015,monodeuterated,0.01,uninformative,uninformative,-0.3335811389982781,-0.4996689599727906,0.5,1% where uncorrected
+ecTSase W80M (hydride),Hong2006,monodeuterated,0.01,precision,precision,0.04144598137796529,-0.05913226513327574,0.5,1% where uncorrected
+hsTSase WT (hydride),Islam2018,monodeuterated,0.01,uninformative,uninformative,-0.4354184700689574,-0.4847468088901201,0.5,1% where uncorrected
+hsTSase WT (proton),Islam2018,monodeuterated,0.01,uninformative,uninformative,-0.25584500541786326,-0.32525905902502206,0.5,1% where uncorrected
+ecTSase WT (Mg2+) (hydride),Wang2013,monodeuterated,0.01,uninformative,uninformative,-0.22463117540817756,-0.28168764834716287,0.5,1% where uncorrected
+ecTSase WT (Mg2+) (proton),Wang2010,monodeuterated,0.01,uninformative,uninformative,-0.14467595621580787,-0.21034366253564207,0.5,1% where uncorrected
+ecTSase Y209W (hydride),Wang2012,monodeuterated,0.01,precision,excludes,0.03508378694602765,-0.016158359513839926,0.5,1% where uncorrected
+ecTSase Y209W (proton),Abeysinghe2015,monodeuterated,0.01,uninformative,uninformative,-0.13082892209368935,-0.3121050060837969,0.5,1% where uncorrected
+YADH wild type (p-chlorobenzyl alcohol) (hydride),Rucker1992,dideuterated,0.0,excludes,excludes,0.33257009039704655,0.1700635630953813,0.5,1% where uncorrected
+ecDHFR D27S (hydride),Liu2014,monodeuterated,0.01,uninformative,uninformative,-0.38066240560267883,-0.5677496993526525,0.5,1% where uncorrected
+ecDHFR D27S-Y100F (hydride),Liu2014,monodeuterated,0.01,uninformative,uninformative,-0.24349585251776096,-0.3989443768661278,0.5,1% where uncorrected
+ecDHFR F125M (hydride),Singh2014,monodeuterated,0.01,uninformative,uninformative,-0.12810570190087422,-0.18254509285360032,0.5,1% where uncorrected
+ecDHFR G121V (hydride),WangTharp2006,dideuterated,0.01,uninformative,uninformative,-0.10616745300767905,-0.15888837774132591,0.5,1% where uncorrected
+ecDHFR G121V-F125M (hydride),Singh2014,monodeuterated,0.01,uninformative,precision,-0.03485507155660583,-0.1526481306068448,0.5,1% where uncorrected
+ecDHFR I14A (hydride),Stojkovic2010,monodeuterated,0.01,uninformative,uninformative,-0.1664275345733912,-0.22179136671023536,0.5,1% where uncorrected
+ecDHFR I14A-G121V (hydride),Singh2015,monodeuterated,0.01,uninformative,uninformative,-0.051266909071050026,-0.1163292286987545,0.5,1% where uncorrected
+ecDHFR M42W (hydride),WangGoodey2006PTRSB,dideuterated,0.01,uninformative,uninformative,-0.2147291708461101,-0.34442344136997605,0.5,1% where uncorrected
+ecDHFR M42W-F125M (hydride),Singh2014,monodeuterated,0.01,uninformative,uninformative,-0.06778639438388301,-0.2290661479868692,0.5,1% where uncorrected
+ecDHFR W133F (hydride),Singh2014,monodeuterated,0.01,uninformative,precision,-0.022505746689881256,-0.12253529518196782,0.5,1% where uncorrected
+ecDHFR WT (pH 7.0) (hydride),Liu2014,monodeuterated,0.01,uninformative,uninformative,-0.17827107262113417,-0.242196958122869,0.5,1% where uncorrected
+ecDHFR Y100F (hydride),Liu2014,monodeuterated,0.01,uninformative,uninformative,-0.4111672963088602,-0.4451317050665491,0.5,1% where uncorrected
+ecDHFR heavy enzyme (hydride),Wang2014,monodeuterated,0.01,uninformative,uninformative,-0.12120352039466176,-0.2425391714713201,0.5,1% where uncorrected
+ecDHFR light enzyme (hydride),Sikorski2004,dideuterated,0.01,uninformative,precision,-0.03997383147888467,-0.11020351447713783,0.5,1% where uncorrected
+hsDHFR F32L (hydride),Li2021,monodeuterated,0.01,uninformative,uninformative,-0.261644964673443,-0.360903820147641,0.5,1% where uncorrected
+hsDHFR F32L-PP26N-PEKN62G (hydride),Li2021,monodeuterated,0.01,uninformative,uninformative,-0.6699375330890425,-0.7434694992900537,0.5,1% where uncorrected
+hsDHFR F32M (hydride),Li2021,monodeuterated,0.01,uninformative,uninformative,-0.8568540046621036,-1.1382544509390167,0.5,1% where uncorrected
+hsDHFR M53W (hydride),Li2019,monodeuterated,0.01,uninformative,uninformative,-0.33040605161979153,-0.38335185884006906,0.5,1% where uncorrected
+hsDHFR M53W-S145V (hydride),Li2019,monodeuterated,0.01,uninformative,uninformative,-0.5180343164230012,-0.578344106691639,0.5,1% where uncorrected
+hsDHFR S145V (hydride),Li2019,monodeuterated,0.01,uninformative,uninformative,-0.18061916777259857,-0.2713444096153347,0.5,1% where uncorrected
+hsDHFR d26-PPLR-d62-PEKN (hydride),Li2021,monodeuterated,0.01,uninformative,uninformative,-0.10248874381911,-0.16465898373821086,0.5,1% where uncorrected
+hsDHFR d62-PEKN (hydride),Li2021,monodeuterated,0.01,uninformative,uninformative,-0.20582332156108096,-0.27851739002566145,0.5,1% where uncorrected
+"LADH wild type, 25 C (Bahnson1993)",Bahnson1993,dideuterated,0.0,uninformative,uninformative,-0.1719183153990127,-0.21547876987273584,0.5,1% where uncorrected
+"LADH ESE chimera, 25 C (Bahnson1993)",Bahnson1993,dideuterated,0.0,uninformative,uninformative,-0.07253716071302696,-0.09799086778376997,0.5,1% where uncorrected
+"LADH L57V, 25 C (Bahnson1993)",Bahnson1993,dideuterated,0.0,uninformative,uninformative,-0.1314586081201501,-0.19881269187056017,0.5,1% where uncorrected
+"LADH L57F, 25 C (Bahnson1993)",Bahnson1993,dideuterated,0.0,precision,precision,-0.029309338475445035,-0.0642329310686287,0.5,1% where uncorrected
+"LADH F93W, 25 C (Bahnson1993)",Bahnson1993,dideuterated,0.0,precision,precision,-0.026287072899318975,-0.04832200505853024,0.5,1% where uncorrected
+"LADH V203L, 25 C (Bahnson1997)",Bahnson1997,dideuterated,0.0,uninformative,uninformative,-0.07512618920905556,-0.12109828347324525,0.5,1% where uncorrected
+"LADH V203A, 25 C (Bahnson1997)",Bahnson1997,dideuterated,0.0,uninformative,uninformative,-0.1344236262908063,-0.2066549569400118,0.5,1% where uncorrected
+"LADH V203A-F93W, 25 C (Bahnson1997)",Bahnson1997,dideuterated,0.0,uninformative,uninformative,-0.13235664652496792,-0.202936988270094,0.5,1% where uncorrected
+"LADH V203G, 25 C (Bahnson1997)",Bahnson1997,dideuterated,0.0,uninformative,uninformative,-0.1305878610863953,-0.16613261551392888,0.5,1% where uncorrected
+"LADH wild type, 3 C (TsaiKlinman2001)",TsaiKlinman2001,dideuterated,0.01,uninformative,uninformative,-0.40005347629390897,-1.0344291457103405,0.5,1% where uncorrected
+"LADH F93W, 3 C (TsaiKlinman2001)",TsaiKlinman2001,dideuterated,0.01,precision,precision,0.057038079434258204,-0.2516177414657057,0.5,1% where uncorrected
+"BSAO wild type, 25 C (Grant1989)",Grant1989,dideuterated,0.0,uninformative,uninformative,-0.19530219721962672,-0.3582838176690437,0.5,1% where uncorrected
+"YADH wild type, 25 C (Cha1989)",Cha1989,dideuterated,0.0,excludes,excludes,0.12872587506981215,0.04889637472554775,0.5,1% where uncorrected
+"ecTSase wild type, 20 C (Agrawal2004)",Agrawal2004,monodeuterated,0.01,precision,excludes,0.04423291856714551,-0.030118454073803536,0.5,1% where uncorrected
+"LADH F93W (Chin 2000), 25 C (ChinKlinman2000)",ChinKlinman2000,dideuterated,0.0,precision,precision,-0.030711334848632532,-0.06697075433002153,0.5,1% where uncorrected
+"LADH F93W-I224A, 25 C (ChinKlinman2000)",ChinKlinman2000,dideuterated,0.0,precision,precision,-0.027957574117709605,-0.06604031603568528,0.5,1% where uncorrected
+"LADH F93W-I224L, 25 C (ChinKlinman2000)",ChinKlinman2000,dideuterated,0.0,uninformative,uninformative,-0.05869450651210295,-0.09958349057551086,0.5,1% where uncorrected
+"LADH F93W-I224G, 25 C (ChinKlinman2000)",ChinKlinman2000,dideuterated,0.0,excludes,excludes,0.029263138849178416,-0.025262379463856455,0.5,1% where uncorrected
+"LADH F93W-I224V, 25 C (ChinKlinman2000)",ChinKlinman2000,dideuterated,0.0,excludes,excludes,0.021241705464603244,-0.020230702268954737,0.5,1% where uncorrected
+"YADH wild type (p-methoxybenzyl alcohol), 25 C (Rucker1992)",Rucker1992,dideuterated,0.0,uninformative,uninformative,-0.1323399196517312,-0.31086569746350756,0.5,1% where uncorrected
+"BSAO p-methoxybenzylamine, 25 C (Rucker1992)",Rucker1992,dideuterated,0.0,uninformative,uninformative,-0.5133786106633798,-0.7643931778771815,0.5,1% where uncorrected
+"ecTSase wild type, 25 C (Hong2007)",Hong2007,monodeuterated,0.01,uninformative,uninformative,-0.10176049230486095,-0.2401808052580624,0.5,1% where uncorrected
+"ecTSase Y94F, 25 C (Hong2007)",Hong2007,monodeuterated,0.01,uninformative,uninformative,-0.10561437585744793,-0.2847797720272689,0.5,1% where uncorrected
+"hsTSase WT (no Mg2+), 25 C (Islam2018)",Islam2018,monodeuterated,0.01,uninformative,uninformative,-0.47317040736579496,-0.5231677898820963,0.5,1% where uncorrected
+"ecDHFR WT (Sen 2011), 25 C (Sen2011)",Sen2011,monodeuterated,0.01,uninformative,uninformative,-0.08442318281853933,-0.16527429781102487,0.5,1% where uncorrected
+"ecDHFR WT (dihydrobiopterin), 25 C (Sen2011)",Sen2011,monodeuterated,0.01,uninformative,uninformative,-0.31918143616614825,-0.3958726371295602,0.5,1% where uncorrected
+"R67DHFR wild type, 25 C (Sen2011)",Sen2011,monodeuterated,0.01,uninformative,precision,-0.01640773003567708,-0.09961390648536672,0.5,1% where uncorrected
+"ecDHFR WT (Sen 2012), 25 C (Sen2012)",Sen2012,monodeuterated,0.01,uninformative,uninformative,-0.08019153380007116,-0.13448277133079167,0.5,1% where uncorrected

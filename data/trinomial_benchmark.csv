@@ -93,3 +93,112 @@ Horse liver alcohol dehydrogenase (benzyl alcohol),LADH,F93W (40% MeOH),hydride,
 Horse liver alcohol dehydrogenase (benzyl alcohol),LADH,F93W (40% MeOH),hydride,C,-30.0,13.0,0.1,2.22,0.09,10.1021/bi002075l,,Table 4
 Horse liver alcohol dehydrogenase (benzyl alcohol),LADH,F93W (60% MeOH),hydride,C,3.0,8.6,0.4,1.69,0.06,10.1021/bi002075l,,Table 4
 Horse liver alcohol dehydrogenase (benzyl alcohol),LADH,F93W (60% MeOH),hydride,C,-20.0,10.7,0.9,1.9,0.6,10.1021/bi002075l,,Table 4
+Candida boidinii formate dehydrogenase,FDH,WT (commercial),hydride,C,5,3.69,0.09,1.57,0.02,10.1021/ja902120t,PMC2746013,SI Table S2
+Candida boidinii formate dehydrogenase,FDH,WT (commercial),hydride,C,15,3.82,0.05,1.57,0.05,10.1021/ja902120t,PMC2746013,SI Table S2
+Candida boidinii formate dehydrogenase,FDH,WT (commercial),hydride,C,25,3.8,0.09,1.58,0.03,10.1021/ja902120t,PMC2746013,SI Table S2
+Candida boidinii formate dehydrogenase,FDH,WT (commercial),hydride,C,35,3.78,0.05,1.57,0.03,10.1021/ja902120t,PMC2746013,SI Table S2
+Candida boidinii formate dehydrogenase,FDH,WT (commercial),hydride,C,45,3.79,0.13,1.57,0.02,10.1021/ja902120t,PMC2746013,SI Table S2
+Candida boidinii formate dehydrogenase,FDH,WT (recombinant),hydride,C,5,3.7,0.03,1.6,0.01,10.1021/acs.biochem.6b00181,PMC4917879,SI Table S1
+Candida boidinii formate dehydrogenase,FDH,WT (recombinant),hydride,C,15,3.66,0.03,1.6,0.02,10.1021/acs.biochem.6b00181,PMC4917879,SI Table S1
+Candida boidinii formate dehydrogenase,FDH,WT (recombinant),hydride,C,25,3.72,0.03,1.6,0.01,10.1021/acs.biochem.6b00181,PMC4917879,SI Table S1
+Candida boidinii formate dehydrogenase,FDH,WT (recombinant),hydride,C,35,3.76,0.03,1.6,0.02,10.1021/acs.biochem.6b00181,PMC4917879,SI Table S1
+Candida boidinii formate dehydrogenase,FDH,WT (recombinant),hydride,C,45,3.7,0.04,1.61,0.02,10.1021/acs.biochem.6b00181,PMC4917879,SI Table S1
+Candida boidinii formate dehydrogenase,FDH,half-heavy,hydride,C,5,5.27,0.08,1.91,0.02,10.1021/jacs.7b08359,PMC5800309,SI Table S2
+Candida boidinii formate dehydrogenase,FDH,half-heavy,hydride,C,15,5.47,0.02,1.88,0.03,10.1021/jacs.7b08359,PMC5800309,SI Table S2
+Candida boidinii formate dehydrogenase,FDH,half-heavy,hydride,C,25,5.53,0.01,1.88,0.02,10.1021/jacs.7b08359,PMC5800309,SI Table S2
+Candida boidinii formate dehydrogenase,FDH,half-heavy,hydride,C,35,5.34,0.06,1.82,0.02,10.1021/jacs.7b08359,PMC5800309,SI Table S2
+Candida boidinii formate dehydrogenase,FDH,half-heavy,hydride,C,45,5.03,0.07,1.77,0.05,10.1021/jacs.7b08359,PMC5800309,SI Table S2
+Candida boidinii formate dehydrogenase,FDH,heavy,hydride,C,5,4.38,0.03,1.96,0.02,10.1021/jacs.7b08359,PMC5800309,SI Table S3
+Candida boidinii formate dehydrogenase,FDH,heavy,hydride,C,10,4.54,0.04,1.92,0.01,10.1021/jacs.7b08359,PMC5800309,SI Table S3
+Candida boidinii formate dehydrogenase,FDH,heavy,hydride,C,15,5.87,0.14,2.03,0.03,10.1021/jacs.7b08359,PMC5800309,SI Table S3
+Candida boidinii formate dehydrogenase,FDH,heavy,hydride,C,20,4.54,0.09,1.9,0.01,10.1021/jacs.7b08359,PMC5800309,SI Table S3
+Candida boidinii formate dehydrogenase,FDH,heavy,hydride,C,25,5.77,0.06,2,0.02,10.1021/jacs.7b08359,PMC5800309,SI Table S3
+Candida boidinii formate dehydrogenase,FDH,heavy,hydride,C,30,4.72,0.13,1.87,0.02,10.1021/jacs.7b08359,PMC5800309,SI Table S3
+Candida boidinii formate dehydrogenase,FDH,heavy,hydride,C,35,5.66,0.05,1.937,0.005,10.1021/jacs.7b08359,PMC5800309,SI Table S3
+Candida boidinii formate dehydrogenase,FDH,heavy,hydride,C,40,6.83,0.04,1.99,0.01,10.1021/jacs.7b08359,PMC5800309,SI Table S3
+Candida boidinii formate dehydrogenase,FDH,heavy,hydride,C,45,6.64,0.15,1.93,0.05,10.1021/jacs.7b08359,PMC5800309,SI Table S3
+Escherichia coli thymidylate synthase,TSase,N177D,hydride,C,5,4.05,0.07,1.92,0.03,10.1021/acscatal.8b02554,PMC6605054,SI Table S2
+Escherichia coli thymidylate synthase,TSase,N177D,hydride,C,15,4.65,0.06,1.97,0.04,10.1021/acscatal.8b02554,PMC6605054,SI Table S2
+Escherichia coli thymidylate synthase,TSase,N177D,hydride,C,25,5.19,0.08,1.98,0.05,10.1021/acscatal.8b02554,PMC6605054,SI Table S2
+Escherichia coli thymidylate synthase,TSase,N177D,hydride,C,35,5.43,0.12,1.94,0.05,10.1021/acscatal.8b02554,PMC6605054,SI Table S2
+Escherichia coli thymidylate synthase,TSase,N177S,hydride,C,5,3.77,0.1,1.85,0.02,10.1021/acscatal.8b02554,PMC6605054,SI Table S3
+Escherichia coli thymidylate synthase,TSase,N177S,hydride,C,15,4.64,0.07,1.95,0.03,10.1021/acscatal.8b02554,PMC6605054,SI Table S3
+Escherichia coli thymidylate synthase,TSase,N177S,hydride,C,25,4.99,0.06,1.95,0.01,10.1021/acscatal.8b02554,PMC6605054,SI Table S3
+Escherichia coli thymidylate synthase,TSase,N177S,hydride,C,35,5.26,0.09,1.95,0.01,10.1021/acscatal.8b02554,PMC6605054,SI Table S3
+Escherichia coli thymidylate synthase,TSase,R166K,hydride,C,5,5.74,0.02,2,0.02,10.1021/ja504341g,PMC4105062,SI Table S2
+Escherichia coli thymidylate synthase,TSase,R166K,hydride,C,15,6.43,0.1,1.97,0.01,10.1021/ja504341g,PMC4105062,SI Table S2
+Escherichia coli thymidylate synthase,TSase,R166K,hydride,C,25,6.31,0.1,1.89,0.009,10.1021/ja504341g,PMC4105062,SI Table S2
+Escherichia coli thymidylate synthase,TSase,R166K,hydride,C,35,6.09,0.02,1.8,0.04,10.1021/ja504341g,PMC4105062,SI Table S2
+Escherichia coli thymidylate synthase,TSase,R166K,proton,C,5,10.99,0.08,2.63,0.08,10.1021/acscatal.5b01332,PMC4643671,SI Table S1
+Escherichia coli thymidylate synthase,TSase,R166K,proton,C,15,9.66,0.27,2.37,0.03,10.1021/acscatal.5b01332,PMC4643671,SI Table S1
+Escherichia coli thymidylate synthase,TSase,R166K,proton,C,25,5.23,0.07,1.9,0.03,10.1021/acscatal.5b01332,PMC4643671,SI Table S1
+Escherichia coli thymidylate synthase,TSase,R166K,proton,C,35,3.1,0.09,1.56,0.02,10.1021/acscatal.5b01332,PMC4643671,SI Table S1
+Escherichia coli thymidylate synthase,TSase,W80M,hydride,C,5,7.07,0.04,1.8,0.02,10.1021/ja060196o,PMC3253763,SI Table S1
+Escherichia coli thymidylate synthase,TSase,W80M,hydride,C,20,7.02,0.05,1.79,0.02,10.1021/ja060196o,PMC3253763,SI Table S1
+Escherichia coli thymidylate synthase,TSase,W80M,hydride,C,30,6.97,0.07,1.81,0.02,10.1021/ja060196o,PMC3253763,SI Table S1
+Escherichia coli thymidylate synthase,TSase,W80M,hydride,C,40,7.02,0.05,1.8,0.02,10.1021/ja060196o,PMC3253763,SI Table S1
+Escherichia coli thymidylate synthase,TSase,WT (Mg2+),hydride,C,5,2.59,0.02,1.47,0.02,10.1021/ja400761x,PMC3674108,SI Table S2
+Escherichia coli thymidylate synthase,TSase,WT (Mg2+),hydride,C,15,3.51,0.02,1.6,0.02,10.1021/ja400761x,PMC3674108,SI Table S2
+Escherichia coli thymidylate synthase,TSase,WT (Mg2+),hydride,C,25,4.14,0.02,1.65,0.01,10.1021/ja400761x,PMC3674108,SI Table S2
+Escherichia coli thymidylate synthase,TSase,WT (Mg2+),hydride,C,35,3.91,0.05,1.63,0.03,10.1021/ja400761x,PMC3674108,SI Table S2
+Escherichia coli thymidylate synthase,TSase,WT (Mg2+),proton,C,5,2.08,0.01,1.46,0.01,10.1021/ja103010b,PMC2912445,SI Table S1
+Escherichia coli thymidylate synthase,TSase,WT (Mg2+),proton,C,15,2.22,0.02,1.44,0.007,10.1021/ja103010b,PMC2912445,SI Table S1
+Escherichia coli thymidylate synthase,TSase,WT (Mg2+),proton,C,25,2.236,0.006,1.38,0.01,10.1021/ja103010b,PMC2912445,SI Table S1
+Escherichia coli thymidylate synthase,TSase,WT (Mg2+),proton,C,35,2.102,0.007,1.31,0.01,10.1021/ja103010b,PMC2912445,SI Table S1
+Escherichia coli thymidylate synthase,TSase,Y209W,hydride,C,5,8.5,0.1,1.9,0.02,10.1021/ja307859m,PMC3490427,SI Table S4
+Escherichia coli thymidylate synthase,TSase,Y209W,hydride,C,25,7.77,0.04,1.85,0.01,10.1021/ja307859m,PMC3490427,SI Table S4
+Escherichia coli thymidylate synthase,TSase,Y209W,hydride,C,35,6.6,0.1,1.81,0.03,10.1021/ja307859m,PMC3490427,SI Table S4
+Saccharomyces cerevisiae alcohol dehydrogenase,YADH,wild type (p-chlorobenzyl alcohol),hydride,C,0,7.49,0.29,1.71,0.02,10.1021/bi00161a030,,Table IV
+Saccharomyces cerevisiae alcohol dehydrogenase,YADH,wild type (p-chlorobenzyl alcohol),hydride,C,25,6.59,0.13,1.59,0.03,10.1021/bi00161a030,,Table IV
+Escherichia coli dihydrofolate reductase,ecDHFR,D27S,hydride,C,5,2.15,0.02,1.44,0.01,10.1073/pnas.1415940111,PMC4280594,SI Table S6
+Escherichia coli dihydrofolate reductase,ecDHFR,D27S,hydride,C,15,2,0.01,1.39,0.01,10.1073/pnas.1415940111,PMC4280594,SI Table S6
+Escherichia coli dihydrofolate reductase,ecDHFR,D27S,hydride,C,25,1.77,0.01,1.32,0.01,10.1073/pnas.1415940111,PMC4280594,SI Table S6
+Escherichia coli dihydrofolate reductase,ecDHFR,D27S,hydride,C,35,1.68,0.01,1.29,0.01,10.1073/pnas.1415940111,PMC4280594,SI Table S6
+Escherichia coli dihydrofolate reductase,ecDHFR,D27S,hydride,C,45,1.53,0.01,1.23,0.01,10.1073/pnas.1415940111,PMC4280594,SI Table S6
+Escherichia coli dihydrofolate reductase,ecDHFR,D27S-Y100F,hydride,C,5,2.92,0.01,1.62,0.02,10.1073/pnas.1415940111,PMC4280594,SI Table S7
+Escherichia coli dihydrofolate reductase,ecDHFR,D27S-Y100F,hydride,C,15,2.61,0.02,1.53,0.02,10.1073/pnas.1415940111,PMC4280594,SI Table S7
+Escherichia coli dihydrofolate reductase,ecDHFR,D27S-Y100F,hydride,C,25,2.41,0.01,1.47,0.01,10.1073/pnas.1415940111,PMC4280594,SI Table S7
+Escherichia coli dihydrofolate reductase,ecDHFR,D27S-Y100F,hydride,C,35,2.29,0.01,1.42,0.01,10.1073/pnas.1415940111,PMC4280594,SI Table S7
+Escherichia coli dihydrofolate reductase,ecDHFR,D27S-Y100F,hydride,C,45,2.11,0.01,1.35,0.02,10.1073/pnas.1415940111,PMC4280594,SI Table S7
+Escherichia coli dihydrofolate reductase,ecDHFR,G121V,hydride,C,5,7.79,0.04,1.93,0.01,10.1021/bi0518242,PMC2553318,SI Table 1S
+Escherichia coli dihydrofolate reductase,ecDHFR,G121V,hydride,C,15,6.75,0.02,1.89,0.01,10.1021/bi0518242,PMC2553318,SI Table 1S
+Escherichia coli dihydrofolate reductase,ecDHFR,G121V,hydride,C,25,6.07,0.02,1.85,0.01,10.1021/bi0518242,PMC2553318,SI Table 1S
+Escherichia coli dihydrofolate reductase,ecDHFR,G121V,hydride,C,35,5.65,0.01,1.82,0.01,10.1021/bi0518242,PMC2553318,SI Table 1S
+Escherichia coli dihydrofolate reductase,ecDHFR,G121V,hydride,C,45,5.04,0.02,1.78,0.01,10.1021/bi0518242,PMC2553318,SI Table 1S
+Escherichia coli dihydrofolate reductase,ecDHFR,I14A,hydride,C,5,5.98,0.03,1.84,0.02,10.1039/c0cc02988b,PMC4346287,ESI Table 1S
+Escherichia coli dihydrofolate reductase,ecDHFR,I14A,hydride,C,15,5.96,0.03,1.83,0.01,10.1039/c0cc02988b,PMC4346287,ESI Table 1S
+Escherichia coli dihydrofolate reductase,ecDHFR,I14A,hydride,C,25,5.95,0.01,1.82,0.01,10.1039/c0cc02988b,PMC4346287,ESI Table 1S
+Escherichia coli dihydrofolate reductase,ecDHFR,I14A,hydride,C,35,5.95,0.03,1.82,0.01,10.1039/c0cc02988b,PMC4346287,ESI Table 1S
+Escherichia coli dihydrofolate reductase,ecDHFR,I14A,hydride,C,45,5.94,0.03,1.81,0.01,10.1039/c0cc02988b,PMC4346287,ESI Table 1S
+Escherichia coli dihydrofolate reductase,ecDHFR,I14A-G121V,hydride,C,5,2.13,0.03,1.47,0.01,10.1021/acscatal.5b00331,PMC4863459,SI Table S1
+Escherichia coli dihydrofolate reductase,ecDHFR,I14A-G121V,hydride,C,15,2.6,0.02,1.55,0.01,10.1021/acscatal.5b00331,PMC4863459,SI Table S1
+Escherichia coli dihydrofolate reductase,ecDHFR,I14A-G121V,hydride,C,25,3.05,0.04,1.59,0.01,10.1021/acscatal.5b00331,PMC4863459,SI Table S1
+Escherichia coli dihydrofolate reductase,ecDHFR,I14A-G121V,hydride,C,35,4.24,0.03,1.66,0.01,10.1021/acscatal.5b00331,PMC4863459,SI Table S1
+Escherichia coli dihydrofolate reductase,ecDHFR,I14A-G121V,hydride,C,45,5.2,0.04,1.68,0.01,10.1021/acscatal.5b00331,PMC4863459,SI Table S1
+Escherichia coli dihydrofolate reductase,ecDHFR,M42W,hydride,C,5,3.65,0.06,1.63,0.02,10.1098/rstb.2006.1871,PMC1647312,ESM Table 1
+Escherichia coli dihydrofolate reductase,ecDHFR,M42W,hydride,C,15,3.94,0.06,1.65,0.03,10.1098/rstb.2006.1871,PMC1647312,ESM Table 1
+Escherichia coli dihydrofolate reductase,ecDHFR,M42W,hydride,C,25,3.92,0.03,1.64,0.03,10.1098/rstb.2006.1871,PMC1647312,ESM Table 1
+Escherichia coli dihydrofolate reductase,ecDHFR,M42W,hydride,C,35,3.97,0.06,1.64,0.02,10.1098/rstb.2006.1871,PMC1647312,ESM Table 1
+Escherichia coli dihydrofolate reductase,ecDHFR,M42W,hydride,C,45,4.18,0.06,1.65,0.02,10.1098/rstb.2006.1871,PMC1647312,ESM Table 1
+Escherichia coli dihydrofolate reductase,ecDHFR,WT (pH 7.0),hydride,C,5,1.61,0.02,1.22,0.01,10.1073/pnas.1415940111,PMC4280594,SI Table S8
+Escherichia coli dihydrofolate reductase,ecDHFR,WT (pH 7.0),hydride,C,15,2.64,0.01,1.43,0.01,10.1073/pnas.1415940111,PMC4280594,SI Table S8
+Escherichia coli dihydrofolate reductase,ecDHFR,WT (pH 7.0),hydride,C,25,2.65,0.02,1.43,0.02,10.1073/pnas.1415940111,PMC4280594,SI Table S8
+Escherichia coli dihydrofolate reductase,ecDHFR,WT (pH 7.0),hydride,C,35,2.65,0.01,1.43,0.01,10.1073/pnas.1415940111,PMC4280594,SI Table S8
+Escherichia coli dihydrofolate reductase,ecDHFR,WT (pH 7.0),hydride,C,45,2.71,0.01,1.43,0.01,10.1073/pnas.1415940111,PMC4280594,SI Table S8
+Escherichia coli dihydrofolate reductase,ecDHFR,Y100F,hydride,C,5,3.607,0.007,1.677,0.005,10.1073/pnas.1415940111,PMC4280594,SI Table S5
+Escherichia coli dihydrofolate reductase,ecDHFR,Y100F,hydride,C,15,3.262,0.018,1.627,0.002,10.1073/pnas.1415940111,PMC4280594,SI Table S5
+Escherichia coli dihydrofolate reductase,ecDHFR,Y100F,hydride,C,25,2.912,0.011,1.573,0.012,10.1073/pnas.1415940111,PMC4280594,SI Table S5
+Escherichia coli dihydrofolate reductase,ecDHFR,Y100F,hydride,C,35,2.574,0.008,1.51,0.003,10.1073/pnas.1415940111,PMC4280594,SI Table S5
+Escherichia coli dihydrofolate reductase,ecDHFR,Y100F,hydride,C,45,2.305,0.009,1.452,0.015,10.1073/pnas.1415940111,PMC4280594,SI Table S5
+Homo sapiens dihydrofolate reductase,hsDHFR,M53W,hydride,C,5,3.95,0.01,1.7,0.01,10.1021/acs.biochem.9b00460,PMC7296831,SI Table S2
+Homo sapiens dihydrofolate reductase,hsDHFR,M53W,hydride,C,15,3.5,0.04,1.64,0.01,10.1021/acs.biochem.9b00460,PMC7296831,SI Table S2
+Homo sapiens dihydrofolate reductase,hsDHFR,M53W,hydride,C,25,3.51,0.01,1.63,0.01,10.1021/acs.biochem.9b00460,PMC7296831,SI Table S2
+Homo sapiens dihydrofolate reductase,hsDHFR,M53W,hydride,C,35,3.59,0.01,1.63,0.01,10.1021/acs.biochem.9b00460,PMC7296831,SI Table S2
+Homo sapiens dihydrofolate reductase,hsDHFR,M53W-S145V,hydride,C,5,2.68,0.02,1.68,0.01,10.1021/acs.biochem.9b00460,PMC7296831,SI Table S2
+Homo sapiens dihydrofolate reductase,hsDHFR,M53W-S145V,hydride,C,15,2.46,0.01,1.59,0.02,10.1021/acs.biochem.9b00460,PMC7296831,SI Table S2
+Homo sapiens dihydrofolate reductase,hsDHFR,M53W-S145V,hydride,C,25,2.59,0.02,1.59,0.02,10.1021/acs.biochem.9b00460,PMC7296831,SI Table S2
+Homo sapiens dihydrofolate reductase,hsDHFR,M53W-S145V,hydride,C,35,2.94,0.01,1.62,0.01,10.1021/acs.biochem.9b00460,PMC7296831,SI Table S2
+Homo sapiens dihydrofolate reductase,hsDHFR,S145V,hydride,C,5,1.53,0.04,1.2,0.01,10.1021/acs.biochem.9b00460,PMC7296831,SI Table S2
+Homo sapiens dihydrofolate reductase,hsDHFR,S145V,hydride,C,15,1.78,0.03,1.26,0.01,10.1021/acs.biochem.9b00460,PMC7296831,SI Table S2
+Homo sapiens dihydrofolate reductase,hsDHFR,S145V,hydride,C,25,1.88,0.01,1.28,0.01,10.1021/acs.biochem.9b00460,PMC7296831,SI Table S2
+Homo sapiens dihydrofolate reductase,hsDHFR,S145V,hydride,C,35,2.24,0.05,1.35,0.01,10.1021/acs.biochem.9b00460,PMC7296831,SI Table S2

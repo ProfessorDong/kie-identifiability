@@ -7,13 +7,13 @@ gamma_SC = 3.34887,  discriminating signal |F0| = 0.042086
 1. REQUIRED PRECISION ON THE OFFSET
 ------------------------------------------------------------------------------------
    power    sd(F) required   vs benchmark median
-    0.50           0.02559                1.11x
-    0.80           0.01693                1.68x
-    0.90           0.01438                1.98x
-    0.95           0.01279                2.23x
-  benchmark median sd(F) at rho = 0 is 0.02849
-  so reaching 80% power needs a 1.68-fold reduction in sd,
-  i.e. about 2.8x more replicates at fixed per-assay precision.
+    0.50           0.02559                1.39x
+    0.80           0.01693                2.11x
+    0.90           0.01438                2.48x
+    0.95           0.01279                2.79x
+  benchmark median sd(F) at rho = 0 is 0.03567
+  so reaching 80% power needs a 2.11-fold reduction in sd,
+  i.e. about 4.4x more replicates at fixed per-assay precision.
 
 ------------------------------------------------------------------------------------
 2. THE SHARED TRITIUM REFERENCE REDUCES THE VARIANCE
@@ -25,7 +25,7 @@ gamma_SC = 3.34887,  discriminating signal |F0| = 0.042086
     0.70                2.7434             0.617            1.27x
     0.90                2.4874             0.680            1.41x
     0.99                2.3631             0.716            1.48x
-  benchmark median relative precision: K_HT 0.81%, K_DT 0.69%
+  benchmark median relative precision: K_HT 0.84%, K_DT 1.05%
 
   Common-mode decomposition, s_L^2 = s_ref^2 + s_L,ind^2:
     shared reference enters Var(F) with weight (gamma-1)^2 = 5.517
@@ -41,9 +41,9 @@ gamma_SC = 3.34887,  discriminating signal |F0| = 0.042086
 ------------------------------------------------------------------------------------
 3. THE COMMITMENT COSTS MORE THAN THE PRECISION
 ------------------------------------------------------------------------------------
-  F_obs - F_min over 73 records: median 0.0000, max 0.3962
+  F_obs - F_min over the 202 admissible of 203 temperature-resolved records: median 0.0000, max 0.3962
   in units of |F0|: median 0.0, max 9.4
-  52 records have zero gap (L_H >= gamma, so the
+  153 records have zero gap (L_H >= gamma, so the
   endpoint is the commitment-free value and nothing is lost).
   Where the gap is nonzero it dwarfs the signal, so suppressing the
   commitment matters more than improving precision.
@@ -73,9 +73,9 @@ gamma_SC = 3.34887,  discriminating signal |F0| = 0.042086
   F constant in T, which is part of what is under test. Under that
   assumption sd falls as 1/sqrt(n_T):
    n_T    sd(F) pooled    power at rho=0
-     1         0.02849             0.434
-     3         0.01645             0.820
-     5         0.01274             0.951
-    10         0.00901             0.999
-    20         0.00637             1.000
-  Reaching 80% power by temperatures alone needs 3 of them at present precision.
+     1         0.03567             0.321
+     3         0.02060             0.655
+     5         0.01595             0.840
+    10         0.01128             0.982
+    20         0.00798             1.000
+  Reaching 80% power by temperatures alone needs 5 of them at present precision.

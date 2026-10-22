@@ -135,6 +135,72 @@ def multiplicity_bound(g, units, rho=-1.0):
     return float(m)
 
 
+# ------------------------------------------- exact bounds at rho = -1
+def exact_bound(kht, sh, kdt, sd, alpha=ALPHA, transform=None):
+    """Exact alpha-quantile of the endpoint under the working lognormal, rho = -1.
+
+    At rho = -1 one standard normal U drives both effects,
+    H(U) = K_HT exp(a U) and D(U) = K_DT exp(-b U), a = s_H/K_HT, b = s_D/K_DT.
+    `transform(H, D)` optionally maps each draw to a corrected D/T effect (a
+    purity correction or its undoing); it must be nondecreasing in D and
+    nonincreasing in H, so that the D/T effect used falls as U rises.  The
+    admissible draws, H > D' > 1, are then an interval (u1, u2) of U, and on it
+    the endpoint rises with U, because it increases in K_HT and decreases in
+    K_DT.  Draws outside the interval carry no information and are assigned
+    -inf, as in the Monte Carlo bounds.  The alpha-quantile is therefore -inf
+    when alpha <= P(U < u1) + P(U > u2), and otherwise the endpoint at
+    U* = Phi^{-1}(alpha - P(U > u2)).
+
+    This replaces F_min - z sd(F_obs) for single records (2026-10-21, after an
+    external audit): that shortcut is the quantile only while the endpoint is
+    F_obs itself, and for the two closed-branch Hong 2007 records it understated
+    the uncertainty by 0.06 and 0.10.  It is exact for the stated distribution,
+    which is itself a plug-in approximation (see plugin_coverage).
+    """
+    from scipy import stats
+    from scipy.optimize import brentq
+    a, b = sh / kht, sd / kdt
+    T = transform or (lambda h, d: d)
+    H = lambda u: kht * np.exp(a * u)
+    Dp = lambda u: T(H(u), kdt * np.exp(-b * u))
+    lo, hi = -60.0, 60.0
+    if transform is None and a > 0 and b > 0:
+        # closed forms: D(u) > 1 for u < ln(K_DT)/b, H(u) > D(u) for u > ln(K_DT/K_HT)/(a+b)
+        u2, u1 = np.log(kdt) / b, np.log(kdt / kht) / (a + b)
+    else:
+        # u2: D'(u) > 1 below it;  u1: H(u) > D'(u) above it
+        g2 = lambda u: Dp(u) - 1.0
+        g1 = lambda u: H(u) - Dp(u)
+        u2 = hi if g2(hi) > 0 else (-np.inf if g2(lo) <= 0 else brentq(g2, lo, hi, xtol=1e-13))
+        u1 = lo if g1(lo) > 0 else (np.inf if g1(hi) <= 0 else brentq(g1, lo, hi, xtol=1e-13))
+    if not u1 < u2:
+        return -np.inf
+    upper = stats.norm.sf(u2)
+    if alpha <= stats.norm.cdf(u1) + upper:
+        return -np.inf
+    u = stats.norm.ppf(alpha - upper)
+    return float(F_min_exact(H(u), Dp(u))[0])
+
+
+def exact_series_bound(g, units=1, alpha=ALPHA, transform=None):
+    """Bonferroni bound at rho = -1, computed exactly: every record of `g` at
+    level alpha / (units * n_T), then the largest.  units = 1 gives the
+    per-unit bound (a single record when len(g) == 1); units = 73 the bound
+    adjusted across all analysis units."""
+    lev = alpha / (units * len(g))
+    return max(exact_bound(r.K_HT, r.K_HT_se, r.K_DT, r.K_DT_se, lev, transform)
+               for r in g.itertuples())
+
+
+def single_bound(kht, sh, kdt, sd, rho=-1.0, alpha=ALPHA, n=N_DRAW, seed=BASE_SEED):
+    """One-sided bound for a single record: exact at rho = -1, otherwise the
+    alpha-quantile of the endpoint over n seeded draws (Methods)."""
+    if rho == -1.0:
+        return exact_bound(kht, sh, kdt, sd, alpha)
+    h, d = draw(kht, sh, kdt, sd, rho, n, np.random.default_rng(seed))
+    return float(np.quantile(F_min_vec(h, d), alpha, method="lower"))
+
+
 def protium_sensitivity(p=0.0125, rho=-1.0):
     """The ecDHFR light series if its D/T comparator carried protium.
 

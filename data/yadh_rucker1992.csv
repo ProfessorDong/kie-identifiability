@@ -1,0 +1,2 @@
+family,variant,step,T_C,K_HT,K_HT_se,K_DT,K_DT_se,note,source
+YADH,wild type (p-methoxybenzyl alcohol),hydride,25,8.06,0.04,1.94,0.06,"Table V primary; pH 8.5; D/T the average of five experiments, corrected for protium in the deuterated substrate; H/T labelled observed by the source but obtained by extrapolation to zero enzyme concentration (Fig. 3); error type not stated",Rucker1992

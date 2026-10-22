@@ -32,3 +32,41 @@ hsDHFR,d62-PEKN,hydride,shared,4R-3H-NADPH,4R-3H-NADPH,Li2021,Methods
 LADH,wild type (50% MeOH),hydride,labeled,[1-3H]benzyl alcohol,[1-2H 1-3H]benzyl alcohol,TsaiKlinman2001,Methods
 LADH,F93W (40% MeOH),hydride,labeled,[1-3H]benzyl alcohol,[1-2H 1-3H]benzyl alcohol,TsaiKlinman2001,Methods
 LADH,F93W (60% MeOH),hydride,labeled,[1-3H]benzyl alcohol,[1-2H 1-3H]benzyl alcohol,TsaiKlinman2001,Methods
+LADH,F93W (Chin 2000),hydride,labeled,[1-3H]benzyl alcohol,[1-2H 1-3H]benzyl alcohol,ChinKlinman2000,Materials and Methods
+LADH,F93W-I224A,hydride,labeled,[1-3H]benzyl alcohol,[1-2H 1-3H]benzyl alcohol,ChinKlinman2000,Materials and Methods
+LADH,F93W-I224L,hydride,labeled,[1-3H]benzyl alcohol,[1-2H 1-3H]benzyl alcohol,ChinKlinman2000,Materials and Methods
+LADH,F93W-I224G,hydride,labeled,[1-3H]benzyl alcohol,[1-2H 1-3H]benzyl alcohol,ChinKlinman2000,Materials and Methods
+LADH,F93W-I224V,hydride,labeled,[1-3H]benzyl alcohol,[1-2H 1-3H]benzyl alcohol,ChinKlinman2000,Materials and Methods
+YADH,wild type (p-chlorobenzyl alcohol),hydride,labeled,[1-3H]p-chlorobenzyl alcohol,[1-2H 1-3H]p-chlorobenzyl alcohol,Rucker1992,Experimental Procedures
+YADH,wild type (p-methoxybenzyl alcohol),hydride,labeled,[1-3H]p-methoxybenzyl alcohol,[1-2H 1-3H]p-methoxybenzyl alcohol,Rucker1992,Experimental Procedures
+BSAO,p-methoxybenzylamine,proton,labeled,[1-3H]p-methoxybenzylamine,[1 1-2H2 3H]p-methoxybenzylamine,Rucker1992,Experimental Procedures
+ecDHFR,G121V,hydride,labeled,R[4-3H]-NADPH,R[4 4-2H 3H]-NADPH,WangTharp2006,Materials and Methods
+ecDHFR,M42W,hydride,labeled,R[4-3H]-NADPH,R[4 4-2H 3H]-NADPH,WangGoodey2006PTRSB,Methods
+ecDHFR,I14A,hydride,shared,[4(R)-3H]-NADPH,[4(R)-3H]-NADPH,Stojkovic2010,main text
+ecDHFR,I14A-G121V,hydride,shared,4R-3H-NADPH,4R-3H-NADPH,Singh2015,Methods
+ecDHFR,Y100F,hydride,shared,(R)-[4-3H]-NADPH,(R)-[4-3H]-NADPH,Liu2014,Methods
+ecDHFR,D27S,hydride,shared,(R)-[4-3H]-NADPH,(R)-[4-3H]-NADPH,Liu2014,Methods
+ecDHFR,D27S-Y100F,hydride,shared,(R)-[4-3H]-NADPH,(R)-[4-3H]-NADPH,Liu2014,Methods
+ecDHFR,WT (pH 7.0),hydride,shared,(R)-[4-3H]-NADPH,(R)-[4-3H]-NADPH,Liu2014,Methods
+ecDHFR,WT (Sen 2011),hydride,shared,4R-[4-3H] NADPH,4R-[4-3H] NADPH,Sen2011,Table 2 note
+ecDHFR,WT (dihydrobiopterin),hydride,shared,4R-[4-3H] NADPH,4R-[4-3H] NADPH,Sen2011,Table 2 note
+R67DHFR,wild type,hydride,shared,4R-[4-3H] NADPH,4R-[4-3H] NADPH,Sen2011,Table 2 note
+ecDHFR,WT (Sen 2012),hydride,shared,4R-[4-3H]-NADPH,4R-[4-3H]-NADPH,Sen2012,Table 2 title
+hsDHFR,M53W,hydride,shared,4R-3H-NADPH,4R-3H-NADPH,Li2019,SI Materials
+hsDHFR,S145V,hydride,shared,4R-3H-NADPH,4R-3H-NADPH,Li2019,SI Materials
+hsDHFR,M53W-S145V,hydride,shared,4R-3H-NADPH,4R-3H-NADPH,Li2019,SI Materials
+FDH,WT (commercial),hydride,shared,[3H]formic acid,[3H]formic acid,Bandaria2009,Methods
+FDH,WT (recombinant),hydride,shared,[3H]formic acid,[3H]formic acid,Guo2016,Methods
+FDH,half-heavy,hydride,shared,[3H]formic acid,[3H]formic acid,Ranasinghe2017,Methods
+FDH,heavy,hydride,shared,[3H]formic acid,[3H]formic acid,Ranasinghe2017,Methods
+TSase,WT (Mg2+),proton,shared,[5-3H] dUMP,[5-3H] dUMP,Wang2010,Experimental
+TSase,WT (Mg2+),hydride,shared,(R)-[6-3H]CH2H4folate,(R)-[6-3H]CH2H4folate,Wang2013,Methods
+TSase,Y209W,hydride,shared,[6R-3H]CH2H4folate,[6R-3H]CH2H4folate,Wang2012,Methods
+TSase,W80M,hydride,shared,(R)-[6-3H]CH2H4folate,(R)-[6-3H]CH2H4folate,Hong2006,SI
+TSase,R166K,hydride,shared,(R)-[6-3H]CH2H4folate,(R)-[6-3H]CH2H4folate,Islam2014,SI
+TSase,R166K,proton,shared,[5-3H]dUMP,[5-3H]dUMP,Islam2015,Methods
+TSase,N177D,hydride,shared,(R)-6-[3H]-MTHF,(R)-6-[3H]-MTHF,Gurevic2018,Methods
+TSase,N177S,hydride,shared,(R)-6-[3H]-MTHF,(R)-6-[3H]-MTHF,Gurevic2018,Methods
+ecTSase,wild type,proton,shared,[5-3H]dUMP,[5-3H]dUMP,Hong2007,Experimental Procedures
+ecTSase,Y94F,proton,shared,[5-3H]dUMP,[5-3H]dUMP,Hong2007,Experimental Procedures
+hsTSase,WT (no Mg2+),hydride,shared,(R)-6-[3H]-MTHF,(R)-6-[3H]-MTHF,Islam2018,Methods

@@ -219,7 +219,14 @@ def endpoint_exact(KH, KD, phi, r=1.0):
             - GSC * r * b * KD * np.polymul([PH, phi * a], [1.0, -a]))
     tie = (np.polymul([PH, phi * a], [rho, -b])
            - np.polymul([PD * rho, r * phi * b], [1.0, -a]))
-    vals = [endpoint_closed(KH, KD, phi, r)] if PH > PD else []
+    # The large-c limit (x_H, x_D) -> (P_H, P_D) is a candidate when finite
+    # admissible points approach it.  At P_H = P_D that is decided by the next
+    # order, x_L - P_L ~ a (P_H + phi)/c and b (P_D + r phi)/(rho c): an equality
+    # limit counts when x_H stays above x_D (external audit, 2026-10-21: at
+    # 7, 1.5, phi = 1, r = 23 the routine returned nan for a finite infimum).
+    tie_lim = (abs(PH - PD) <= 1e-12 * PH
+               and a * (PH + phi) * rho > b * (PD + r * phi))
+    vals = [endpoint_closed(KH, KD, phi, r)] if (PH > PD or tie_lim) else []
     cmin = max(a, b / rho)
     for poly in (stat, tie):
         for z in np.roots(np.trim_zeros(poly, "f")):
@@ -262,6 +269,29 @@ def check_endpoint_exact(n=3000, seed=20260915):
             crit = KH * a / (KH + a * phi) > GSC * KD * b / (KD + b * phi)
             crit_bad += crit != at_inf
     return done, worst, interior, crit_bad, n_r1
+
+
+def equality_limit_case():
+    """Regression case for an endpoint approached through an equality limit.
+
+    K_HT = 7, K_DT = 1.5, phi = 1, r = 23: P_H = P_D = 13, and along the
+    commitment curve x_H = 13 + 84/(c - 6) > x_D = 13 + 216/(23 c - 6) > 1 for
+    every c > 6, so the infimum is (1 - gamma) ln 13, approached but not
+    attained.  Returns (endpoint_exact, profiled endpoint, the limit).
+    """
+    lim = (1.0 - GSC) * np.log(13.0)
+    return endpoint_exact(7.0, 1.5, 1.0, 23.0), endpoint(7.0, 1.5, 1.0, 23.0), lim
+
+
+def bypass_nonmonotone_case():
+    """The endpoint need not fall as a bypass grows (external audit, 2026-10-21).
+
+    Shared reference, K_HT = 2, K_DT = 1.1: the endpoint RISES from phi = 0 to
+    phi = 1 before falling.  Returns [(phi, endpoint_exact)] at phi in
+    (0, 0.1, 1, 10).  For the yeast pairs the endpoint falls with phi
+    (Supplementary Note 3), so their tolerances are unaffected.
+    """
+    return [(ph, endpoint_exact(2.0, 1.1, ph, 1.0)) for ph in (0.0, 0.1, 1.0, 10.0)]
 
 
 def asymptotic_criterion_counterexample():

@@ -68,6 +68,48 @@ def t_tail_bound(df=10, units=None, KH=7.13, sH=0.07, KD=1.73, sD=0.02, alpha=0.
     return F - stats.t.ppf(1 - alpha / units, df) * (sH / KH + G * sD / KD)
 
 
+def pchloro_series(units, alpha=0.05):
+    """The p-chlorobenzyl alcohol series of Rucker et al. (1992) under the same attacks.
+
+    A two-temperature series: its bound is the larger of the per-temperature
+    bounds at alpha/n_T (Bonferroni over temperatures), and across all analysis
+    units at alpha/(units * n_T).  Every record lies on the open branch
+    (L_H > gamma), so each per-temperature bound is linear in the log effects
+    and the error-inflation factor that brings the series bound down to a
+    threshold is the largest (F_T - target) / (z sd_T) over temperatures.
+    """
+    import corpus
+    G, f0, _ = convention("reduced C-H")
+    s = corpus.series()
+    g = s[s.variant == "wild type (p-chlorobenzyl alcohol)"].sort_values("T_C")
+    recs = []
+    for r in g.itertuples():
+        a, b = r.K_HT_se / r.K_HT, G * r.K_DT_se / r.K_DT
+        recs.append(dict(T_C=r.T_C, K_HT=r.K_HT, K_DT=r.K_DT,
+                         gamma=np.log(r.K_HT) / np.log(r.K_DT),
+                         L_H=(r.K_HT - 1) / (r.K_DT - 1),
+                         F=np.log(r.K_HT) - G * np.log(r.K_DT), a=a, b=b,
+                         row=r))
+    if not all(x["L_H"] > G for x in recs):
+        raise ValueError("p-chloro record off the open branch; the linear bounds do not apply")
+    n = len(recs)
+    out = dict(records=recs, point=max(x["F"] for x in recs))
+    for k, u in (("single", 1), ("units", units)):
+        z = stats.norm.ppf(1 - alpha / (u * n))
+        sdm = [np.sqrt(x["a"] ** 2 + x["b"] ** 2 + 2 * x["a"] * x["b"]) for x in recs]
+        sd0 = [np.hypot(x["a"], x["b"]) for x in recs]
+        free = max(correlation_free_bound(x["K_HT"], x["row"].K_HT_se, x["K_DT"],
+                                          x["row"].K_DT_se, units=u * n) for x in recs)
+        out[k] = dict(rhom1=max(x["F"] - z * s_ for x, s_ in zip(recs, sdm)),
+                      rho0=max(x["F"] - z * s_ for x, s_ in zip(recs, sd0)),
+                      free=free,
+                      lam_F0=max((x["F"] - f0) / (z * s_) for x, s_ in zip(recs, sdm)),
+                      lam_0=max(x["F"] / (z * s_) for x, s_ in zip(recs, sdm)))
+    tq = stats.t.ppf(1 - alpha / (units * n), 10)
+    out["t10"] = max(x["F"] - tq * (x["a"] + x["b"]) for x in recs)
+    return out
+
+
 def main():
     y = pd.read_csv("../data/cha1989_yadh.csv")
     dets = y.iloc[:3]
@@ -192,6 +234,23 @@ def main():
     tb = t_tail_bound(10, m, avg.K_HT, avg.K_HT_se, avg.K_DT, avg.K_DT_se)
     say(f"  Student t tail, 10 d.o.f., {m} units, rho = -1: bound {tb:+.4f}, "
         f"margin over F0 {tb - f0:+.4f}")
+
+    pcl = pchloro_series(m)
+    say("")
+    say("7. A SECOND SUBSTRATE: p-CHLOROBENZYL ALCOHOL (Rucker et al. 1992)")
+    say("-" * 88)
+    say("  Table IV, 0 and 25 C, pH 8.5; D/T corrected by the authors for protium.")
+    for r in pcl["records"]:
+        say(f"  {r['T_C']:4.0f} C: K_HT {r['K_HT']:.2f}, K_DT {r['K_DT']:.2f}, "
+            f"exponent {r['gamma']:.3f}, L_H {r['L_H']:.2f}, F_obs {r['F']:+.4f}")
+    say(f"  series endpoint {pcl['point']:+.4f} (open branch at both temperatures)")
+    for k in ("single", "units"):
+        lab = "per unit" if k == "single" else f"{m} units"
+        say(f"  {lab:9s}: rho = -1 bound {pcl[k]['rhom1']:+.4f}, rho = 0 {pcl[k]['rho0']:+.4f}, "
+            f"no correlation assumed {pcl[k]['free']:+.4f}")
+        say(f"             errors x {pcl[k]['lam_F0']:.2f} to stop excluding F0, "
+            f"x {pcl[k]['lam_0']:.2f} to stop excluding 0 (rho = -1)")
+    say(f"  Student t tail, 10 d.o.f., {m} units, rho = -1: bound {pcl['t10']:+.4f}")
 
     with open("../results/yadh_robustness.txt", "w") as fh:
         fh.write("\n".join(OUT) + "\n")
