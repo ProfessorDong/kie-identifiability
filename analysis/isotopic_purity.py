@@ -80,22 +80,46 @@ UNITS = corpus.counts()["units"]
 STORED = pd.read_csv(corpus.DATA.parent / "results" / "bounds_uncertainty.csv").query("rho == -1.0")
 OUT = []
 
-# The corrections the excluding units carry, as their sources state them.  B is
-# the primary H/D rate of the protium-at-the-transferred-position molecule and
-# C the secondary H/D rate of the other, both relative to the dideuterated
-# material.  Cha et al. print every constant (note 28).  Rucker et al. used the
-# method of Grant & Klinman 1989 at 98.9% D (1.1% H, split as Grant & Klinman
-# split it) and do not print B or C; B is taken as each record's own observed
-# H/D ratio and C as Cha's 1.2, whose term changes the factor by 0.1%.
+# The corrections the excluding units carry.  B is the primary H/D rate of the
+# protium-at-the-transferred-position molecule and C the secondary H/D rate of
+# the other, both relative to the dideuterated material.  Cha et al. print every
+# constant (note 28), so their correction is undone exactly.  Rucker et al.
+# applied the method of Grant & Klinman 1989 at 98.9% D (1.1% H, split as Grant
+# & Klinman split it) without printing B or C.  That method estimates both from
+# the initial tritium effects, k_H/k_D = (k_H/k_T)^(1/1.44) (Grant & Klinman,
+# p. 6598), so B and C are RECONSTRUCTED here from each record's own primary and
+# secondary H/T effects ("grant").  Until the second external audit of
+# 2026-10-21 B was taken as the observed H/T / D/T ratio, which is not that
+# prescription; rucker_B_sensitivity() shows how large B would have to be to
+# change the conclusion.  The constants are held fixed, as the correction holds
+# them, so undoing it rescales the D/T effect and its error together.
+GRANT_EXP = 1.44
 PUBLISHED = {
     "Cha1989": dict(pP=0.0065, pS=0.0065, B=3.9, C=1.2,
                     where="note 28 (Science 243, 1329-1330)"),
-    "Rucker1992": dict(pP=0.0055, pS=0.0055, B=None, C=1.2,
-                       where="Experimental Procedures; method of Grant & Klinman 1989"),
+    "Rucker1992": dict(pP=0.0055, pS=0.0055, B="grant", C="grant",
+                       where="Experimental Procedures; method of Grant & Klinman 1989, p. 6598"),
 }
-# A correction of Bahnson et al.'s size, for sources that cite their method
-# without stating whether, or by how much, they corrected (Chin & Klinman 2000).
-CITED_SCENARIO = dict(pP=0.0065, pS=0.0065, B=None, C=1.2)
+# A correction of the cited method's size, for sources that cite it without
+# stating whether, or by how much, they corrected (Chin & Klinman 2000): Bahnson
+# et al.'s 1.3% split over the two positions, constants by the Grant & Klinman
+# prescription from the record's own tritium effects.
+CITED_SCENARIO = dict(pP=0.0065, pS=0.0065, B="grant", C="grant")
+_SEC = pd.read_csv(corpus.DATA / "secondary_adh.csv")
+
+
+def _factors(consts, r):
+    """(B, C) for one record: printed constants, or the Grant & Klinman
+    prescription from the record's primary and secondary H/T effects."""
+    B, C = consts["B"], consts["C"]
+    if B == "grant":
+        B = r.K_HT ** (1.0 / GRANT_EXP)
+    if C == "grant":
+        s = _SEC[(_SEC.family == r.family) & (_SEC.variant == r.variant) & (_SEC.T_C == r.T_C)]
+        if len(s) != 1:
+            raise KeyError(f"no secondary H/T effect for {r.family} {r.variant} {r.T_C}")
+        C = float(s.K_HT.iloc[0]) ** (1.0 / GRANT_EXP)
+    return float(B), float(C)
 
 
 def say(s=""):
@@ -231,14 +255,13 @@ def uniform(p):
 def undo(g, consts, f=0.0, units=1):
     """(point, bound) for corrected records with the correction removed.
 
-    The correction is taken with its stated constants, so the reported D/T
-    effect and its error are multiplied by the same known factor; B = None
-    means each record's own observed H/D ratio.
+    The correction is taken with its stated or reconstructed constants (see
+    _factors), held fixed, so the reported D/T effect and its error are
+    multiplied by the same known factor.
     """
     g = g.copy()
-    fac = [correction_factor(consts["pP"], consts["pS"],
-                             consts["B"] if consts["B"] else r.K_HT / r.K_DT,
-                             consts["C"], f) for r in g.itertuples()]
+    fac = [correction_factor(consts["pP"], consts["pS"], *_factors(consts, r), f)
+           for r in g.itertuples()]
     g["K_DT"] = g.K_DT.values * fac
     g["K_DT_se"] = g.K_DT_se.values * fac
     pt = max(F_min_exact(r.K_HT, r.K_DT)[0] for r in g.itertuples())
@@ -295,9 +318,9 @@ def protium_needed(lab, f=0.0, units=None):
 
     def bound(lam):
         h = g.copy()
-        fac = [correction_factor(c["pP"], c["pS"], c["B"] or r.K_HT / r.K_DT, c["C"], f)
-               / correction_factor(lam * c["pP"], lam * c["pS"], c["B"] or r.K_HT / r.K_DT,
-                                   c["C"], f) for r in g.itertuples()]
+        fac = [correction_factor(c["pP"], c["pS"], *_factors(c, r), f)
+               / correction_factor(lam * c["pP"], lam * c["pS"], *_factors(c, r), f)
+               for r in g.itertuples()]
         h["K_DT"] = g.K_DT.values * fac
         h["K_DT_se"] = g.K_DT_se.values * fac
         return BU.exact_series_bound(h, units)
@@ -305,6 +328,22 @@ def protium_needed(lab, f=0.0, units=None):
         return None
     lam = brentq(lambda x: bound(x) - F0, 0.0, 1.0, xtol=1e-6)
     return lam * (c["pP"] + c["pS"])
+
+
+def rucker_B_sensitivity(f=0.0):
+    """The p-chlorobenzyl alcohol bound across all units at rho = -1 with
+    Rucker et al.'s correction removed, as a function of a fixed primary factor B
+    (C by the Grant & Klinman prescription), and the B at which it reaches F0.
+    Returns (bound at the reconstructed B, {B: bound}, threshold B)."""
+    lab = "YADH wild type (p-chlorobenzyl alcohol) (hydride)"
+    src, g = {l: (s_, gg) for l, s_, gg in units_()}[lab]
+    base = undo(g, PUBLISHED["Rucker1992"], f, UNITS)[1]
+    out = {}
+    for B in (3.9, 5.0, 6.0, 7.0):
+        out[B] = undo(g, dict(pP=0.0055, pS=0.0055, B=B, C="grant"), f, UNITS)[1]
+    h = lambda B: undo(g, dict(pP=0.0055, pS=0.0055, B=B, C="grant"), f, UNITS)[1] - F0
+    thr = brentq(h, 4.0, 12.0) if h(12.0) < 0 else None    # None: not reached by B = 12
+    return base, out, thr
 
 
 units_ = units

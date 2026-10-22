@@ -162,10 +162,10 @@ that only cites a correction, a correction of Bahnson et al.'s size):
 unit                                                                     status    unit     all   undo0     all  undo.5     all
 LADH F93W (40% MeOH) (hydride)                             uncorrected_measured  +0.032  -0.058    +nan    +nan    +nan    +nan
 LADH F93W (60% MeOH) (hydride)                             uncorrected_measured  +0.071  -0.167    +nan    +nan    +nan    +nan
-YADH wild type (p-chlorobenzyl alcohol) (hydride)                     corrected  +0.170  +0.051  +0.109  -0.010  +0.143  +0.024
+YADH wild type (p-chlorobenzyl alcohol) (hydride)                     corrected  +0.170  +0.051  +0.117  -0.002  +0.144  +0.025
 YADH wild type, 25 C (Cha1989)                                        corrected  +0.049  -0.027  -0.018  -0.093  +0.018  -0.058
-LADH F93W-I224G, 25 C (ChinKlinman2000)               corrected_by_cited_method  -0.025  -0.077  -0.097  -0.149  -0.057  -0.109
-LADH F93W-I224V, 25 C (ChinKlinman2000)               corrected_by_cited_method  -0.020  -0.059  -0.092  -0.131  -0.052  -0.091
+LADH F93W-I224G, 25 C (ChinKlinman2000)               corrected_by_cited_method  -0.025  -0.077  -0.095  -0.147  -0.057  -0.109
+LADH F93W-I224V, 25 C (ChinKlinman2000)               corrected_by_cited_method  -0.020  -0.059  -0.090  -0.129  -0.052  -0.091
 
 Protium the corrected material must have carried for the bound across 73 units
 at rho = -1 to clear F0 (the source measured 1.3% for benzyl alcohol, 1.1% for

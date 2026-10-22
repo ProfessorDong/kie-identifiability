@@ -2582,6 +2582,59 @@ def check_equations_2026_10_22():
     return bad
 
 
+def check_round2_2026_10_22():
+    """Second external audit of 2026-10-21: binding-order condition, Rucker's
+    correction as a reconstruction (Grant & Klinman prescription), synthetic
+    recovery ranges, and four retired wordings."""
+    import partial_id as P
+    import isotopic_purity as IP
+    import corpus
+    bad = 0
+    si = " ".join(DOCS["si"].read_text().split())
+    main = " ".join(DOCS["main"].read_text().split())
+
+    def need(doc, text, what):
+        nonlocal bad
+        if text not in (si if doc == "si" else main):
+            print(f"  FAIL round 2: {doc} lacks {what}: {text!r}")
+            bad += 1
+    shifted, inf, cmax, (y1, y2, y3) = P.binding_order_example()
+    if not inf > shifted + 0.005:
+        print("  FAIL round 2: the binding-order example no longer separates the two endpoints")
+        bad += 1
+    need("si", f"the intrinsic pair is normally ordered only for $c<{cmax:.3f}$", "the binding-order domain")
+    need("si", f"$(1-\\gSC)\\ln1.0775={inf:.4f}$, against ${shifted:.4f}$", "the binding-order endpoints")
+    need("si", f"={y1:.2f}\\ge 1.1\\times1.73/0.9={y2:.2f}\\ge1$", "the yeast binding-order margin")
+    base0, _, thr0 = IP.rucker_B_sensitivity(0.0)
+    _, _, thr5 = IP.rucker_B_sensitivity(0.5)
+    need("si", f"would have to exceed ${thr0:.2f}$", "the Rucker primary-constant threshold")
+    if thr5 is not None:
+        print("  FAIL round 2: the f = 0.5 Rucker sensitivity now reaches F0 below B = 12")
+        bad += 1
+    g = corpus.series()
+    rk = g[g.variant.str.contains("chloro")].sort_values("T_C")
+    (B0, C0), (B25, C25) = (IP._factors(IP.PUBLISHED["Rucker1992"], r) for r in rk.itertuples())
+    need("si", f"it gives ${B25:.2f}$ and ${C25:.2f}$ at $25\\,^{{\\circ}}$C and ${B0:.2f}$ and ${C0:.2f}$",
+         "the reconstructed Rucker constants")
+    need("main", "removing its reconstructed isotopic-purity correction", "the abstract qualifier")
+    need("main", "a recovery range across experiments rather than a confidence interval",
+         "the synthetic recovery-range qualifier")
+    for doc, txt in (("si", si), ("main", main)):
+        for stale in ("we take each record's own observed H/D ratio",
+                      "No simulated experiment excludes the model when the truth lies inside it",
+                      "why the exponent is the wrong coordinate",
+                      "physical range sampled here",
+                      "an inference the masked data could never make",
+                      "own protium correction undone with its stated constants"):
+            if stale in txt:
+                print(f"  FAIL round 2: retired wording in {doc}: {stale!r}")
+                bad += 1
+    if not bad:
+        print(f"  round 2 2026-10-22: binding order ({inf:.4f} vs {shifted:.4f}), Rucker reconstruction "
+              f"(B {B25:.2f}/{B0:.2f}, threshold {thr0:.2f}), recovery ranges")
+    return bad
+
+
 _NEEDS_DOCS = {
     "check_audit_2026_10_15", "check_consistency_2026_10_16",
     "check_light_example",
@@ -2593,7 +2646,7 @@ _NEEDS_DOCS = {
     "check_promoting_mode", "check_corpus_consequences", "check_scope_corrections",
     "check_source_fidelity", "check_readiness_scope", "check_generated_tables",
     "check_external_audit_2026_10_12",
-    "check_source_review_2026_10_13", "check_text_2026_10_21", "check_tables_2026_10_22",
+    "check_source_review_2026_10_13", "check_text_2026_10_21", "check_tables_2026_10_22", "check_round2_2026_10_22",
 }
 
 
@@ -2668,7 +2721,8 @@ def run():
                 check_figure_data, check_audit_2026_10_15,
                 check_tables_2026_10_15, check_consistency_2026_10_16,
                 check_bounds_2026_10_21, check_text_2026_10_21,
-                check_tables_2026_10_22, check_equations_2026_10_22):
+                check_tables_2026_10_22, check_equations_2026_10_22,
+                check_round2_2026_10_22):
         if not HAVE_DOCS and _fn.__name__ in _NEEDS_DOCS:
             print(f"  SKIPPED (needs the manuscript): {_fn.__name__}")
             continue
