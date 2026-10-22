@@ -632,6 +632,19 @@ the six figures build, `audit_numbers.py` passes, and no tracked file changes.
 The changes in `network_atlas.py` are to comments and docstrings only, and
 `offset_analysis.py` is untouched; neither was rerun.
 
+Re-verified for v1.8.9 on 2026-10-22 from clean clones, same environment, with
+the fetched supplements in place: 46 scripts exit 0 (the v1.8.8 list plus
+`design_power.py`, `repeat_determinations.py`, `isotopic_purity.py` and
+`synthetic_validation.py`), `verify_derivation.py` reports no failures, the
+transcription audit finds all 648 values verbatim, the figures build, the audit
+passes, and no tracked file changes. The census changes the inputs of
+`offset_analysis.py`, so it was rerun from a clean clone (about 131 minutes): it
+exits 0 and reproduces its tracked outputs exactly. The scripts changed after
+that run (`equation_checks.py`, `curvature.py`, `completion.py`,
+`atlas_general.py`, `export_si_tables.py`) were rerun from a second clean clone
+of the release commit, with the same result. `network_atlas.py`, whose
+computation this release does not touch, was not rerun.
+
 Re-verified for v1.8.8 on 2026-10-16 from a clean clone, same environment, with
 the fetched supplements in place: 42 scripts exit 0 (the v1.8.7 list plus
 `adh_primary.py`, `published_intrinsic.py`, `export_fig_overview.py`,
