@@ -517,6 +517,8 @@ analysis/
   synthetic_validation.py  the procedure run forward and back on known
                         truths: false exclusions, power, coverage, and what
                         a commitment measurement recovers
+  equation_checks.py    every displayed identity of the article and the
+                        supplement re-derived with sympy (48 checks)
   reversible.py         reversible-scheme identified set and the vacuity
                         threshold E_D* = (K_HT/K_DT)^(1/(gamma-1))
   vibronic_envelope.py  summed envelope B_vib; exact gated Franck-Condon
@@ -592,6 +594,7 @@ python design_power.py       # precision requirements; benchmark statistics
 python repeat_determinations.py  # independent determinations of one condition
 python isotopic_purity.py    # purity scenarios and the exclusions table (~1 min)
 python synthetic_validation.py   # the procedure on synthetic data with a known truth
+python equation_checks.py    # every displayed identity re-derived symbolically
 python export_fig_asym.py    # data for the asymmetry figure (exact single-record bounds)
 python offset_summary.py     # stratified interpretation
 python export_figs_v3.py     # pgfplots tables

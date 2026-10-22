@@ -535,6 +535,21 @@ def run():
     print(f"\n   quantum-classical crossover at 300 K: nu = {2*300/CM_TO_K:.0f} cm-1")
 
 
+def klinman_a(E, D=4.0):
+    """Klinman 1976, Table IV: substrate dissociation relative to turnover,
+    a = k_-1/k_cat, from an isotope effect E on the limiting Michaelis constant.
+
+    With K_m proportional to k_-1 + k_cat and an isotope effect D on k_cat alone
+    (no binding isotope effect), E = (a + 1)/(a + 1/D), so
+    a = (1 - E/D)/(E - 1).  D = 4 is the value Klinman assumed; her measured
+    k_cat effect for benzyl alcohol is 3.4.  Over E = 1.1 to 1.5 this returns
+    7.25 to 1.25 at D = 4 (the 1.3 to 7.3 of her table) and 6.76 to 1.12 at
+    D = 3.4; at E = 1.3 (benzyl alcohol, coenzyme constant) 2.25 and 2.06.
+    Until 2026-10-22 the supplement quoted these without code.
+    """
+    return (1.0 - E / D) / (E - 1.0)
+
+
 if __name__ == "__main__":
     run()
     report_completions()

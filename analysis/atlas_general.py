@@ -200,7 +200,7 @@ def parallel_case(ntrial=400, seed=11):
               (2, -1, kc1), (2, 0, ko2), (3, -1, kc2), (3, 0, ko3)],
              [kc1, kc2])
     f = first_passage(m)
-    sw = 0
+    sw = big = 0
     for _ in range(ntrial):
         sub = {s: float(v) for s, v in
                zip([koff, kb, sp.Symbol("k_d", positive=True), ko2, ko3, kT],
@@ -213,7 +213,12 @@ def parallel_case(ntrial=400, seed=11):
         F = F[np.isfinite(F)]
         if F.size and F.max() > 1e-12 and F.min() < -1e-12:
             sw += 1
-    return ntrial, sw
+        if F.size and F.max() > 1e-4 and F.min() < -1e-4:
+            big += 1
+    # sign changes at numerical precision, and those with both signs larger
+    # than 1e-4 in magnitude (the supplement quotes both since 2026-10-22; it
+    # had given the second alone, as if it were the first)
+    return ntrial, sw, big
 
 
 if __name__ == "__main__":

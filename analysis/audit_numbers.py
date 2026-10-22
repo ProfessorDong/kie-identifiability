@@ -2475,6 +2475,113 @@ def check_text_2026_10_21():
     return bad
 
 
+def check_tables_2026_10_22():
+    """The bypass table of Supplementary Note 3, row by row (table audit of
+    2026-10-22: it still said "three systems" and omitted three of the six
+    nominal exclusions after the census).  Every row with an observed secondary
+    ratio is recomputed: L_H, R, the endpoint at phi = 0 and phi*."""
+    import network_geometry as N
+    import reference_asymmetry as RA
+    import corpus
+    bad = 0
+    si = DOCS["si"].read_text()
+    a = si.index("\\label{tab:bypass}")
+    body = si[a:si.index("\\end{tabular}", a)]
+    s = corpus.series()
+    sc = corpus.single_condition()
+
+    def rec(fam, var, T):
+        g = s[(s.family == fam) & (s.variant == var) & (s.T_C == T)]
+        if len(g) == 0:
+            g = sc[(sc.family == fam) & (sc.variant == var) & (sc.T_C == T)]
+        return float(g.K_HT.iloc[0]), float(g.K_DT.iloc[0])
+    rows = [("Yeast ADH, $p$-Cl-benzyl alcohol, $25\\,^{\\circ}$C", "YADH", "wild type (p-chlorobenzyl alcohol)", 25.0),
+            ("Horse liver F93W:I224G", "LADH", "F93W-I224G", 25.0),
+            ("Horse liver F93W:I224V", "LADH", "F93W-I224V", 25.0),
+            ("Horse liver F93W, $40\\%$ MeOH, $3\\,^{\\circ}$C", "LADH", "F93W (40% MeOH)", 3.0),
+            ("Horse liver F93W, $60\\%$ MeOH, $3\\,^{\\circ}$C", "LADH", "F93W (60% MeOH)", 3.0)]
+    for lab, fam, var, T in rows:
+        kh, kd = rec(fam, var, T)
+        r = RA.r_at(fam, var, T)
+        e = N.endpoint_exact(kh, kd, 0.0, r)
+        ph = N.bypass_to_destroy(kh, kd, F0, r)
+        want = (f"{lab} & ${(kh - 1) / (kd - 1):.2f}$ & ${r:.2f}$ & ${e:+.4f}$ & ${ph:.3f}$")
+        if want not in body:
+            print(f"  FAIL tables 2026-10-22: bypass row differs from the code: {want!r}")
+            bad += 1
+    flat = " ".join(si.split())
+    if "Three systems in the record have an exclusion" in flat:
+        print("  FAIL tables 2026-10-22: the bypass note still counts three exclusions")
+        bad += 1
+    if "Six units in the record have a nominal exclusion" not in flat:
+        print("  FAIL tables 2026-10-22: the bypass note does not count the six exclusions")
+        bad += 1
+    if not bad:
+        print("  tables 2026-10-22: bypass table rows for the census exclusions match the code")
+    return bad
+
+
+def check_equations_2026_10_22():
+    """Equation audit of 2026-10-22: every displayed equation re-derived
+    (equation_checks.py), and the numbers that sat beside equations without
+    code recomputed from the functions that now produce them."""
+    import contextlib
+    import io
+    import equation_checks as EC
+    import curvature as CV
+    import completion as CO
+    import atlas_general as AG
+    import reference_asymmetry as RA
+    bad = 0
+    EC.FAILS.clear()
+    with contextlib.redirect_stdout(io.StringIO()):
+        EC.proofs(); EC.networks(); EC.binding_and_protocol(); EC.completion_and_rest()
+    if EC.FAILS:
+        print(f"  FAIL equations 2026-10-22: equation_checks fails {EC.FAILS}")
+        bad += len(EC.FAILS)
+    ex, (nv, nk, worst, tot), npos = CV.series_steps()
+    (k41, v41), (kc, vc, knc, fnc) = CV.sign_and_binding_draws()
+    (e1, q1), (e2, m2), err3 = CV.remaining_draw_checks()
+    ntr, sw, big = AG.parallel_case()
+    if v41 or vc or npos or e1 or e2 or err3 > 1e-8:
+        print("  FAIL equations 2026-10-22: a random-draw check the supplement calls exceptionless has exceptions")
+        bad += 1
+    if not HAVE_DOCS:
+        return bad
+    si = " ".join(DOCS["si"].read_text().split())
+
+    def need(text, what):
+        nonlocal bad
+        if text not in si:
+            print(f"  FAIL equations 2026-10-22: si lacks {what}: {text!r}")
+            bad += 1
+    need(f"the observed offset is ${ex:.3f}$", "the two-step series example")
+    need(f"exceeds $F^{{\\mathrm{{int}}}}$ in ${100 * nv / nk:.1f}\\%$, by as much as ${worst:.3f}$ at a total offset of ${tot:+.3f}$",
+         "the separate-pairs counterexample")
+    need(f"$400$ random draws of such a mechanism, ${sw}$ gave an offset that changed sign along the ray, ${big}$ of",
+         "the parallel-step count")
+    need(f"Verified on ${k41 / 1e5:.1f}\\times10^{{5}}$ random admissible draws with $r\\in[1,3]$",
+         "the Corollary S4.1 draw count")
+    need(f"Verified on ${kc / 1e5:.1f}\\times10^{{5}}$ random draws satisfying the corrected criterion",
+         "the Proposition S7 draw count")
+    need(f"the bound fails in ${100 * fnc / knc:.0f}\\%$", "the Proposition S7 failure rate")
+    need(f"which with the same mapping gives $a={CO.klinman_a(1.3, 3.4):.2f}$ at $1.3$ and a range of "
+         f"${CO.klinman_a(1.5, 3.4):.1f}$ to ${CO.klinman_a(1.1, 3.4):.1f}$", "the Klinman conversion at 3.4")
+    ry = RA.r_at("YADH", "wild type", 25.0)
+    rl = RA.r_at("LADH", "F93W", 25.0)
+    need(f"$ar={6.13 * ry:.2f}$ against $\\gSC b={GSC * 0.73:.2f}$, and for horse liver F93W "
+         f"${6.755 * rl:.2f}$ against ${GSC * 0.858:.2f}$", "the open-branch criterion values")
+    for stale in ("by as much as $0.395$ at a total offset of $+0.050$", "$4$ gave an offset that changed sign",
+                  "on about a third of draws, exactly as it does", "$ar=8.04$"):
+        if stale in si:
+            print(f"  FAIL equations 2026-10-22: retired value in the SI: {stale!r}")
+            bad += 1
+    if not bad:
+        print(f"  equations 2026-10-22: {len(EC.FAILS) or 'all'} identities re-derived; series, sign, binding, "
+              f"parallel ({sw}/{big}) and Klinman numbers from code")
+    return bad
+
+
 _NEEDS_DOCS = {
     "check_audit_2026_10_15", "check_consistency_2026_10_16",
     "check_light_example",
@@ -2486,7 +2593,7 @@ _NEEDS_DOCS = {
     "check_promoting_mode", "check_corpus_consequences", "check_scope_corrections",
     "check_source_fidelity", "check_readiness_scope", "check_generated_tables",
     "check_external_audit_2026_10_12",
-    "check_source_review_2026_10_13", "check_text_2026_10_21",
+    "check_source_review_2026_10_13", "check_text_2026_10_21", "check_tables_2026_10_22",
 }
 
 
@@ -2560,7 +2667,8 @@ def run():
                 check_external_audit_2026_10_12, check_source_review_2026_10_13,
                 check_figure_data, check_audit_2026_10_15,
                 check_tables_2026_10_15, check_consistency_2026_10_16,
-                check_bounds_2026_10_21, check_text_2026_10_21):
+                check_bounds_2026_10_21, check_text_2026_10_21,
+                check_tables_2026_10_22, check_equations_2026_10_22):
         if not HAVE_DOCS and _fn.__name__ in _NEEDS_DOCS:
             print(f"  SKIPPED (needs the manuscript): {_fn.__name__}")
             continue
