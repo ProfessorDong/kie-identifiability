@@ -3,18 +3,31 @@
 Every confidence bound in this analysis reads the published uncertainties as
 standard errors.  Whether they are realistic can be checked wherever the same
 enzyme form was measured twice, by different experiments, at the same
-condition.  The census of 2026-10-20 supplied three such conditions:
+condition.  The census of 2026-10-20 supplied three such conditions, and the
+Yahashiri 2009 supplement (read 2026-10-22) a fourth:
 
   horse liver ADH F93W, benzyl alcohol, 25 C, pH 7
       Bahnson et al. 1993 (standard errors of the mean, 11 to 36 determinations)
       Chin & Klinman 2000 (standard errors of the mean, 38 and 41 determinations)
   E. coli DHFR wild type, 25 C, pH 9
       Sikorski et al. 2004 (at least three experiments; error type not stated)
-      Sen et al. 2011 (standard deviations; temperature of these runs not printed)
+      Sen et al. 2011 (standard deviations of 5 to 9 values, SI Table S1;
+                       temperature of these runs not printed)
       Sen et al. 2012 ([carbonyl-14C] reference; error type not stated)
   E. coli DHFR wild type, pH 7.0, 5 and 45 C
-      Francis et al. 2013 (main-text Table 1)
-      Liu et al. 2014 (SI Table S8; same laboratory, possibly the same data)
+      Francis et al. 2013 (main-text Table 1; >= 5 measurements, error type not
+                           stated)
+      Liu et al. 2014 (SI Table S8, standard deviations of >= 5 measurements;
+                       same laboratory, possibly the same data; its supplement
+                       cites Francis 2013 for intrinsic effects at this condition)
+  R67 DHFR wild type, 25 C, pH 8, low ionic strength
+      Yahashiri et al. 2008 (values printed in the 2009 supplement, Table S2,
+                             standard deviations of >= 5 replicates; the 2008
+                             supplement says at least triplicate)
+      Sen et al. 2011 (standard deviations of nine values, SI Table S1; same
+                       laboratory, H/D runs by the 2008 procedure, which Sen et
+                       al. cite for the procedure and the rate-limiting step,
+                       not for these values)
 
 For each pair the difference of each effect, and of the observed offset
 F_obs = ln K_HT - gamma ln K_DT, is divided by its combined standard error (the
@@ -39,8 +52,10 @@ import masses as M
 G = M.gamma_sc("C")
 
 
-def _series(variant, T):
+def _series(variant, T, family=None):
     s = corpus.series()
+    if family is not None:
+        s = s[s.family == family]
     r = s[(s.variant == variant) & (s.T_C == T)].iloc[0]
     return (r.K_HT, r.K_HT_se, r.K_DT, r.K_DT_se)
 
@@ -63,10 +78,13 @@ def pairs():
     sik = _series("light enzyme", 25.0)
     sen11 = _single("dhfr_sen.csv", "WT (Sen 2011)")
     sen12 = _single("dhfr_sen.csv", "WT (Sen 2012)")
+    r67_y = _series("WT", 25.0, family="R67DHFR")
+    r67_s = _single("dhfr_sen.csv", "wild type")
     out = [("LADH F93W, 25 C", "Bahnson 1993", f93_b, "Chin 2000", f93_c, "independent"),
            ("ecDHFR WT, 25 C, pH 9", "Sikorski 2004", sik, "Sen 2011", sen11, "independent"),
            ("ecDHFR WT, 25 C, pH 9", "Sikorski 2004", sik, "Sen 2012", sen12, "independent"),
-           ("ecDHFR WT, 25 C, pH 9", "Sen 2011", sen11, "Sen 2012", sen12, "independent")]
+           ("ecDHFR WT, 25 C, pH 9", "Sen 2011", sen11, "Sen 2012", sen12, "independent"),
+           ("R67 DHFR WT, 25 C, pH 8", "Yahashiri 2008", r67_y, "Sen 2011", r67_s, "independent")]
     for T, fr in FRANCIS2013.items():
         out.append((f"ecDHFR WT, pH 7.0, {T:g} C", "Francis 2013", fr, "Liu 2014",
                     _series("WT (pH 7.0)", T), "same laboratory; possibly shared data"))

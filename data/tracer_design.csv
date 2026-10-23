@@ -55,6 +55,9 @@ ecDHFR,WT (Sen 2012),hydride,shared,4R-[4-3H]-NADPH,4R-[4-3H]-NADPH,Sen2012,Tabl
 hsDHFR,M53W,hydride,shared,4R-3H-NADPH,4R-3H-NADPH,Li2019,SI Materials
 hsDHFR,S145V,hydride,shared,4R-3H-NADPH,4R-3H-NADPH,Li2019,SI Materials
 hsDHFR,M53W-S145V,hydride,shared,4R-3H-NADPH,4R-3H-NADPH,Li2019,SI Materials
+hsDHFR,WT (light),hydride,shared,4R-3H-NADPH,4R-3H-NADPH,Francis2016,Methods
+hsDHFR,WT (heavy),hydride,shared,4R-3H-NADPH,4R-3H-NADPH,Francis2016,Methods
+R67DHFR,WT,hydride,shared,(R)-[4-3H]-NADPH,(R)-[4-3H]-NADPH,Yahashiri2008,Supporting Information
 FDH,WT (commercial),hydride,shared,[3H]formic acid,[3H]formic acid,Bandaria2009,Methods
 FDH,WT (recombinant),hydride,shared,[3H]formic acid,[3H]formic acid,Guo2016,Methods
 FDH,half-heavy,hydride,shared,[3H]formic acid,[3H]formic acid,Ranasinghe2017,Methods

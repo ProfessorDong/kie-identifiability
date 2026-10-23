@@ -3,13 +3,14 @@ FDH,Candida boidinii formate dehydrogenase,V123A,hydride,145.58271819729853,139.
 FDH,Candida boidinii formate dehydrogenase,V123G,hydride,57.399558344403616,55.092111548549234,0.7300000000000022,1.08,False
 FDH,Candida boidinii formate dehydrogenase,heavy,hydride,451.360155748562,443.3207320492559,1.1800000000000024,2.2,False
 LADH,Horse liver alcohol dehydrogenase (benzyl alcohol),F93W (40% MeOH),hydride,25.0928329294532,23.92042204667844,0.2800000000000016,0.49,False
-TSase,Escherichia coli thymidylate synthase,W80M,hydride,1.171991725964138,1.1694806424276019,-0.0499999999999987,-0.05,False
-TSase,Homo sapiens thymidylate synthase,WT,proton,736.6744035844191,733.6969620428425,0.7700000000000022,1.27,False
-ecDHFR,Escherichia coli dihydrofolate reductase,D27S-Y100F,hydride,20.917278656650858,20.659562175089818,-0.0799999999999987,-0.06,False
-ecDHFR,Escherichia coli dihydrofolate reductase,G121V,hydride,94.78863658508342,93.63213991904829,0.530000000000002,0.68,False
-ecDHFR,Escherichia coli dihydrofolate reductase,I14A,hydride,0.4376718818676134,0.42841610181418827,-0.2299999999999988,-0.23,False
-ecDHFR,Escherichia coli dihydrofolate reductase,I14A-G121V,hydride,56.38212062506687,50.997019063806,1.2400000000000024,1.7,False
-hsDHFR,Homo sapiens dihydrofolate reductase,M53W,hydride,269.9425303607049,269.70672402549434,-0.3199999999999989,-0.31,False
-hsDHFR,Homo sapiens dihydrofolate reductase,M53W-S145V,hydride,392.5571739051663,378.42648337036667,1.2800000000000025,2.8,False
-hsDHFR,Homo sapiens dihydrofolate reductase,S145V,hydride,18.83915404080058,18.70958024873059,-0.2599999999999989,-0.26,False
-hsDHFR,Homo sapiens dihydrofolate reductase,d26-PPLR-d62-PEKN,hydride,9.126457325569564,8.2306962854568,0.3500000000000016,0.47,False
+TSase,Escherichia coli thymidylate synthase,W80M,hydride,1.1719917259641206,1.1694806424276019,-0.0499999999999987,-0.05,False
+TSase,Homo sapiens thymidylate synthase,WT,proton,736.6744035846766,733.6969620428425,0.7700000000000022,1.27,False
+ecDHFR,Escherichia coli dihydrofolate reductase,D27S-Y100F,hydride,20.91727865665079,20.659562175089818,-0.0799999999999987,-0.06,False
+ecDHFR,Escherichia coli dihydrofolate reductase,G121V,hydride,94.78863658508398,93.63213991904829,0.530000000000002,0.68,False
+ecDHFR,Escherichia coli dihydrofolate reductase,I14A,hydride,0.4376718818675856,0.42841610181418827,-0.2299999999999988,-0.23,False
+ecDHFR,Escherichia coli dihydrofolate reductase,I14A-G121V,hydride,56.38212062506691,50.997019063806,1.2400000000000024,1.7,False
+hsDHFR,Homo sapiens dihydrofolate reductase,M53W,hydride,269.9425303607252,269.70672402549434,-0.3199999999999989,-0.31,False
+hsDHFR,Homo sapiens dihydrofolate reductase,M53W-S145V,hydride,392.557173905176,378.42648337036667,1.2800000000000025,2.8,False
+hsDHFR,Homo sapiens dihydrofolate reductase,S145V,hydride,18.839154040800125,18.70958024873059,-0.2599999999999989,-0.26,False
+hsDHFR,Homo sapiens dihydrofolate reductase,WT (heavy),hydride,10.353825123043606,10.30920773231658,-0.2399999999999988,-0.24,False
+hsDHFR,Homo sapiens dihydrofolate reductase,d26-PPLR-d62-PEKN,hydride,9.126457325569348,8.230696285456789,0.3500000000000016,0.47,False

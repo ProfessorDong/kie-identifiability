@@ -18,6 +18,7 @@ LADH F93W (40% MeOH) (hydride)                   4   1.500     [ 0.280, 1.500>  
 LADH wild type (50% MeOH) (hydride)              5   0.650     [ 0.440, 0.890]   0.450    10.7
 MAOB pH 6.1 (abstraction)                        7  -0.210     [-0.280, 1.500>   1.780    42.3
 MAOB pH 7.5 (abstraction)                        3  -0.210     [-0.330,-0.030]   0.300     7.1
+R67DHFR WT (hydride)                             3  -0.030     [-0.070, 1.500>   1.570    37.3
 TSase N177D (hydride)                            4  -0.300     [-0.610, 0.420]   1.030    24.5
 TSase N177S (hydride)                            4  -0.530     [-0.610,-0.400]   0.210     5.0
 TSase R166K (hydride)                            4  -0.030     [-0.130, 0.090]   0.220     5.2
@@ -49,20 +50,22 @@ hsDHFR F32M (hydride)                            4  -0.700     [-0.730,-0.680]  
 hsDHFR M53W (hydride)                            4   1.500     [-0.320, 1.500>   1.820    43.2
 hsDHFR M53W-S145V (hydride)                      4   1.500     [ 1.280, 1.500>   0.220     5.2
 hsDHFR S145V (hydride)                           4   1.500     [-0.260, 1.500>   1.760    41.8
+hsDHFR WT (heavy) (hydride)                      5   1.500     [-0.240, 1.500>   1.740    41.3
+hsDHFR WT (light) (hydride)                      5  -0.180     [-0.250, 1.500>   1.750    41.6
 hsDHFR d26-PPLR-d62-PEKN (hydride)               5   1.500     [ 0.350, 1.500>   1.150    27.3
 hsDHFR d62-PEKN (hydride)                        5  -0.240     [-0.260, 1.500>   1.760    41.8
 
 ==================================================================================
 VERDICT
 ==================================================================================
-series analysed                                : 43
+series analysed                                : 46
 intervals excluding the semiclassical F = 0    : 25
 intervals excluding the tunneling ridge F = F0 : 23
-intervals containing BOTH                      : 17
+intervals containing BOTH                      : 20
 narrowest interval on F                        : 0.030  (1x the signal)
-median interval on F                           : 0.360  (9x the signal)
+median interval on F                           : 0.435  (10x the signal)
 
-MASS-MODULATED CONTROL (Francis et al., light vs heavy ecDHFR)
+MASS-MODULATED CONTROL (light ecDHFR, Sikorski et al. 2004; heavy, Wang et al. 2014)
 Heavy labelling perturbs the promoting mode at fixed electronic
 structure, so it moves the system ALONG the ridge, where F is
 invariant. Both series should return the same F.

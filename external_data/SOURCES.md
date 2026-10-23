@@ -55,6 +55,8 @@ hand in `external_data/si/manual/` under the publisher's file names.
 | Bandaria et al., *JACS* **131**, 10151 (2009) | `10.1021/ja902120t` | FDH WT, commercial enzyme (a mixture of isozymes) | SI Table S2 | 5 |
 | Guo et al., *Biochemistry* **55**, 2760 (2016) | `10.1021/acs.biochem.6b00181` | FDH WT, recombinant | SI Table S1 | 5 |
 | Ranasinghe et al., *JACS* **139**, 17405 (2017) | `10.1021/jacs.7b08359` | FDH half-heavy and heavy enzymes (its light-enzyme Table S1 reprints Guo 2016) | SI Tables S2, S3 | 14 |
+| Francis et al., *Biochemistry* **55**, 1100 (2016) | `10.1021/acs.biochem.5b00945` | hsDHFR wild type, light and heavy (mass-modulated) enzymes, pH 9.0 (admitted 2026-10-22 on reading the supplement; the article plots H/T only) | SI Tables S1, S2 | 10 |
+| Yahashiri, Howell & Kohen, *ChemPhysChem* **9**, 980 (2008), values printed in Yahashiri et al., *ChemBioChem* **10**, 2620 (2009) | `10.1002/cbic.200900451` | R67 DHFR wild type, 25 °C pH 8, low ionic strength (mu = 0.15), measured in 2008; matched H/T and D/T at 5, 25, 45 °C first printed in the 2009 supplement (admitted 2026-10-22). The 2009 high-ionic-strength data are H/T and H/D only | 2009 SI Table S2 | 3 |
 | Rucker et al., *Biochemistry* **31**, 11489 (1992) | `10.1021/bi00161a030` | yeast ADH with p-chlorobenzyl alcohol, 0 and 25 °C (scanned) | Table IV | 2 |
 
 Single-condition records admitted at the same time are listed under "Records

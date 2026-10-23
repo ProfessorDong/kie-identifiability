@@ -10,6 +10,7 @@ LADH F93W (60% MeOH) (hydride),TsaiKlinman2001,dideuterated,0.0065,excludes,excl
 LADH wild type (50% MeOH) (hydride),TsaiKlinman2001,dideuterated,0.0065,uninformative,precision,-0.02240687734891811,-1.0186509735454228,0.0,as stated
 MAOB pH 6.1 (abstraction),Jonsson1994,dideuterated,0.0,uninformative,uninformative,-0.17198507701379695,-0.4175041809538671,0.0,as stated
 MAOB pH 7.5 (abstraction),Jonsson1994,dideuterated,0.0,uninformative,uninformative,-0.1944240774291992,-0.4381406277654367,0.0,as stated
+R67 DHFR WT (hydride),Yahashiri2008,monodeuterated,0.002,precision,precision,0.0014848612585229848,-0.1015413513261223,0.0,as stated
 ecTSase N177D (hydride),Gurevic2018,monodeuterated,0.0,uninformative,uninformative,-0.5273143422244242,-0.7703057909562347,0.0,as stated
 ecTSase N177S (hydride),Gurevic2018,monodeuterated,0.0,uninformative,uninformative,-0.5763403093747621,-0.6531844258340052,0.0,as stated
 ecTSase R166K (hydride),Islam2014,monodeuterated,0.0,uninformative,uninformative,-0.161770921383384,-0.3359353664963016,0.0,as stated
@@ -42,6 +43,8 @@ hsDHFR F32M (hydride),Li2021,monodeuterated,0.0,uninformative,uninformative,-0.8
 hsDHFR M53W (hydride),Li2019,monodeuterated,0.0,uninformative,uninformative,-0.35803698506268233,-0.4103304972987083,0.0,as stated
 hsDHFR M53W-S145V (hydride),Li2019,monodeuterated,0.0,uninformative,uninformative,-0.5406014186478247,-0.6013205721731107,0.0,as stated
 hsDHFR S145V (hydride),Li2019,monodeuterated,0.0,uninformative,uninformative,-0.19842043283696364,-0.28810777635931184,0.0,as stated
+hsDHFR WT (heavy) (hydride),Francis2016,monodeuterated,0.0,uninformative,uninformative,-0.19826900254304713,-0.35625753812776184,0.0,as stated
+hsDHFR WT (light) (hydride),Francis2016,monodeuterated,0.0,uninformative,uninformative,-0.1889234767465573,-0.30908610292641003,0.0,as stated
 hsDHFR d26-PPLR-d62-PEKN (hydride),Li2021,monodeuterated,0.0,uninformative,uninformative,-0.13434795309016634,-0.1957190204018726,0.0,as stated
 hsDHFR d62-PEKN (hydride),Li2021,monodeuterated,0.0,uninformative,uninformative,-0.23681461930954661,-0.30834419008769953,0.0,as stated
 "LADH wild type, 25 C (Bahnson1993)",Bahnson1993,dideuterated,0.0,uninformative,uninformative,-0.1719183153990127,-0.21547876987273584,0.0,as stated
@@ -83,6 +86,7 @@ LADH F93W (60% MeOH) (hydride),TsaiKlinman2001,dideuterated,0.005,excludes,exclu
 LADH wild type (50% MeOH) (hydride),TsaiKlinman2001,dideuterated,0.005,uninformative,precision,-0.03617003297304677,-1.026581718753306,0.0,0.5% where uncorrected
 MAOB pH 6.1 (abstraction),Jonsson1994,dideuterated,0.0,uninformative,uninformative,-0.17198507701379695,-0.4175041809538671,0.0,0.5% where uncorrected
 MAOB pH 7.5 (abstraction),Jonsson1994,dideuterated,0.0,uninformative,uninformative,-0.1944240774291992,-0.4381406277654367,0.0,0.5% where uncorrected
+R67 DHFR WT (hydride),Yahashiri2008,monodeuterated,0.005,precision,precision,0.02916895043084544,-0.0779013282820975,0.0,0.5% where uncorrected
 ecTSase N177D (hydride),Gurevic2018,monodeuterated,0.005,uninformative,uninformative,-0.49690276838412006,-0.7447269040941729,0.0,0.5% where uncorrected
 ecTSase N177S (hydride),Gurevic2018,monodeuterated,0.005,uninformative,uninformative,-0.5476525273959807,-0.6267220942217768,0.0,0.5% where uncorrected
 ecTSase R166K (hydride),Islam2014,monodeuterated,0.005,uninformative,uninformative,-0.12142094569614947,-0.29878595732193447,0.0,0.5% where uncorrected
@@ -115,6 +119,8 @@ hsDHFR F32M (hydride),Li2021,monodeuterated,0.005,uninformative,uninformative,-0
 hsDHFR M53W (hydride),Li2019,monodeuterated,0.005,uninformative,uninformative,-0.3377401354219651,-0.39077173839779245,0.0,0.5% where uncorrected
 hsDHFR M53W-S145V (hydride),Li2019,monodeuterated,0.005,uninformative,uninformative,-0.5258436848982861,-0.5864793513476518,0.0,0.5% where uncorrected
 hsDHFR S145V (hydride),Li2019,monodeuterated,0.005,uninformative,uninformative,-0.18742157033566897,-0.2784156379790823,0.0,0.5% where uncorrected
+hsDHFR WT (heavy) (hydride),Francis2016,monodeuterated,0.005,uninformative,uninformative,-0.18093784145553893,-0.34311997242624337,0.0,0.5% where uncorrected
+hsDHFR WT (light) (hydride),Francis2016,monodeuterated,0.005,uninformative,uninformative,-0.17182087833142878,-0.29399648992671223,0.0,0.5% where uncorrected
 hsDHFR d26-PPLR-d62-PEKN (hydride),Li2021,monodeuterated,0.005,uninformative,uninformative,-0.10863159731664118,-0.17112386858520745,0.0,0.5% where uncorrected
 hsDHFR d62-PEKN (hydride),Li2021,monodeuterated,0.005,uninformative,uninformative,-0.2123135340001594,-0.28538374407098765,0.0,0.5% where uncorrected
 "LADH wild type, 25 C (Bahnson1993)",Bahnson1993,dideuterated,0.0,uninformative,uninformative,-0.1719183153990127,-0.21547876987273584,0.0,0.5% where uncorrected
@@ -156,6 +162,7 @@ LADH F93W (60% MeOH) (hydride),TsaiKlinman2001,dideuterated,0.01,excludes,exclud
 LADH wild type (50% MeOH) (hydride),TsaiKlinman2001,dideuterated,0.01,uninformative,precision,0.010092951846166542,-0.9999866912855935,0.0,1% where uncorrected
 MAOB pH 6.1 (abstraction),Jonsson1994,dideuterated,0.0,uninformative,uninformative,-0.17198507701379695,-0.4175041809538671,0.0,1% where uncorrected
 MAOB pH 7.5 (abstraction),Jonsson1994,dideuterated,0.0,uninformative,uninformative,-0.1944240774291992,-0.4381406277654367,0.0,1% where uncorrected
+R67 DHFR WT (hydride),Yahashiri2008,monodeuterated,0.01,precision,excludes,0.07620349133657744,-0.03780328281107437,0.0,1% where uncorrected
 ecTSase N177D (hydride),Gurevic2018,monodeuterated,0.01,uninformative,uninformative,-0.4659010472988234,-0.7186897630648379,0.0,1% where uncorrected
 ecTSase N177S (hydride),Gurevic2018,monodeuterated,0.01,uninformative,uninformative,-0.5184233104076135,-0.5997784819394878,0.0,1% where uncorrected
 ecTSase R166K (hydride),Islam2014,monodeuterated,0.01,uninformative,uninformative,-0.08016376609913523,-0.26083820380301836,0.0,1% where uncorrected
@@ -188,6 +195,8 @@ hsDHFR F32M (hydride),Li2021,monodeuterated,0.01,uninformative,uninformative,-0.
 hsDHFR M53W (hydride),Li2019,monodeuterated,0.01,uninformative,uninformative,-0.3171126144824463,-0.37089876222916596,0.0,1% where uncorrected
 hsDHFR M53W-S145V (hydride),Li2019,monodeuterated,0.01,uninformative,uninformative,-0.5110577700318961,-0.5715986928188674,0.0,1% where uncorrected
 hsDHFR S145V (hydride),Li2019,monodeuterated,0.01,uninformative,uninformative,-0.17615901299852965,-0.2687574403874664,0.0,1% where uncorrected
+hsDHFR WT (heavy) (hydride),Francis2016,monodeuterated,0.01,uninformative,uninformative,-0.1633400846886386,-0.3297971744706506,0.0,1% where uncorrected
+hsDHFR WT (light) (hydride),Francis2016,monodeuterated,0.01,uninformative,uninformative,-0.15445639747161244,-0.27868511618888503,0.0,1% where uncorrected
 hsDHFR d26-PPLR-d62-PEKN (hydride),Li2021,monodeuterated,0.01,uninformative,uninformative,-0.08245343615059864,-0.1460955332448708,0.0,1% where uncorrected
 hsDHFR d62-PEKN (hydride),Li2021,monodeuterated,0.01,uninformative,uninformative,-0.18663711937173977,-0.26203044868957925,0.0,1% where uncorrected
 "LADH wild type, 25 C (Bahnson1993)",Bahnson1993,dideuterated,0.0,uninformative,uninformative,-0.1719183153990127,-0.21547876987273584,0.0,1% where uncorrected
@@ -229,6 +238,7 @@ LADH F93W (60% MeOH) (hydride),TsaiKlinman2001,dideuterated,0.0065,excludes,excl
 LADH wild type (50% MeOH) (hydride),TsaiKlinman2001,dideuterated,0.0065,uninformative,uninformative,-0.054685284180167715,-1.0319046285695885,0.5,as stated
 MAOB pH 6.1 (abstraction),Jonsson1994,dideuterated,0.0,uninformative,uninformative,-0.17198507701379695,-0.4175041809538671,0.5,as stated
 MAOB pH 7.5 (abstraction),Jonsson1994,dideuterated,0.0,uninformative,uninformative,-0.1944240774291992,-0.4381406277654367,0.5,as stated
+R67 DHFR WT (hydride),Yahashiri2008,monodeuterated,0.002,precision,precision,-0.008547718609445143,-0.10938842325320253,0.5,as stated
 ecTSase N177D (hydride),Gurevic2018,monodeuterated,0.0,uninformative,uninformative,-0.5273143422244242,-0.7703057909562347,0.5,as stated
 ecTSase N177S (hydride),Gurevic2018,monodeuterated,0.0,uninformative,uninformative,-0.5763403093747621,-0.6531844258340052,0.5,as stated
 ecTSase R166K (hydride),Islam2014,monodeuterated,0.0,uninformative,uninformative,-0.161770921383384,-0.3359353664963016,0.5,as stated
@@ -261,6 +271,8 @@ hsDHFR F32M (hydride),Li2021,monodeuterated,0.0,uninformative,uninformative,-0.8
 hsDHFR M53W (hydride),Li2019,monodeuterated,0.0,uninformative,uninformative,-0.35803698506268233,-0.4103304972987083,0.5,as stated
 hsDHFR M53W-S145V (hydride),Li2019,monodeuterated,0.0,uninformative,uninformative,-0.5406014186478247,-0.6013205721731107,0.5,as stated
 hsDHFR S145V (hydride),Li2019,monodeuterated,0.0,uninformative,uninformative,-0.19842043283696364,-0.28810777635931184,0.5,as stated
+hsDHFR WT (heavy) (hydride),Francis2016,monodeuterated,0.0,uninformative,uninformative,-0.19826900254304713,-0.35625753812776184,0.5,as stated
+hsDHFR WT (light) (hydride),Francis2016,monodeuterated,0.0,uninformative,uninformative,-0.1889234767465573,-0.30908610292641003,0.5,as stated
 hsDHFR d26-PPLR-d62-PEKN (hydride),Li2021,monodeuterated,0.0,uninformative,uninformative,-0.13434795309016634,-0.1957190204018726,0.5,as stated
 hsDHFR d62-PEKN (hydride),Li2021,monodeuterated,0.0,uninformative,uninformative,-0.23681461930954661,-0.30834419008769953,0.5,as stated
 "LADH wild type, 25 C (Bahnson1993)",Bahnson1993,dideuterated,0.0,uninformative,uninformative,-0.1719183153990127,-0.21547876987273584,0.5,as stated
@@ -302,6 +314,7 @@ LADH F93W (60% MeOH) (hydride),TsaiKlinman2001,dideuterated,0.005,excludes,exclu
 LADH wild type (50% MeOH) (hydride),TsaiKlinman2001,dideuterated,0.005,uninformative,uninformative,-0.06087531828384485,-1.0367355673175138,0.5,0.5% where uncorrected
 MAOB pH 6.1 (abstraction),Jonsson1994,dideuterated,0.0,uninformative,uninformative,-0.17198507701379695,-0.4175041809538671,0.5,0.5% where uncorrected
 MAOB pH 7.5 (abstraction),Jonsson1994,dideuterated,0.0,uninformative,uninformative,-0.1944240774291992,-0.4381406277654367,0.5,0.5% where uncorrected
+R67 DHFR WT (hydride),Yahashiri2008,monodeuterated,0.005,precision,precision,0.0038345070734522313,-0.09770573243521463,0.5,0.5% where uncorrected
 ecTSase N177D (hydride),Gurevic2018,monodeuterated,0.005,uninformative,uninformative,-0.5099993150773148,-0.7545156793962544,0.5,0.5% where uncorrected
 ecTSase N177S (hydride),Gurevic2018,monodeuterated,0.005,uninformative,uninformative,-0.5595348051668279,-0.6370924509801152,0.5,0.5% where uncorrected
 ecTSase R166K (hydride),Islam2014,monodeuterated,0.005,uninformative,uninformative,-0.14212815727467,-0.31694142291888183,0.5,0.5% where uncorrected
@@ -334,6 +347,8 @@ hsDHFR F32M (hydride),Li2021,monodeuterated,0.005,uninformative,uninformative,-0
 hsDHFR M53W (hydride),Li2019,monodeuterated,0.005,uninformative,uninformative,-0.34429976813364505,-0.39691737534126137,0.5,0.5% where uncorrected
 hsDHFR M53W-S145V (hydride),Li2019,monodeuterated,0.005,uninformative,uninformative,-0.529327448829845,-0.5898453618514699,0.5,0.5% where uncorrected
 hsDHFR S145V (hydride),Li2019,monodeuterated,0.005,uninformative,uninformative,-0.18962545266542175,-0.27971381099665193,0.5,0.5% where uncorrected
+hsDHFR WT (heavy) (hydride),Francis2016,monodeuterated,0.005,uninformative,uninformative,-0.18589598057199908,-0.34612175114884736,0.5,0.5% where uncorrected
+hsDHFR WT (light) (hydride),Francis2016,monodeuterated,0.005,uninformative,uninformative,-0.17666267698596871,-0.2978607071583981,0.5,0.5% where uncorrected
 hsDHFR d26-PPLR-d62-PEKN (hydride),Li2021,monodeuterated,0.005,uninformative,uninformative,-0.11851014619272249,-0.18027820681722684,0.5,0.5% where uncorrected
 hsDHFR d62-PEKN (hydride),Li2021,monodeuterated,0.005,uninformative,uninformative,-0.22140795285736314,-0.29351602304898017,0.5,0.5% where uncorrected
 "LADH wild type, 25 C (Bahnson1993)",Bahnson1993,dideuterated,0.0,uninformative,uninformative,-0.1719183153990127,-0.21547876987273584,0.5,0.5% where uncorrected
@@ -375,6 +390,7 @@ LADH F93W (60% MeOH) (hydride),TsaiKlinman2001,dideuterated,0.01,excludes,exclud
 LADH wild type (50% MeOH) (hydride),TsaiKlinman2001,dideuterated,0.01,uninformative,precision,-0.04015486607816521,-1.0205670531125877,0.5,1% where uncorrected
 MAOB pH 6.1 (abstraction),Jonsson1994,dideuterated,0.0,uninformative,uninformative,-0.17198507701379695,-0.4175041809538671,0.5,1% where uncorrected
 MAOB pH 7.5 (abstraction),Jonsson1994,dideuterated,0.0,uninformative,uninformative,-0.1944240774291992,-0.4381406277654367,0.5,1% where uncorrected
+R67 DHFR WT (hydride),Yahashiri2008,monodeuterated,0.01,precision,precision,0.024670495298557027,-0.07804861819275044,0.5,1% where uncorrected
 ecTSase N177D (hydride),Gurevic2018,monodeuterated,0.01,uninformative,uninformative,-0.4924811281288115,-0.7385425970171906,0.5,1% where uncorrected
 ecTSase N177S (hydride),Gurevic2018,monodeuterated,0.01,uninformative,uninformative,-0.5425329369167098,-0.6208135444596674,0.5,1% where uncorrected
 ecTSase R166K (hydride),Islam2014,monodeuterated,0.01,uninformative,uninformative,-0.12225054739274399,-0.29772157123822773,0.5,1% where uncorrected
@@ -407,6 +423,8 @@ hsDHFR F32M (hydride),Li2021,monodeuterated,0.01,uninformative,uninformative,-0.
 hsDHFR M53W (hydride),Li2019,monodeuterated,0.01,uninformative,uninformative,-0.33040605161979153,-0.38335185884006906,0.5,1% where uncorrected
 hsDHFR M53W-S145V (hydride),Li2019,monodeuterated,0.01,uninformative,uninformative,-0.5180343164230012,-0.578344106691639,0.5,1% where uncorrected
 hsDHFR S145V (hydride),Li2019,monodeuterated,0.01,uninformative,uninformative,-0.18061916777259857,-0.2713444096153347,0.5,1% where uncorrected
+hsDHFR WT (heavy) (hydride),Francis2016,monodeuterated,0.01,uninformative,uninformative,-0.17338360213249793,-0.3358739514365684,0.5,1% where uncorrected
+hsDHFR WT (light) (hydride),Francis2016,monodeuterated,0.01,uninformative,uninformative,-0.16426391512628213,-0.2865101006781501,0.5,1% where uncorrected
 hsDHFR d26-PPLR-d62-PEKN (hydride),Li2021,monodeuterated,0.01,uninformative,uninformative,-0.10248874381911,-0.16465898373821086,0.5,1% where uncorrected
 hsDHFR d62-PEKN (hydride),Li2021,monodeuterated,0.01,uninformative,uninformative,-0.20582332156108096,-0.27851739002566145,0.5,1% where uncorrected
 "LADH wild type, 25 C (Bahnson1993)",Bahnson1993,dideuterated,0.0,uninformative,uninformative,-0.1719183153990127,-0.21547876987273584,0.5,1% where uncorrected

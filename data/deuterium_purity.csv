@@ -19,7 +19,7 @@ Hong2007,10.1021/bi701363s,[2-14C 5-2H]dUMP,monodeuterated,"synthesis of [2-14C,
 Sen2011,10.1021/bi2003873,4R-[Ad-14C 4-2H]-NADPH,monodeuterated,purity not stated,not_stated,all,,Methods
 Sen2012,10.1016/j.ab.2012.08.012,4R-[carbonyl-14C 4-2H]-NADPH,monodeuterated,"[1-2H]glucose >99.9% D, used for another cofactor; no purity stated for the D/T reference",not_stated,all,,Methods
 Wang2010,10.1021/ja103010b,[2-14C 5-2H]dUMP,monodeuterated,"[2-14C, 5-2H] dUMP (> 99.5% D); complete deuteration (>99.5% D) verified by 1H NMR; no correction stated; no trend with conversion (Fig. 4)",stated_purity,all,0.005,Experimental
-Wang2012,10.1021/ja307859m,(R)-[6-2H]CH2H4folate,monodeuterated,[2H]NaBH4 (> 99.5% D); no correction stated,stated_purity,all,0.005,Methods
+Wang2012,10.1021/ja307859m,(R)-[6-2H]CH2H4folate,monodeuterated,"reagent [2H]NaBH4 (> 99.5% D), used in the synthesis; purity of the cofactor itself not stated; no correction stated",stated_purity,all,0.005,Methods
 Wang2013,10.1021/ja400761x,(R)-[6-2H]CH2H4folate,monodeuterated,"synthesized by the published procedure (Wang 2012, NaBD4 > 99.5% D); purity not stated",not_stated,all,,Methods
 Hong2006,10.1021/ja060196o,(R)-[6-2H]CH2H4folate,monodeuterated,purity not stated (method of Agrawal 2004: NaBD4 > 99% D),not_stated,all,,SI
 Islam2014,10.1021/ja504341g,(R)-[6-2H]CH2H4folate,monodeuterated,"[2H]NaBH4 from Cambridge Isotopes, no % D stated",not_stated,all,,SI
@@ -31,7 +31,9 @@ Stojkovic2010,10.1039/c0cc02988b,[Ad-14C 4(R)-2H]-NADPH,monodeuterated,purity no
 Singh2015,10.1021/acscatal.5b00331,4R-[Ad-14C 4-2H]-NADPH,monodeuterated,purity not stated,not_stated,all,,Methods
 Liu2014,10.1073/pnas.1415940111,(R)-[4-2H]-NADPH,monodeuterated,purity not stated,not_stated,all,,SI
 Li2019,10.1021/acs.biochem.9b00460,4R-[carbonyl-14C 4-2H]-NADPH,monodeuterated,purity not stated,not_stated,all,,SI
+Francis2016,10.1021/acs.biochem.5b00945,4R-[carbonyl-14C 4-2H]-NADPH,monodeuterated,purity not stated,not_stated,all,,Methods
 Bandaria2009,10.1021/ja902120t,formic acid-d,monodeuterated,99.7% deuterated formic acid; no correction stated,stated_purity,all,0.003,Methods
 Guo2016,10.1021/acs.biochem.6b00181,formic acid-d,monodeuterated,99.8% deuterated formic acid; no correction stated,stated_purity,all,0.002,Methods
 Ranasinghe2017,10.1021/jacs.7b08359,formic acid-d (sodium salt),monodeuterated,99.8% deuterated formic acid; no correction stated,stated_purity,all,0.002,Methods
 Rucker1992,10.1021/bi00161a030,"[1,1-2H2 ring-14C]p-methoxybenzyl alcohol; [1,1-2H2 ring-14C]p-methoxybenzylamine",dideuterated,alcohol: H content of the radiolabeled material estimated as 3% kinetically; amine: 3% H from the trend of the D/T effects with conversion (Fig. 1); D/T corrected,corrected,single,0.015,Experimental Procedures
+Yahashiri2008,10.1002/cbic.200900451,(R)-[Ad-14C 4-2H]-NADPH,monodeuterated,"reagent 2-propanol-d8 (> 99.8% D at C2), used in the synthesis; purity of the cofactor itself not stated; no correction stated",stated_purity,all,0.002,Supporting Information

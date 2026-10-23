@@ -222,7 +222,7 @@ def derived():
 # criteria ever change.
 # The corpus size appears in prose in both documents and is not otherwise a
 # derived quantity, so it grew stale when records were added.  Pinned here.
-CORPUS = {"records": 231, "units": 73}
+CORPUS = {"records": 244, "units": 76}
 
 
 GENERAL_CENSUS = {"networks": 764, "edges": 5538, "mixed": 3415,
@@ -495,7 +495,8 @@ def check_provenance_split():
                "10.1021/ja060196o", "10.1021/ja504341g", "10.1021/acscatal.5b01332",
                "10.1021/acscatal.8b02554", "10.1039/c0cc02988b", "10.1021/acscatal.5b00331",
                "10.1073/pnas.1415940111", "10.1021/acs.biochem.9b00460",
-               "10.1021/ja902120t", "10.1021/acs.biochem.6b00181", "10.1021/jacs.7b08359"}
+               "10.1021/ja902120t", "10.1021/acs.biochem.6b00181", "10.1021/jacs.7b08359",
+               "10.1021/acs.biochem.5b00945", "10.1002/cbic.200900451"}
     HAND = {"10.1021/bi00253a026", "10.1021/bi002075l", "10.1021/bi00161a030",
             "10.1021/bi0518242", "10.1098/rstb.2006.1871"}
     bad = 0
@@ -1062,8 +1063,14 @@ def check_corpus_consequences():
     x, y = a.K_HT_se / a.K_HT, GSC * a.K_DT_se / a.K_DT
     b0 = F - z * np.hypot(x, y)
     b1 = F - z * (x + y)
-    need("si", f"correction across the {W[u]} gives ${b0:+.3f}$ under independence "
+    # a bound that rounds to zero at three places is printed to four, so the
+    # sign the text relies on ("survives multiplicity, barely") stays visible
+    # (+0.0004 at 76 units, 2026-10-22)
+    b0s = f"{b0:+.4f}" if round(b0, 3) == 0 else f"{b0:+.3f}"
+    need("si", f"correction across the {W[u]} gives ${b0s}$ under independence "
                f"and ${b1:+.3f}$ at $\\rho=-1$", "the Bonferroni bounds")
+    need("main", f"survives multiplicity only under independence (${b0s}$)",
+         "the Bonferroni bound under independence (main)")
     need("si", f"the margin over $\\Fz$ is ${b1 - F0:.3f}$", "the simultaneous margin")
     need("si", f"Bonferroni-corrected bound at that correlation by ${b1 - F0:.3f}$",
          "the simultaneous margin (joint-nuisance note)")
@@ -1119,7 +1126,7 @@ def check_corpus_consequences():
             stem = f"{x.family} {x.variant}"
             want = "inferred" if (x.family, x.variant) in with2 else "assumed"
         else:
-            fam = display_family(x.family, x.variant) if x.family == "TSase" else x.family
+            fam = display_family(x.family, x.variant)
             var = "WT" if (x.family == "ecTSase" and x.variant == "wild type") else x.variant
             stem = f"{fam} {var} ({x.step}"
             want = "shared"
@@ -1198,10 +1205,10 @@ def check_corpus_consequences():
     need("si", f"it falls to ${rb.undo0_all:+.3f}$ and ${rb.undo5_all:+.3f}$, below $\\Fz$",
          "the benzyl alcohol bound without its correction, across all units",
          (f"to ${rb.undo0_all:+.3f}$ and ${rb.undo5_all:+.3f}$, below $\\Fz$",))
-    need("si", f"from $+0.170$ to ${rc.undo0:+.3f}$ and ${rc.undo5:+.3f}$, and across the $73$ units to "
+    need("si", f"from $+0.170$ to ${rc.undo0:+.3f}$ and ${rc.undo5:+.3f}$, and across the ${__import__('corpus').counts()['units']}$ units to "
                f"${rc.undo0_all:+.3f}$ and ${rc.undo5_all:+.3f}$",
-         "the p-chlorobenzyl alcohol bounds without the correction",
-         (f"${rc.undo0_all:+.3f}$ and ${rc.undo5_all:+.3f}$",))
+         "the p-chlorobenzyl alcohol bounds without the correction")
+    # (a numbers-only fallback here let a stale unit count pass; removed 2026-10-22)
     need("main", f"leaves the benzyl alcohol bound at ${rb.undo0:+.3f}$",
          "the benzyl alcohol bound without its correction (main)")
     need("main", f"well it falls to ${rb.undo0_all:+.3f}$", "the combined benzyl alcohol bound (main)")
@@ -2465,8 +2472,9 @@ def check_text_2026_10_21():
         bad += 1
     # the census boundary and the repeat-condition caveat
     need("si", "On 17 October 2026 we ran five queries against Europe PMC", "the census date")
-    need("si", "the pairing of their H/T and D/T effects with the other two determinations",
-         "the Sen 2011 condition caveat")
+    # two matches since the R67 records were admitted (2026-10-22)
+    need("si", "the pairing of their H/T and D/T effects with the other "
+               "determinations at those conditions", "the Sen 2011 condition caveat")
     need("main", "We use it as a benchmark because the offsets it can attain are known exactly",
          "the benchmark role of the tunneling model")
     if not bad:

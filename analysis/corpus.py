@@ -45,16 +45,21 @@ SINGLE_CONDITION = (
 _SPECIES = {"Escherichia coli": "ec", "Homo sapiens": "hs"}
 
 
+# family codes that print with a space; the code itself stays the data key
+_SPACED = {"R67DHFR": "R67 DHFR"}
+
+
 def display_family(family: str, variant) -> str:
     """Family label naming the species where one family spans two.
 
     Thymidylate synthase appears as the human enzyme (wild type) and the E. coli
     enzyme (Y209W in the series, wild type as a single record), so "TSase WT"
     would name two enzymes.  The species is read from the benchmark's system
-    column, never assumed.  DHFR families already carry it (ecDHFR, hsDHFR).
+    column, never assumed.  DHFR families already carry it (ecDHFR, hsDHFR);
+    R67DHFR prints as "R67 DHFR".
     """
     if family != "TSase":
-        return family
+        return _SPACED.get(family, family)
     s = series()
     sysname = s[(s.family == family) & (s.variant.astype(str) == str(variant))].system.iloc[0]
     return next(v for k, v in _SPECIES.items() if sysname.startswith(k)) + family

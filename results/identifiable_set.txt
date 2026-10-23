@@ -4,8 +4,8 @@ THE MODEL-FREE IDENTIFIABLE SET FOR THE DISCRIMINATING INVARIANT
 gamma_SC = 3.34887   semiclassical F = 0   tunneling ridge F0 = -0.042086
 
 1. THE SHAPE OF THE SET IS DECIDED BY THE H-REFERENCE CONTRAST
-   records: 202   predicted interior minimum: 49   observed: 49
-   sign criterion L_H < gamma_SC agrees with the numerics on 202/202 records
+   records: 215   predicted interior minimum: 49   observed: 49
+   sign criterion L_H < gamma_SC agrees with the numerics on 215/215 records
    L_H range where the minimum is interior : [1.854, 3.342]
    L_H range where it is at c -> infinity  : [3.383, 14.710]
    the two ranges are separated by gamma_SC = 3.3489
@@ -21,6 +21,7 @@ gamma_SC = 3.34887   semiclassical F = 0   tunneling ridge F0 = -0.042086
    LADH F93W (40% MeOH) (hydride)                 4    0.1833    -0.2254     RIDGE
    TSase W80M (hydride)                           4   -0.0010    -0.0411     RIDGE
    TSase Y209W (hydride)                          3   -0.0094    -0.0327     RIDGE
+   R67DHFR WT (hydride)                           3   -0.0168    -0.0253     RIDGE
    ecDHFR W133F (hydride)                         3   -0.0596     0.0175      none
    ecDHFR G121V-F125M (hydride)                   5   -0.0740     0.0319      none
    ecDHFR light enzyme (hydride)                  6   -0.0759     0.0339      none
@@ -36,7 +37,9 @@ gamma_SC = 3.34887   semiclassical F = 0   tunneling ridge F0 = -0.042086
    ecDHFR F125M (hydride)                         5   -0.1681     0.1260      none
    FDH WT (commercial) (hydride)                  5   -0.1703     0.1283      none
    MAOB pH 6.1 (abstraction)                      7   -0.1720     0.1299      none
+   hsDHFR WT (light) (hydride)                    5   -0.1889     0.1468      none
    MAOB pH 7.5 (abstraction)                      3   -0.1944     0.1523      none
+   hsDHFR WT (heavy) (hydride)                    5   -0.1983     0.1562      none
    hsDHFR S145V (hydride)                         4   -0.1984     0.1563      none
    ecDHFR WT (pH 7.0) (hydride)                   5   -0.2009     0.1588      none
    ecDHFR I14A (hydride)                          5   -0.2053     0.1632      none
@@ -62,8 +65,8 @@ gamma_SC = 3.34887   semiclassical F = 0   tunneling ridge F0 = -0.042086
    hsDHFR F32L-PP26N-PEKN62G (hydride)            4   -0.6937     0.6516      none
    hsDHFR F32M (hydride)                          4   -0.8782     0.8362      none
 
-   series excluding the tunneling ridge : 5 of 45
-   series excluding semiclassical       : 3 of 45
+   series excluding the tunneling ridge : 6 of 48
+   series excluding semiclassical       : 3 of 48
    closest: LADH F93W (60% MeOH), bound +0.3945,
             short of the ridge by -0.4366 log-KIE units.
 

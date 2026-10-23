@@ -173,9 +173,9 @@ def main():
     say("")
 
     # the mass-modulated pair: a within-system control on the gating coordinate
-    hl = res[res.variant.isin(["light enzyme", "heavy enzyme"])]
+    hl = res[(res.family == "ecDHFR") & res.variant.isin(["light enzyme", "heavy enzyme"])]
     if len(hl) == 2:
-        say("MASS-MODULATED CONTROL (Francis et al., light vs heavy ecDHFR)")
+        say("MASS-MODULATED CONTROL (light ecDHFR, Sikorski et al. 2004; heavy, Wang et al. 2014)")
         say("Heavy labelling perturbs the promoting mode at fixed electronic")
         say("structure, so it moves the system ALONG the ridge, where F is")
         say("invariant. Both series should return the same F.")

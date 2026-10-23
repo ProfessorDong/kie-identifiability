@@ -33,6 +33,7 @@ _TB = pd.read_csv("../data/trinomial_benchmark.csv")
 _FAM = {"FDH": "formate dehydrogenase", "TSase": "thymidylate synthase",
         "ecDHFR": "Escherichia coli dihydrofolate reductase",
         "hsDHFR": "Homo sapiens dihydrofolate reductase",
+        "R67DHFR": "R67 dihydrofolate reductase",
         "MAOB": "monoamine oxidase",
         "LADH": "horse liver alcohol dehydrogenase",
         "YADH": "Saccharomyces cerevisiae alcohol dehydrogenase"}
@@ -147,6 +148,30 @@ def _short(lab):
     for a, b in _ABBR:
         lab = lab.replace(a, b)
     return lab
+
+
+# A form measured both as a series and as a single record (R67 DHFR: Yahashiri
+# et al. 2008, Sen et al. 2011) gets the same short label twice; name the source
+# on both rows, as the caption promises.  Series sources come from the labeling
+# table, single records carry their own.
+import re as _re
+_TD = pd.read_csv("../data/tracer_design.csv")
+
+
+def _source(r):
+    recs = r.recs
+    if "source" in recs.columns:
+        key = str(recs.source.iloc[0])
+    else:
+        x = recs.iloc[0]
+        key = _TD[(_TD.family == x.family) & (_TD.variant == x.variant)].source.iloc[0]
+    return _re.sub(r"([A-Za-z])(\d{4})", r"\1 \2", key.split(";")[0].strip())
+
+
+_shortlab = df.label.map(lambda s: _short(s))
+for i in df.index[_shortlab.duplicated(keep=False)]:
+    df.at[i, "label"] = f"{df.at[i, 'label']} ({_source(df.loc[i])})"
+df["label"] = df.label.str.replace("R67DHFR", "R67 DHFR", regex=False)
 
 
 def _write_panel(fh, sub):

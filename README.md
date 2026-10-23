@@ -42,13 +42,13 @@ set lies above zero. Hence:
   that bound is still excluded.
 
 This makes exact the kinetic part of the criterion of Saunders (1985) as used by
-Cha et al. (1989) and Bahnson et al. (1993). Across 231 matched primary records in 73
+Cha et al. (1989) and Bahnson et al. (1993). Across 244 matched primary records in 76
 analysis units, gathered by a census of the two laboratories that report this
-design, 59 lie at their reported values on the uninformative side and eight more
+design, 61 lie at their reported values on the uninformative side and nine more
 are limited by precision alone; six exclude the ground-channel envelope
 nominally (yeast ADH with benzyl and with p-chlorobenzyl alcohol, horse liver
 ADH F93W in 40% and in 60% methanol, and its F93W:I224G and I224V double
-mutants), and only the two yeast units survive adjustment across all 73 at
+mutants), and only the two yeast units survive adjustment across all 76 at
 rho = -1. Only the p-chlorobenzyl alcohol unit also survives removal of its
 isotopic-purity correction at the same time (`isotopic_purity.exclusions`).
 
@@ -89,10 +89,10 @@ hypothesis*: if `h_H` and `h_D` are unrelated nothing follows, but ordered
 commitments (`c_D >= c_H`) suffice.
 
 **Sharing is approximate even in the primary protocol, and harmlessly so.** The
-H/T and D/T effects of 27 of the 71 forms use tritium references that differ at
+H/T and D/T effects of 27 of the 74 forms use tritium references that differ at
 the non-transferred position, so `c_D = r c_H` with `r` the secondary H/D effect
 on the reference (25 of them report the secondary effects that check its sign);
-the other 44 use one tritiated molecule for both, so `r = 1`
+the other 47 use one tritiated molecule for both, so `r = 1`
 (`data/tracer_design.csv`).
 What matters is the sign of `r-1`. Observed secondary ratios here are normal
 (`R = 1.02-1.38`, a lower bound on `r`), so the H comparison is the MORE masked one and the
@@ -177,8 +177,8 @@ effect. Across the benchmark the lower edge runs 1.099-1.694 (median 1.465),
 upper edge median 1.971, median width 0.50. Verified against direct optimization
 and on 3000 random pairs.
 
-**Empirically, few temperature series exclude anything.** Across the 203 temperature-resolved
-records in 45 series, one-sided 95% confidence bounds bracketed over `rho` in
+**Empirically, few temperature series exclude anything.** Across the 216 temperature-resolved
+records in 48 series, one-sided 95% confidence bounds bracketed over `rho` in
 {-1, 0, 0.5, 0.9} (`rho = -1` the maximally adverse case) exclude both mechanisms
 at every correlation in three series: horse liver ADH F93W in 40% and 60%
 methanol (Tsai & Klinman 2001), bounds `+0.032` and `+0.071` at rho = -1, and
@@ -190,15 +190,15 @@ W80M, `-0.001`, lie above `F0` (see Bounds below).
 **But yeast ADH does.** The primary effects of Cha, Murray & Klinman (1989)
 give `F_obs = +0.129` against `F0 = -0.042`, with a 95% bound of `+0.063`
 (rising to `+0.079` at rho = 0.9, falling to `+0.049` at the maximally adverse
-rho = -1). Singled out from 73 analysis units it also deserves a
-multiplicity adjustment: one-sided Bonferroni across 73 gives `+0.001` at rho = 0
+rho = -1). Singled out from 76 analysis units it also deserves a
+multiplicity adjustment: one-sided Bonferroni across 76 gives `+0.0004` at rho = 0
 and `-0.027` at rho = -1, so the exclusion of the SEMICLASSICAL LOCUS survives
 multiplicity and survives adverse correlation but not both at once, while the
 exclusion of the GATED ENVELOPE survives every combination since all four bounds
 exceed `F0` -- though with little room: under both at once the published
-errors need only be understated by 10.0% to overturn it. The same enzyme with
+errors need only be understated by 9.6% to overturn it. The same enzyme with
 p-chlorobenzyl alcohol (Rucker et al. 1992, D/T corrected for protium) excludes
-more firmly: `+0.170` at rho = -1, and `+0.051` after the adjustment across 73
+more firmly: `+0.170` at rho = -1, and `+0.050` after the adjustment across 76
 units (`yadh_robustness.pchloro_series`). These bounds use a
 normal approximation that treats the published errors as standard errors. Cha
 et al.'s Table 2 lists four D/T determinations, three paired with H/T (the
@@ -258,7 +258,7 @@ the observation the same way, which is why neither can be read off the exponent.
 
 **What does NOT work.** Two recombinations of the existing data were tried and
 both are rejected. Pooling across temperatures within a series would gain ~sqrt(n)
-if the observed offset were constant; it is not (median chi2/dof = 7.4, up to
+if the observed offset were constant; it is not (median chi2/dof = 3.5, up to
 71), and the weighted means are LOWER than the maxima. Pooling enzyme variants
 that share one intrinsic pair but differ in commitment cannot identify that pair
 even with exact data: with `z = 1 - 1/K`, `u = 1 - 1/x` and `s = c/(1+c)`, the
@@ -471,7 +471,7 @@ analysis/
   masses.py             isotope mass convention, imported everywhere
   corpus.py             the matched primary record: the temperature series and
                         every single-condition record file, read by all
-                        scripts that need them (231 records, 73 units)
+                        scripts that need them (244 records, 76 units)
   reference_asymmetry.py  the reference asymmetry r: exactly 1 where one
                         tritiated isotopologue served both experiments
                         (data/tracer_design.csv), otherwise inferred from the
@@ -547,7 +547,7 @@ analysis/
   discriminate.py       model fits (superseded analysis, retained for the record)
   design.py             power calculation (superseded, retained)
   export_figs_v3.py     pgfplots tables for the figures
-  export_fig_asym.py    identified-set figure data (73 analysis units, two panels)
+  export_fig_asym.py    identified-set figure data (76 analysis units, two panels)
   export_fig_overview.py   overview figure: the compatible set as the range of
                         the commitment curve, for two observations
   export_fig_envelope.py   envelope figure: the region the ground-channel model
@@ -557,7 +557,7 @@ analysis/
                         completion, the pooling symmetry, the error budget
   export_si_tables.py   supplementary tables (results/)
   export_bounds_table.py     per-series bounds table (results/)
-  export_benchmark_table.py  complete 203-record temperature-series table
+  export_benchmark_table.py  complete 216-record temperature-series table
   export_profiles_table.py   per-series profile table
 data/                   curated inputs, never written by any script
 results/                generated reports and tables
@@ -575,7 +575,7 @@ cd analysis
 
 python masses.py             # the mass convention and its consequences
 python verify_derivation.py  # must exit 0
-python build_trinomial.py    # benchmark + transcription audit (648 values)
+python build_trinomial.py    # benchmark + transcription audit (700 values)
 python ridge.py              # ridge limit, offset, finite-scale bound
 python partial_id.py         # envelope + exact endpoint, both verified
 python identifiable_set.py   # the half-line result, point bounds
@@ -714,7 +714,7 @@ and no tracked file changes. `offset_analysis.py` and `network_atlas.py` are
 untouched and were not rerun.
 
 One caveat on timing: `offset_analysis.py` computes profile likelihoods by
-continuation over a 301-point grid for each of the 43 series with at least
+continuation over a 301-point grid for each of the 46 series with at least
 three temperatures, about three minutes per series on one core (roughly 55
 minutes for the 20 series before the census of 2026-10-20).
 
@@ -728,15 +728,15 @@ the hydrogen isotopes; the bare-mass value 3.2628 is also in circulation.
 gamma_SC = 3.34887   rigid = 2.45884   F0 = -0.042086   threshold = 1.26890
 ```
 
-Temperature-series benchmark: 203 temperature-resolved records, 45 series, -50 to 45 C.
-Transcription audit: 648 values across the twenty PDF supplements (six parsed, fourteen
+Temperature-series benchmark: 216 temperature-resolved records, 48 series, -50 to 45 C.
+Transcription audit: 700 values across the twenty-two PDF supplements (six parsed, sixteen
 transcribed), each matched with its uncertainty, 0 misses. The wider matched-primary record used for the
-identified-set figure is 231 records over 73 analysis units, of which 59 fall on
-the uninformative side, eight more fail on precision alone, and six clear.
+identified-set figure is 244 records over 76 analysis units, of which 61 fall on
+the uninformative side, nine more fail on precision alone, and six clear.
 
-Bounds: 3 of 45 series exclude both mechanisms, at every correlation -1, 0, 0.5
+Bounds: 3 of 48 series exclude both mechanisms, at every correlation -1, 0, 0.5
 and 0.9 (horse liver ADH F93W in 40% and 60% methanol, yeast ADH with
-p-chlorobenzyl alcohol); of the other 42 only the Y209W thymidylate synthase
+p-chlorobenzyl alcohol); of the other 45 only the Y209W thymidylate synthase
 hydride transfer clears F0 at any correlation, at rho = 0.9. A series bound is on the largest endpoint over its temperatures: the
 per-temperature one-sided bounds at level 0.05/n_T, then their maximum, which
 covers that maximum with probability at least 95% by the union bound whenever

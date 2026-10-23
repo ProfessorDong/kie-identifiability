@@ -50,12 +50,12 @@ integer 1:2:3      3.25725  -0.055522    0.1789   0.0389    0.1149    YES   YES
 
 6. MULTIPLICITY
 ----------------------------------------------------------------------------------------
-  analysis units 73, one-sided z = 3.2009
-  rho = +0: Bonferroni bound +0.0009, margin over F0 +0.0430, over 0 +0.0009
-  rho = -1: Bonferroni bound -0.0266, margin over F0 +0.0155, over 0 -0.0266
+  analysis units 76, one-sided z = 3.2125
+  rho = +0: Bonferroni bound +0.0004, margin over F0 +0.0425, over 0 +0.0004
+  rho = -1: Bonferroni bound -0.0272, margin over F0 +0.0149, over 0 -0.0272
   no correlation assumed,  1 unit(s): bound +0.0336, margin over F0 +0.0757
-  no correlation assumed, 73 unit(s): bound -0.0361, margin over F0 +0.0060
-  Student t tail, 10 d.o.f., 73 units, rho = -1: bound -0.0840, margin over F0 -0.0419
+  no correlation assumed, 76 unit(s): bound -0.0366, margin over F0 +0.0055
+  Student t tail, 10 d.o.f., 76 units, rho = -1: bound -0.0853, margin over F0 -0.0432
 
 7. A SECOND SUBSTRATE: p-CHLOROBENZYL ALCOHOL (Rucker et al. 1992)
 ----------------------------------------------------------------------------------------
@@ -65,6 +65,6 @@ integer 1:2:3      3.25725  -0.055522    0.1789   0.0389    0.1149    YES   YES
   series endpoint +0.3326 (open branch at both temperatures)
   per unit : rho = -1 bound +0.1701, rho = 0 +0.2028, no correlation assumed +0.1467
              errors x 2.31 to stop excluding F0, x 2.05 to stop excluding 0 (rho = -1)
-  73 units : rho = -1 bound +0.0510, rho = 0 +0.1078, no correlation assumed +0.0357
+  76 units : rho = -1 bound +0.0501, rho = 0 +0.1071, no correlation assumed +0.0348
              errors x 1.33 to stop excluding F0, x 1.18 to stop excluding 0 (rho = -1)
-  Student t tail, 10 d.o.f., 73 units, rho = -1: bound -0.0685
+  Student t tail, 10 d.o.f., 76 units, rho = -1: bound -0.0707

@@ -55,6 +55,13 @@ TRANSCRIBED = {
     "10.1021/ja902120t": "manual/ja902120t_si_001.pdf",          # Bandaria 2009
     "10.1021/acs.biochem.6b00181": "manual/bi6b00181_si_001.pdf",  # Guo 2016
     "10.1021/jacs.7b08359": "manual/ja7b08359_si_001.pdf",       # Ranasinghe 2017
+    # admitted 2026-10-22 on reading the supplement (the census had read the
+    # article only, whose figure plots H/T alone)
+    "10.1021/acs.biochem.5b00945": "manual/bi5b00945_si_001.pdf",  # Francis 2016
+    # R67 DHFR at low ionic strength: measured by Yahashiri et al. 2008, whose
+    # article plots H/T only; the matched H/T and D/T values are first printed in
+    # the 2009 supplement (Table S2, mu = 0.15, "ref. [2]")
+    "10.1002/cbic.200900451": "manual/cbic200900451_sup.pdf",    # Yahashiri 2009 SI
 }
 NOT_PARSED = HAND_TRANSCRIBED | set(TRANSCRIBED)
 

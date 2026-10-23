@@ -28,8 +28,11 @@ ecDHFR M42W-F125M                            2.1/5    0.833    0.28   0.590   14
 TSase N177D                                  0.5/3    0.926   -0.30   1.030   24.5     -
 hsDHFR d26-PPLR-d62-PEKN                     9.1/5    0.104    1.50   1.150   27.3   YES
 TSase W80M                                   1.2/3    0.760    1.50   1.550   36.8   YES
-ecDHFR I14A                                  0.4/5    0.994    1.50   1.730   41.1   YES
+R67DHFR WT                                   0.2/1    0.667   -0.03   1.570   37.3   YES
 FDH WT (commercial)                          0.1/5    1.000   -0.19   1.730   41.1   YES
+ecDHFR I14A                                  0.4/5    0.994    1.50   1.730   41.1   YES
+hsDHFR WT (heavy)                           10.4/5    0.066    1.50   1.740   41.3   YES
+hsDHFR WT (light)                            2.7/5    0.751   -0.18   1.750   41.6   YES
 hsDHFR d62-PEKN                              2.5/5    0.778   -0.24   1.760   41.8   YES
 MAOB pH 6.1                                  2.3/9    0.986   -0.21   1.780   42.3   YES
 FDH WT (recombinant)                         3.2/5    0.670   -0.27   1.790   42.5   YES
@@ -37,9 +40,9 @@ ecDHFR M42W                                  6.9/5    0.225    0.80   1.830   43
 hsDHFR F32L                                  0.3/3    0.966   -0.22   1.840   43.7   YES
 TSase WT                                     3.0/3    0.394   -0.09   1.990   47.3   YES
 
-  adequate-fit series                : 24 of 43
+  adequate-fit series                : 27 of 46
   narrowest 95% interval on F        : 0.040  (1.0x the signal)
-  median 95% interval on F           : 0.475  (11.3x the signal)
+  median 95% interval on F           : 1.030  (24.5x the signal)
   series excluding BOTH 0 and F0     : 7
   intervals wholly below F0          : 4  (ecDHFR WT (pH 7.0), ecDHFR Y100F, TSase N177S, FDH half-heavy)
   intervals wholly above F0          : 4  (TSase Y209W, ecDHFR G121V-F125M, ecDHFR M42W-F125M, hsDHFR d26-PPLR-d62-PEKN)
@@ -75,8 +78,8 @@ TSase R166K                                 13.8/3    3.1e-03   -0.50   0.100
 ------------------------------------------------------------------------------------
 C. THE ARTEFACT, QUANTIFIED
 ------------------------------------------------------------------------------------
-  Spearman(log chi2_min, interval width) = -0.209  (p = 0.1777)
-  median width, adequate fits   : 0.475
+  Spearman(log chi2_min, interval width) = -0.238  (p = 0.1110)
+  median width, adequate fits   : 1.030
   median width, inadequate fits : 0.320
   Where worse fits give tighter intervals, that is the signature of
   misspecification, not of information.
@@ -95,7 +98,7 @@ CONCLUSION
 ====================================================================================
 Across the series the model can describe, the narrowest 95% interval on
 the invariant is 0.95 times the separation between the two
-references and the median 11.3 times. The 8 intervals that
+references and the median 24.5 times. The 8 intervals that
 lie wholly on one side of F0 rest on a shared offset, Arrhenius forms and
 chi-square calibration at n_T = 3 to 9, none of which the model-free
 bounds assume; they are not counted as exclusions.

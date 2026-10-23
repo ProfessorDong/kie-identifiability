@@ -355,6 +355,8 @@ def _tex(label):
     label = label.replace("%", "\\%").replace("Mg2+", "Mg$^{2+}$")
     label = re.sub(r", (-?\d+) C \((\w+)\)", r", \1\\,$^{\\circ}$C (\2)", label)
     label = re.sub(r"\(([A-Za-z]+?)(Klinman)?(\d{4})\)", lambda m: f"({m.group(1)} {m.group(3)})", label)
+    for code, shown in corpus._SPACED.items():
+        label = label.replace(code, shown)
     return label.replace(" (hydride)", "").replace("wild type", "WT")
 
 
