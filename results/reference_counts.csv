@@ -1,0 +1,77 @@
+unit,design,n_T,point,gamma_obs_max,lcb,lcb_all_units
+hsDHFR F32M (hydride),shared,4,-0.878238,1.843713,-1.161508,-1.325137
+hsDHFR F32L-PP26N-PEKN62G (hydride),shared,4,-0.693701,2.132522,-0.768404,-0.808025
+TSase N177S (hydride),shared,4,-0.576340,2.485861,-0.653184,-0.699467
+hsDHFR M53W-S145V (hydride),shared,4,-0.540601,2.235388,-0.601321,-0.639710
+TSase N177D (hydride),shared,4,-0.527314,2.553146,-0.770306,-0.916656
+"BSAO p-methoxybenzylamine, 25 C (Rucker1992)",labeled,1,-0.513379,2.860317,-0.764393,-1.003628
+"hsTSase WT (no Mg2+), 25 C (Islam2018)",shared,1,-0.496651,2.344916,-0.546218,-0.596351
+TSase WT (hydride),shared,4,-0.461066,2.439138,-0.509655,-0.535374
+"LADH wild type, 3 C (TsaiKlinman2001)",labeled,1,-0.443214,2.786739,-1.071910,-1.676028
+ecDHFR Y100F (hydride),shared,5,-0.431124,2.481355,-0.466109,-0.481654
+ecDHFR D27S (hydride),shared,5,-0.397781,2.104887,-0.588067,-0.662775
+FDH V123A (hydride),shared,5,-0.396942,2.745171,-0.444960,-0.472263
+"ecDHFR WT (dihydrobiopterin), 25 C (Sen2011)",shared,1,-0.359755,2.829850,-0.435660,-0.508003
+hsDHFR M53W (hydride),shared,4,-0.358037,2.616055,-0.410330,-0.441826
+TSase R166K (proton),shared,4,-0.357791,2.628370,-0.521999,-0.638764
+FDH V123G (hydride),shared,5,-0.322021,2.855215,-0.391496,-0.431000
+FDH heavy (hydride),shared,9,-0.308835,2.879170,-0.440748,-0.469291
+FDH half-heavy (hydride),shared,5,-0.296714,2.829208,-0.441948,-0.505489
+hsDHFR F32L (hydride),shared,4,-0.278375,2.376998,-0.379001,-0.448608
+TSase WT (proton),shared,4,-0.272491,2.391107,-0.342877,-0.391124
+ecDHFR D27S-Y100F (hydride),shared,5,-0.260508,2.488092,-0.418135,-0.480043
+TSase WT (Mg2+) (hydride),shared,4,-0.256334,2.836993,-0.312654,-0.346574
+FDH WT (recombinant) (hydride),shared,5,-0.249560,2.817891,-0.327708,-0.366061
+ecDHFR M42W (hydride),labeled,5,-0.246718,2.856194,-0.374543,-0.447223
+hsDHFR d62-PEKN (hydride),shared,5,-0.236815,2.866966,-0.308344,-0.347806
+ecDHFR I14A (hydride),shared,5,-0.205263,3.002913,-0.260055,-0.291209
+ecDHFR WT (pH 7.0) (hydride),shared,5,-0.200855,2.787307,-0.263920,-0.299778
+hsDHFR S145V (hydride),shared,4,-0.198420,2.687316,-0.288108,-0.351252
+hsDHFR WT (heavy) (hydride),shared,5,-0.198269,2.834233,-0.356258,-0.447202
+"BSAO wild type, 25 C (Grant1989)",labeled,1,-0.195302,3.174750,-0.358284,-0.513617
+MAOB pH 7.5 (abstraction),labeled,3,-0.194424,3.133267,-0.438141,-0.597063
+hsDHFR WT (light) (hydride),shared,5,-0.188923,2.849645,-0.309086,-0.374811
+MAOB pH 6.1 (abstraction),labeled,7,-0.171985,3.171079,-0.417504,-0.546243
+"LADH wild type, 25 C (Bahnson1993)",labeled,1,-0.171918,3.079693,-0.215479,-0.256995
+FDH WT (commercial) (hydride),shared,5,-0.170342,2.971232,-0.357265,-0.449641
+ecDHFR F125M (hydride),shared,5,-0.168053,3.068233,-0.221972,-0.252630
+TSase R166K (hydride),shared,4,-0.161771,3.073646,-0.335935,-0.403862
+TSase WT (Mg2+) (proton),shared,4,-0.161396,2.751165,-0.226611,-0.269290
+TSase Y209W (proton),shared,4,-0.160038,2.972543,-0.338876,-0.446587
+ecDHFR heavy enzyme (hydride),shared,5,-0.157615,3.051832,-0.277120,-0.340319
+ecDHFR G121V (hydride),labeled,5,-0.149106,3.122096,-0.201417,-0.231161
+"LADH V203A, 25 C (Bahnson1997)",labeled,1,-0.134424,3.135925,-0.206655,-0.275496
+hsDHFR d26-PPLR-d62-PEKN (hydride),shared,5,-0.134348,3.051027,-0.195719,-0.230614
+"LADH V203A-F93W, 25 C (Bahnson1997)",labeled,1,-0.132357,3.144329,-0.202937,-0.270205
+"YADH wild type (p-methoxybenzyl alcohol), 25 C (Rucker1992)",labeled,1,-0.132340,3.149165,-0.310866,-0.481013
+"LADH L57V, 25 C (Bahnson1993)",labeled,1,-0.131459,3.144391,-0.198813,-0.263006
+"LADH V203G, 25 C (Bahnson1997)",labeled,1,-0.130588,3.145412,-0.166133,-0.200009
+"ecDHFR WT (Sen 2011), 25 C (Sen2011)",shared,1,-0.120350,3.111405,-0.200310,-0.276517
+"ecTSase Y94F, 25 C (Hong2007)",shared,1,-0.117029,2.609030,-0.300135,-0.619655
+"ecDHFR WT (Sen 2012), 25 C (Sen2012)",shared,1,-0.116226,3.119541,-0.169716,-0.220696
+"ecTSase wild type, 25 C (Hong2007)",shared,1,-0.113271,2.666881,-0.255104,-0.478238
+ecDHFR M42W-F125M (hydride),shared,5,-0.102654,3.136080,-0.262297,-0.339493
+ecDHFR I14A-G121V (hydride),shared,5,-0.088712,3.177869,-0.152980,-0.189523
+LADH wild type (50% MeOH) (hydride),labeled,5,-0.081349,3.210467,-1.052719,-1.543416
+ecDHFR light enzyme (hydride),labeled,6,-0.075942,3.193433,-0.145244,-0.182926
+"LADH V203L, 25 C (Bahnson1997)",labeled,1,-0.075126,3.230850,-0.121098,-0.164913
+ecDHFR G121V-F125M (hydride),shared,5,-0.073953,3.212504,-0.191704,-0.207789
+"LADH ESE chimera, 25 C (Bahnson1993)",labeled,1,-0.072537,3.233178,-0.097991,-0.122250
+ecDHFR W133F (hydride),shared,3,-0.059623,3.229804,-0.158673,-0.223261
+"LADH F93W-I224L, 25 C (ChinKlinman2000)",labeled,1,-0.058695,3.253457,-0.099583,-0.138554
+"R67DHFR wild type, 25 C (Sen2011)",shared,1,-0.056483,3.246890,-0.138861,-0.217373
+"LADH F93W (Chin 2000), 25 C (ChinKlinman2000)",labeled,1,-0.030711,3.298944,-0.066971,-0.101529
+"LADH L57F, 25 C (Bahnson1993)",labeled,1,-0.029309,3.300234,-0.064233,-0.097518
+"LADH F93W-I224A, 25 C (ChinKlinman2000)",labeled,1,-0.027958,3.303815,-0.066040,-0.102336
+"LADH F93W, 25 C (Bahnson1993)",labeled,1,-0.026287,3.306434,-0.048322,-0.069323
+R67DHFR WT (hydride),shared,3,-0.016753,3.319231,-0.117131,-0.169265
+TSase Y209W (hydride),shared,3,-0.009417,3.334195,-0.059381,-0.091644
+TSase W80M (hydride),shared,4,-0.000999,3.347150,-0.100831,-0.160959
+"ecTSase wild type, 20 C (Agrawal2004)",shared,1,0.001969,3.352280,-0.071826,-0.142156
+"LADH F93W, 3 C (TsaiKlinman2001)",labeled,1,0.010887,3.364572,-0.296472,-0.589406
+"LADH F93W-I224V, 25 C (ChinKlinman2000)",labeled,1,0.021242,3.384667,-0.020231,-0.059757
+"LADH F93W-I224G, 25 C (ChinKlinman2000)",labeled,1,0.029263,3.398187,-0.025262,-0.077229
+"YADH wild type, 25 C (Cha1989)",labeled,1,0.128726,3.583716,0.048896,-0.027187
+LADH F93W (40% MeOH) (hydride),labeled,4,0.183343,3.660788,0.032178,-0.058867
+YADH wild type (p-chlorobenzyl alcohol) (hydride),labeled,2,0.332570,4.066023,0.170064,0.050123
+LADH F93W (60% MeOH) (hydride),labeled,2,0.394516,4.100715,0.070326,-0.168948

@@ -107,7 +107,7 @@ def derived():
         # observed secondary ratio 1.31 is only a lower bound on it
         r = yadh_completion_joint(a)
         out.append((f"YADH F_int {lab}", r["F"], 3, ("main", "si")))
-        out.append((f"YADH gamma_int {lab}", r["gamma"], 2, ("main", "si")))
+        out.append((f"YADH gamma_int {lab}", r["gamma"], 2, ("si",)))
     # The BSAO completion detail moved to the supplement when the main text was
     # trimmed; these are SI-only by editorial decision, not by oversight.
     T, m, me = bsao_masking_by_temperature()
@@ -168,7 +168,7 @@ def derived():
     # the two aqueous horse liver records added from Tsai and Klinman
     from partial_id import F_min_exact as _fme
     out.append(("LADH WT 3C endpoint", _fme(9.0, 2.2)[0], 3, ("si",)))
-    out.append(("LADH F93W 3C endpoint", _fme(10.3, 2.0)[0], 3, ("main", "si")))
+    out.append(("LADH F93W 3C endpoint", _fme(10.3, 2.0)[0], 3, ("si",)))
     for lab, KH, KD, r in BENCH:
         out.append((f"endpoint {lab}", endpoint(KH, KD, 0.0, r), 4, ("si",)))
     # yeast reference asymmetry and bypass tolerance at the jointly solved r
@@ -181,7 +181,7 @@ def derived():
         out.append((f"YADH tolerance vs 0 a={a} (%)",
                     100 * float(bypass_tolerance(7.13, 1.73, j["r"], 0.0)), 1, ("si",)))
     c23 = yadh_completion_joint(2.3)
-    out.append(("YADH F_int a=2.3", c23["F"], 3, ("main", "si")))
+    out.append(("YADH F_int a=2.3", c23["F"], 3, ("si",)))
     out.append(("YADH gamma_int a=2.3", c23["gamma"], 2, ("si",)))
     t = mc_yadh_tolerance()
     for lab in ("F0", "zero"):
@@ -200,9 +200,9 @@ def derived():
     # three determinations, which is now what the text says, with these numbers.
     det = ya[ya.note.str.contains("determination")]
     out.append(("YADH SE of 3 determinations, H/T",
-                det.K_HT.std(ddof=1) / np.sqrt(len(det)), 3, ("main", "si")))
+                det.K_HT.std(ddof=1) / np.sqrt(len(det)), 3, ("si",)))
     out.append(("YADH SE of 3 determinations, D/T",
-                det.K_DT.std(ddof=1) / np.sqrt(len(det)), 3, ("main", "si")))
+                det.K_DT.std(ddof=1) / np.sqrt(len(det)), 3, ("si",)))
     return out
 
 
@@ -237,14 +237,16 @@ SI_EQREFS = {
 SI_FIGREFS = {
     # accepted phrasings for the endpoints figure; a pointer check that admits
     # only one wording silently stops checking when the caption is reworded.
-    # Renumbered 2026-10-14 when the overview and envelope figures were added
-    # ahead of these two (atlas 2 -> 3, compatible sets 3 -> 5).
-    3: ("Topology classifies what can be identified",
+    # The atlas is the second main-text figure (it was the third while an
+    # overview figure preceded it).
+    2: ("Topology classifies what can be identified",
         "Reaction pathways constrain the possible bounds"),
     5: ("Identified sets for the primary",
-        "Compatible sets for the primary"),
+        "Compatible sets for the primary",
+        "Allowed ranges for the primary"),
     # the joint binding-bypass contour table takes its cells from Fig. 6 data
-    6: ("A bound becomes a measured offset",),
+    6: ("A bound becomes a measured offset",
+        "Independent kinetic information permits recovery of an intrinsic offset"),
 }
 
 
@@ -466,7 +468,7 @@ AI_TERMS = ("chatgpt", "openai", "anthropic", "claude", "copilot", "gemini",
             "gpt-", "large language model", "language model", "generative ai",
             "artificial intelligence", "ai-assisted", "ai assisted",
             "ai-generated", "ai generated", "co-authored-by", "chatbot",
-            "machine-generated", "llm")
+            "machine-generated", "llm", "codex")
 
 
 def _corpus_records():
@@ -516,18 +518,19 @@ def check_provenance_split():
     by_hand = _corpus_records() - parsed - n_aud
     si = " ".join(DOCS["si"].read_text().split())
     main = " ".join(DOCS["main"].read_text().split())
-    for label, need, doc, text in (
+    requirements = (
             ("SI parsed total", f"${parsed}$ of the ${len(d)}$ benchmark records", "si", si),
             ("SI value count", f"${parsed * 4}$ values", "si", si),
             ("SI pdf values", f"{n_pdf * 4} values", "si", si),
             ("SI audited records", f"${n_aud}$ records, every one of the ${n_aud * 4}$ values", "si", si),
             ("SI audit total", f"the audit covers ${(n_pdf + n_aud) * 4}$ values", "si", si),
-            ("SI series by hand", f"{_nw(n_hand)} temperature-resolved records were transcribed by hand", "si", si),
-            # since 2026-10-21 the main text keeps the accounting in Methods only
-            ("methods parsed total", f"{parsed} records in all", "main", main),
-            ("methods audited", f"A further {n_aud} records were transcribed from supplementary PDFs", "main", main),
-            ("methods audited values", f"each of their {n_aud * 4} values", "main", main),
-            ("methods hand", f"The remaining {by_hand} were transcribed by hand", "main", main)):
+            ("SI series by hand", f"{_nw(n_hand)} temperature-resolved records were transcribed by hand", "si", si))
+    # The Methods point to the supplement for the source accounting, which the
+    # supplement states in full: both the pointer and the aggregate are needed.
+    requirements += (
+        ("SI aggregate by hand", f"these make ${by_hand}$ records checked against page images", "si", si),
+        ("methods source pointer", "Supplementary Note~6 gives the admission rule, source census and transcription checks", "main", main))
+    for label, need, doc, text in requirements:
         if need not in text:
             print(f"  FAIL provenance: {doc} does not state {need!r} ({label})")
             bad += 1
@@ -675,9 +678,9 @@ def check_precision_limited_count():
     # caption, the results paragraph, the abstract and the conclusions; the SI's
     # Agrawal paragraph)
     need = {"main": ((f"{word} fail on precision alone",),
-                     (f"for {word} of the remaining {rest} the endpoint",),
+                     (f"for {word} units the lower limit exceeds",),
                      (f"{word} more are limited by precision",),
-                     (f"and {word} more are limited by precision",)),
+                     (f"{word} are limited by precision, and six give nominal per-unit exclusions",)),
             "si": ((f"one of the {word} units whose endpoint exceeds",),)}
     bad = 0
     for tag, groups in need.items():
@@ -715,7 +718,8 @@ def check_ladh_zero_claim():
         want = "every"
     else:
         want = f"{_nw(n_zero)} of the {_nw(n_tot)}"
-    for tag, path in (("main", DOCS["main"]), ("si", DOCS["si"])):
+    # The case-by-case count is now stated in the SI only.
+    for tag, path in (("si", DOCS["si"]),):
         t = " ".join(path.read_text().split()).lower()
         if want not in t:
             print(f"  FAIL LADH: {tag} does not say '{want}' "
@@ -723,7 +727,7 @@ def check_ladh_zero_claim():
             bad += 1
     if not bad:
         print(f"  horse liver: {n_zero} of {n_tot} sets contain zero, "
-              f"stated as '{want}' in both documents")
+              f"stated as '{want}' in the SI")
     return bad
 
 
@@ -804,11 +808,10 @@ def check_corpus():
     # Phrases, not bare numbers: "97" occurs inside "1997", so the old bare test
     # passed on a document that still said 96 (found 2026-09-14).
     R, U = CORPUS["records"], CORPUS["units"]
-    # The phrasings since the census of 2026-10-20 (abstract, the data section's
-    # opening count and unit count, and the SI's data note).
-    for d, phrases in (("main", (f"all {R} eligible matched records, in {U} analysis units",
-                                 f"The census yields {R} matched records",
-                                 f"single-condition record is one of {U} analysis units")),
+    # Counts in the abstract, the corpus section and the SI data note.
+    for d, phrases in (("main", (f"{R} published pairs grouped into {U} analysis units",
+                                 f"The census contains {R} matched records",
+                                 f"single-condition record is one \\emph{{analysis unit}}, giving {U} units")),
                        ("si", (f"the ${R}$ matched records form {U} analysis units",))):
         t = " ".join(DOCS[d].read_text().split())
         for ph in phrases:
@@ -954,6 +957,7 @@ def check_reference_asymmetry():
         # so both letters are matched, and a document quoting no range fails
         # rather than passing on nothing.
         found = re.findall(r"\$[rR]=(\d\.\d\d)\$ to \$(\d\.\d\d)\$", txt)
+        found += re.findall(r"\$R=(\d\.\d\d)(?:\$--\$|--)(\d\.\d\d)\$", txt)
         found += re.findall(r"\$[rR]\$ (?:runs|running) from \$(\d\.\d\d)\$[^$]*?"
                             r"(?:\$[^$]*\$[^$]*?)*? to \$(\d\.\d\d)\$", txt)
         if not found:
@@ -980,8 +984,8 @@ def check_promoting_mode():
     which the sensitivity peak moves were hand-typed.  On 2026-09-14 the
     reference review found the text arguing from the 50 cm^-1 span, so each is
     now recomputed: every "$s|\Fz|$ at $nu$~cm$^{-1}$" pair in either document
-    must match offset_vs_T at A = 5, w0 = 0.5 over 250-350 K, all four quoted
-    wavenumbers must appear in both, and the crossover and peak range must agree
+    must match offset_vs_T at A = 5, w0 = 0.5 over 250-350 K, all four detailed
+    spans must appear in the SI, and the crossover and peak range must agree
     with sensitivity_peak over the sweep A in [1, 50], w0 in [0.1, 2].
     """
     from completion import CM_TO_K, F0 as _F0, offset_vs_T, sensitivity_peak
@@ -1004,10 +1008,10 @@ def check_promoting_mode():
                       f"completion.py gives {want}")
                 bad += 1
         for nu in span:
-            if nu not in seen:
+            if doc == "si" and nu not in seen:
                 print(f"  FAIL promoting mode: {doc} does not quote the span at {nu} cm-1")
                 bad += 1
-        if not re.search(rf"is\s+\${cross}\$~cm", t):
+        if not re.search(rf"(?:is|or)\s+\${cross}\$~cm", t):
             print(f"  FAIL promoting mode: {doc} does not give the crossover as {cross} cm-1")
             bad += 1
         if not re.search(rf"between\s+\${lo}\$\s+and\s+\${hi}\$~cm", t):
@@ -1015,7 +1019,7 @@ def check_promoting_mode():
             bad += 1
     if not bad:
         print("  promoting mode: spans " + ", ".join(f"{span[n]:.2f} at {n}" for n in span)
-              + f"; crossover {cross}; peak {lo}-{hi} cm-1, in both documents")
+              + f" in SI; crossover {cross}; peak {lo}-{hi} cm-1, in both documents")
     return bad
 
 
@@ -1069,14 +1073,13 @@ def check_corpus_consequences():
     b0s = f"{b0:+.4f}" if round(b0, 3) == 0 else f"{b0:+.3f}"
     need("si", f"correction across the {W[u]} gives ${b0s}$ under independence "
                f"and ${b1:+.3f}$ at $\\rho=-1$", "the Bonferroni bounds")
-    need("main", f"survives multiplicity only under independence (${b0s}$)",
-         "the Bonferroni bound under independence (main)")
+    need("si", f"gives ${b0s}$ under independence and ${b1:+.3f}$ at $\\rho=-1$", "the Bonferroni bounds retained in SI")
     need("si", f"the margin over $\\Fz$ is ${b1 - F0:.3f}$", "the simultaneous margin")
     need("si", f"Bonferroni-corrected bound at that correlation by ${b1 - F0:.3f}$",
          "the simultaneous margin (joint-nuisance note)")
-    need("main", f"singled out from {W[u]} examined", "the multiplicity denominator")
+    need("main", f"After adjustment across all {u} units", "the multiplicity denominator")
     need("si", f"singled out from {W[u]} examined", "the multiplicity denominator")
-    need("main", f"applied uniformly to all {W[u]} units", "the unit count")
+    need("main", f"adjustment across the ${u}$ analysis units", "the unit count in the exclusion table caption")
     # the monotonicity condition of E(phi), and the Theorem 1 forecast
     # over the admissible records (K_HT > K_DT > 1); since 2026-10-13 one
     # record (wild type in 50% methanol at -50 C, K_DT = 0.99) is not, and it
@@ -1157,9 +1160,9 @@ def check_corpus_consequences():
     need("si", f"For the {_nw(shared)} the question does not arise", "the shared-tracer count")
     need("si", f"and {_nw(assumed)} cannot be checked at all", "the assumed count")
     need("si", f"The {_nw(inferred + assumed)} forms whose protocols place deuterium", "the labeled count")
-    need("main", f"Across {_nw(inferred)} of the {_nw(forms)} enzyme forms", "the form count")
-    need("main", f"For {_nw(shared)} forms the same tritiated molecule", "the shared-tracer count")
-    need("main", f"In the remaining {_nw(assumed)}, dihydrofolate reductase mutants", "the assumed count")
+    need("main", f"In {inferred} of the {forms} enzyme forms", "the inferred and total form counts")
+    need("main", f"For {shared} forms the same tritiated molecule", "the shared-tracer count")
+    need("main", f"The remaining {_nw(assumed)} dihydrofolate reductase mutants", "the assumed count")
     # the confidence procedure for temperature series (corrected 2026-09-14):
     # its simulated failure rate and Monte Carlo precision
     import bounds_uncertainty as BU
@@ -1168,18 +1171,17 @@ def check_corpus_consequences():
     reps = inspect.signature(BU.coverage_check).parameters["reps"].default
     old_rate, new_rate = BU.coverage_check()
     se = 100 * np.sqrt(old_rate * (1 - old_rate) / reps)
-    need("main", f"true maximum in ${100 * old_rate:.0f}\\%$ of $2\\times10^{{4}}$ simulated "
-                 f"trials (binomial standard error ${se:.1f}\\%$)",
-         "the simulated failure rate of the old procedure, with its trial count")
+    need("main", "Supplementary Notes~10 and~18 specify the error model, inadmissible draws, series construction and coverage checks",
+         "the Methods pointer to the coverage details")
+    need("si", f"it failed in ${100 * old_rate:.0f}\\%$ of $2\\times10^4$ trials "
+                 f"(binomial standard error ${se:.1f}\\%$)", "the old procedure's failure rate and trial count")
     if reps != 20000:
         print(f"  FAIL corpus consequences: coverage_check runs {reps} trials, text says 2x10^4")
         bad += 1
-    need("main", f"and the corrected bound in ${100 * new_rate:.1f}\\%$",
-         "the simulated failure rate of the corrected procedure")
+    need("si", f"compared with ${100 * new_rate:.1f}\\%$ for the adjusted construction", "the corrected procedure's failure rate")
     mc = bu.lcb_mc_sd.max()
     e = int(np.floor(np.log10(mc)))
-    need("main", f"largest Monte Carlo standard deviation ${mc / 10 ** e:.1f}\\times10^{{{e}}}$",
-         "the Monte Carlo precision of the bounds")
+    need("main", f"largest between-replication standard deviation is ${mc / 10 ** e:.1f}\\times10^{{{e}}}$", "the Monte Carlo precision of the bounds")
     # Isotopic purity (Supplementary Note on the deuterated comparators, added
     # 2026-10-20; rebuilt 2026-10-21 after an external audit found the contaminant
     # rate wrong for dideuterated designs, the H/T error dropped from corrected
@@ -1209,11 +1211,9 @@ def check_corpus_consequences():
                f"${rc.undo0_all:+.3f}$ and ${rc.undo5_all:+.3f}$",
          "the p-chlorobenzyl alcohol bounds without the correction")
     # (a numbers-only fallback here let a stale unit count pass; removed 2026-10-22)
-    need("main", f"leaves the benzyl alcohol bound at ${rb.undo0:+.3f}$",
-         "the benzyl alcohol bound without its correction (main)")
-    need("main", f"well it falls to ${rb.undo0_all:+.3f}$", "the combined benzyl alcohol bound (main)")
-    need("main", f"and removal of its correction together (${rc.undo0_all:+.3f}$)",
-         "the combined p-chlorobenzyl alcohol bound (main)")
+    need("main", "leaves the benzyl-alcohol per-unit bound above $\\Fz$", "the per-unit benzyl correction conclusion (numeric bound checked in SI above)")
+    need("main", f"lowers the {u}-unit bound to ${rb.undo0_all:+.3f}$", "the combined benzyl alcohol bound")
+    need("main", f"result remains above $\\Fz$ (${rc.undo0_all:+.3f}$) when multiplicity, adverse correlation and removal of a correction reconstructed from the cited method are combined", "the combined p-chlorobenzyl alcohol bound")
     pn0, pn5 = IP.protium_needed(yb, 0.0), IP.protium_needed(yb, 0.5)
     need("si", f"at least ${100 * pn0:.2f}\\%$ protium (small conversion) or ${100 * pn5:.2f}\\%$",
          "the protium level the combined benzyl alcohol claim needs",
@@ -1262,11 +1262,10 @@ def check_corpus_consequences():
     from completion import yadh_completion_joint, bypass_tolerance
     t13 = 100 * float(bypass_tolerance(7.13, 1.73, yadh_completion_joint(1.3)["r"], F0))
     t73 = 100 * float(bypass_tolerance(7.13, 1.73, yadh_completion_joint(7.3)["r"], F0))
-    need("main", f"less than ${t13:.0f}\\%$ to ${t73:.0f}\\%$ of the", "the yeast bypass tolerance")
-    # the Discussion now gives both thresholds; this one is against F0
-    need("main", f"${t13:.0f}\\%$ to ${t73:.0f}\\%$ to reach the gated envelope",
-         "the yeast bypass tolerance against F0 (Discussion)",
-         (f"Removing exclusion of the gated envelope requires ${t13:.0f}\\%$ to ${t73:.0f}\\%$",))
+    need("main", f"survives a bypass below ${t13:.0f}\\%$--${t73:.0f}\\%$ of the tritium chemical rate", "the yeast bypass tolerance against F0")
+    # The tolerance must retain its conditional interpretation, not be
+    # presented as a joint fit when r was inferred without a bypass.
+    need("main", "Because $r$ was inferred without a bypass, these are sensitivity calculations, not a joint fit", "the bypass-tolerance conditional interpretation")
     # the profile-likelihood stratification must say what its own table shows
     # (until 2026-09-14 it said no adequately fitting series discriminates)
     from scipy import stats as _st
@@ -1307,8 +1306,8 @@ def check_corpus_consequences():
     if abs(eb - (fe - 1.645 * se)) > 5e-4:
         print("  FAIL corpus consequences: ecTSase exact bound departs from the open-branch form")
         bad += 1
-    need("main", f"endpoint $+{fe:.3f}$", "the ecTSase endpoint", (f"endpoint of ${fe:+.3f}$",))
-    need("main", f"bound ${eb:.3f}$", "the ecTSase bound", (f"bound of ${eb:.3f}$",))
+    need("si", f"$F_{{\\mathrm{{obs}}}}={fe:+.3f}$", "the ecTSase endpoint (detailed case retained in SI)")
+    need("si", f"bound at $\\rho=-1$ is ${eb:.3f}$", "the ecTSase bound (detailed case retained in SI)")
     need("si", f"$L_H={lh:.2f}>\\gSC$", "the ecTSase L_H")
     need("si", f"$F_{{\\mathrm{{obs}}}}={fe:+.3f}$", "the ecTSase endpoint")
     need("si", f"at $\\rho=-1$ is ${fe - 1.645 * se:.3f}$", "the ecTSase bound")
@@ -1323,7 +1322,7 @@ def check_corpus_consequences():
                    f"${float(j['xD']):.3f}$ & ${j['gamma']:.2f}$ & ${j['F']:+.3f}$\\\\",
              f"the yeast completion table row a={a}")
     if not bad:
-        print(f"  corpus consequences: Bonferroni over {u} units ({b0:+.3f}, {b1:+.3f}, "
+        print(f"  corpus consequences: Bonferroni over {c['units']} units ({b0:+.3f}, {b1:+.3f}, "
               f"margin {b1 - F0:.3f}); {forms} protocol forms; all {n_adm} admissible records "
               f"monotone and forecast; ecTSase endpoint {fe:+.3f}, bound {fe - 1.645 * se:.3f}")
     return bad
@@ -1359,8 +1358,7 @@ def check_scope_corrections():
     ic, sl = J.envelope_r(0.0), J.envelope_r(0.0) - J.envelope_r(1.0)
     rhi = float(yadh_joint_r(1.3))
     fails, tight, where = _envelope_r_result()   # failures are counted by check_envelope
-    need("main", f"$r$ stipulated anywhere from ${J.R_RANGE[0]:.2f}$ to ${rhi:.2f}$",
-         "the stipulated r range")
+    need("main", f"stipulated $r\\in[{J.R_RANGE[0]:.2f},{rhi:.2f}]$", "the stipulated r range")
     need("main", f"$F_{{\\mathrm{{bind}}}}\\le{ic:.3f}-{sl:.3f}\\,\\phi$", "the r-range joint line")
     need("si", f"\\ge\\ {ic:.3f}-{sl:.3f}\\,\\phi_{{\\mathrm H}}", "the r-range joint line")
     need("si", f"nonvacuous for $\\phi_{{\\mathrm H}}\\le{ic / sl:.3f}$", "where the line is nonvacuous")
@@ -1374,9 +1372,7 @@ def check_scope_corrections():
     z73 = 100 * float(bypass_tolerance(7.13, 1.73, yadh_completion_joint(7.3)["r"], 0.0))
     # phi is a ratio to the TRITIUM chemical rate (2026-10-15 audit): the text
     # names that rate rather than "the isotope-sensitive rate"
-    need("main", f"a bypass faster than ${z13:.0f}\\%$ to ${z73:.0f}\\%$ of the tritium chemical rate "
-                 f"removes the yeast exclusion",
-         "the yeast bypass tolerance against the semiclassical locus")
+    need("si", f"${z73:.1f}\\%$ to ${z13:.1f}\\%$ against the semiclassical locus", "the yeast bypass tolerance against the semiclassical locus (detail retained in SI)")
     t = mc_yadh_tolerance()
     need("si", f"intact with probability ${t['F0']['p10']:.2f}$, and one of a twentieth with "
                f"probability ${t['F0']['p05']:.3f}$", "the tolerance probabilities")
@@ -1467,7 +1463,7 @@ def check_source_fidelity():
     Fh = np.log(avg.K_HT) - GSC * np.log(avg.K_DT)
     s1 = avg.K_HT_se / avg.K_HT + GSC * avg.K_DT_se / avg.K_DT
     k = (Fh - F0) / (norm.ppf(1 - 0.05 / u) * s1)
-    need("main", f"or by ${100 * (k - 1):.0f}\\%$ once the multiplicity adjustment", "the combined margin")
+    need("si", f"an understatement of only ${100 * (k - 1):.1f}\\%$ brings the bound down to $\\Fz$", "the combined error-inflation margin (detail retained in SI)")
     need("si", f"an understatement of only ${100 * (k - 1):.1f}\\%$ brings the bound down to $\\Fz$",
          "the combined margin")
     # Cha Table 2: four D/T determinations, three paired
@@ -1486,11 +1482,12 @@ def check_source_fidelity():
     b3, b5 = (isotope_error_budget(avg.K_HT, avg.K_DT, avg.K_HT_se, avg.K_DT_se,
                                    m * (avg.K_HT - 1), 1.3107) for m in (3, 5))
     for doc in ("main", "si"):
-        need(doc, f"${b3[0]:.3f}$ at $\\rho=0$ and ${b3[1]:.3f}$ at $\\rho=-1$", "the isotope-error budget at m = 3")
+        need(doc, f"${b3[0]:.3f}$ at $\\rho=0$ and ${b3[1]:.3f}$ at $\\rho=-1$", "the isotope-error budget at m = 3",
+             (f"${b3[0]:.3f}$ for $\\rho=0$ and ${b3[1]:.3f}$ for $\\rho=-1$",))
     need("si", f"${b5[0]:.3f}$ and ${b5[1]:.3f}$ at $m=5$", "the isotope-error budget at m = 5")
     need("si", f"cut to ${100 * abs(F0) / 2 / b3[0]:.0f}\\%$ ($\\rho=0$) or ${100 * abs(F0) / 2 / b3[1]:.0f}\\%$ ($\\rho=-1$)",
          "the isotope precision required")
-    need("main", f"already above $|\\Fz|/2={abs(F0) / 2:.3f}$", "the design target")
+    need("main", f"exceeding the target $|\\Fz|/2={abs(F0) / 2:.3f}$", "the design target")
     # mixed labeling: ordered maps deflate, anti-ordered inflate
     n, nbad, worst, lifted = ML.check_ordered()
     if nbad:
@@ -1577,7 +1574,7 @@ def check_readiness_scope():
     # binding on the closed branch
     args = (1.05, 1.05, 0.95, 0.95)
     e0, e1 = _fme(3.0, 1.8)[0], F_min_binding(3.0, 1.8, *args)
-    need("main", f"still lower the endpoint by ${e0 - e1:.3f}$", "the closed-branch binding shift")
+    need("main", "mass-scaled binding equilibrium need not leave a closed-branch limit unchanged", "the closed-branch binding caveat (numeric counterexample checked in SI)")
     need("si", f"the endpoint falls from ${e0:.3f}$ to ${e1:.3f}$", "the closed-branch binding example")
     if abs(F_min_binding(7.13, 1.73, *args) - _fme(7.13, 1.73)[0]) > 1e-12:
         print("  FAIL readiness scope: yeast endpoint moves under an F_bind = 0 perturbation")
@@ -1585,8 +1582,8 @@ def check_readiness_scope():
     # plug-in coverage of the single-record bound
     y = BU.plugin_coverage(7.13, 0.07, 1.73, 0.02, 0.05)
     h = BU.plugin_coverage(2.0, 0.2, 1.1, 0.001, 0.05)
-    need("main", f"fails in ${100 * y:.1f}\\%$ of trials for the yeast errors", "the yeast coverage")
-    need("main", f"but in ${100 * h:.1f}\\%$ for a hypothetical pair", "the counterexample coverage")
+    need("main", f"failure rates ${100 * y:.1f}\\%$ for the yeast errors", "the yeast coverage")
+    need("main", f"and ${100 * h:.1f}\\%$ for a hypothetical pair", "the counterexample coverage")
     # t-tail sensitivity of the multiplicity-adjusted yeast bound
     u = corpus.counts()["units"]
     F = np.log(7.13) - GSC * np.log(1.73)
@@ -1597,7 +1594,7 @@ def check_readiness_scope():
         print("  FAIL readiness scope: yadh_robustness.t_tail_bound disagrees with the audit")
         bad += 1
     tp = YR.pchloro_series(u)["t10"]
-    need("main", f"bounds at $\\rho=-1$ then fall to ${tb:.3f}$ and ${tp:.3f}$,", "the t-tail sensitivity")
+    need("main", f"lowers these adjusted bounds to ${tb:.3f}$ and ${tp:.3f}$, below $\\Fz$", "the t-tail sensitivity")
     # the main text cites Note 18 for this number; until 2026-10-16 the SI gave none
     need("si", f"at $\\rho=-1$ falls to ${tb:.3f}$, below $\\Fz$", "the t-tail sensitivity (SI)")
     # house style: no em dashes in the manuscript or the supplement
@@ -1678,7 +1675,7 @@ def check_external_audit_2026_10_12():
     g = [v[1] for v in sp.values()]
     need("si", f"moves by ${min(g):.3f}$ to ${max(g):.3f}$, against a distance of",
          "the exponent span")
-    need("main", f"moves by at most ${max(g):.3f}$ over the same interval", "the exponent span")
+    need("si", f"moves by ${min(g):.3f}$ to ${max(g):.3f}$, against a distance of", "the exponent span (detail retained in SI)")
     sv, cond = C.fisher_example()
     e1, e2 = (int(np.floor(np.log10(v))) for v in sv[1:])
     ec = int(np.floor(np.log10(cond)))
@@ -1701,7 +1698,8 @@ def check_external_audit_2026_10_12():
         bad += 1
     pe = int(np.floor(np.log10(f["p"])))
     for doc in ("main", "si"):
-        need(doc, f"$\\chi^{{2}}={f['chi2']:.1f}$ on ${f['dof']}$ degrees of freedom", "the pooled fit")
+        need(doc, f"$\\chi^{{2}}={f['chi2']:.1f}$ on ${f['dof']}$ degrees of freedom", "the pooled fit",
+             (f"$\\chi^2={f['chi2']:.1f}$ on {_nw(f['dof'])} degrees of freedom",))
     need("si", f"$p={f['p'] / 10 ** pe:.0f}\\times10^{{{pe}}}$", "the pooled fit p value")
     F1, F2 = f["witness_F"]
     need("main", f"offsets ${F1:+.3f}$ and ${F2:+.3f}$", "the pooling witness")
@@ -1719,9 +1717,8 @@ def check_external_audit_2026_10_12():
     import corpus
     u = corpus.counts()["units"]
     b1, bu = YR.correlation_free_bound(), YR.correlation_free_bound(units=u)
-    need("main", f"two effects gives ${b1:+.3f}$", "the correlation-free bound")
-    need("main", f"no assumption about the correlation at all (${bu:.3f}$)",
-         "the correlation-free multiplicity bound")
+    need("main", "Bounds based on separate marginal limits, without a correlation assumption, also clear both thresholds before adjustment across units", "the correlation-free per-unit conclusion (numeric bounds checked in SI)")
+    need("main", "The supplement also reports the correlation-free adjusted bounds", "the correlation-free multiplicity pointer (numeric bounds checked in SI)")
     need("si", f"For the yeast average this gives ${b1:+.3f}$", "the correlation-free bound")
     need("si", f"it gives ${bu:.3f}$, still above $\\Fz$ by ${bu - F0:.3f}$",
          "the correlation-free multiplicity bound")
@@ -1800,7 +1797,8 @@ def check_generated_tables():
     return bad
 
 
-FIGURE_EXPORTERS = ("export_fig_overview", "export_fig_envelope", "export_fig_design")
+FIGURE_EXPORTERS = ("export_fig_overview", "export_fig_envelope", "export_fig_design",
+                    "export_fig_example")
 
 
 def check_figure_data():
@@ -1903,6 +1901,8 @@ def check_source_review_2026_10_13():
     from scipy import stats
     main = " ".join(DOCS["main"].read_text().split())
     si = " ".join(DOCS["si"].read_text().split())
+    # Per-correlation methanol detail is retained in the included SI table.
+    si += " " + " ".join((DOCS["si"].parent / "si_extra_tables.tex").read_text().split())
     bad = 0
 
     def need(doc, text, what):
@@ -1921,9 +1921,11 @@ def check_source_review_2026_10_13():
         s = b[(b.family == "LADH") & (b.variant == v)]
         pt = s[s.rho == 0.0].point.iloc[0]
         l1, l0 = s[s.rho == -1.0].lcb.iloc[0], s[s.rho == 0.0].lcb.iloc[0]
-        need("main", f"${pt:+.3f}$", f"the {hi}% methanol endpoint")
-        need("main", f"${l1:+.3f}$", f"the {hi}% methanol bound at rho = -1")
-        need("main", f"${l0:+.3f}$", f"the {hi}% methanol bound under independence")
+        need("si", f"${pt:+.3f}$", f"the {hi}% methanol endpoint")
+        need("si", f"${l1:+.3f}$", f"the {hi}% methanol bound at rho = -1")
+        table_variant = v.replace("%", "\\%")
+        need("si", f"LADH {table_variant} & ${pt:.4f}$ & ${l1:.3f}$ & ${l0:.3f}$",
+             f"the {hi}% methanol point and rho=-1/0 bounds in the included SI table")
         if not (l1 > F0 and l1 > 0):
             print(f"  FAIL source review: {v} no longer clears both thresholds")
             bad += 1
@@ -1963,14 +1965,14 @@ def check_source_review_2026_10_13():
             if not (hl > dh > 1 and (hl - 1) / (dh - 1) >= GSC):
                 print(f"  FAIL source review: {v} multiplicity bound leaves the open branch")
                 bad += 1
-            need("main", f"${m:+.3f}$", f"the {v} multiplicity bound at rho = {rho:+.0f}")
+            need("si", f"${m:+.3f}$", f"the {v} multiplicity bound at rho = {rho:+.0f}")
     # credit and convention fixes that must not regress
     for doc, text, what in (
             ("main", "Eq.~(7) of Siebrand and Smedarchina", "credit for the averaged overlap"),
             ("si", "Proposition~S1 is Eq.~(7) of Siebrand and", "credit for Proposition S1"),
             ("main", "\\cite{Sikorski2004}", "credit for the light-enzyme data"),
             ("main", "\\cite{KingAltman1956}", "the King-Altman citation"),
-            ("main", "reciprocal of the commitment evaluated with the tritium rate",
+            ("main", "c=\\frac{1}{C_{\\mathrm T}}=\\frac{k_{\\mathrm{off}}}{k_{\\mathrm T}}",
              "the commitment convention")):
         need(doc, text, what)
     for doc, text in (("main", "inverse of the commitment to catalysis in the usual convention"),
@@ -2023,9 +2025,10 @@ def check_light_example():
     bad = 0
     for doc, text, need_ in (
             ("main", main, f"crosses the ray at $c={c1:.1f}$ (open circle)"),
-            ("main", main, f"recovers an intrinsic H/T effect of ${xh:.1f}$, against the "
-                           f"$6.18\\pm0.39$ ($95\\%$ interval) the source reports"),
-            ("main", main, f"so $r\\ge{R:.3f}$ and the crossing moves to $c\\ge{cR:.1f}$"),
+            ("main", main, f"Imposing the reference selects an intrinsic H/T effect of ${xh:.1f}$, close to "
+                           f"the source's Northrop-derived $6.18\\pm0.39$ ($95\\%$ interval)"),
+            ("main", main, f"If the lower bound inferred from secondary effects at $25\\,^{{\\circ}}$C also holds at $5\\,^{{\\circ}}$C, $r\\ge{R:.3f}$ "
+                           f"and the crossing moves to $c\\ge{cR:.1f}$"),
             ("si", si, f"$R={R:.3f}\\pm{rse:.3f}$ at $25\\,^{{\\circ}}$C")):
         if need_ not in text:
             print(f"  FAIL light example: {doc} does not state {need_!r}")
@@ -2089,11 +2092,10 @@ def check_audit_2026_10_15():
              f"the {pct}% retained rows")
     lo40 = cd[(cd.variant == "F93W (40% MeOH)") & (cd.omitted_T == 3.0)].bound.iloc[0]
     lo60 = cd[(cd.variant == "F93W (60% MeOH)") & (cd.omitted_T == 3.0)].bound.iloc[0]
-    need("main", f"the bounds fall to ${lo40:+.3f}$ and ${lo60:+.2f}$", "the deletion bounds")
+    need("main", f"deleting it lowers the confidence bounds to ${lo40:+.3f}$ and ${lo60:+.2f}$", "the deletion bounds")
     # D. nominal per-unit wording and the multiplicity survivor
-    need("main", "Six units give nominal per-unit exclusions", "the abstract qualifier")
-    need("main", "Only the two yeast exclusions survive adjustment across all units",
-         "the abstract multiplicity")
+    need("main", "Six give nominal exclusions", "the abstract qualifier")
+    need("main", "Two yeast alcohol dehydrogenase results survive adjustment across all units at adverse error correlation", "the abstract multiplicity qualifier")
     u = corpus.counts()["units"]
     sc = corpus.single_condition()
     # which units survive Bonferroni across all units at rho = -1, computed: it
@@ -2118,8 +2120,8 @@ def check_audit_2026_10_15():
     # F. a finite member of the model, not a pair on the unattained envelope
     bad += J.check_finite_witness(verbose=False)
     wt = J.finite_witness()
-    need("main", f"$\\mathcal{{A}}=3.2\\times10^{{5}}$ and $w={wt['w']:.0f}$", "the witness parameters")
-    need("main", f"$F^{{\\mathrm{{int}}}}={wt['F_int']:.4f}<\\Fz$", "the witness offset")
+    need("si", f"$\\Ag={wt['A']/1e5:.2f}\\times10^{{5}}$ and $w={wt['w']:.0f}$", "the finite witness parameters (detail retained in SI)")
+    need("main", f"finite ground-channel model with $F^{{\\mathrm{{int}}}}={wt['F_int']:.4f}$ reproduces the observed pair", "the finite witness offset and role")
     need("si", f"$x_{{\\mathrm H}}={wt['xH']:.4f}$ and $x_{{\\mathrm D}}={wt['xD']:.4f}$", "the witness pair")
     need("si", f"$\\Ag={wt['A']/1e5:.2f}\\times10^{{5}}$ and $w={wt['w']:.0f}$", "the witness parameters (SI)")
     # I. the large-commitment candidate equals the exact endpoint where used
@@ -2235,7 +2237,7 @@ def check_tables_2026_10_15():
 
     for f in ("sm_table_ladhprim.tex", "sm_table_stoj.tex", "sm_table_vibronic.tex"):
         need("si", f"\\input{{{f}}}", f"the generated {f}")
-    need("main", f"it clears $\\Fz$ only for $\\rho>{cr:.2f}$", "the F93W clearing correlation")
+    need("si", f"F93W record clears it only for $\\rho>{cr:.2f}$", "the F93W clearing correlation (detail retained in SI)")
     need("si", f"for $\\rho>{cr:.2f}$ (\\texttt{{adh\\_primary.clearing\\_rho}})",
          "the F93W clearing correlation (SI)")
     need("si", f"$\\langle F\\rangle={st['mean']:.3f}$ and $\\max|F|={st['max_abs']:.3f}$",
@@ -2293,7 +2295,7 @@ def check_consistency_2026_10_16():
     if nums != list(range(1, len(nums) + 1)):
         fail(f"propositions appear out of order: {nums}")
     m = re.search(r"\\textbf\{Proposition S(\d+)\.\} \\emph\{For the reversible scheme", raw)
-    if not m or f"(Supplementary Proposition~S{m.group(1)})" not in main:
+    if not m or f"Proposition~S{m.group(1)}" not in main:
         fail("main text does not cite the reversible-scheme proposition by its number")
     u = corpus.counts()["units"]
     tb = pd.read_csv("../data/trinomial_benchmark.csv")
@@ -2406,6 +2408,58 @@ def check_bounds_2026_10_21():
     return bad
 
 
+def _check_reference_lists(raw_m, raw_s):
+    """Every key a document cites must resolve, once, in its own reference file.
+
+    Where the main text also carries a sentence listing the keys that only the
+    supplement cites, that list must be complete and must not repeat a key the
+    main text cites elsewhere (18 census sources were missing from such a list
+    until 2026-10-21).
+    """
+    bad = 0
+    cite_pattern = (r"\\(?:cite(?:p|t|alp|alt|author|yearpar|year|num)?|onlinecite)"
+                    r"\*?(?:\s*\[[^]]*\]){0,2}\s*\{([^}]*)\}")
+    keys = lambda text: {k.strip() for group in re.findall(cite_pattern, text)
+                         for k in group.split(",")}
+    for tag, raw in (("main", raw_m), ("si", raw_s)):
+        active = re.sub(r"(?<!\\)%[^\n]*", "", raw)
+        cited = keys(active)
+        bib_path = DOCS[tag].parent / "references.bib"
+        if not bib_path.is_file():
+            print(f"  FAIL text 2026-10-21: {tag} bibliography missing: {bib_path}")
+            bad += 1
+            continue
+        bib = re.sub(r"(?<!\\)%[^\n]*", "", bib_path.read_text())
+        entries = re.findall(r"^\s*@(?!comment\b|string\b|preamble\b)"
+                             r"\w+\s*[({]\s*([^,\s]+)\s*,", bib,
+                             flags=re.MULTILINE | re.IGNORECASE)
+        missing = cited - set(entries)
+        duplicate = {key for key in cited if entries.count(key) > 1}
+        if missing:
+            print(f"  FAIL text 2026-10-21: {tag} references.bib lacks cited keys: "
+                  f"{sorted(missing)}")
+            bad += 1
+        if duplicate:
+            print(f"  FAIL text 2026-10-21: {tag} references.bib repeats cited keys: "
+                  f"{sorted(duplicate)}")
+            bad += 1
+    i = max(raw_m.find("The Supplemental Material also cites"),
+            raw_m.find("The supplementary material also cites"))
+    if i >= 0:
+        j = raw_m.find("which do not appear elsewhere", i)
+        listed = keys(raw_m[i:j]) if j > i else set()
+        elsewhere = keys(raw_m[:i] + raw_m[j:])
+        missing = keys(raw_s) - elsewhere - listed
+        extra = listed & elsewhere
+        if missing:
+            print(f"  FAIL text 2026-10-21: SI-only references not listed in the main text: {sorted(missing)}")
+            bad += 1
+        if extra:
+            print(f"  FAIL text 2026-10-21: listed as SI-only but cited in the main text: {sorted(extra)}")
+            bad += 1
+    return bad
+
+
 def check_text_2026_10_21():
     """Text guards for the external audit of 2026-10-21 (needs the documents)."""
     import design_power as DP
@@ -2437,7 +2491,7 @@ def check_text_2026_10_21():
     if "The endpoint falls smoothly with $\\phi$, with no threshold" in main:
         print("  FAIL text 2026-10-21: main states bypass monotonicity as general")
         bad += 1
-    need("main", "That is a property of these pairs, not of bypasses", "the bypass qualification")
+    need("main", "For the yeast pairs the lower limit falls as $\\phi$ increases. This is not general; near unity it can first rise", "the bypass qualification")
     # the synthetic validation
     sv = pd.read_csv("../results/synthetic_validation.csv")
     a32 = sv[(sv.truth == "above") & (sv.c == 32)].iloc[0]
@@ -2449,37 +2503,23 @@ def check_text_2026_10_21():
               "exclusions and full coverage, which both documents state")
         bad += 1
     for doc in ("main", "si"):
-        need(doc, f"${100 * a32.excl_1:.1f}\\%$ of experiments at $1\\%$ errors", "the synthetic power")
+        power = (f"${100 * a32.excl_1:.1f}\\%$ of simulated experiments at $c=32$ and $1\\%$ isotope errors"
+                 if doc == "main" else f"${100 * a32.excl_1:.1f}\\%$ of experiments at $1\\%$ errors")
+        need(doc, power, "the synthetic power")
         need(doc, f"between ${a2.cal_lo:+.3f}$ and ${a2.cal_hi:+.3f}$ in $90\\%$ of experiments",
              "the calibrated synthetic interval")
-    need("main", f"endpoint at ${a2.endpoint:+.3f}$, below $\\Fz$", "the synthetic masked endpoint")
-    # SM-only references: every key the SI cites and the main text does not must
-    # be listed in the main text's Supplemental Material statement (18 census
-    # sources were missing until 2026-10-21)
+    need("main", f"lowered the noise-free bound to ${a2.endpoint:+.3f}$", "the synthetic masked endpoint")
     raw_m, raw_s = DOCS["main"].read_text(), DOCS["si"].read_text()
-    keys = lambda t: {k.strip() for g in re.findall(r"\\cite[pt]?\*?\{([^}]*)\}", t) for k in g.split(",")}
-    i = raw_m.find("The Supplemental Material also cites")
-    j = raw_m.find("which do not appear elsewhere", i)
-    listed = keys(raw_m[i:j]) if i >= 0 and j > i else set()
-    elsewhere = keys(raw_m[:i] + raw_m[j:]) if i >= 0 else keys(raw_m)
-    missing = keys(raw_s) - elsewhere - listed
-    extra = listed & elsewhere
-    if missing:
-        print(f"  FAIL text 2026-10-21: SI-only references not listed in the main text: {sorted(missing)}")
-        bad += 1
-    if extra:
-        print(f"  FAIL text 2026-10-21: listed as SI-only but cited in the main text: {sorted(extra)}")
-        bad += 1
+    bad += _check_reference_lists(raw_m, raw_s)
     # the census boundary and the repeat-condition caveat
     need("si", "On 17 October 2026 we ran five queries against Europe PMC", "the census date")
     # two matches since the R67 records were admitted (2026-10-22)
     need("si", "the pairing of their H/T and D/T effects with the other "
                "determinations at those conditions", "the Sen 2011 condition caveat")
-    need("main", "We use it as a benchmark because the offsets it can attain are known exactly",
-         "the benchmark role of the tunneling model")
+    need("main", "an analytically tractable \\emph{quantum-tunneling} model, restricted to the lowest vibrational transition", "the restricted and tractable benchmark role of the tunneling model")
     if not bad:
         print("  text 2026-10-21: corpus statistics, bypass scope, synthetic validation, "
-              "SM-only references, census boundary")
+              "reference lists, census boundary")
     return bad
 
 
@@ -2590,6 +2630,459 @@ def check_equations_2026_10_22():
     return bad
 
 
+def check_worked_example():
+    """The worked example that opens the Results: every cell of its table, the
+    two observed exponents, the largest permitted commitments and the
+    commitment at which the below-reference pair crosses the reference are
+    recomputed by export_fig_example.py, which also writes the figure."""
+    import export_fig_example as X
+    bad = 0
+    main = " ".join(DOCS["main"].read_text().split())
+
+    def need(text, what):
+        nonlocal bad
+        if text not in main:
+            print(f"  FAIL worked example: main lacks {what}: {text!r}")
+            bad += 1
+    for name, C, xh, xd, e in X.worked_table():
+        cs = "0" if C == 0 else f"{C:.2f}"
+        need(f"& ${cs}$ & ${xh:.2f}$ & ${xd:.2f}$ & ${e:.2f}$", f"the {name} row at C_T = {cs}")
+    (_, kh, kd), (_, lh, ld) = X.CASES
+    need(f"(upper limit on $C_{{\\mathrm T}}$: ${X.c_max(kh):.3f}$)", "the yeast commitment limit")
+    need(f"(upper limit on $C_{{\\mathrm T}}$: ${X.c_max(lh):.3f}$)", "the ecDHFR commitment limit")
+    need(f"The observed exponent is $\\ln{kh:g}/\\ln{kd:g}={X.exponent(kh, kd, 0.0):.2f}$",
+         "the yeast observed exponent")
+    need(f"The observed exponent is ${X.exponent(lh, ld, 0.0):.2f}$, below", "the ecDHFR observed exponent")
+    Cx = X.crossing(lh, ld)
+    need(f"It equals the reference at $C_{{\\mathrm T}}={Cx:.2f}$", "the crossing commitment")
+    need(f"open circle, $C_{{\\mathrm T}}={Cx:.2f}$", "the crossing commitment in the caption")
+    need(f"an intrinsic H/T effect of ${X.intrinsic(lh, Cx):.1f}$", "the intrinsic effect at the crossing")
+    # counts restated in the summaries, table captions and Conclusions (two of
+    # them once stayed at 75 units and eight precision-limited after the corpus
+    # grew), each recomputed
+    import corpus
+    import reference_counts as RC
+    U, R = corpus.counts()["units"], corpus.counts()["records"]
+    rc = RC.counts()
+    n_un, n_pr = rc["model_uninformative"], rc["model_precision_limited"]
+    for text, what in ((f"{R} measured pairs grouped into {U} analysis units", "the introduction count"),
+                       (f"adjustment across the ${U}$ analysis units", "the exclusions caption"),
+                       (f"${n_un}$ of ${U}$ analysis units remain unresolved at their central values", "the Conclusions count"),
+                       (f"${n_un}$ of ${U}$ analysis units remain compatible", "the Results count"),
+                       (f"information (${n_un}$ units) and imprecision (${n_pr}$)", "the prior-work table counts"),
+                       (f"After adjustment across all {U} units", "the Results multiplicity count")):
+        need(text, what)
+    if not bad:
+        print(f"  worked example: {len(X.worked_table())} table rows, observed exponents, "
+              f"commitment limits and the crossing at C_T = {Cx:.3f}")
+    return bad
+
+
+def check_audit_2026_11_13():
+    """Audit of 2026-11-13: main-text numbers that no guard read, and the
+    accounting against the semiclassical reference.
+
+    When the main text was shortened, guards for numbers that also appear in
+    the supplement were pointed at the supplement alone, which left the
+    main-text copies unchecked.  A coverage run (every number in the main text
+    altered, then this audit) listed the copies no guard noticed; each is
+    recomputed here from the data or the deposited functions.  Also guarded:
+    the classification of the units against F = 0 (reference_counts.py); the
+    baseline counts in the purity-table caption, which read 61, 8 and 6 for 76
+    units; the number of exclusions that survive adjustment, where the
+    supplement names it; the double-mutant error margins
+    (adh_primary.error_inflation); and two calculations that were printed by
+    their scripts but compared with the text by nobody (the direct-search check
+    of the closed-form endpoint and the viscosity conditioning).
+    """
+    import inspect
+    import pandas as pd
+    import adh_primary as AP
+    import completion as C
+    import corpus
+    import joint_nuisance as J
+    import pooling_check as PC
+    import reference_asymmetry as RA
+    import reference_counts as RC
+    import isotopic_purity as IP
+    import bounds_uncertainty as BU
+    from partial_id import F_min_exact as _fme, closed_form_check
+    main = " ".join(DOCS["main"].read_text().split())
+    si = " ".join(DOCS["si"].read_text().split())
+    low = {"main": main.lower(), "si": si.lower()}
+    bad = 0
+
+    def need(doc, text, what, fold=False):
+        nonlocal bad
+        hay = low[doc] if fold else {"main": main, "si": si}[doc]
+        if (text.lower() if fold else text) not in hay:
+            print(f"  FAIL audit 2026-11-13: {doc} lacks {what}: {text!r}")
+            bad += 1
+
+    # ---- the units against the reference, and against the model
+    tab = RC.unit_table()
+    c = RC.counts(tab)
+    U = c["units"]
+    if not (c["above_adj"] == 1 and "p-chlorobenzyl" in c["above_adj_units"][0]):
+        print("  FAIL audit 2026-11-13: the unit surviving adjustment against F = 0 "
+              f"is no longer the p-chlorobenzyl alcohol series: {c['above_adj_units']}")
+        bad += 1
+    need("main", f"{U} analysis units, {c['below']} lie below the semiclassical reference",
+         "the abstract count against the reference")
+    need("main", f"with unrestricted parameters, {c['model_uninformative']} units cannot exclude it even without "
+                 "measurement error", "the abstract count against the model, with its qualifier")
+    need("main", f"temperature in ${c['below']}$ of ${U}$ analysis units", "the Results count against the reference")
+    need("main", f"(${c['below_bare']}$ if the bare-atom value $3.26$ is taken as the reference)",
+         "the count against the bare-mass reference")
+    need("si", f"with the bare-atom exponent ${RC.G_BARE:.5f}$ as the reference it is ${c['below_bare']}$",
+         "the count against the bare-mass reference")
+    need("main", f"In the other {_nw(c['above'])} units an observed exponent exceeds the reference. "
+                 f"{_nw(c['above_95']).capitalize()} of them stay above it at the nominal $95\\%$ level, and one,",
+         "the units above the reference")
+    need("main", f"${c['below']}$ of ${U}$ analysis units lie below the semiclassical reference at their reported values",
+         "the Conclusions count against the reference")
+    need("main", f"For the {c['model_uninformative']} units whose lower limits fall below $\\Fz$",
+         "the count of units below the model limit")
+    need("main", f"Thus {c['model_uninformative'] + c['model_precision_limited']} of {U} fail to exclude the model",
+         "the count failing to exclude the model")
+    need("main", f"the {c['model_uninformative']} unresolved units provide no evidence against tunneling",
+         "the unresolved count in the mechanistic paragraph")
+    need("main", f"{_nw(c['model_uninformative'])} units have central endpoints below $\\Fz$",
+         "the caption count of units below the model limit", fold=True)
+    need("si", f"In ${c['below']}$ of the ${U}$ units the observed exponent lies below $\\gSC$",
+         "the count against the reference")
+    need("si", f"The other {_nw(c['above'])} units have a record observed above", "the units above the reference")
+    need("si", f"For {_nw(c['above_95'])} of the {_nw(c['above'])} the one-sided bound at $\\rho=-1$ stays above zero",
+         "the units above the reference at 95%")
+    need("si", f"After adjustment across the ${U}$ units only the $p$-chlorobenzyl alcohol series does",
+         "the unit above the reference after adjustment")
+    need("si", f"as published the counts are ${c['model_uninformative']}$, ${c['model_precision_limited']}$ "
+               f"and ${c['model_excluded']}$", "the baseline counts of the purity table")
+    need("si", f"one of the {_nw(c['model_excluded_adj'])} exclusions that survive adjustment across all analysis units",
+         "the number of exclusions surviving adjustment")
+
+    # ---- the two yeast units: per-unit and adjusted bounds, the contrast L_H
+    yb = tab[tab.unit.str.startswith("YADH wild type, 25 C")]
+    pc = tab[tab.unit == "YADH wild type (p-chlorobenzyl alcohol) (hydride)"]
+    if len(yb) != 1 or len(pc) != 1:
+        print("  FAIL audit 2026-11-13: the two yeast units are not found once each in the unit table")
+        return bad + 1
+    yb, pc = yb.iloc[0], pc.iloc[0]
+    need("main", f"Their per-unit bounds are ${yb.lcb:+.3f}$ and ${pc.lcb:+.3f}$ at $\\rho=-1$",
+         "the yeast per-unit bounds")
+    need("main", f"only the yeast bounds remain above $\\Fz$ at $\\rho=-1$ (${yb.lcb_all_units:+.3f}$ "
+                 f"and ${pc.lcb_all_units:+.3f}$)", "the yeast bounds after adjustment")
+    ya = pd.read_csv("../data/cha1989_yadh.csv")
+    avg = ya[ya.note.str.contains("average")].iloc[0]
+    det = ya[ya.note.str.contains("determination")]
+    LH = (avg.K_HT - 1) / (avg.K_DT - 1)
+    need("main", f"$L_H={LH:.2f}>\\gamma$", "the yeast contrast in the Results")
+    need("main", f"far inside the open branch, $L_H={LH:.2f}$", "the yeast contrast in the binding paragraph")
+    need("main", f"$\\KHT={avg.K_HT:.2f}\\pm{avg.K_HT_se:.2f}$ and $\\KDT={avg.K_DT:.2f}\\pm{avg.K_DT_se:.2f}$",
+         "the yeast pair with its errors")
+    need("main", f"the reported average errors (${avg.K_HT_se:.2f}$, ${avg.K_DT_se:.2f}$)", "the yeast errors")
+    need("main", f"the observed ${det.K_HT.min():.2f}$--${det.K_HT.max():.2f}$", "the range of the yeast H/T determinations")
+    s = corpus.series()
+    lt = s[(s.variant == "light enzyme") & (s.T_C == 5.0)]
+    if len(lt) != 1:
+        print("  FAIL audit 2026-11-13: the light-enzyme 5 C record is not unique")
+        bad += 1
+    else:
+        lt = lt.iloc[0]
+        need("main", f"$\\KHT={lt.K_HT:.2f}\\pm{lt.K_HT_se:.2f}$ and $\\KDT={lt.K_DT:.2f}\\pm{lt.K_DT_se:.2f}$",
+             "the light-enzyme pair with its errors")
+
+    # ---- the corpus as the main text describes it
+    c0 = corpus.counts()
+    need("main", f"{c0['records']} matched records: {c0['series_records']} temperature-resolved measurements in "
+                 f"{c0['series']} series and {c0['single']} single-condition records", "the corpus composition")
+    need("main", f"The literature dataset contains {c0['records']} paired H/T and D/T effects", "the Methods record count")
+    need("main", f"giving {U} units rather than {c0['records']} independent systems", "the unit and record counts")
+    need("main", f"also adjust across the {U} analysis units", "the Methods unit count")
+    sc = corpus.single_condition()
+    n = sc.groupby("grp").size()
+    for text, what in ((f"comprise {_nw(n['ladh'])} aqueous horse liver alcohol dehydrogenase measurements", "horse liver"),
+                       (f"{_nw(n['yadh'])} yeast alcohol dehydrogenase\\cite", "yeast"),
+                       (f"{_nw(n['bsao'])} bovine serum amine oxidase\\cite", "amine oxidase"),
+                       (f"{_nw(n['ectsase'] + n['hstsase'])} thymidylate synthase\\cite", "thymidylate synthase"),
+                       (f"and {_nw(n['dhfr'])} dihydrofolate reductase measurements", "dihydrofolate reductase")):
+        need("main", text, f"the single-condition {what} count")
+    if int(n.sum()) != c0["single"]:
+        print("  FAIL audit 2026-11-13: the single-condition groups do not sum to the record count")
+        bad += 1
+    out = s[~((s.K_HT > s.K_DT) & (s.K_DT > 1))]
+    if len(out) != 1:
+        print(f"  FAIL audit 2026-11-13: {len(out)} records lie outside the normal-order domain, text describes one")
+        bad += 1
+    else:
+        o = out.iloc[0]
+        need("main", f"$\\KDT={o.K_DT:.2f}\\pm{o.K_DT_se:.2f}$", "the pair outside the normal-order domain")
+        if abs((1 - o.K_DT) / o.K_DT_se - 1 / 3) > 0.01:
+            print("  FAIL audit 2026-11-13: that D/T effect is not one third of its error below unity")
+            bad += 1
+    notes = " ".join(pd.read_csv("../data/ladh_chin2000.csv").note)
+    ns = [int(v) for pair in re.findall(r"n = (\d+) \(H/T\) and (\d+) \(D/T\)", notes) for v in pair]
+    need("main", f"standard errors over {min(ns)}--{max(ns)} determinations", "the double-mutant sample sizes")
+
+    # ---- repeat determinations, the amine oxidase, the historical commitment
+    rd = pd.read_csv("../results/repeat_determinations.csv")
+    zmax = max(rd.z_F_rho0.abs().max(), rd.z_F_rhom1.abs().max())
+    need("main", f"the offsets agree within ${rd.dF.abs().max():.3f}$, at most ${zmax:.2f}$ combined standard errors",
+         "the agreement of repeated determinations")
+    b = pd.read_csv("../data/bsao_grant1989.csv").iloc[0]
+    need("main", f"${np.log(b.K_HT) / np.log(b.K_DT):.3f}$ at $25\\,^{{\\circ}}$C, or "
+                 f"$F_{{\\min}}={_fme(b.K_HT, b.K_DT)[0]:+.3f}$", "the amine oxidase exponent and lower limit")
+    a_lo, a_hi = inspect.signature(C.mc_yadh_tolerance).parameters["a"].default
+    j_lo, j_hi = C.yadh_completion_joint(a_lo), C.yadh_completion_joint(a_hi)
+    need("main", f"$k_{{-1}}/k_{{\\mathrm{{cat}}}}={a_lo:g}$--${a_hi:g}$ estimate", "the historical commitment range")
+    need("main", f"jointly imply $r={j_hi['r']:.2f}$--${j_lo['r']:.2f}$", "the jointly solved reference ratio")
+    for where in (f"Tritium referencing gives $c\\in[{j_lo['c']:.1f},{j_hi['c']:.1f}]$",
+                  f"estimate~\\cite{{Klinman1976}}, $c\\in[{j_lo['c']:.1f},{j_hi['c']:.1f}]$"):
+        need("main", where, "the commitment range from the historical estimate")
+    tol = C.mc_yadh_tolerance()["F0"]
+    need("main", f"a median tolerance of ${100 * tol['median']:.0f}\\%$ and a $95\\%$ interval of "
+                 f"$[{100 * tol['lo']:.0f}\\%,{100 * tol['hi']:.0f}\\%]$", "the propagated bypass tolerance")
+
+    # ---- binding tolerance and the joint witness
+    Fobs = np.log(avg.K_HT) - GSC * np.log(avg.K_DT)
+    bt = Fobs - F0
+    need("main", f"survives $F_{{\\mathrm{{bind}}}}<{bt:.3f}$ when no bypass is present, equivalent to a "
+                 f"${100 * (1 - np.exp(-bt / GSC)):.1f}\\%$ differential binding-equilibrium effect on the D/T comparison",
+         "the binding tolerance and its size on the D/T comparison")
+    need("si", f"binding-equilibrium effects of ${100 * (1 - np.exp(-bt / GSC)):.1f}\\%$ and "
+               f"${100 * (1 - np.exp(-Fobs / GSC)):.1f}\\%$ on the D/T comparison", "the binding tolerances on the D/T comparison")
+    wp = inspect.signature(J.finite_witness).parameters
+    fb, ph = wp["F_bind"].default, wp["phi_H"].default
+    need("main", f"At $F_{{\\mathrm{{bind}}}}={fb:.3f}$ and $\\phi={ph:.3f}$, both within their separate tolerances",
+         "the joint witness point")
+    need("main", f"The cross, $F_{{\\mathrm{{bind}}}}={fb:.3f}$ at $\\phi={ph:.3f}$", "the joint witness point in the caption")
+    t13 = 100 * float(C.bypass_tolerance(avg.K_HT, avg.K_DT, j_lo["r"], F0))
+    t73 = 100 * float(C.bypass_tolerance(avg.K_HT, avg.K_DT, j_hi["r"], F0))
+    need("main", f"($F_{{\\mathrm{{bind}}}}<{bt:.3f}$; a bypass below ${t13:.0f}\\%$ to ${t73:.0f}\\%$)",
+         "the separate tolerances in the caption")
+    R_y = RA.r_at("YADH", "wild type", 25.0)
+    need("main", f"$c_{{\\mathrm H}}=m(\\KHT-1)$, $r={R_y:.4f}$", "the reference ratio of the design panel")
+
+    # ---- pooling witness, synthetic truth, viscosity, Fisher example
+    f = PC.ladh_shared_pair_fit()
+    x1 = f["witness_x1"]
+    if abs(x1[0] - 3.75) > 1e-9 or abs(x1[1] - 5 / 3) > 1e-9:
+        print(f"  FAIL audit 2026-11-13: the pooling witness is {x1}, text says (3.75, 5/3)")
+        bad += 1
+    need("main", "$(x_{\\mathrm H},x_{\\mathrm D})=(12,2)$ and $(3.75,5/3)$", "the pooling witness pairs")
+    sv = pd.read_csv("../results/synthetic_validation.csv")
+    need("main", f"an intrinsic offset ${sv[sv.truth == 'above'].F_int.iloc[0]:+.3f}$ excluded the ground-channel model",
+         "the synthetic truth")
+    amps = {cc: C.viscosity_conditioning(cc) for cc in (10.0, 3.0, 1.0)}
+    need("main", f"amplifies relative error by ${amps[10.0][0]:.0f}$ at $c=10$ and ${amps[1.0][0]:.0f}$ at $c=1$, "
+                 f"requiring KIE precision of ${100 * amps[10.0][1]:.1f}\\%$--${100 * amps[1.0][1]:.2f}\\%$",
+         "the viscosity conditioning")
+    need("si", f"is ${amps[10.0][0]:.1f}$ at $c=10$, ${amps[3.0][0]:.1f}$ at $c=3$ and ${amps[1.0][0]:.1f}$ at $c=1$",
+         "the viscosity error amplification")
+    need("si", f"requires each effect to ${100 * amps[10.0][1]:.2f}\\%$, ${100 * amps[3.0][1]:.2f}\\%$ and "
+               f"${100 * amps[1.0][1]:.3f}\\%$ respectively", "the viscosity precision required")
+    cond = C.fisher_example()[1]
+    need("main", f"condition number of about $10^{int(round(np.log10(cond)))}$", "the Fisher condition number")
+
+    # ---- small worked numbers
+    need("main", f"$\\gamma^{{\\mathrm{{obs}}}}=3.30$ at $\\KDT=2$ has $F_{{\\min}}={_fme(2 ** 3.30, 2.0)[0]:+.4f}$",
+         "the below-reference example")
+    g_gated, g_rigid = M.gamma_gated("C"), M.gamma_rigid("C")
+    g_rigid_int = (3 ** 0.5 - 1) / (3 ** 0.5 - 2 ** 0.5)
+    need("main", f"the exponent spans $({g_gated:.3f},{GSC:.3f})$", "the exponent span along the ridge")
+    need("main", f"sweeps the open interval $({g_gated:.3f},\\gSC)$", "the exponent span in the caption")
+    need("main", f"approaching ${g_rigid_int:.2f}$ without heavy-atom vibrational assistance (integer masses; "
+                 f"${g_rigid:.3f}$ with our reduced masses)", "the rigid-limit exponents")
+    need("main", f"${GENERAL_CENSUS['edges']}$ labeled edges in ${GENERAL_CENSUS['networks']}$ well-posed directed networks",
+         "the general enumeration")
+    # the chain enumeration, as the main text states it three times (the
+    # topology-only counts; how many conditional mechanisms realize more than
+    # one behavior needs the full atlas and is checked by network_atlas.py)
+    import network_atlas as NA
+    fam = NA.enumerate_family(4)
+    n_blind = sum(1 for m in fam if NA.blind_by_topology(m))
+    n_cond = sum(1 for m in fam if not NA.blind_by_topology(m) and "bypass" in m.note)
+    n_conc = len(fam) - n_blind - n_cond
+    need("main", f"Of the ${len(fam)}$ chain mechanisms on one to four bound states, ${n_conc}$ are concave, "
+                 f"${n_cond}$ are conditional and ${n_blind}$ are blind", "the enumeration in the scheme table")
+    need("main", f"Of the ${len(fam)}$ mechanisms enumerated with one to four bound states, ${n_conc}$ are concave, "
+                 f"${n_cond}$ carry a bypass and are conditional", "the enumeration in the scheme figure")
+    need("main", f"and ${n_blind}$ are blind. Each classification agrees", "the blind count in the scheme figure")
+    need("main", f"A symbolic enumeration of ${len(fam)}$ chain mechanisms with one to four bound states gives "
+                 f"${n_conc}$ concave, ${n_cond}$ conditional and ${n_blind}$ blind cases",
+         "the enumeration paragraph")
+    need("main", f"(Table~\\ref{{tab:classify}}; ${len(fam)}$ mechanisms)", "the enumeration in the prior-work table")
+    n_pairs, n_int, worst = closed_form_check()
+    e = int(np.floor(np.log10(worst)))
+    w = f"${worst / 10 ** e:.0f}\\times10^{{{e}}}$"
+    need("main", f"agrees with direct search on {n_pairs} admissible pairs to {w}", "the direct-search check")
+    need("si", f"over {n_pairs} random admissible pairs spanning three orders of magnitude, {n_int} of which have an "
+               f"interior minimum, the closed form agrees with direct search to {w}", "the direct-search check")
+    pu = IP.PUBLISHED["Cha1989"]
+    need("main", f"against the reported ${100 * (pu['pP'] + pu['pS']):.1f}\\%$", "the protium level Cha et al. report")
+
+    # ---- the double-mutant error margins
+    dm = pd.read_csv("../data/ladh_chin2000.csv").set_index("variant")
+    lam, bnd = {}, {}
+    for v in ("F93W-I224G", "F93W-I224V"):
+        r = dm.loc[v]
+        lam[v] = AP.error_inflation(r.K_HT, r.K_HT_se, r.K_DT, r.K_DT_se)
+        bnd[v] = BU.exact_bound(r.K_HT, r.K_HT_se, r.K_DT, r.K_DT_se)
+    g, v_ = (100 * (lam[k] - 1) for k in ("F93W-I224G", "F93W-I224V"))
+    need("main", f"error increases of ${g:.0f}\\%$ and ${v_:.0f}\\%$ would remove those nominal exclusions",
+         "the double-mutant error margins")
+    need("si", f"${bnd['F93W-I224G']:+.3f}$ and ${bnd['F93W-I224V']:+.3f}$, reach $\\Fz$ once their published "
+               f"standard errors are understated by ${g:.0f}\\%$ (F93W:I224G) and ${v_:.0f}\\%$ (F93W:I224V)",
+         "the double-mutant error margins")
+    # the yeast factors come from the same function, so it is tied to numbers
+    # that were already guarded
+    for target, lab in ((F0, "$\\Fz$"), (0.0, "$F=0$")):
+        k = AP.error_inflation(avg.K_HT, avg.K_HT_se, avg.K_DT, avg.K_DT_se, target=target)
+        need("si", f"${k:.2f}$ before" if target == F0 else f"by ${k:.2f}$ before it stopped clearing {lab}",
+             f"the yeast error-inflation factor against {lab}")
+    if not bad:
+        print(f"  audit 2026-11-13: {c['below']} of {U} units below the reference, {c['above']} above "
+              f"({c['above_95']} at 95%, {c['above_adj']} adjusted); yeast bounds {yb.lcb:+.3f}/{pc.lcb:+.3f} and "
+              f"{yb.lcb_all_units:+.3f}/{pc.lcb_all_units:+.3f}; double-mutant margins {g:.0f}%/{v_:.0f}%; "
+              f"viscosity {amps[10.0][0]:.1f}/{amps[1.0][0]:.1f}; direct search {worst:.1e}")
+    return bad
+
+
+def check_assumptions_2026_11_13():
+    """Two assumptions the text left implicit until the scientific audit of
+    2026-11-13, and the numbers that now state their weight.
+
+    (1) The model comparison is with the model's parameters unrestricted.  F0
+    is approached only as the action and the gating width grow without bound,
+    so the count of units that cannot exclude the model is the count for the
+    most permissive case; model_domain.py gives the count when the parameters
+    are bounded.  (2) Every unit that excludes anything is a mixed-label
+    design, whose intrinsic D/T effect is that of the doubly labeled
+    substrate, so the comparison with a single-coordinate relation or model
+    assumes the rule of the geometric mean; reference_asymmetry.geminal_ratio
+    gives the size of the cross-labeling term that would account for an
+    endpoint.  Both must be stated wherever the counts or the exclusions are.
+    """
+    import pandas as pd
+    import corpus
+    import model_domain as MD
+    import reference_asymmetry as RA
+    import reference_counts as RC
+    from partial_id import F_min_exact as _fme
+    main = " ".join(DOCS["main"].read_text().split())
+    si = " ".join(DOCS["si"].read_text().split())
+    bad = 0
+
+    def need(doc, text, what):
+        nonlocal bad
+        if text not in {"main": main, "si": si}[doc]:
+            print(f"  FAIL assumptions 2026-11-13: {doc} lacks {what}: {text!r}")
+            bad += 1
+
+    # ---- (1) the parameter domain of the tunneling model
+    md = MD.table().set_index("domain")
+    un = md.loc["unrestricted"]
+    c = RC.counts()
+    if int(un.not_excluding) != c["model_uninformative"]:
+        print("  FAIL assumptions 2026-11-13: the unrestricted model does not give the "
+              f"census count ({int(un.not_excluding)} against {c['model_uninformative']})")
+        bad += 1
+    if abs(float(un.sup_at_7) - F0) > 1e-12:
+        print("  FAIL assumptions 2026-11-13: the unrestricted supremum is not F0")
+        bad += 1
+    need("si", f"unrestricted & & & ${F0:+.4f}$ & ${int(un.not_excluding)}$\\\\", "the unrestricted row")
+    prev = int(un.not_excluding)
+    for name, w_max, A_max in MD.DOMAINS[1:]:
+        r = md.loc[name]
+        need("si", f"$w\\le{w_max:g}$, $\\Ag\\le{A_max:g}$ & $\\le{r.sigma_A:.2f}$ & $\\le{r.R0_A:.2f}$ & "
+                   f"${r.sup_at_7:+.4f}$ & ${int(r.not_excluding)}$\\\\", f"the row for {name}")
+        if not (int(r.not_excluding) <= prev and r.sup_at_7 < F0):
+            print(f"  FAIL assumptions 2026-11-13: restricting the parameters to {name} did not lower "
+                  "the model's reach and the count")
+            bad += 1
+        prev = int(r.not_excluding)
+    wide, tight = md.loc["w <= 20, A <= 1000"], md.loc["w <= 2, A <= 50"]
+    need("main", "With the gating width held to $w\\le2$ and the action to $\\mathcal{A}\\le50$",
+         "the bounded domain quoted in the main text")
+    need("main", f"the model reaches only ${tight.sup_at_7:+.2f}$ at an intrinsic H/T effect of $7$, and "
+                 f"${int(tight.not_excluding)}$ units rather than ${int(un.not_excluding)}$ cannot exclude it at their "
+                 f"central values; with $w\\le20$ and $\\mathcal{{A}}\\le1000$ the number is ${int(wide.not_excluding)}$",
+         "the counts under bounded parameters")
+    need("si", f"of the ${int(un.not_excluding)}$ units that cannot exclude the unrestricted model, "
+               f"${int(un.not_excluding) - int(tight.not_excluding)}$ exclude the model", "the units that change class")
+    wgap = float(np.exp(MD.width_for_gap(7.0, 0.01)))
+    need("si", f"needs $w={wgap:.0f}$, a root-mean-square fluctuation of the donor--acceptor distance of "
+               f"${MD.scales(wgap, 1.0)[0]:.2f}$~\\AA{{}}", "the width needed to approach F0")
+    for doc, phrase, what in (
+            ("main", "with unrestricted parameters, 61 units cannot exclude it", "the abstract qualifier"),
+            ("main", "so $\\Fz$ describes the most permissive version of the model", "the nature of the limit"),
+            ("main", "An exclusion based on $\\Fz$ therefore holds under any such restriction",
+             "the direction in which the limit is conservative"),
+            ("main", "Against the ground-channel model with unrestricted parameters,", "the Results qualifier"),
+            ("main", "tunneling-model limit $\\Fz$ & parameters unrestricted;", "the assumptions table"),
+            ("main", "as a benchmark and its parameters unrestricted,", "the Conclusions qualifier"),
+            ("main", "The count against the reference does not.", "the contrast with the model-free count"),
+            ("si", "The comparison with $\\Fz$ is therefore a comparison with the most permissive version of the model",
+             "the nature of the limit")):
+        need(doc, phrase, what)
+
+    # ---- (2) mixed-label designs and the rule of the geometric mean
+    if c["model_excluded_mixed"] != c["model_excluded"]:
+        print("  FAIL assumptions 2026-11-13: a unit that excludes the model is not a mixed-label design; "
+              "the text says all are")
+        bad += 1
+    need("main", f"All {_nw(c['model_excluded'])} units, and {_nw(c['above_mixed'])} of the {_nw(c['above'])} "
+                 "observed above the reference, are mixed-label designs", "the designs of the units that exclude")
+    design = pd.read_csv(corpus.DATA / "tracer_design.csv").design.value_counts()
+    need("si", f"In the {_nw(int(design['labeled']))} mixed-label forms", "the number of mixed-label forms")
+    need("si", f"In the {_nw(int(design['shared']))} shared-tracer forms", "the number of shared-tracer forms")
+    ya = pd.read_csv("../data/cha1989_yadh.csv")
+    avg = ya[ya.note.str.contains("average")].iloc[0]
+    s = corpus.series()
+    pc = s[(s.variant == "wild type (p-chlorobenzyl alcohol)") & (s.T_C == 25.0)].iloc[0]
+    Fy, Fp = _fme(avg.K_HT, avg.K_DT)[0], _fme(pc.K_HT, pc.K_DT)[0]
+    need("main", f"A secondary H/D effect that is ${100 * (RA.geminal_ratio(Fy) - 1):.1f}\\%$ larger for deuterium "
+                 "transfer than for tritium transfer", "the cross-labeling term that reaches the yeast limit")
+    need("main", f"(${100 * (RA.geminal_ratio(Fp) - 1):.1f}\\%$ for $p$-chlorobenzyl alcohol at $25\\,^{{\\circ}}$C)",
+         "the cross-labeling term for the second substrate")
+    need("si", f"endpoint, ${Fy:+.3f}$, by $S_{{\\mathrm D}}/S_{{\\mathrm T}}={RA.geminal_ratio(Fy):.3f}$",
+         "the ratio that reaches the yeast endpoint")
+    need("si", f"endpoint at $25\\,^{{\\circ}}$C, ${Fp:+.3f}$, by ${RA.geminal_ratio(Fp):.3f}$",
+         "the ratio that reaches the second endpoint")
+    need("si", f"takes ${RA.geminal_ratio(Fy, F0):.3f}$ and ${RA.geminal_ratio(Fp, F0):.3f}$",
+         "the ratios measured from the model limit")
+    # the identity itself, numerically, on an arbitrary rate table
+    rng = np.random.default_rng(7)
+    k = {a + b: float(v) for (a, b), v in zip(((p, q) for p in "HDT" for q in "HD"), rng.uniform(0.2, 5.0, 6))}
+    lhs = np.log(k["HH"] / k["TH"]) - GSC * np.log(k["DD"] / k["TD"])
+    rhs = (np.log(k["HH"] / k["TH"]) - GSC * np.log(k["DH"] / k["TH"])
+           + GSC * np.log((k["DH"] / k["DD"]) / (k["TH"] / k["TD"])))
+    if abs(lhs - rhs) > 1e-12:
+        print("  FAIL assumptions 2026-11-13: the mixed-label identity does not hold")
+        bad += 1
+    for doc, phrase, what in (
+            ("main", "the rule of the geometric mean~\\cite{KohenJensen2002}", "the rule where the examples are scoped"),
+            ("main", "change the primary effect (rule of the geometric mean)", "the rule in the assumptions table"),
+            ("main", "so these statements concern the mixed-label pair and assume the rule of the geometric mean",
+             "the rule beside the exclusions"),
+            ("main", "The exclusions are therefore of the reference, or of the model, together with that rule",
+             "what the exclusions exclude"),
+            ("main", "For mixed-label data both comparisons also assume the rule of the geometric mean",
+             "the rule in the Discussion"),
+            ("main", "for the alcohol dehydrogenases they assume the rule of the geometric mean",
+             "the rule in the Conclusions"),
+            ("si", "an exclusion of the hypothesis together with the rule", "what a mixed-label exclusion excludes"),
+            ("si", "Without separability the observed ratio $R$ is not a lower bound on $r=S_{\\mathrm T}$",
+             "the limit of the ordering inference")):
+        need(doc, phrase, what)
+    if not bad:
+        print(f"  assumptions 2026-11-13: units that cannot exclude the model {int(un.not_excluding)} (unrestricted), "
+              f"{int(wide.not_excluding)}, {int(md.loc['w <= 5, A <= 100'].not_excluding)}, "
+              f"{int(tight.not_excluding)} (bounded); mixed-label {c['model_excluded_mixed']} of "
+              f"{c['model_excluded']} exclusions; geminal ratios {RA.geminal_ratio(Fy):.3f}, {RA.geminal_ratio(Fp):.3f}")
+    return bad
+
+
 def check_round2_2026_10_22():
     """Second external audit of 2026-10-21: binding-order condition, Rucker's
     correction as a reconstruction (Grant & Klinman prescription), synthetic
@@ -2624,9 +3117,20 @@ def check_round2_2026_10_22():
     (B0, C0), (B25, C25) = (IP._factors(IP.PUBLISHED["Rucker1992"], r) for r in rk.itertuples())
     need("si", f"it gives ${B25:.2f}$ and ${C25:.2f}$ at $25\\,^{{\\circ}}$C and ${B0:.2f}$ and ${C0:.2f}$",
          "the reconstructed Rucker constants")
-    need("main", "removing its reconstructed isotopic-purity correction", "the abstract qualifier")
-    need("main", "a recovery range across experiments rather than a confidence interval",
-         "the synthetic recovery-range qualifier")
+    need("main", "the $p$-chlorobenzyl result also survives a stated reconstruction of the purity correction", "the abstract reconstructed-purity qualifier")
+    need("main", "That interval describes the distribution of recovered estimates, not a confidence interval for one experiment", "the synthetic recovery-range qualifier")
+    # The physical-order and pooling qualifications are stated in the main
+    # text.  These are scientific guards, not style rules.
+    need("main", "When the corrected observation lies on the open branch and the recovered intrinsic pair remains normally ordered",
+         "the domain of the exact binding shift")
+    need("main", "$\\beta_{\\mathrm H}\\KHT/\\alpha_{\\mathrm H}\\ge \\beta_{\\mathrm D}\\KDT/\\alpha_{\\mathrm D}\\ge1$",
+         "the sufficient physical-order condition for binding")
+    need("main", "For exact, mutually compatible observations their combined allowed range is that of the least masked variant",
+         "the scope of pooling compatible exact pairs")
+    need("main", "The commitment and reference ratio must be determined independently of the KIE pair being corrected and under the same experimental conditions",
+         "the information required for intrinsic recovery")
+    need("main", "Excluding either benchmark therefore does not by itself establish or disprove tunneling in an enzyme",
+         "the scope of model exclusion")
     for doc, txt in (("si", si), ("main", main)):
         for stale in ("we take each record's own observed H/D ratio",
                       "No simulated experiment excludes the model when the truth lies inside it",
@@ -2654,7 +3158,8 @@ _NEEDS_DOCS = {
     "check_promoting_mode", "check_corpus_consequences", "check_scope_corrections",
     "check_source_fidelity", "check_readiness_scope", "check_generated_tables",
     "check_external_audit_2026_10_12",
-    "check_source_review_2026_10_13", "check_text_2026_10_21", "check_tables_2026_10_22", "check_round2_2026_10_22",
+    "check_source_review_2026_10_13", "check_text_2026_10_21", "check_tables_2026_10_22", "check_round2_2026_10_22", "check_worked_example",
+    "check_audit_2026_11_13", "check_assumptions_2026_11_13",
 }
 
 
@@ -2730,7 +3235,8 @@ def run():
                 check_tables_2026_10_15, check_consistency_2026_10_16,
                 check_bounds_2026_10_21, check_text_2026_10_21,
                 check_tables_2026_10_22, check_equations_2026_10_22,
-                check_round2_2026_10_22):
+                check_round2_2026_10_22, check_worked_example,
+                check_audit_2026_11_13, check_assumptions_2026_11_13):
         if not HAVE_DOCS and _fn.__name__ in _NEEDS_DOCS:
             print(f"  SKIPPED (needs the manuscript): {_fn.__name__}")
             continue

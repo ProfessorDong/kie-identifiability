@@ -97,6 +97,23 @@ def r_design(family: str, variant: str) -> float:
     return 1.0
 
 
+def geminal_ratio(F, target=0.0):
+    """S_D / S_T that carries a single-label pair to a mixed-label offset F.
+
+    In a mixed-label design the D/T effect is measured on the doubly labeled
+    substrate, x_D = k_DD / k_TD.  With S_L = k_LH / k_LD the secondary H/D
+    effect on the transfer of isotope L (so that r = S_T),
+
+        F(mixed pair) = F(single-label pair) + gamma ln(S_D / S_T).
+
+    The second term vanishes under the rule of the geometric mean.  This
+    returns the ratio S_D / S_T at which a single-label pair with offset
+    `target` appears as a mixed-label pair with offset F.
+    """
+    import masses as M
+    return math.exp((F - target) / M.gamma_sc("C"))
+
+
 def main():
     d = table()
     print(f"{'family':6s} {'variant':14s} {'T/C':>5} {'2nd H/T':>8} {'2nd D/T':>8} "

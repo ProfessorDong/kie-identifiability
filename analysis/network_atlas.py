@@ -554,7 +554,16 @@ def check_manuscript(path=None, rows=None):
         # This pointed at a superseded manuscript directory twice, and so
         # checked the census against text no longer being maintained.
         import manuscript_root as MR
+        if MR.requested() is None:
+            # the repository carries no manuscript; the enumeration above
+            # stands on its own and only the comparison with the text is skipped
+            print("  SKIPPED (needs the manuscript): the census against the text")
+            return 0
         path = MR.root() / "si" / "si_body.tex"
+    if not Path(path).is_file():
+        # a manuscript named explicitly but not readable is a failure, not a pass
+        print(f"  FAIL manuscript census: cannot read {path}")
+        return 1
     txt = Path(path).read_text()
     a = txt.index(r"\subsection{An atlas of mechanisms}")
     b = txt.index(r"\subsection{A bypass contracts")
@@ -563,8 +572,16 @@ def check_manuscript(path=None, rows=None):
     import manuscript_root as MR
     main = MR.one(_root, "*_manuscript.tex")
     mtxt = main.read_text()
-    ma = mtxt.index("We tested this by enumeration")
-    sec += mtxt[ma:ma + 1400]
+    # the paragraph of the main text that states the census; a missing anchor
+    # is a failure, not an exception (the paragraph was reworded once and this
+    # check then stopped with a ValueError instead of reporting)
+    anchor = "A symbolic enumeration of"
+    if anchor not in mtxt:
+        print("  FAIL manuscript census: the main text has no paragraph beginning "
+              f"{anchor!r}")
+        return 1
+    ma = mtxt.index(anchor)
+    sec_main = mtxt[ma:ma + 900]
     fam = enumerate_family(4)
     nblind = sum(1 for m in fam if blind_by_topology(m))
     nbyp = sum(1 for m in fam if not blind_by_topology(m) and "bypass" in m.note)
@@ -583,10 +600,19 @@ def check_manuscript(path=None, rows=None):
         want["conditional realizing both geometries"] = multi
     else:
         print("  (multi-geometry count not checked: call with rows=atlas(4)[0])")
+    # Each document is checked on its own.  Until 2026-11-13 the two passages
+    # were concatenated, so a count that was right in the supplement passed
+    # whatever the main text said.  The informative total is stated in the
+    # supplement only, and the multi-geometry count in the main text only.
     bad = 0
     for lab, v in want.items():
-        if f"${v}$" not in sec:
-            print(f"  FAIL manuscript census: {lab} = {v} not in the atlas section")
+        where = []
+        if lab != "conditional realizing both geometries" and f"${v}$" not in sec:
+            where.append("the atlas section of the supplement")
+        if lab != "informative" and f"${v}$" not in sec_main:
+            where.append("the enumeration paragraph of the main text")
+        for w in where:
+            print(f"  FAIL manuscript census: {lab} = {v} not in {w}")
             bad += 1
     return bad
 

@@ -169,6 +169,27 @@ def F_min_two_commitment(kht, kdt, gamma=GSC, eie_dt_max=1.4, n=240):
     return best
 
 
+def closed_form_check(n=600, seed=3):
+    """Closed-form endpoint against direct search over the commitment.
+
+    Returns (pairs, pairs with an interior minimum, worst absolute
+    discrepancy) over n random admissible pairs spanning three orders of
+    magnitude in K - 1.
+    """
+    rng = np.random.default_rng(seed)
+    worst, n_int = 0.0, 0
+    for _ in range(n):
+        kdt = 1 + 10 ** rng.uniform(-2.5, 0.9)
+        kht = kdt * (1 + 10 ** rng.uniform(-2.5, 1.2))
+        Fc, cs, interior, closed = F_min_exact(kht, kdt)
+        n_int += interior
+        c = (kht - 1) * (1 + np.logspace(-9, 9, 40000))
+        x = lambda K: K * c / (1.0 + c - K)
+        Fg = (np.log(x(kht)) - GSC * np.log(x(kdt))).min()
+        worst = max(worst, abs(Fc - Fg))
+    return n, int(n_int), float(worst)
+
+
 # =============================================================== verification
 def _verify():
     print("=" * 74)
@@ -206,18 +227,8 @@ def _verify():
     print("=" * 74)
     print("2. CLOSED-FORM F_min vs grid search, one-commitment map")
     print("=" * 74)
-    rng = np.random.default_rng(3)
-    worst, n_int = 0.0, 0
-    for _ in range(600):
-        kdt = 1 + 10 ** rng.uniform(-2.5, 0.9)
-        kht = kdt * (1 + 10 ** rng.uniform(-2.5, 1.2))
-        Fc, cs, interior, closed = F_min_exact(kht, kdt)
-        n_int += interior
-        c = (kht - 1) * (1 + np.logspace(-9, 9, 40000))
-        x = lambda K: K * c / (1.0 + c - K)
-        Fg = (np.log(x(kht)) - GSC * np.log(x(kdt))).min()
-        worst = max(worst, abs(Fc - Fg))
-    print(f"  600 random admissible pairs, {n_int} with an interior minimum")
+    n_pairs, n_int, worst = closed_form_check()
+    print(f"  {n_pairs} random admissible pairs, {n_int} with an interior minimum")
     print(f"  worst |closed form - grid| = {worst:.2e}   "
           f"{'PASS' if worst < 1e-6 else 'FAIL'}")
 

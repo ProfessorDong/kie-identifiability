@@ -147,6 +147,33 @@ def clearing_rho(kht, sh, kdt, sd, target=F0, alpha=0.05):
     return float(optimize.brentq(f, -1.0, 1.0, xtol=1e-12))
 
 
+def error_inflation(kht, sh, kdt, sd, target=F0, alpha=0.05):
+    """Factor by which both published errors must grow before a record's
+    one-sided bound at rho = -1 falls to `target`.
+
+    Solved on the exact rho = -1 quantile of the endpoint
+    (bounds_uncertainty.exact_bound), so a record on the closed branch is
+    handled too; on the open branch it reduces to
+    (F_obs - target) / [z (s_H/K_HT + gamma s_D/K_DT)].  Returns nan when the
+    bound already lies at or below the target.
+    """
+    from scipy import optimize
+    import bounds_uncertainty as BU
+
+    def gap(lam):
+        b = BU.exact_bound(kht, lam * sh, kdt, lam * sd, alpha)
+        return (b if np.isfinite(b) else -1e9) - target
+
+    if gap(1.0) <= 0:
+        return float("nan")
+    hi = 2.0
+    while gap(hi) > 0:
+        hi *= 2.0
+        if hi > 1e6:
+            return float("inf")
+    return float(optimize.brentq(gap, 1.0, hi, xtol=1e-12))
+
+
 def main():
     lad = ladh_records()
     ya = pd.read_csv("../data/cha1989_yadh.csv")

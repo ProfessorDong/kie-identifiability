@@ -1,0 +1,110 @@
+\documentclass[border=2pt,tikz]{standalone}
+\input{icigstyle}
+\usetikzlibrary{arrows.meta,positioning,calc}
+\begin{document}
+\begin{tikzpicture}
+% Worked-example figure, full text width.  Panel B is computed by
+% analysis/export_fig_example.py; panel A is a schematic.
+\input{data/fx_levels.tex}
+\pgfplotsset{
+  ov/.style={icig, scale only axis,
+    label style={font=\fontsize{8.0}{9.6}\selectfont, color=cInk},
+    tick label style={font=\fontsize{7.2}{8.6}\selectfont, color=cInk},
+    title style={font=\fontsize{8.6}{10.4}\selectfont\bfseries, color=cInk,
+                 align=left}},
+}
+\tikzset{
+  ann/.style={font=\fontsize{7.2}{8.6}\selectfont, color=cInk, align=left,
+              inner sep=0pt},
+  annc/.style={font=\fontsize{7.2}{8.6}\selectfont, color=cInk, align=center,
+              inner sep=0pt},
+  hd/.style={font=\fontsize{8.6}{10.4}\selectfont\bfseries, color=cInk,
+             anchor=north west, inner sep=0pt},
+  box/.style={draw=#1, fill=#1!7, line width=0.45pt, rounded corners=1.5pt,
+              inner sep=3pt, font=\fontsize{7.2}{8.8}\selectfont, text=cInk,
+              align=left},
+  setarr/.style={line width=1.5pt, -{Latex[length=2.0mm,width=1.9mm]}},
+}
+\hyphenpenalty=10000 \exhyphenpenalty=10000
+
+% =====================================================================
+% (A) the experiment and what is unknown
+% =====================================================================
+\node[hd] at (0,0) {(\textit{\textbf{A}})\ \ the experiment};
+
+\node[anchor=north west, inner sep=0pt, font=\fontsize{7.6}{9}\selectfont]
+  (rx) at (0.05,-0.62)
+  {$\mathrm{E}+\mathrm{S}_L\;
+    \underset{k_{\mathrm{off}}}{\overset{k_{\mathrm{on}}}{\rightleftharpoons}}\;
+    \mathrm{ES}_L\;\xrightarrow{\;k_L\;}\;\mathrm{E}+\mathrm{P}$};
+\node[ann, anchor=north west, text width=50mm] (cmp)
+  at ($(rx.south west)+(0,-0.16)$)
+  {Substrates carrying H, D or T ($L$) at the transferred position compete
+   for one enzyme.};
+
+\node[box=cHyd, anchor=north west, text width=46mm] (meas)
+  at ($(cmp.south west)+(0,-0.20)$)
+  {\textbf{measured}\quad $\KHT$, $\KDT$\\[1pt]
+   isotope effects on $V/K$ for H and for D, each against T};
+\node[box=cGrey, anchor=north west, text width=46mm] (unk)
+  at ($(meas.south west)+(0,-0.16)$)
+  {\textbf{not measured}\\[1pt]
+   intrinsic effects $k_{\mathrm H}/k_{\mathrm T}$,
+   $k_{\mathrm D}/k_{\mathrm T}$ of the chemical step;\\
+   commitment $C_{\mathrm T}=k_{\mathrm T}/k_{\mathrm{off}}$};
+
+\node[anchor=north west, inner sep=0pt, font=\fontsize{7.6}{9}\selectfont]
+  (map) at ($(unk.south west)+(0.02,-0.24)$)
+  {$K_{L\mathrm T}=\dfrac{(k_L/k_{\mathrm T})\,(1+C_{\mathrm T})}
+                        {1+(k_L/k_{\mathrm T})\,C_{\mathrm T}}$};
+\node[ann, anchor=north west, text width=50mm]
+  at ($(map.south west)+(-0.02,-0.20)$)
+  {Two equations ($L=\mathrm{H},\mathrm{D}$), three unknowns: each assumed
+   commitment gives one intrinsic pair.};
+
+% =====================================================================
+% (B) the intrinsic exponent implied at every commitment
+% =====================================================================
+\begin{axis}[ov, name=B, width=70mm, height=50mm,
+  at={(7.05cm,-0.62cm)}, anchor=north west,
+  xmin=0, xmax=1, ymin=2.4, ymax=\fxTop,
+  xlabel={assumed commitment, as a fraction of the largest the data allow,
+          $C_{\mathrm T}(\KHT-1)$},
+  ylabel={intrinsic Swain--Schaad exponent},
+  xtick={0,0.25,0.5,0.75,1}, xticklabels={0,0.25,0.5,0.75,1},
+  ytick={2.5,3.0,3.5,4.0,4.5,5.0},
+  yticklabels={2.5,3.0,3.5,4.0,4.5,5.0},
+  clip=false,
+  title={(\textit{\textbf{B}})\ \ the intrinsic exponent each commitment implies}]
+  \draw[cInk, line width=0.6pt, densely dashed]
+    (axis cs:0,\fxGamma) -- (axis cs:1,\fxGamma);
+  \node[ann, anchor=north east] at (axis cs:0.985,\fxGamma-0.05)
+    {semiclassical reference, 3.35};
+
+  \addplot[cPro, line width=1.1pt] table[x=m,y=e] {data/fx_exp_yadh.dat};
+  \addplot[cHyd, line width=1.1pt, densely dashed] table[x=m,y=e]
+    {data/fx_exp_light.dat};
+  % observed exponents: the values at zero commitment
+  \addplot[only marks, mark=*, mark size=1.9pt, cPro]
+    table[x=m,y=e] {data/fx_obs_yadh.dat};
+  \addplot[only marks, mark=*, mark size=1.9pt, cHyd]
+    table[x=m,y=e] {data/fx_obs_light.dat};
+  \addplot[only marks, mark=o, mark size=2.2pt, cHyd, line width=0.7pt]
+    table[x=m,y=e] {data/fx_cross.dat};
+  \node[ann, color=cPro, anchor=south west] at (axis cs:0.03,4.55)
+    {yeast ADH, observed 3.58};
+  \node[ann, color=cHyd, anchor=north west] at (axis cs:0.03,2.66)
+    {ecDHFR, $5\,^{\circ}$C, observed 2.71};
+  \node[ann, color=cHyd, anchor=south east] at (axis cs:0.485,3.40)
+    {crosses the reference};
+
+  % the allowed ranges, projected onto the exponent axis
+  \draw[setarr, cPro] (axis cs:1.06,\fxYadhE) -- (axis cs:1.06,\fxTop);
+  \draw[cPro, fill=white, line width=0.7pt] (axis cs:1.06,\fxYadhE) circle (1.6pt);
+  \draw[setarr, cHyd] (axis cs:1.13,\fxLightE) -- (axis cs:1.13,\fxTop);
+  \draw[cHyd, fill=white, line width=0.7pt] (axis cs:1.13,\fxLightE) circle (1.6pt);
+  \node[annc, rotate=90] at (axis cs:1.20,3.9) {allowed intrinsic exponents};
+\end{axis}
+
+\end{tikzpicture}
+\end{document}

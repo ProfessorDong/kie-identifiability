@@ -13,12 +13,17 @@ hydrogen tunneling. It is established that the Swain-Schaad exponent alone does
 not diagnose it (Kohen & Jensen 2002; Hirschi & Singleton 2005; Shelton, Hrovat
 & Borden 2007). This work asks what such an experiment does determine.
 
-**The exponent is the wrong coordinate.** `X_H/X_D` is a ratio and is unchanged
-when both logarithms are rescaled together, so it reports a displacement from the
-mass-scaling line only relative to the size of the effects: it equals
-`gamma + F/X_D` and therefore confounds the displacement with `X_D`. The quantity
-that separates them is the offset `F = ln K_HT - gamma_SC ln K_DT`, which is zero
-on that line by construction.
+**In the exponent, the answer is one line.** Under the minimal competitive
+scheme the intrinsic Swain-Schaad exponent can take any value above the observed
+exponent and none at or below it: the allowed range is `(gamma_obs, infinity)`.
+The measured pair bounds the intrinsic relation from below and not from above.
+
+**The offset is the coordinate for model tests.** `X_H/X_D` is a ratio, equal to
+`gamma + F/X_D`, so it reports a displacement from the mass-scaling line only
+relative to the size of the effects. The offset
+`F = ln K_HT - gamma_SC ln K_DT` is zero on that line by construction, and the
+attainable offsets of a model can be compared directly with the allowed range.
+It adds no information to the pair.
 
 **The evidence is one-sided, and that is the whole result.** For any admissible
 observation `K_HT > K_DT > 1`,
@@ -44,13 +49,28 @@ set lies above zero. Hence:
 This makes exact the kinetic part of the criterion of Saunders (1985) as used by
 Cha et al. (1989) and Bahnson et al. (1993). Across 244 matched primary records in 76
 analysis units, gathered by a census of the two laboratories that report this
-design, 61 lie at their reported values on the uninformative side and nine more
+design, 68 units are observed below the semiclassical reference at every
+admissible temperature, so no gain in precision at those values can show an
+intrinsic departure from it; eight are observed above it, four of them at the
+nominal 95% level and one after adjustment across all units
+(`reference_counts.py`). Against the ground-channel envelope, 61 lie at their
+reported values on the uninformative side and nine more
 are limited by precision alone; six exclude the ground-channel envelope
 nominally (yeast ADH with benzyl and with p-chlorobenzyl alcohol, horse liver
 ADH F93W in 40% and in 60% methanol, and its F93W:I224G and I224V double
 mutants), and only the two yeast units survive adjustment across all 76 at
 rho = -1. Only the p-chlorobenzyl alcohol unit also survives removal of its
 isotopic-purity correction at the same time (`isotopic_purity.exclusions`).
+
+Two conditions go with these counts. The comparison is with the model's
+parameters unrestricted: F0 is approached only as the action and the gating
+width grow without bound, so an exclusion based on it holds under any
+restriction, while the 61 units that cannot exclude the unrestricted model fall
+to 56, 42 and 35 as the parameters are bounded more tightly (`model_domain.py`).
+And every unit that excludes anything is a mixed-label design, whose D/T effect
+is that of the doubly labeled substrate; comparing it with a single-coordinate
+relation or model assumes the rule of the geometric mean
+(`reference_asymmetry.geminal_ratio`).
 
 **Why it is one-sided: curvature against homogeneity.** The theorem above is a
 computation; this is the reason behind it, and it is more general than the
@@ -514,6 +534,16 @@ analysis/
                         (data/deuterium_purity.csv; results/sm_table_exclusions.tex)
   repeat_determinations.py  independent determinations of one condition:
                         do they detect an offset discrepancy?
+  model_domain.py       the model comparison when the action and gating width
+                        are bounded: largest offset, and the units that then
+                        cannot exclude the model (results/model_domain.csv)
+  reference_counts.py   the analysis units against the semiclassical reference
+                        itself: observed below it at every admissible
+                        temperature, above it, above at 95%, and above after
+                        adjustment across units (results/reference_counts.csv)
+  export_fig_example.py the worked example: the intrinsic exponent of two
+                        published pairs at each assumed commitment (figure
+                        data and table rows)
   synthetic_validation.py  the procedure run forward and back on known
                         truths: false exclusions, power, coverage, and what
                         a commitment measurement recovers
@@ -592,6 +622,8 @@ python offset_analysis.py    # per-series profiles   (about 3 min per series, ~2
 python holdout.py            # deletion sensitivity: point and confidence (~1 min)
 python design_power.py       # precision requirements; benchmark statistics
 python repeat_determinations.py  # independent determinations of one condition
+python reference_counts.py   # the units against the semiclassical reference
+python model_domain.py       # the model comparison under bounded parameters (~40 s)
 python isotopic_purity.py    # purity scenarios and the exclusions table (~1 min)
 python synthetic_validation.py   # the procedure on synthetic data with a known truth
 python equation_checks.py    # every displayed identity re-derived symbolically
@@ -599,6 +631,7 @@ python export_fig_asym.py    # data for the asymmetry figure (exact single-recor
 python offset_summary.py     # stratified interpretation
 python export_figs_v3.py     # pgfplots tables
 python export_fig_overview.py; python export_fig_envelope.py; python export_fig_design.py
+python export_fig_example.py # the worked example
 cd ../figures/tikz && ./build.sh
 ```
 

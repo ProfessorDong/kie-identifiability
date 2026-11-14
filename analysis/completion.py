@@ -458,6 +458,25 @@ def spans_250_350(A=5.0, w0=0.5, nus=(50, 200, 400, 800), n=1001):
     return out
 
 
+def viscosity_conditioning(c, ratio=4.0, xD=2.0):
+    """Error amplification of the two-viscosity inversion and the precision it
+    demands of each observed effect.
+
+    A mass-scaled intrinsic pair (x_D, x_D^gamma) is observed at reciprocal
+    commitment c and again at c/ratio.  Returns (amp, need): the relative error
+    of the recovered x_H per relative error in one observed effect, by finite
+    difference on the closed form, and the relative precision of that effect
+    which keeps its contribution to ln x_H within |F0|/2.
+    """
+    xH = xD ** GSC
+    K = lambda x, cc: x * (1 + cc) / (x + cc)
+    eps = 1e-6
+    base = intrinsic_from_two_viscosities(K(xH, c), K(xH, c / ratio), ratio)
+    pert = intrinsic_from_two_viscosities(K(xH, c) * (1 + eps), K(xH, c / ratio), ratio)
+    amp = abs((pert - base) / base) / eps
+    return float(amp), float(abs(F0) / 2 / amp)
+
+
 def fisher_example(A=5.0, w0=1.0, nu_cm=400.0, n_T=11, h=1e-5):
     """Singular values of dF/d(ln A, ln w0, ln theta) over an eleven-point series.
 
@@ -515,16 +534,9 @@ def run():
 
     print("\nThe viscosity route, for comparison: precision needed on each effect")
     for c in (1.0, 3.0, 10.0):
-        xH, xD = 2.0**GSC, 2.0
-        K = lambda x, cc: x*(1 + cc)/(x + cc)
-        r = 4.0
-        # finite-difference conditioning of the closed-form inversion
-        eps = 1e-6
-        base = intrinsic_from_two_viscosities(K(xH, c), K(xH, c/r), r)
-        pert = intrinsic_from_two_viscosities(K(xH, c)*(1 + eps), K(xH, c/r), r)
-        amp = abs((pert - base)/base)/eps
+        amp, need = viscosity_conditioning(c)
         print(f"   c={c:5.1f}: error amplification {amp:8.1f}x"
-              f"  -> {abs(F0)/2/amp*100:.3f}% needed")
+              f"  -> {need*100:.3f}% needed")
 
     print("\nWhat the completed offset then measures: the promoting mode")
     print(f"{'A':>6s} {'w0':>6s} {'peak nu_g':>11s} {'span over 250-350 K':>21s}")
