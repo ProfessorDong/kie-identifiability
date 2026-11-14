@@ -665,6 +665,17 @@ the six figures build, `audit_numbers.py` passes, and no tracked file changes.
 The changes in `network_atlas.py` are to comments and docstrings only, and
 `offset_analysis.py` is untouched; neither was rerun.
 
+Re-verified for v1.8.12 on 2026-11-14 from a clean clone, same environment: the
+scripts this release changes, adds or depends on (`partial_id.py`,
+`reference_asymmetry.py`, `reference_counts.py`, `model_domain.py`,
+`adh_primary.py`, `completion.py`, `export_fig_example.py`,
+`export_fig_atlas.py`, `export_fig_overview.py`, `export_fig_envelope.py`,
+`export_fig_design.py`, `export_fig_asym.py`, `equation_checks.py`,
+`verify_derivation.py`, `curvature.py`) exit 0, `network_atlas.py 4` passes, the
+figures build, `audit_numbers.py` passes with the manuscript and exits 0
+without it, and no tracked file changes. The data and the inputs of
+`offset_analysis.py` are unchanged since v1.8.11, so it was not rerun.
+
 Re-verified for v1.8.10 on 2026-10-22 from a clean clone, same environment,
 with the fetched supplements in place: the scripts this release changes or
 depends on (`partial_id.py`, `isotopic_purity.py`, `equation_checks.py`,
