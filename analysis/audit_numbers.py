@@ -916,7 +916,19 @@ def check_repo_metadata():
     if mv and cited and cited != {mv.group(1)}:
         print(f"  FAIL manuscript cites deposit version {sorted(cited)}, CITATION.cff is v{mv.group(1)}")
         bad += 1
-    print(f"  repo metadata: {2 - bad}/2 files carry the article title")
+    # The article's reference to the deposit must carry the deposit's own title
+    # (the archive record takes it from CITATION.cff).
+    mt = re.search(r"^title:\s*>-\s*\n((?:[ \t]+\S.*\n)+)", cff, re.M)
+    norm = lambda s_: re.sub(r"\s+", " ", re.sub(r"--|\u2013", "-", s_.replace("{", "").replace("}", ""))).strip().lower()
+    if mt:
+        for bibfile in (ROOT / "references.bib", ROOT / "si" / "references.bib"):
+            if not bibfile.exists():
+                continue
+            mb = re.search(r"@misc\{DongZenodo,.*?title\s*=\s*\{(.*?)\},\s*\n\s*howpublished", bibfile.read_text(), re.S)
+            if mb is None or norm(mb.group(1)) != norm(mt.group(1)):
+                print(f"  FAIL {bibfile.parent.name}/{bibfile.name}: the deposit's reference entry does not carry the title in CITATION.cff")
+                bad += 1
+    print(f"  repo metadata: {2 - min(bad, 2)}/2 files carry the article title; the deposit's reference entry carries the deposit's title")
     return bad
 
 
@@ -3283,8 +3295,6 @@ def check_assumptions_2026_11_13():
             ("main", "An exclusion based on $\\Fz$ therefore holds under any such restriction",
              "the direction in which the limit is conservative"),
             ("main", "Against the ground-channel model with unrestricted parameters,", "the Results qualifier"),
-            ("main", "a ground-state tunneling model with unrestricted parameters, which itself predicts exponents below that value",
-             "the abstract qualifiers: unrestricted parameters, and the model lies below the reference"),
             ("main", "ground-channel tunneling model as the test case and its parameters unrestricted,", "the Conclusions qualifier"),
             ("main", "tunneling-model limit $\\Fz$ & parameters unrestricted;", "the assumptions table"),
             ("main", "The count against the reference does not.", "the contrast with the model-free count"),
@@ -3664,30 +3674,38 @@ def check_audit_2026_11_20():
     import reference_counts as RC
     c = RC.counts()
     U = c["units"]
-    # ---- the abstract: its counts, its two conditions, and its worked number
+    # ---- the abstract: its counts, its conditions and its worked number.  These
+    # checks read the facts and not the sentences, so the wording can change.
     main_text = DOCS["main"].read_text()
     abstract = " ".join(main_text[main_text.index("\\begin{abstract}"):main_text.index("\\end{abstract}")].split())
     units_all = RC.unit_table(RC.reference_groups())
     compatible = units_all[units_all.point < F0]
-    if not (len(compatible) == c["model_uninformative"] and (compatible.gamma_obs_max < GSC).all()):
+    n_below, n_comp = c["below"], c["model_uninformative"]
+    if not (len(compatible) == n_comp and (compatible.gamma_obs_max < GSC).all()):
         print("  FAIL audit 2026-11-20: the units compatible with the model are no longer all among those below the reference")
         bad += 1
-    for want, what in (
-            (f"{c['model_uninformative']} of these are compatible, at their reported values, with a ground-state tunneling model "
-             "with unrestricted parameters, which itself predicts exponents below that value",
-             "the count against the model, with its two qualifiers"),
-            (f"above the semiclassical value (about ${GSC:.1f}$)", "the semiclassical value"),
-            ("as previously argued", "the credit for the direction of masking"),
-            ("the measured exponent is a lower limit on the intrinsic exponent, and the pair sets no other limit",
-             "the exact result")):
-        if want not in abstract:
-            print(f"  FAIL audit 2026-11-20: the abstract lacks {what}: {want!r}")
+    for pattern, what in (
+            (rf"\b{n_below} of {U}\b", "the count below the semiclassical value"),
+            (rf"\b{n_comp} of (?:the {n_below}|these|the {U})\b", "the count compatible with the model"),
+            (r"unrestricted parameters", "that the model's parameters are unrestricted"),
+            (r"predicts exponents below (?:that|the semiclassical) value", "that the model lies below the semiclassical value"),
+            (rf"semiclassical value \(about \${GSC:.1f}\$\)", "the semiclassical value"),
+            (r"as previously argued", "the credit for the direction of masking"),
+            (r"lower limit on the intrinsic exponent", "the exact result")):
+        if not re.search(pattern, abstract):
+            print(f"  FAIL audit 2026-11-20: the abstract lacks {what} (pattern {pattern!r})")
+            bad += 1
+    for a_, b_ in re.findall(r"\b(\d+) of (?:the )?(\d+)\b", abstract):
+        if (int(a_), int(b_)) not in {(n_below, U), (n_comp, n_below), (n_comp, U)}:
+            print(f"  FAIL audit 2026-11-20: the abstract carries a count that is not computed: {a_} of {b_}")
             bad += 1
     if f"{RC.G_BARE:.1f}" != f"{GSC:.1f}":
         print("  FAIL audit 2026-11-20: the two mass conventions no longer round to one value at one decimal")
         bad += 1
-    # an exclusion or the yeast enzyme may be named in the abstract only with the rule it rests on
-    if re.search(r"yeast|exclu", abstract) and "rule of the geometric mean" not in abstract:
+    # an exclusion or the yeast enzyme may be named in the abstract only with the
+    # rule it rests on (a statement that data cannot exclude something is not one)
+    asserted = re.sub(r"(?:cannot|could not|do not|does not) exclude", "", abstract)
+    if re.search(r"yeast|exclu", asserted) and "rule of the geometric mean" not in abstract:
         print("  FAIL audit 2026-11-20: the abstract names an exclusion or the yeast enzyme without the rule of the geometric mean")
         bad += 1
     need("main", "Intrinsic effects derived from such a pair by Northrop's method are therefore conditional on the "
@@ -3725,7 +3743,7 @@ def check_audit_2026_11_20():
          "the intrinsic H/T effect that Northrop's method selects")
     # what Northrop's method returns for the reductase pair as the assumed exponent is varied
     ex_lo, ex_hi = (np.log(xs(lt_.K_HT, ct)) / np.log(xs(lt_.K_DT, ct)) for ct in (0.10, 0.30))
-    want = (f"assumed exponents of ${ex_lo:.1f}$ to ${ex_hi:.1f}$ give intrinsic H/T effects of "
+    want = (f"exponents of ${ex_lo:.1f}$ to ${ex_hi:.1f}$ give intrinsic H/T effects of "
             f"${xs(lt_.K_HT, 0.10):.1f}$ to ${xs(lt_.K_HT, 0.30):.1f}$")
     if want not in abstract:
         print(f"  FAIL audit 2026-11-20: the abstract lacks the range of Northrop-derived effects: {want!r}")
