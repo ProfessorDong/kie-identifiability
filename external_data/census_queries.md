@@ -16,4 +16,15 @@ primary source that a screened article, or one of five reviews among them,
 cites for such data was added and read, supplement included; the tracing
 stopped when no cited source of matched H/T and D/T data remained unexamined.
 The disposition of every source that reports a tritium isotope effect or a
-matched pair is Supplementary Table "Disposition of every source examined".
+matched pair is the supplement's table "Disposition of the sources located by
+the search of 17 October 2026 and by citation tracing".
+
+All four concentrations in Table 5 of Tsai and Klinman (2001) are
+transcribed. The 10 mM condition repeats the 3 °C arm of their Table 4. The
+other three conditions belong to a control experiment on the order of
+substrate binding; they are listed in the 247-pair ledger, analyzed
+separately, and not counted as analysis units of the 244-pair dataset. No additional numeric pairs
+were found in the checked tables of Cha (1989), Rucker (1992), or Hong (2007).
+Hong's Figure 5 plots both primary isotope effects for Y94F hydride transfer.
+Only H/T is given numerically with uncertainty in the prose. These records
+describe coverage of the documented search and its numerical admission rule.

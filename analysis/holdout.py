@@ -62,11 +62,10 @@ def confidence_deletion(rho=-1.0, only=None):
     For each series whose full-data bound clears F0, drop each temperature in
     turn and recompute the one-sided series bound with the paper's procedure
     (bounds_uncertainty.series_bound: per-temperature bounds at 0.05/n_T over the
-    remaining temperatures, maximum taken).  Until 2026-10-15 the supplement
-    said the two F93W methanol series "exclude under every leave-one-out", but
-    leave_one_out() above compares point endpoints only; an external audit
-    showed that both lose the confidence-level exclusion without their 3 C
-    record.  Returns one row per (series, omitted temperature).
+    remaining temperatures, maximum taken).  leave_one_out() above compares
+    point endpoints only; the two F93W methanol series lose the
+    confidence-level exclusion without their 3 C record.  Returns one row per
+    (series, omitted temperature).
     """
     import bounds_uncertainty as BU
     tb = pd.read_csv("../data/trinomial_benchmark.csv")

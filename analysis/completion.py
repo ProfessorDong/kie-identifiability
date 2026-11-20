@@ -27,10 +27,11 @@ w = 2 kappa sqrt(mu_H) sigma^2(T), and for a harmonic promoting mode the exact
 thermal variance is w(T) = w0 coth(theta/2T) with theta = hbar omega_g / k_B.
 Zero-point motion makes w saturate below theta, so F(T) carries the mode
 frequency.  The sensitivity is largest where hbar omega_g ~ 2 k_B T, i.e. near
-417 cm^-1 at 300 K; over A in [1, 50] and w0 in [0.1, 2] the peak moves between
-140 and 480 cm^-1.  The donor-acceptor frequencies invoked in the literature lie
-mostly lower, 50 to 300 cm^-1 (Klinman & Kohen 2013), so the offset is most
-informative about the upper part of that range.
+417 cm^-1 at 300 K, or somewhat below it; over A in [1, 50] and w0 in [0.1, 2]
+the peak moves between 140 and 470 cm^-1, mainly with w0 (sensitivity_peak).
+The donor-acceptor frequencies invoked in the literature lie mostly lower, 50
+to 300 cm^-1 (Klinman & Kohen 2013), so the offset is most informative about
+the upper part of that range.
 """
 from __future__ import annotations
 
@@ -51,6 +52,41 @@ def intrinsic_from_commitment(K, c):
     return np.where(c > K - 1.0, K * c / (1.0 + c - K), np.nan)
 
 
+def commitment_from_hd(KH, KD, h):
+    """Reciprocal commitment fixed by an independently known intrinsic H/D effect.
+
+    For a shared tracer, Eq. (1) gives 1/x_L = (1 + C)/K_L - C with C = 1/c the
+    commitment of the tritiated substrate.  Requiring x_H/x_D = h then fixes
+
+        C = (h/K_H - 1/K_D) / (h - 1 - h/K_H + 1/K_D),
+
+    which is positive for h > K_H/K_D and increases with h toward its limit
+    1/(K_H - 1).  An intrinsic H/D effect measured directly (for example in a
+    single turnover that isolates the chemical step) therefore does the work of
+    a commitment measurement.  Returns c = 1/C, nan outside h > K_H/K_D.
+    """
+    KH = np.asarray(KH, float); KD = np.asarray(KD, float); h = np.asarray(h, float)
+    C = (h / KH - 1.0 / KD) / (h - 1.0 - h / KH + 1.0 / KD)
+    return np.where(h > KH / KD, 1.0 / np.where(C > 0, C, np.nan), np.nan)
+
+
+def check_commitment_from_hd(n=200000, seed=20261120):
+    """Random check of commitment_from_hd: draw an intrinsic pair and a
+    commitment, form the observed pair, and recover the commitment from the
+    intrinsic H/D ratio alone.  Returns the worst relative error of c and of
+    the two recovered intrinsic effects."""
+    rng = np.random.default_rng(seed)
+    xD = np.exp(rng.uniform(np.log(1.05), np.log(4.0), n))
+    xH = xD * np.exp(rng.uniform(np.log(1.2), np.log(12.0), n))
+    c = np.exp(rng.uniform(np.log(1e-2), np.log(1e3), n))
+    K = lambda x: x * (1 + c) / (x + c)
+    got = commitment_from_hd(K(xH), K(xD), xH / xD)
+    rec_h = intrinsic_from_commitment(K(xH), got)
+    rec_d = intrinsic_from_commitment(K(xD), got)
+    return (float(np.nanmax(np.abs(got / c - 1))), float(np.nanmax(np.abs(rec_h / xH - 1))),
+            float(np.nanmax(np.abs(rec_d / xD - 1))), int(np.isnan(got).sum()))
+
+
 def dF_dlnc(KH, KD, c, r=1.0, gamma=GSC):
     """Sensitivity of the completed offset to the commitment.
 
@@ -65,6 +101,20 @@ def commitment_precision_needed(KH, KD, c, r=1.0, target=abs(F0)/2, gamma=GSC):
     """Relative precision on c_H that fixes F to +/- `target`."""
     d = abs(dF_dlnc(KH, KD, c, r, gamma))
     return np.inf if d == 0 else target/d
+
+
+def commitment_precision_needed_separate(KH, KD, c, r=1.0, target=abs(F0)/2, gamma=GSC):
+    """Relative precision needed when the commitment of each tracer is measured
+    separately, with independent errors of equal relative size.
+
+    commitment_precision_needed treats the tracer ratio r as exact, so one
+    error in c moves both recovered effects and the two terms of dF/dln c
+    partly cancel.  With two independent commitment measurements the terms add
+    in quadrature, and the requirement is stricter.
+    """
+    dh = (1.0 - KH)/(1.0 + c - KH)
+    dd = gamma*(1.0 - KD)/(1.0 + r*c - KD)
+    return target/float(np.hypot(dh, dd))
 
 
 def isotope_error_budget(KH, KD, sH, sD, c, r=1.0, gamma=GSC):
@@ -460,21 +510,28 @@ def spans_250_350(A=5.0, w0=0.5, nus=(50, 200, 400, 800), n=1001):
 
 def viscosity_conditioning(c, ratio=4.0, xD=2.0):
     """Error amplification of the two-viscosity inversion and the precision it
-    demands of each observed effect.
+    demands of the two observed effects.
 
     A mass-scaled intrinsic pair (x_D, x_D^gamma) is observed at reciprocal
-    commitment c and again at c/ratio.  Returns (amp, need): the relative error
-    of the recovered x_H per relative error in one observed effect, by finite
-    difference on the closed form, and the relative precision of that effect
-    which keeps its contribution to ln x_H within |F0|/2.
+    commitment c and again at c/ratio.  The recovered x_H depends on both
+    observed H/T effects.  Returns (s1, s2, amp, need): the logarithmic
+    sensitivities of the recovered x_H to the effect at the lower and at the
+    higher viscosity (finite differences on the closed form), the combined
+    amplification sqrt(s1^2 + s2^2) for independent errors of equal relative
+    size, and the relative precision of each effect that keeps the resulting
+    error of ln x_H within |F0|/2.  Until 2026-11-20 only s1 was computed, which
+    understated the amplification: the effect at the higher viscosity is the
+    more sensitive one once c falls below about 5.
     """
     xH = xD ** GSC
     K = lambda x, cc: x * (1 + cc) / (x + cc)
     eps = 1e-6
-    base = intrinsic_from_two_viscosities(K(xH, c), K(xH, c / ratio), ratio)
-    pert = intrinsic_from_two_viscosities(K(xH, c) * (1 + eps), K(xH, c / ratio), ratio)
-    amp = abs((pert - base) / base) / eps
-    return float(amp), float(abs(F0) / 2 / amp)
+    K1, K2 = K(xH, c), K(xH, c / ratio)
+    base = intrinsic_from_two_viscosities(K1, K2, ratio)
+    s1 = (intrinsic_from_two_viscosities(K1 * (1 + eps), K2, ratio) - base) / base / eps
+    s2 = (intrinsic_from_two_viscosities(K1, K2 * (1 + eps), ratio) - base) / base / eps
+    amp = float(np.hypot(s1, s2))
+    return float(s1), float(s2), amp, float(abs(F0) / 2 / amp)
 
 
 def fisher_example(A=5.0, w0=1.0, nu_cm=400.0, n_T=11, h=1e-5):
@@ -534,9 +591,9 @@ def run():
 
     print("\nThe viscosity route, for comparison: precision needed on each effect")
     for c in (1.0, 3.0, 10.0):
-        amp, need = viscosity_conditioning(c)
-        print(f"   c={c:5.1f}: error amplification {amp:8.1f}x"
-              f"  -> {need*100:.3f}% needed")
+        s1, s2, amp, need = viscosity_conditioning(c)
+        print(f"   c={c:5.1f}: sensitivities {s1:+7.2f} (low viscosity), {s2:+7.2f} (high);"
+              f" combined amplification {amp:6.1f}x  -> {need*100:.3f}% needed")
 
     print("\nWhat the completed offset then measures: the promoting mode")
     print(f"{'A':>6s} {'w0':>6s} {'peak nu_g':>11s} {'span over 250-350 K':>21s}")

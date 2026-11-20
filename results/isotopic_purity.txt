@@ -167,7 +167,7 @@ published and with any correction removed (published constants; for a source
 that only cites a correction, a correction of Bahnson et al.'s size):
 unit                                                                     status    unit     all   undo0     all  undo.5     all
 LADH F93W (40% MeOH) (hydride)                             uncorrected_measured  +0.032  -0.059    +nan    +nan    +nan    +nan
-LADH F93W (60% MeOH) (hydride)                             uncorrected_measured  +0.071  -0.169    +nan    +nan    +nan    +nan
+LADH F93W (60% MeOH) (hydride)                             uncorrected_measured  +0.070  -0.169    +nan    +nan    +nan    +nan
 YADH wild type (p-chlorobenzyl alcohol) (hydride)                     corrected  +0.170  +0.050  +0.117  -0.003  +0.144  +0.024
 YADH wild type, 25 C (Cha1989)                                        corrected  +0.049  -0.027  -0.018  -0.094  +0.018  -0.059
 LADH F93W-I224G, 25 C (ChinKlinman2000)               corrected_by_cited_method  -0.025  -0.077  -0.095  -0.147  -0.057  -0.109

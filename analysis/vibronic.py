@@ -1,7 +1,7 @@
 """Does the separation bound survive the full vibronic sum?
 
-The main-text theorem is proved for the ground vibronic channel.  A referee will
-ask whether excited channels destroy it.  This module answers that in two parts,
+The main-text theorem is proved for the ground vibronic channel.  The natural
+question is whether excited channels destroy it.  This module answers that in two parts,
 one exact and one numerical.
 
 PART 1 (exact): how bounds behave under channel summation.

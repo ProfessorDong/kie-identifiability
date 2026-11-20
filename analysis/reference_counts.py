@@ -41,23 +41,37 @@ G_BARE = ((M.M_H_ATOMIC ** -0.5 - M.M_T_ATOMIC ** -0.5)
           / (M.M_D_ATOMIC ** -0.5 - M.M_T_ATOMIC ** -0.5))
 
 
-def unit_table() -> pd.DataFrame:
-    """One row per analysis unit: largest endpoint, largest observed exponent,
-    per-unit bound and bound adjusted across all units (rho = -1)."""
-    units = corpus.counts()["units"]
-    rows = []
-    s = corpus.series()
-    for (fam, var, step), g in s.groupby(["family", "variant", "step"], sort=False):
-        rows.append((f"{fam} {var} ({step})", g))
+def reference_groups():
+    """Unit labels and measurements of the dataset: one unit per temperature
+    series and one per single-condition record."""
+    groups = {}
+    for (fam, var, step), g in corpus.series().groupby(["family", "variant", "step"], sort=False):
+        groups[f"{fam} {var} ({step})"] = g
     for _, r in corpus.single_condition().iterrows():
-        rows.append((f"{r.family} {r.variant}, {r.T_C:g} C ({r.source})", pd.DataFrame([r])))
+        label = f"{r.family} {r.variant}, {r.T_C:g} C ({r.source})"
+        if label in groups:
+            raise ValueError(f"duplicate analysis unit: {label}")
+        groups[label] = pd.DataFrame([r])
+    return groups
+
+
+def unit_table(groups=None) -> pd.DataFrame:
+    """Largest endpoint and observed exponent, per-unit and family-adjusted bounds.
+
+    The family size is the number of units supplied. By default this is the
+    dataset (temperature series and single-condition records). cofactor_benchmark.py
+    supplies all unique conditions and an isozyme-preparation sensitivity.
+    """
+    if groups is None:
+        groups = reference_groups()
+    units = len(groups)
     # labeling design of each form: "labeled" (mixed-label: the D/T substrate
     # and its tritiated reference carry deuterium at the non-transferred
     # position) or "shared" (one tritiated molecule serves both experiments)
     design = {(d.family, d.variant, d.step): d.design
               for d in pd.read_csv(corpus.DATA / "tracer_design.csv").itertuples()}
     out = []
-    for label, g in rows:
+    for label, g in groups.items():
         adm = g[(g.K_HT > g.K_DT) & (g.K_DT > 1)]
         point = max(F_min_exact(kh, kd)[0] for kh, kd in zip(adm.K_HT, adm.K_DT))
         gmax = float(np.max(np.log(adm.K_HT) / np.log(adm.K_DT)))

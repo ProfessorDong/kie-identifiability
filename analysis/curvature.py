@@ -279,12 +279,17 @@ def remaining_draw_checks(seed=20261022):
     m = 20000
     exc2 = 0
     xd = np.geomspace(1 + 1e-6, 1e4, 4000)
-    for _ in range(m):
+    tested = 0
+    while tested < m:
         A, C = np.exp(rng.uniform(-3, 3, 2))
         B = np.exp(rng.uniform(-3, 3))
         D = A + B - C
+        # Draws outside the class are redrawn, so that m maps are tested.  Until
+        # 2026-11-20 they were skipped and still counted: 10,077 of the 20,000
+        # draws were maps of the class.
         if D <= 0 or A * D <= B * C:
             continue
+        tested += 1
         K = lambda x: (A * x + B) / (C * x + D)
         F = np.log(K(xd ** GSC)) - GSC * np.log(K(xd))
         both = F.max() > 1e-12 and F.min() < -1e-12
@@ -310,7 +315,7 @@ def remaining_draw_checks(seed=20261022):
     Kf = lambda x_, c_: x_ * (1 + c_) / (x_ + c_)
     rec = Cm.intrinsic_from_two_viscosities(Kf(x, c), Kf(x, c / rr), rr)
     err3 = float(np.max(np.abs(rec / x - 1)))
-    return (exc1, int(q.sum())), (int(exc2), m), err3
+    return (exc1, int(q.sum())), (int(exc2), tested), err3
 
 
 if __name__ == "__main__":

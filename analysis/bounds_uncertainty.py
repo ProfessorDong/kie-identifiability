@@ -7,9 +7,9 @@ standard error and is not an inferential statement.
 
 Three features of the design matter.
 
-  * The H/T and D/T effects share a tritium reference, so their errors are
-    correlated and the correlation is not reported in the sources; we bracket
-    it over rho in {-1, 0, 0.5, 0.9}; rho = -1 is the maximally adverse case.
+  * The two assays can use common or chemically distinct tritium tracers. The
+    sources do not report their error correlation. We examine rho in {-1, 0,
+    0.5, 0.9}. The linear log offset has its largest variance at rho = -1.
 
   * The target of a series is psi = max_T F_min(K(T)), the sharpest exclusion
     its temperatures afford.  Its lower bound is max_T L_T, where L_T is the
@@ -90,8 +90,10 @@ def one_replication(g, rho, n, rng):
     return lcb, float(finite.std()), dead, above
 
 
-def series_bound(g, rho, n=N_DRAW, reps=N_REP, seed=BASE_SEED):
-    """Bound averaged over independent replications, with its Monte Carlo s.d."""
+def series_bound_mc(g, rho, n=N_DRAW, reps=N_REP, seed=BASE_SEED):
+    """Simulated bound averaged over independent replications, with its Monte
+    Carlo s.d., the sampling s.d. of the statistic, the fraction of replicates
+    without information and the frequency of clearing F0."""
     vals, sds, deads, abv = [], [], [], []
     for k in range(reps):
         rng = np.random.default_rng(seed + 1009 * k)
@@ -101,18 +103,40 @@ def series_bound(g, rho, n=N_DRAW, reps=N_REP, seed=BASE_SEED):
             float(np.mean(sds)), float(np.mean(deads)), float(np.mean(abv)))
 
 
+def series_bound(g, rho, n=N_DRAW, reps=N_REP, seed=BASE_SEED):
+    """One-sided bound for a series (or a single record) at correlation rho.
+
+    At rho = -1 the draws lie on a line along which the endpoint is monotone,
+    so the Bonferroni bound is a closed-form quantile (exact_series_bound) and
+    that value is returned; the simulation is still run, for the other
+    statistics and as a check on the closed form (the two agree within 0.0004
+    on every series).  At the other correlations the bound is the simulated
+    one.  Until 2026-11-20 the simulated value was returned at rho = -1 too,
+    so tables printed, in the last digit, a number that the closed form used
+    elsewhere did not reproduce.  Returns (bound, Monte Carlo s.d. of the
+    simulated bound, sampling s.d., uninformative fraction, P(> F0)).
+    """
+    mc = series_bound_mc(g, rho, n, reps, seed)
+    if rho == -1.0:
+        return (float(exact_series_bound(g, units=1)),) + mc[1:]
+    return mc
+
+
 def multiplicity_bound(g, units, rho=-1.0):
     """Series (or single-record) bound adjusted across `units` analysis units.
 
     Per-record level alpha / (units * n_T), n_T counting every recorded
-    temperature, then the maximum.  At that level a Monte Carlo quantile rests
-    on a few hundred tail draws, so the bound is computed in closed form: the
+    temperature, then the maximum. At rho = -1 evaluate the full endpoint
+    distribution, including inadmissible draws. For other correlations the
+    following open-branch calculation checks the linear-offset bound: the
     endpoint never exceeds F_obs, so each record's F_obs bound is an upper limit
     on its own bound, and when the record attaining the largest of them stays on
     the open branch (L_H >= gamma) at its perturbed pair, that value is the
     series bound.  Returns nan if that check fails (not needed for any unit
     drawn as excluding).  Records without an admissible central pair add -inf.
     """
+    if rho == -1.0:
+        return exact_series_bound(g, units=units)
     from scipy import stats
     z = stats.norm.ppf(1 - ALPHA / (units * len(g)))
     best = None
@@ -151,8 +175,8 @@ def exact_bound(kht, sh, kdt, sd, alpha=ALPHA, transform=None):
     when alpha <= P(U < u1) + P(U > u2), and otherwise the endpoint at
     U* = Phi^{-1}(alpha - P(U > u2)).
 
-    This replaces F_min - z sd(F_obs) for single records (2026-10-21, after an
-    external audit): that shortcut is the quantile only while the endpoint is
+    This is used instead of F_min - z sd(F_obs) for single records: that
+    shortcut is the quantile only while the endpoint is
     F_obs itself, and for the two closed-branch Hong 2007 records it understated
     the uncertainty by 0.06 and 0.10.  It is exact for the stated distribution,
     which is itself a plug-in approximation (see plugin_coverage).
@@ -185,8 +209,8 @@ def exact_bound(kht, sh, kdt, sd, alpha=ALPHA, transform=None):
 def exact_series_bound(g, units=1, alpha=ALPHA, transform=None):
     """Bonferroni bound at rho = -1, computed exactly: every record of `g` at
     level alpha / (units * n_T), then the largest.  units = 1 gives the
-    per-unit bound (a single record when len(g) == 1); units = 73 the bound
-    adjusted across all analysis units."""
+    per-unit bound (a single record when len(g) == 1). For an across-unit
+    bound, pass the actual number of units in the comparison family."""
     lev = alpha / (units * len(g))
     return max(exact_bound(r.K_HT, r.K_HT_se, r.K_DT, r.K_DT_se, lev, transform)
                for r in g.itertuples())
@@ -296,8 +320,8 @@ def main():
         f"{np.sqrt(M.mu_ratios('C')[2]):.4f}, so that envelope is the flat "
         f"value F0 = {F0:+.6f}.")
     say("")
-    say("The H/T and D/T effects share a tritium reference. The correlation is")
-    say("not reported, so results are bracketed over rho in {-1, 0, 0.5, 0.9}.")
+    say("H/T and D/T may use the same or different tritiated substrates.")
+    say("Their error correlation is unreported. We examine rho in {-1, 0, 0.5, 0.9}.")
     say("")
 
     rows = []
@@ -308,12 +332,14 @@ def main():
         for key, g in d.groupby(["family", "variant", "step"]):
             fam, var, step = key
             pt = max(F_min_exact(r.K_HT, r.K_DT)[0] for _, r in g.iterrows())
-            lcb, mcsd, sdstat, dead, above = series_bound(g, rho)
+            lcb_mc, mcsd, sdstat, dead, above = series_bound_mc(g, rho)
+            # closed form at rho = -1, simulation otherwise (see series_bound)
+            lcb = float(exact_series_bound(g, units=1)) if rho == -1.0 else lcb_mc
             say(f"{fam+' '+var+' ('+step+')':42s}{pt:9.4f}{lcb:10.4f}"
                 f"{mcsd:8.4f}{sdstat:10.4f}{above:9.3f}"
                 f"{'YES' if lcb > F0 else 'no':>10}")
             rows.append(dict(rho=rho, family=fam, variant=var, step=step,
-                             point=pt, lcb=lcb, lcb_mc_sd=mcsd,
+                             point=pt, lcb=lcb, lcb_mc=lcb_mc, lcb_mc_sd=mcsd,
                              sd_stat=sdstat, p_above_F0=above,
                              frac_uninformative=dead,
                              refutes=bool(lcb > F0)))
@@ -331,10 +357,15 @@ def main():
             f" of {len(sub)};  best lower bound {best.lcb:+.4f}"
             f" ({best.family} {best.variant})")
     say("")
-    say(f"Largest Monte Carlo s.d. over all cells: {res.lcb_mc_sd.max():.5f}")
+    sim = res[res.rho != -1.0]
+    adverse = res[res.rho == -1.0]
+    say(f"Largest Monte Carlo s.d. over the simulated cells (rho = 0, 0.5, 0.9): "
+        f"{sim.lcb_mc_sd.max():.5f}")
+    say(f"At rho = -1 the bound is the closed-form quantile; the simulated value "
+        f"differs from it by at most {(adverse.lcb_mc - adverse.lcb).abs().max():.5f}.")
     say(f"Largest uninformative-replicate fraction: "
         f"{res.frac_uninformative.max():.2e}")
-    mc = res.lcb_mc_sd.max()
+    mc = sim.lcb_mc_sd.max()
     secure = 3 if mc < 5e-4 else 2
     say(f"Bounds are therefore secure to {secure} decimals everywhere "
         f"(Monte Carlo s.d. {mc:.1e}).")

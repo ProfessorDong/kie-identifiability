@@ -1,6 +1,6 @@
 
 ============================================================================
-CLAIM I: Theorem 1 is FALSE -- F exceeds F0 at small A
+CHECK I: F0 is not a bound for small intrinsic effects: F exceeds F0 at small A
 ============================================================================
 F0 = -0.042086   mu ratios: 1, 1.361971, 1.610094   sqrt(t) = 1.268895
 
@@ -20,10 +20,11 @@ F0 = -0.042086   mu ratios: 1, 1.361971, 1.610094   sqrt(t) = 1.268895
   => dF/dA < 0 strictly, so the supremum in A is at A -> 0, not A -> inf.
 
   global sup over (A,w): F(A->0, w->0) = -0.00000000
-  => sup F = 0, NOT F0.  Theorem 1 as stated is FALSE.  CLAIM CONFIRMED.
+  => the unconstrained supremum of F is 0, not F0: the flat bound F <= F0
+     needs a condition on the size of the intrinsic effect.
 
 ============================================================================
-CLAIM I(b): the corrected scale-dependent envelope B(K)
+CHECK I(b): the scale-dependent envelope B(K)
 ============================================================================
 threshold sqrt(t) = 1.268895
   K_HT^int   numeric sup   closed form          F0
@@ -35,12 +36,12 @@ threshold sqrt(t) = 1.268895
     1.5000     -0.042086     -0.042086   -0.042086
     3.0000     -0.042086     -0.042086   -0.042086
    11.0000     -0.042086     -0.042086   -0.042086
-  => Theorem 1 holds only for K_HT^int >= sqrt(mu_T/mu_H) = 1.2689.
-     Below that the envelope rises toward 0.  My numerical check started
-     at K = 1.5, which sat entirely inside the region where it holds.
+  => the flat bound holds only for K_HT^int >= sqrt(t) = (mu_T/mu_H)^(1/4) = 1.2689.
+     Below that the envelope rises toward 0.  A numerical check that starts
+     at K = 1.5 sits entirely inside the region where the bound holds.
 
 ============================================================================
-CLAIM III: the experimental recommendation has the commitment reversed
+CHECK II: masking falls as c = k_off/k_chem increases
 ============================================================================
 observation map K_obs = x(1+c)/(x+c), c = k_off/k_chem
          c     K_obs     masking
@@ -52,15 +53,14 @@ observation map K_obs = x(1+c)/(x+c), c = k_off/k_chem
   10000.00    7.9944      0.0056
   intrinsic x = 8.0
   K_obs -> x as c -> INFINITY.  Masking is reduced by INCREASING
-  c = k_off/k_chem.  The manuscript recommends REDUCING it.
-  CLAIM CONFIRMED: sign error in the design recommendation.
+  c = k_off/k_chem, not by reducing it.
 
 ============================================================================
-CLAIM IV: the model-free bounds ignore measurement uncertainty
+CHECK III: a point comparison with F0 needs its sampling error
 ============================================================================
 ecDHFR W133F, 25 C:  K_HT = 5.04 +- 0.03,  K_DT = 1.65 +- 0.02
   F_obs        = -0.05962
   delta-method SE (independence) = 0.04103
   distance to F0 = +0.01754  ->  0.43 SE
-  CLAIM CONFIRMED: the reported shortfall is well inside one standard
-  error, so 'falls short by 0.018' is not an inferential statement.
+  The shortfall is well inside one standard error, so the point value
+  alone is not an inferential statement (see bounds_uncertainty.py).

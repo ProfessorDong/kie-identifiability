@@ -21,9 +21,9 @@ x_i = k3i/k3R for the intrinsic effect and using k4i = k3i/Keq_i,
 
     C_f = k3R/k2,   C_r = k4R/k5,   E_i = Keq_i/Keq_R.
 
-Both commitments are defined on the reference isotopologue and are therefore
-shared across the H/T and D/T measurements, which is the property the analysis
-needs.  Setting C_r = 0 and C_f = 1/c recovers Eq. (1) of the main text exactly.
+Both commitments are defined on the reference isotopologue. This calculation
+requires a shared tracer for H/T and D/T. Setting C_r = 0 and C_f = 1/c
+recovers the irreversible shared-tracer model.
 
 THE INVERSION.  With S = 1 + C_f + C_r and G_i = C_f + C_r/E_i,
 
@@ -51,7 +51,7 @@ mass scaling, E_H = E_D^gamma, the second gives
 but that alone is not sufficient: den -> -(a-b) < 0 as E_D -> infinity, so den
 changes sign again at some E_D** and the vacuity region is the bounded interval
 
-    [E_D*, E_D**],   E_D** the root above E_D* of  a(K_DT/E - 1) = b(K_HT/E^g - 1),
+    [E_D*, E_D**),   E_D** the root above E_D* of  a(K_DT/E - 1) = b(K_HT/E^g - 1),
 
 which is transcendental in E for non-integer gamma and has no closed form.
 Outside that window the set is bounded below again.
@@ -59,8 +59,9 @@ Outside that window the set is bounded below again.
 At E_D = E_D* one has v = u and hence den = u(a-b), so the window is nonempty
 exactly when u > 0 there.  That reduces to K_DT^gamma > K_HT, i.e. to
 F_obs < 0.  When the OBSERVED OFFSET IS POSITIVE the window is empty and no
-equilibrium isotope effect can make the identified set vacuous, which is why the
-yeast ADH conclusion of decisive_case.py is unconditional in E_D.
+mass-scaled equilibrium isotope effect can make the identified set unbounded
+below in this shared-tracer model. The yeast ADH measurements used different
+tracer preparations and require a separate argument about their commitments.
 
 Checked against the optimizer and on 3000 random admissible pairs.
 
@@ -97,7 +98,7 @@ def invert(K, cf, cr, eie):
 
 
 def eie_threshold(kht, kdt, gamma=GSC):
-    """Lower edge E_D* of the vacuity window: the root of v = u.
+    """Algebraic crossing E_D* at v = u. It is a lower edge only if the window exists.
 
     This is NECESSARY for vacuity but not sufficient. See vacuity_window.
     """
@@ -135,7 +136,14 @@ def vacuity_window(kht, kdt, gamma=GSC, emax=1e6):
     lo = eie_threshold(kht, kdt, gamma)
     if _den(lo, kht, kdt, gamma) <= 0.0:
         return None
-    hi = brentq(_den, lo * (1 + 1e-12), emax, args=(kht, kdt, gamma))
+    # At a*kdt/(a-b), the positive 1/E term equals a-b, and den is negative.
+    # Use that analytic upper bracket even when the user-supplied cutoff is small.
+    a, b = kht - 1.0, kdt - 1.0
+    upper = min(emax, a * kdt / (a - b))
+    if upper <= lo or _den(upper, kht, kdt, gamma) >= 0:
+        upper = a * kdt / (a - b)
+    hi = brentq(_den, lo, upper, args=(kht, kdt, gamma),
+                xtol=np.nextafter(0.0, 1.0), rtol=4*np.finfo(float).eps)
     return lo, hi
 
 
@@ -159,14 +167,35 @@ def F_reversible(kht, kdt, cf, cr, edt, gamma=GSC):
 def F_min_reversible(kht, kdt, edt, n=900, cmax=None, gamma=GSC):
     """Numerical infimum of F over (C_f, C_r) >= 0 at fixed E_DT.
 
-    Returns (F_min, C_f, C_r).  A value of -inf signals the vacuous case; the
-    grid is placed relative to the analytic corner so the divergence is actually
-    resolved rather than missed between grid points.
+    Returns (F_min, C_f, C_r). Use the exact window and the positive-offset
+    inequality first. At the upper edge the two residuals are affine dependent,
+    permitting exact one-dimensional minimization. In other finite cases the
+    returned value is the smallest on the parameter grid.
     """
     a, b = kht - 1.0, kdt - 1.0
     eht = edt ** gamma
     u, v = kht / eht - 1.0, kdt / edt - 1.0
     den = a * v - b * u
+    if not kht > kdt > 1 or edt <= 0:
+        return np.nan, np.nan, np.nan
+    f_obs = np.log(kht) - gamma * np.log(kdt)
+    if f_obs >= 0:
+        return float(f_obs), 0.0, 0.0
+    window = vacuity_window(kht, kdt, gamma)
+    if window is not None:
+        lo, hi = window
+        if lo <= edt < hi:
+            # Limiting commitments at which D_H and D_D approach zero.
+            return -np.inf, max(0.0, (v-u)/den), (a-b)/den
+        if edt == hi:
+            # D_H = q D_D + 1-q, with 1-1/q < D_D < K_DT.
+            q = a / b
+            d_d = min(kdt, gamma * (q-1) / (q*(gamma-1)))
+            d_h = q * d_d + 1 - q
+            f_min = f_obs + gamma * np.log(d_d) - np.log(d_h)
+            if d_d <= 1:
+                return float(f_min), (1-d_d)/b, 0.0
+            return float(f_min), 0.0, (1-d_d)/v
     grids = [np.concatenate([[0.0], np.logspace(-4, 3, n)])]
     if abs(den) > 1e-14:                      # refine around the corner
         cfs, crs = (v - u) / den, (a - b) / den
@@ -200,6 +229,26 @@ def series_bound_reversible(g, edt, gamma=GSC):
 
 
 # =============================================================== verification
+def ordered_tracer_counterexample(x_d=1.5, e_d=2.5, c_r=3.0, r=2.0, gamma=GSC):
+    """A reference-obeying intrinsic pair observed ABOVE the reference when the
+    two comparisons use different tracers.
+
+    The inequality F_obs <= max(F_int, 0) of the shared-tracer model rests on
+    common weights in the two comparisons.  Here the H/T comparison has reverse
+    commitment c_r on its tracer and the D/T comparison c_r / r on its own
+    (reciprocal commitments in the ratio r, as in a mixed-label design), with
+    no forward commitment and mass-scaled equilibrium effects E_H = E_D^gamma.
+    Returns (K_HT, K_DT, F_obs, F_int); F_int = 0 and F_obs > 0 for the
+    defaults, which need an equilibrium effect larger than the intrinsic D/T
+    effect.
+    """
+    x_h, e_h = x_d ** gamma, e_d ** gamma
+    k = lambda x, e, cr: x * (1.0 + cr) / (1.0 + cr * x / e)
+    kh, kd = k(x_h, e_h, c_r), k(x_d, e_d, c_r / r)
+    return (float(kh), float(kd), float(np.log(kh) - gamma * np.log(kd)),
+            float(np.log(x_h) - gamma * np.log(x_d)))
+
+
 def _verify():
     print("=" * 78)
     print("1. THE MAP REDUCES TO THE IRREVERSIBLE CASE AT C_r = 0")
@@ -219,7 +268,7 @@ def _verify():
     print("=" * 78)
     print("2. THE VACUITY THRESHOLD, ANALYTIC vs NUMERICAL")
     print("=" * 78)
-    print(f"{'K_HT':>7}{'K_DT':>7}{'F_obs':>9}{'window [E_D*, E_D**]':>24}"
+    print(f"{'K_HT':>7}{'K_DT':>7}{'F_obs':>9}{'window [E_D*, E_D**)':>24}"
           f"{'below':>9}{'inside':>9}{'above':>9}")
     for kht, kdt in ((5.04, 1.65), (2.362, 1.49), (6.44, 1.92), (1.93, 1.29),
                      (7.13, 1.73)):
@@ -234,8 +283,13 @@ def _verify():
         m = F_min_reversible(kht, kdt, 0.5 * (lo + hi))[0]
         a_ = F_min_reversible(kht, kdt, hi * 1.02)[0]
         print(f"{kht:7.2f}{kdt:7.2f}{fobs:+9.4f}"
-              f"{'['+format(lo,'.4f')+', '+format(hi,'.4f')+']':>24}"
+              f"{'['+format(lo,'.4f')+', '+format(hi,'.4f')+')':>24}"
               f"{b:9.3f}{m:9.1f}{a_:9.3f}")
+    lo, hi = vacuity_window(5.04, 1.65)
+    assert np.isneginf(F_min_reversible(5.04, 1.65, lo)[0])
+    assert np.isneginf(F_min_reversible(5.04, 1.65, np.nextafter(hi, lo))[0])
+    assert abs(F_min_reversible(5.04, 1.65, hi)[0] + 0.256939) < 2e-6
+    assert np.isfinite(F_min_reversible(5.04, 1.65, np.nextafter(hi, np.inf))[0])
     print("  The window is a bounded INTERVAL, not a half-line: the set is")
     print("  bounded below on both sides of it. It is empty when F_obs > 0.")
 
@@ -269,12 +323,12 @@ def _benchmark():
     d["E_lo"] = [w[0] if w else np.nan for w in wins]
     d["E_hi"] = [w[1] if w else np.nan for w in wins]
     n_empty = int(d.E_lo.isna().sum())
-    print(f"  {len(d)} records: lower edge E_D* ranges {d.E_star.min():.3f} to "
+    print(f"  {len(d)} records: algebraic crossing E_D* ranges {d.E_star.min():.3f} to "
           f"{d.E_star.max():.3f}, median {d.E_star.median():.3f}")
     print(f"  upper edge E_D** median {d.E_hi.median():.3f}; "
           f"median window width {np.nanmedian(d.E_hi - d.E_lo):.3f}")
     print(f"  {n_empty} of {len(d)} records have an EMPTY window (F_obs > 0), so no")
-    print(f"  equilibrium isotope effect can make them vacuous.")
+    print(f"  mass-scaled equilibrium isotope effect makes the shared-tracer set unbounded below.")
     print()
     print(f"{'family':10s}{'variant':26s}{'step':9s}"
           f"{'min E_D*':>10}{'median E_D*':>13}")
@@ -285,7 +339,7 @@ def _benchmark():
         "../results/reversible_thresholds.csv", index=False)
     print()
     for e in (1.0, 1.1, 1.2, 1.3, 1.5):
-        n = int(((d.E_lo <= e) & (e <= d.E_hi)).sum())
+        n = int(((d.E_lo <= e) & (e < d.E_hi)).sum())
         print(f"  at E_DT = {e:.1f}: {n:2d} of {len(d)} records are inside their window")
 
     print()

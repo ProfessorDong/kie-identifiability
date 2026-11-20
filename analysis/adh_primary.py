@@ -9,7 +9,7 @@ the same chemistry (oxidation of benzyl alcohols) at 25 C:
   Bahnson et al., Biochemistry 32, 5503 (1993)      horse liver ADH, 5 forms
   Bahnson et al., PNAS 94, 12797 (1997)             horse liver ADH, 4 more
   Chin & Klinman, Biochemistry 39, 1278 (2000)      horse liver ADH, F93W and
-                                                    four F93W:I224 double mutants
+                                                    four F93W-I224 double mutants
 
 The p-chlorobenzyl alcohol series of Rucker et al. (0 and 25 C) is a temperature
 series and lives in the benchmark; its p-methoxybenzyl alcohol record is here.

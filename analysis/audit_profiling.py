@@ -1,9 +1,10 @@
-"""Referee claims 3 and 11, tested directly.
+"""Two checks of model fits to a temperature series.
 
-3.  Table II fixed K_HT^int = 11 and fitted only the commitment.  Profiling the
-    intrinsic magnitude instead should collapse the residuals.
-11. The claim that neither model class can produce a non-monotonic observed
-    K_HT should be false: search for a counterexample.
+1.  Fixing the intrinsic H/T effect (here at 11) and fitting only the
+    commitment gives a large chi-square that is an artefact of the fixed
+    value: profiling the intrinsic magnitude instead collapses the residuals.
+2.  A semiclassical intrinsic pair with an Arrhenius commitment can produce a
+    non-monotonic observed K_HT(T): search for an example.
 """
 from __future__ import annotations
 
@@ -67,12 +68,12 @@ def main():
     theta = 979.0
 
     print("="*78)
-    print("CLAIM 3: Table II is an artefact of fixing K_HT^int = 11")
+    print("CHECK 1: the chi-square at fixed K_HT^int = 11 is an artefact of the fixed value")
     print("="*78)
-    print(f"{'gamma':>7}{'chi2 @ K=11 (mine)':>21}{'profiled chi2':>16}"
+    print(f"{'gamma':>7}{'chi2 @ K=11':>21}{'profiled chi2':>16}"
           f"{'best K_HT^int':>15}{'p':>8}")
     for g in (2.35, 2.50, 2.70, 2.90):
-        # (a) reproduce my Table II: intrinsic magnitude pinned at 11
+        # (a) intrinsic magnitude pinned at 11
         sol = solve_Aw(g, np.log(11.0))
         if sol is None:
             print(f"{g:7.2f}   unreachable at K=11"); continue
@@ -96,8 +97,8 @@ def main():
         print(f"{g:7.2f}{x2_fixed:21.1f}{best_x2:16.2f}{best_k:15.2f}{p:8.3f}")
 
     print("\n" + "="*78)
-    print("CLAIM 11: can a semiclassical + Arrhenius-commitment model produce")
-    print("          a NON-MONOTONIC observed K_HT(T)?")
+    print("CHECK 2: can a semiclassical + Arrhenius-commitment model produce")
+    print("         a NON-MONOTONIC observed K_HT(T)?")
     print("="*78)
     Tg = np.linspace(278.15, 308.15, 25)
     found = 0
@@ -118,7 +119,7 @@ def main():
                 print(f"  K_HT^obs over 5-35 C: min {kh.min():.4f} max {kh.max():.4f}"
                       f"  turning point present")
     print(f"  non-monotonic parameter sets found: {found} / 200000")
-    print("  => the impossibility claim in the manuscript is FALSE as stated.")
+    print("  => a monotonic observed K_HT(T) cannot be assumed for this model class.")
 
 
 if __name__ == "__main__":

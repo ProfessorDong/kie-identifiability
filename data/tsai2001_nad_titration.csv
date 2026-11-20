@@ -1,0 +1,5 @@
+NAD_mM,primary_HT,primary_HT_error,secondary_HT,secondary_HT_error,primary_DT,primary_DT_error,secondary_DT,secondary_DT_error,source_note
+0.02,7.0,0.3,1.20,0.02,1.03,0.04,0.96,0.03,"Table 5 p. 2310. Neighboring prose on p. 2309 gives H/T = 6.5 without error; tabulation takes precedence."
+1.0,7.9,0.7,1.28,0.03,1.2,0.1,1.02,0.01,Table 5 p. 2310
+10,8.6,0.1,1.35,0.02,1.80,0.03,1.07,0.01,"Table 5 p. 2310 repeats Table 4 at 3 C and 40% methanol. The temperature series owns this observation."
+20,8.6,0.2,1.32,0.01,1.80,0.03,1.02,0.01,"Table 5 p. 2310. Distinct concentration and errors from the 10 mM row."

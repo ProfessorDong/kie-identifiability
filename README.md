@@ -1,20 +1,22 @@
-# Reaction-network bounds on what isotope experiments reveal about enzyme hydrogen transfer
+# Limits on the Intrinsic Swain-Schaad Exponent from Competitive Isotope Effects When the Commitment to Catalysis Is Unknown
 
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.21913975.svg)](https://doi.org/10.5281/zenodo.21913975)
 
 
-Data, code and verification suite for the analysis of what competitive
-multiple-isotope kinetics can establish about hydrogen tunneling in enzymes.
+Data, code and verification suite for the analysis of competitive H/T and D/T effects on enzyme specificity constants.
+
+For the data, start with `results/matched_measurements.csv`, the ledger of 247 distinct published pairs. The dataset analyzed is its 244 pairs in 76 analysis units (48 temperature series and 28 single-condition records; `analysis/corpus.py`). The other three pairs are the additional concentrations of a cofactor titration that its source used as a control; `analysis/cofactor_benchmark.py` tests the kinetic scheme on that titration and repeats the counts with the three conditions treated as units (`results/nad_condition_bounds.csv`, `results/nad_scheme_fit.csv`, `results/all_condition_units.csv`, `results/condition_screen_sensitivity.csv`). The Reproduce section below gives instructions for the other calculations.
 
 ## The question and the answer
 
 Competitive H/T and D/T measurements are the main evidence bearing on enzymatic
 hydrogen tunneling. It is established that the Swain-Schaad exponent alone does
 not diagnose it (Kohen & Jensen 2002; Hirschi & Singleton 2005; Shelton, Hrovat
-& Borden 2007). This work asks what such an experiment does determine.
+& Borden 2007). Here the observed isotope effects constrain the corresponding intrinsic effects on the chemical step.
 
-**In the exponent, the answer is one line.** Under the minimal competitive
-scheme the intrinsic Swain-Schaad exponent can take any value above the observed
+**The bound on the intrinsic exponent.** For normally ordered effects in the
+minimal competitive scheme with a shared tritium tracer, isotope-insensitive
+binding, one required irreversible hydrogen-transfer step and positive commitment, the intrinsic Swain-Schaad exponent can take any value above the observed
 exponent and none at or below it: the allowed range is `(gamma_obs, infinity)`.
 The measured pair bounds the intrinsic relation from below and not from above.
 
@@ -25,7 +27,7 @@ relative to the size of the effects. The offset
 attainable offsets of a model can be compared directly with the allowed range.
 It adds no information to the pair.
 
-**The evidence is one-sided, and that is the whole result.** For any admissible
+**The inequality behind the lower bound.** For any admissible
 observation `K_HT > K_DT > 1`,
 
 ```
@@ -37,37 +39,63 @@ the reference exponent is below the observed one, and there `L_H > gamma`, so
 Proposition S2 gives the OPEN half-line with `F_obs >= 0`: the entire identified
 set lies above zero. Hence:
 
-* an observed exponent ABOVE the semiclassical reference cannot be produced by
-  series masking at any commitment -- the inference is robust with no assumption
-  about how much masking there is;
-* an observed exponent BELOW it leaves a set containing the semiclassical locus,
+* an observed exponent ABOVE the chosen mass reference requires an intrinsic
+  exponent above that reference for every admissible commitment in this scheme;
+* an observed exponent BELOW it leaves a set containing the semiclassical reference,
   which no precision can then exclude, because the obstruction is the set's
   direction, not its width. Such an observation is NOT empty: the set is still
   bounded below, so a mechanism whose attainable offsets lie entirely beneath
   that bound is still excluded.
 
 This makes exact the kinetic part of the criterion of Saunders (1985) as used by
-Cha et al. (1989) and Bahnson et al. (1993). Across 244 matched primary records in 76
-analysis units, gathered by a census of the two laboratories that report this
-design, 68 units are observed below the semiclassical reference at every
-admissible temperature, so no gain in precision at those values can show an
+Cha et al. (1989) and Bahnson et al. (1993). The dataset contains 244 matched primary records in 76 analysis units
+from a targeted literature search. At their reported central values,
+68 units lie below the semiclassical reference at every admissible temperature, so no gain in precision at those values can show an
 intrinsic departure from it; eight are observed above it, four of them at the
 nominal 95% level and one after adjustment across all units
-(`reference_counts.py`). Against the ground-channel envelope, 61 lie at their
-reported values on the uninformative side and nine more
-are limited by precision alone; six exclude the ground-channel envelope
+(`reference_counts.py`). Against the ground-channel model with unrestricted
+parameters, 61 are compatible with it at their reported values and nine more
+are limited by precision alone; six exclude it
 nominally (yeast ADH with benzyl and with p-chlorobenzyl alcohol, horse liver
-ADH F93W in 40% and in 60% methanol, and its F93W:I224G and I224V double
+ADH F93W in 40% and in 60% methanol, and its F93W-I224G and I224V double
 mutants), and only the two yeast units survive adjustment across all 76 at
 rho = -1. Only the p-chlorobenzyl alcohol unit also survives removal of its
 isotopic-purity correction at the same time (`isotopic_purity.exclusions`).
+
+**A cofactor titration tests the scheme.** [Tsai and Klinman](https://doi.org/10.1021/bi002075l)
+(Table 5) measured the F93W horse liver enzyme at 3 °C in 40% methanol at four
+NAD⁺ concentrations, as a control on the order of substrate binding; the 10 mM
+condition is the 3 °C record of their temperature series. The four conditions
+share one intrinsic pair, so under the minimal scheme they can differ only in
+commitment. That requires a D/T effect above 1.62 and 1.63 at 0.02 and 1 mM,
+where 1.03 ± 0.04 and 1.2 ± 0.1 are measured (12.8 and 4.2 standard errors
+below); no single intrinsic pair fits the four conditions (chi-square 276 at
+r = 1, worse at larger r). The minimal scheme is therefore contradicted at the
+two subsaturating concentrations. The two saturating conditions attain the
+largest D/T effect and carry no test; their pairs agree with each other, as
+the scheme requires when the cofactor binds first. A random order of binding
+does not explain the pattern: with one ternary complex it changes only the
+commitment and would raise both effects at low cofactor, whereas the H/T and
+D/T effects fall by 5.1 and 15.4 standard errors between 10 and 0.02 mM
+(`random_order_check`, `saturating_fall`). The three additional
+concentrations are not counted as analysis units. The yeast pairs were
+measured at 10 mM NAD⁺, twice the Michaelis constant their source quotes, and
+have not been checked in this way; the titration fails at 1.3 times the
+Michaelis constant of the titrated enzyme (`cofactor_saturation`). If they are
+counted, 68 of 79 units are below the semiclassical reference, six of the
+eleven above it clear zero nominally and one after adjustment, and the
+ground-channel counts are 61 compatible, ten limited by precision and eight
+nominal exclusions, with the same two yeast units after adjustment under
+lognormal errors. With Student t tails at ten degrees of freedom both lose
+adjusted significance, with 76 or with 79 units
+(`analysis/cofactor_benchmark.py`).
 
 Two conditions go with these counts. The comparison is with the model's
 parameters unrestricted: F0 is approached only as the action and the gating
 width grow without bound, so an exclusion based on it holds under any
 restriction, while the 61 units that cannot exclude the unrestricted model fall
 to 56, 42 and 35 as the parameters are bounded more tightly (`model_domain.py`).
-And every unit that excludes anything is a mixed-label design, whose D/T effect
+All eight nominal ground-channel exclusions in the expanded screen use a mixed-label design, whose D/T effect
 is that of the doubly labeled substrate; comparing it with a single-coordinate
 relation or model assumes the rule of the geometric mean
 (`reference_asymmetry.geminal_ratio`).
@@ -102,8 +130,8 @@ composition, so a chain of series bottlenecks of ANY length leaves the conclusio
 intact -- this is the precise content of "kinetic complexity cannot manufacture
 an above-reference observation". *Curvature fixes the direction*: `V/K` is a
 conductance and a commitment puts the isotope-sensitive step in SERIES with an
-isotope-blind one (`1/(V/K) = 1/k_on + k_off/(k_on k_i)`), which saturates and so
-is concave; an isotope-blind route in PARALLEL adds conductances, makes `h`
+isotope-insensitive one (`1/(V/K) = 1/k_on + k_off/(k_on k_i)`), which saturates and so
+is concave; an isotope-insensitive route in PARALLEL adds conductances, makes `h`
 convex, and pushes observations ABOVE the ray instead. *Sharing, or ordering, is a
 hypothesis*: if `h_H` and `h_D` are unrelated nothing follows, but ordered
 commitments (`c_D >= c_H`) suffice.
@@ -116,11 +144,12 @@ the other 47 use one tritiated molecule for both, so `r = 1`
 (`data/tracer_design.csv`).
 What matters is the sign of `r-1`. Observed secondary ratios here are normal
 (`R = 1.02-1.38`, a lower bound on `r`), so the H comparison is the MORE masked one and the
-imbalance pushes `F_obs` down: over 3e5 draws with `r` in [1,2] there is no case
+imbalance pushes `F_obs` down: over 2e5 draws with `r` in [1,2] there is no case
 with `F_obs > F_int`. An INVERSE secondary effect would reverse this and break
-the argument (3e5 draws with `r` in [0.2,1] give violations in a third of cases,
-by up to +0.43). The condition to check is therefore not that the commitments
-match, which they never do, but that the H/T reference is the faster molecule.
+the argument (2e5 draws with `r` in [0.2,1] give violations in a third of cases,
+by up to +0.43). The condition to check is therefore not that the two tracer
+commitments match (they do exactly for the 47 shared-tracer forms, and need not
+otherwise), but that the H/T tracer is the faster molecule.
 
 **F is not point identified.** Inverting the observation map of the minimal
 competitive scheme over all admissible commitments leaves a set. That set is a
@@ -151,31 +180,30 @@ covering the range in which primary exponents are ordinarily read as diagnostic,
 while `F` stays pinned at `F0` to ten decimal places because
 `C_H - gamma_SC C_D` vanishes identically.
 
-**Mechanisms enter through the offsets they can attain.** For a gated vibronic
-model the attainable offsets have a *scale-dependent* envelope:
+**Mechanisms enter through the offsets they can attain.** For the ground-channel
+tunneling model the attainable offsets have a *scale-dependent* envelope:
 
 ```
 B(K) = ln K - (gamma/2) ln[ K^2 (t-1) / (t - d + K^2 (d-1)) ]   K < sqrt(t)
      = F0 = -0.042086                                            K >= sqrt(t)
 ```
 
-with threshold `sqrt(mu_T/mu_H) = 1.2689`. There is no flat bound: `dF/dA < 0`
+with threshold `sqrt(t) = (mu_T/mu_H)^(1/4) = 1.2689`. There is no flat bound: `dF/dA < 0`
 identically, so the unconstrained supremum is 0, approached as the isotope
 effects collapse to unity. Proved in the supplement; the proof turns on
 `p_L' = q_L/2`, which cancels the intercept and slope contributions to `X_D`
 along the constraint and leaves `dX_D/dw < 0` fixed by `t > d > 1` alone.
 Numerical agreement is 7e-7, which is the double-precision noise floor, not the
-accuracy: at 50 digits the supremum approaches `F0` strictly from below.
+numerical precision: at 50 digits the supremum approaches `F0` strictly from below.
 
-**Neither the envelope nor the ordering is universal.** Summing over excited
-vibronic channels can carry the offset above zero; a worked parameter set gives
-`F = +0.0051` (`K_HT = 1.5205`, `K_DT = 1.1316`), stable from n=6 to n=30. So the gated family is not confined
-below the semiclassical locus once excited channels contribute. The relaxation is
-not uniform either: what Jensen's inequality establishes is that the BOUND moves
-up, which is weaker than a statement about the attained maximum, and the sampled
-grid contains parameter sets where the summed maximum lies BELOW the
-single-channel value `F0` (-0.2645 at lambda=10, dG=-15, 3600 cm-1). Tabulated
-`B_vib` values are maxima over a finite grid, not certified suprema.
+**Excited vibrational channels.** Summing over channels can produce a positive
+offset. A moderate-parameter example gives `F = +0.005118` (H/T = 1.52050,
+D/T = 1.13156) at channel cutoffs 6, 30 and 60. Directly multiplying rates at
+large action caused floating-point underflow in the earlier extended-grid
+calculation. Logarithmic evaluation gives sampled maxima +0.52503, +0.19068,
++0.34910 and +0.59232 for the four parameter sets in SI Note 14, each at the
+chosen upper action limit. These grid values leave the global supremum open.
+The experimental comparisons use only the separate ground-channel envelope.
 
 **Reversibility opens a bounded vacuity window.** Deriving the map for a
 reversible chemical step (it is Northrop's equation re-referenced to tritium,
@@ -192,29 +220,35 @@ window is nonempty  <=>  F_obs < 0
 
 It is a bounded interval, not a half-line: `d -> -(a-b) < 0` at large `E_D`, so
 the set recovers a finite endpoint above the window as well as below it. And a
-POSITIVE observed offset can never be made vacuous by any equilibrium isotope
-effect. Across the benchmark the lower edge runs 1.099-1.694 (median 1.465),
-upper edge median 1.971, median width 0.50. Verified against direct optimization
-and on 3000 random pairs.
+positive observed offset implies an intrinsic offset at least as large, for the
+shared-tracer reversible model with mass-scaled equilibrium isotope effects.
+The algebraic crossing near 1.83 for the yeast benzyl pair is outside the
+physical domain. The result needs the shared tracer: with two tracers whose
+commitments differ, a reference-obeying pair can be observed above the reference
+(`reversible.ordered_tracer_counterexample`), so applying it to the mixed-label
+yeast assays needs an additional condition. Across the 209 temperature-resolved
+records that have a window, its lower edge runs 1.097-2.663 (median 1.451), with
+upper edge median 1.961 and median width 0.408. Verified against direct
+optimization and on 3000 random pairs.
 
 **Empirically, few temperature series exclude anything.** Across the 216 temperature-resolved
 records in 48 series, one-sided 95% confidence bounds bracketed over `rho` in
 {-1, 0, 0.5, 0.9} (`rho = -1` the maximally adverse case) exclude both mechanisms
-at every correlation in three series: horse liver ADH F93W in 40% and 60%
-methanol (Tsai & Klinman 2001), bounds `+0.032` and `+0.071` at rho = -1, and
+at each of the four tested correlations in three series: horse liver ADH F93W in 40% and 60%
+methanol (Tsai & Klinman 2001), bounds `+0.032` and `+0.070` at rho = -1, and
 yeast ADH with p-chlorobenzyl alcohol (Rucker et al. 1992), `+0.170`. Of the
 rest, only the thymidylate synthase Y209W hydride transfer clears `F0` at any
-correlation (`-0.039` at rho = 0.9); its point endpoint, `-0.009`, and that of
-W80M, `-0.001`, lie above `F0` (see Bounds below).
+correlation (`-0.039` at rho = 0.9); its point endpoint, `-0.009`, and those of
+W80M, `-0.001`, and R67 DHFR, `-0.017`, lie above `F0` (see Bounds below).
 
-**But yeast ADH does.** The primary effects of Cha, Murray & Klinman (1989)
+**Yeast alcohol dehydrogenase.** The primary effects of Cha, Murray & Klinman (1989)
 give `F_obs = +0.129` against `F0 = -0.042`, with a 95% bound of `+0.063`
 (rising to `+0.079` at rho = 0.9, falling to `+0.049` at the maximally adverse
 rho = -1). Singled out from 76 analysis units it also deserves a
 multiplicity adjustment: one-sided Bonferroni across 76 gives `+0.0004` at rho = 0
-and `-0.027` at rho = -1, so the exclusion of the SEMICLASSICAL LOCUS survives
+and `-0.027` at rho = -1, so the exclusion of the SEMICLASSICAL REFERENCE survives
 multiplicity and survives adverse correlation but not both at once, while the
-exclusion of the GATED ENVELOPE survives every combination since all four bounds
+exclusion of the GROUND-CHANNEL MODEL survives every combination since all four bounds
 exceed `F0` -- though with little room: under both at once the published
 errors need only be understated by 9.6% to overturn it. The same enzyme with
 p-chlorobenzyl alcohol (Rucker et al. 1992, D/T corrected for protium) excludes
@@ -226,23 +260,23 @@ fourth is in `data/cha1989_yadh_dt_only.csv`). Because `L_H = 8.40 > gamma_SC`
 the identified set is the *open* half-line, so no forward commitment can explain
 it away, which is the exact form of the argument Cha et al. made from Northrop's
 expressions. No exclusion of the summed vibronic model is claimed at any
-reorganization energy. Because `F_obs > 0` the vacuity window is empty for
-equilibrium isotope effects on the mass-scaled relation; effects off that
-relation are not covered.
+reorganization energy. For the shared-tracer reversible map with mass-scaled equilibrium effects, the
+window is empty at positive observed offset. Applying this shared-tracer
+result to the actual mixed-label experiment requires a separate tracer argument.
 
 **Two obstacles, and only one yields to more measurement.** Precision is the
-tractable one: the signal is 0.042 and the median sampling sd of F is 0.028, so
-80% power needs a 1.68x reduction in sd, about 2.8x more replication. Masking is
+tractable one: the signal is 0.042 and the median sampling sd of F is 0.038 (rho = 0), so
+80% power needs a 2.24-fold reduction in sd, about 5.0 times more replicates
+(`results/design_power.txt`). Masking is
 not tractable. Replication locates `F_min` more precisely rather than higher, so
 an endpoint that masking has pushed down stays down: a system exactly
 semiclassical intrinsically but carrying `c = 1` has `F_min = -0.447` and cannot
-be made decisive at any sample size. The frequent case `L_H >= gamma` (72 of the
-93 admissible temperature-series records) means the endpoint EQUALS `F_obs`, so computing it costs no assumption
+be made decisive at any sample size. The case `L_H >= gamma` means the endpoint EQUALS `F_obs`, so computing it costs no assumption
 about `c`; it does NOT mean masking is absent. The attainable margin is
-`F_min - B`, fixed by the enzyme rather than the experiment. The shared tritium reference *helps*: it enters Var(F)
+`F_min - B`, fixed by the enzyme rather than the experiment. If both measurements contained the same reference-rate error, its contribution to Var(F) would enter
 with weight `(gamma-1)^2 = 5.52` instead of `1 + gamma^2 = 12.21`, a factor 2.2
-for measuring H/T and D/T in one triple-label mixture. No source reports the
-covariance, so this is currently discarded.
+for an idealized triple-label mixture. The sources do not report the actual
+covariance, and the mixed-label experiments can use chemically different tracers.
 
 **Forward masking in the mixed-labeling secondary record is ordered, and it
 deflates.** In that design (Kohen & Jensen 2002) the secondary H/T effect is
@@ -259,15 +293,17 @@ Kohen and Jensen's inflation comes from a reverse commitment acting with a
 secondary equilibrium isotope effect, outside forward masking. No envelope
 inference is drawn from that record, because the reverse commitment and
 equilibrium effect are unbounded and the ground-channel envelope has no
-secondary coordinate. (Until 2026-09-15 this file presented the anti-ordered
+secondary coordinate. For the 18 published secondary exponent comparisons,
+recalculation from the printed ratios differs by up to 0.198 in the exponent.
+All differences lie within the quoted uncertainties. (Until 2026-09-15 this file presented the anti-ordered
 example as what masking does in that design.)
 
-**Two amine oxidases test the direction, and the classical reading fails both.**
-Bovine serum amine oxidase (Grant & Klinman 1989) is close to commitment free --
-the authors establish by stopped-flow comparison that `V/K` is rate limited by
-C-H cleavage -- and tunneling there is established by a criterion independent of
-Swain-Schaad, namely `A_H/A_T = 0.12 +/- 0.04` against a semiclassical floor of
-0.6. Its exponent is nonetheless BELOW `gamma_SC` at all six measured
+**Additional evidence in two amine oxidases.**
+Grant & Klinman (1989) interpreted bovine serum amine oxidase as having a
+small commitment on the basis of their stopped-flow comparison. The steady-state
+effect used for that comparison was itself inferred through a mass relation.
+They also interpreted the Arrhenius prefactor ratio `A_H/A_T = 0.12 +/- 0.04`
+against their semiclassical lower limit of 0.6 as evidence for tunneling. Its exponent is nonetheless BELOW `gamma_SC` at all six measured
 temperatures (by 10.4 standard errors at 5 C), giving `F_min = -0.195` at 25 C.
 The authors recorded the anomaly themselves, noting their failure to see the
 inequality Saunders predicted. Monoamine oxidase B (Jonsson, Edmondson & Klinman
@@ -279,11 +315,15 @@ the observation the same way, which is why neither can be read off the exponent.
 **What does NOT work.** Two recombinations of the existing data were tried and
 both are rejected. Pooling across temperatures within a series would gain ~sqrt(n)
 if the observed offset were constant; it is not (median chi2/dof = 3.5, up to
-71), and the weighted means are LOWER than the maxima. Pooling enzyme variants
-that share one intrinsic pair but differ in commitment cannot identify that pair
-even with exact data: with `z = 1 - 1/K`, `u = 1 - 1/x` and `s = c/(1+c)`, the
+71), and the weighted means are LOWER than the maxima. With one shared tracer per pair, pooling enzyme variants
+that share one intrinsic pair but differ in unknown commitment cannot identify
+the scale even with exact data: with `z = 1 - 1/K`, `u = 1 - 1/x` and `s = c/(1+c)`, the
 map is exactly `z_Lj = u_L s_j`, so `(u, s) -> (lam u, s/lam)` leaves every
-observation unchanged (Proposition S8). Of 11 nominal parameters for the nine
+observation unchanged (Proposition S8). With a known common unequal tracer
+ratio, two distinct masking levels instead determine both intrinsic effects.
+The intercept and slope of 1/z_D as a function of 1/z_H identify the intrinsic
+pair. A ratio merely assumed to exceed unity does not fix that intercept.
+Of 11 nominal parameters for the nine
 horse liver forms only 10 are identified; the identifiable refit gives
 chi2 = 55.8 on 8 dof, p = 3e-9, so the common-pair model is rejected, without
 saying which of its assumptions fails (`analysis/pooling_check.py`). The
@@ -299,16 +339,24 @@ fixing `x=1`, with
 h'' proportional to -(AD - BC)(AC x^2 - BD)
 ```
 
-Two coefficients decide everything, and both are read off the topology rather
-than fitted. `B != 0` only if some route reaches the monitored product without
+Two coefficients fix which behaviors are possible, and both are read off the
+topology rather than fitted. `B != 0` only if some route reaches the monitored product without
 passing through the isotope-sensitive step; `C != 0` only if that step
 partitions against another, which is what a commitment is. So:
 
-| competing branch | isotope-blind bypass | identified set |
-|---|---|---|
-| yes | no  | upper half-line |
-| no  | yes | lower half-line |
-| yes | yes | all of R; upper half-line once the bypass is bounded |
+| commitment | bypass | class | identified set of the offset |
+|---|---|---|---|
+| yes | no  | concave | upper half-line (a lower limit, no upper limit) |
+| negligible (a limit) | yes | convex | lower half-line (an upper limit, no lower limit) |
+| yes | yes | conditional | all of R; upper half-line once the bypass ratio is bounded |
+| label after the first irreversible step | any | blind | `K = 1`: nothing is learned |
+
+The convex row is a limit, not a scheme: it is approached when dissociation is
+much faster than both routes to product, and without any competing exit the
+competitive effect is unity. A symbolic enumeration of 194 chain mechanisms
+with one to four bound states gives 62 concave, 62 conditional and 70 blind
+cases and none that is convex; in all 62 conditional mechanisms the behavior
+of the offset depends on the rate constants (`network_atlas.py 4`).
 
 The identified sets are for unknown rate constants. With `K(1) = 1`, `B = 0`
 forces the one-parameter map `x(1+c)/(x+c)` and `C = 0` the one-parameter map
@@ -316,8 +364,7 @@ forces the one-parameter map `x(1+c)/(x+c)` and `C = 0` the one-parameter map
 parameters, commitment and bypass, and nothing is identified until one is
 bounded. The curvature switches at `x* = sqrt(BD/(AC))`; at given rate constants
 the offset along the mass-scaling ray takes both signs exactly when `x* > 1`,
-but its sign change is not at `x*`. (An earlier version of this table gave the
-third row as "upper above x*, lower below".) Both schemes in this work have
+but its sign change is not at `x*`. Both schemes in this work have
 `B = 0` for each map, but the reversible scheme inherits the half-line only when
 its equilibrium isotope effects are unity. When they depend on isotope, the H/T
 and D/T comparisons carry different maps, and the set is the vacuity-window
@@ -334,14 +381,15 @@ K(x; phi, q) = K_series(Y; c),   Y = (x + phi)/(1 + phi),   c = q/(1 + phi)
 
 so a bypass does not change the FORM of the masking, it pulls the intrinsic
 effect toward unity first. Because `Y - 1 = (x-1)/(1+phi)`, the `L_H` case split
-is unchanged. The endpoint then falls smoothly with `phi`, with no threshold,
-and the two tritium references do not scale together: `phi_D = r phi_H`, so
+is unchanged. For the yeast pairs the endpoint then falls smoothly with `phi`, with no
+threshold (this is not general: for observed effects near unity it can first
+rise), and the two tritiated tracers do not scale together: `phi_D = r phi_H`, so
 bypass and reference asymmetry must be profiled jointly. The tolerance falls as
 `r` grows, and the observed secondary ratio `1.31` is only a lower bound on `r`
 (masking lowers it). Solving `r` jointly with the published commitment gives
-1.36-1.57, and the yeast exclusion then survives an isotope-blind
+1.36-1.57, and the yeast exclusion then survives an isotope-insensitive
 route below **13-17%** of the isotope-sensitive flux (10-12% against the
-semiclassical locus); propagated, median 16% with 95% interval 8-25%. Because
+semiclassical reference); propagated, median 16% with 95% interval 8-25%. Because
 that `r` was solved without a bypass, these are sensitivities at stipulated `r`,
 not a joint fit under the enlarged model. The closed form
 `E_r(phi) = ln[K_HT + (K_HT-1)phi] - gamma ln[K_DT + (K_DT-1) r phi]` is the
@@ -354,14 +402,12 @@ commitment rather than at `r(1+phi)/(1+r phi)` times it, wrong for `r != 1` in
 the interior branch only; no reported number was in that branch. With binding
 effects in [0.90, 1.10] as well, the joint condition
 `F_bind <= 0.164 - 1.465 phi` holds at every stipulated `r` from 1.31 to 1.57
-(`joint_nuisance.check_envelope_r`); the older `0.1656 - 1.0866 phi` holds at
-`r = 1.31` only. An earlier version of this file claimed a bound of "a fifth to a half"
-derived from the curvature switch evaluated at the SMALLEST admissible competing
-rate; that is the infimum of the switch, not a bound above it, and it established
-nothing. (`analysis/network_geometry.py`)
+(`joint_nuisance.check_envelope_r`); the line `0.1656 - 1.0866 phi` holds at
+`r = 1.31` only. No bound on the bypass follows from the curvature switch
+evaluated at the SMALLEST admissible competing rate: that is the infimum of the
+switch, not a bound above it. (`analysis/network_geometry.py`)
 
-**The half-line is one measurement from being a number, and one system has that
-measurement.** Inverting the observation map at known commitment gives
+**How an independent commitment measurement would recover the intrinsic pair.** Inverting the observation map at a known reciprocal commitment `c` gives
 the intrinsic effect in closed form,
 
 ```
@@ -374,9 +420,9 @@ a published kinetic estimate, with no new experiment; a second is attempted and
 fails, instructively:
 
 * *Yeast ADH completes, conditionally.* Klinman (1976) inferred
-  `k_-1/k_cat = 1.3-7.3` on the same enzyme, in the same laboratory, at the
-  conditions Cha, Murray & Klinman (1989) used thirteen years later. It is not a
-  measurement: her Table IV converts Michaelis-constant isotope effects into
+  `k_-1/k_cat = 1.3-7.3` across substituted alcohols using a historical
+  kinetic reconstruction, under different conditions from the competitive
+  measurements of Cha, Murray & Klinman (1989). Specifically, her Table IV converts Michaelis-constant isotope effects into
   `k_-1/k_cat` assuming an isotope effect of 4 on `k_cat` and none on binding,
   and 1.3-7.3 is the span over the effects (1.1-1.5) seen across her
   para-substituted alcohols, not an interval for benzyl alcohol. Referenced to tritium
@@ -398,15 +444,14 @@ fails, instructively:
   cannot exceed unity, which the 0 C ratio does by 3.5 sigma. The competitive
   effects exist only at 25 C, where the matched factor is `0.839 +/- 0.097`, the
   most extreme of the six. Full propagation gives `F_int = -0.038`, 95%
-  `[-0.267, +0.242]`, straddling both thresholds: `P(F_int < F0) = 0.49`. An
-  earlier version of this file reported `-0.188 to -0.107` from a factor pooled
-  over 15-45 C with only that factor's uncertainty propagated; the pooling is
-  what the data reject.
+  `[-0.267, +0.242]`, straddling both thresholds: `P(F_int < F0) = 0.49`. A factor
+  pooled over 15-45 C, with only that factor's uncertainty propagated, would
+  give `-0.188 to -0.107`; the pooling is what the data reject.
 
 A commitment closes the half-line only when it is precise enough AND measured at
-the condition of the isotope pair. Yeast ADH meets both, conditional on Klinman's model-based
-conversion; the amine oxidase meets
-neither. Two further systems resist completion for reasons that are diagnostic
+the condition of the isotope pair. The historical yeast estimate illustrates
+the calculation conditional on transferring its assumptions across conditions.
+The amine oxidase comparison cannot provide a matched commitment. Two further systems resist completion for reasons that are diagnostic
 rather than accidental.
 Monoamine oxidase B does not complete because the stopped-flow comparison Jonsson
 et al. (1994) invoke is attributed to an earlier source and its value not
@@ -426,7 +471,7 @@ than an outlier, and the mapping inherits the model risk. What does not depend o
 the direction, within the base map: for *any* admissible commitment the
 completed yeast offset exceeds the half-line endpoint.
 
-The commitment's own precision budget is mild. Writing `c = m(K_HT - 1)`, its
+The commitment's own precision budget is mild. Writing the reciprocal commitment as `c = m(K_HT - 1)`, its
 contribution to the yeast offset stays within half the mechanistic signal if `c_H`
 is known to **5.3%** at `m = 3` (11.2% at `m = 5`). That is not the whole budget:
 at known `c` the published isotope errors alone give `F` a standard error of
@@ -438,12 +483,14 @@ the signal.
 and the chemical step is not, Stokes-Einstein makes `c` scale as `1/eta`, so one
 system at two viscosities over-determines the intrinsic pair and returns it in
 closed form, with the two isotope pairs giving the same `c` as a consistency
-check. Exact recovery on 2e4 random triples. But the inversion amplifies
-relative error by 3x at `c = 10` and 30x at `c = 1`, demanding the isotope
-effects to 0.7%-0.07% against roughly 1% in practice, and it is most demanding
-exactly where masking is heaviest.
+check. Exact recovery on 2e4 random triples. But the inversion is poorly
+conditioned: with equal relative errors on the effects measured at the two
+viscosities it amplifies relative error 3.8-fold at `c = 10` and 76-fold at
+`c = 1`, demanding the isotope effects to 0.55%-0.03% against roughly 1% in
+practice, and it is most demanding exactly where masking is heaviest
+(`completion.viscosity_conditioning`).
 
-**What a closed offset would bear on: the promoting mode.** In the gated model
+**What a closed offset would bear on: the promoting mode.** In the ground-channel model
 `F` depends on the gating width `w = 2 kappa sqrt(mu_H) sigma^2(T)` AND on the
 scale parameter `A`, and for a harmonic promoting mode the exact thermal
 variance is
@@ -489,10 +536,13 @@ experimentally identified set and a computed mechanism envelope.
 ```
 analysis/
   masses.py             isotope mass convention, imported everywhere
-  corpus.py             the matched primary record: the temperature series and
-                        every single-condition record file, read by all
-                        scripts that need them (244 records, 76 units)
-  reference_asymmetry.py  the reference asymmetry r: exactly 1 where one
+    corpus.py             the dataset: temperature series and single-condition
+                        records (244 pairs in 76 analysis units)
+  cofactor_benchmark.py the NAD+ titration of Tsai and Klinman (Table 5): test
+                        of the minimal scheme, random-order check, 247-pair
+                        ledger, counts with the three extra conditions as units
+    reference_asymmetry.py  the tracer ratio r (the "reference asymmetry" of the
+                        code and of some passages below): exactly 1 where one
                         tritiated isotopologue served both experiments
                         (data/tracer_design.csv), otherwise inferred from the
                         sources' secondary effects
@@ -510,13 +560,26 @@ analysis/
                         identified-set direction from network topology
   completion.py         closing the half-line with one commitment measurement,
                         and what the closed offset measures about the gating mode
-  curvature.py          WHY the evidence is one-sided: masking is concave
-  mixed_label.py        forward masking in the mixed-labeling secondary design is
-                        ordered by the primary effect, so it only deflates
+    curvature.py          why the allowed range is one-sided: masking is concave
                         through the origin in log-rate coordinates, mass scaling
                         is homogeneity; axioms, composition, direction, and the
-                        unequal-reference check of the primary protocol
-    qtunnel.py            exact gated-overlap model (reduced masses, from masses.py)
+                        ordered-tracer check of the primary protocol
+  mixed_label.py        forward masking in the mixed-label secondary design is
+                        ordered by the primary effect, so it only deflates
+  network_atlas.py      symbolic enumeration and classification of the chain
+                        mechanisms (194 with one to four bound states); the
+                        full check is `python network_atlas.py 4`
+  atlas_general.py      the same classification for branched schemes with one
+                        to three bound states, each step labeled in turn
+  atlas_general_census.py  those schemes in exact rational arithmetic at
+                        sampled rate constants (764 schemes, 5538 labeled steps)
+  joint_nuisance.py     binding isotope effects and a bypass acting together:
+                        where the yeast exclusion survives, and a finite model
+                        that reproduces the pair where it does not
+  secondary.py          published secondary H/T and D/T effects against the
+                        exponents printed in the same papers
+  qtunnel.py            exact ground-channel overlap model (reduced masses,
+                        from masses.py)
   ridge.py              ridge limit and the offset
   partial_id.py         envelope B(K), exact identified-set endpoint,
                         two-commitment exploration
@@ -557,7 +620,7 @@ analysis/
   decisive_case.py      yeast ADH primary effects (Cha, Murray & Klinman 1989)
   adh_primary.py        alcohol dehydrogenase primary records; horse liver
                         correlation bracket (results/sm_table_ladhprim.tex)
-  build_trinomial.py    parses primary SI tables -> benchmark + audit
+    build_trinomial.py    parses primary SI tables -> series data file + audit
   offset_analysis.py    profiles the offset per series (continuation method)
     offset_summary.py     goodness-of-fit stratification of those profiles
   profile_edges.py      continues the profiles whose grid optimum sat at
@@ -570,12 +633,23 @@ analysis/
                         (Stojkovic 2012): offsets fixed by construction
                         (results/sm_table_stoj.tex)
   verify_derivation.py  numerical + symbolic checks of every closed form
-  audit_v3.py           adversarial audit of the reconstructed claims
-  audit_referee.py      independent check of a first review's claims
-  audit_r2.py           independent check of a second review's claims
-  audit_tableII.py      profiling test and a non-monotonicity counterexample
-  discriminate.py       model fits (superseded analysis, retained for the record)
-  design.py             power calculation (superseded, retained)
+    audit_v3.py           adversarial checks of the main claims, each probed
+                        off its easy case
+  audit_model_limits.py limiting behavior of the model: which constraints cap
+                        the exponent, the ridge limit, dimensions, mass
+                        convention (results/audit_model_limits.txt)
+  audit_envelope.py     the envelope of attainable offsets, the direction of
+                        masking, the sampling error of one record
+                        (results/audit_envelope.txt)
+  audit_profiling.py    a fit at fixed intrinsic magnitude against a profiled
+                        one, and a non-monotonic K_HT(T) example
+                        (results/audit_profiling.txt)
+    discriminate.py       two-model fits of a temperature series at fixed
+                        intrinsic magnitude (read by audit_profiling.py; no
+                        reported number depends on them)
+  design.py             a power calculation for separating the two model
+                        classes (read by export_figures.py; no reported
+                        number depends on it)
   export_figs_v3.py     pgfplots tables for the figures
   export_fig_asym.py    identified-set figure data (76 analysis units, two panels)
   export_fig_overview.py   overview figure: the compatible set as the range of
@@ -585,14 +659,23 @@ analysis/
                         promoting-mode readout
   export_fig_design.py     design figure: joint bypass-binding region, the yeast
                         completion, the pooling symmetry, the error budget
+    export_fig_atlas.py   scheme-class figure: one mechanism of each class at
+                        stated rate constants
+  export_fig_geom.py    geometry figure: reference ray, model ridge, the two
+                        worked examples
+    export_figures.py     pgfplots tables for fig1_separation and fig2_bounds
+                        (figures not used in the article)
+  export_script_index.py   index of the scripts the supplement names, from
+                        script_index.csv (results/sm_table_scripts.tex)
   export_si_tables.py   supplementary tables (results/)
   export_bounds_table.py     per-series bounds table (results/)
   export_benchmark_table.py  complete 216-record temperature-series table
   export_profiles_table.py   per-series profile table
-data/                   curated inputs, never written by any script
+data/                   curated inputs; no script overwrites a shipped file
 results/                generated reports and tables
 figures/tikz/           figure sources and their data
-external_data/          SOURCES.md and fetch_sources.sh (no PDFs redistributed)
+external_data/          SOURCES.md, census_queries.md and fetch_sources.sh
+                        (no PDFs redistributed)
 ```
 
 ## Reproduce
@@ -605,7 +688,7 @@ cd analysis
 
 python masses.py             # the mass convention and its consequences
 python verify_derivation.py  # must exit 0
-python build_trinomial.py    # benchmark + transcription audit (700 values)
+python build_trinomial.py    # series data + transcription audit (700 values)
 python ridge.py              # ridge limit, offset, finite-scale bound
 python partial_id.py         # envelope + exact endpoint, both verified
 python identifiable_set.py   # the half-line result, point bounds
@@ -613,16 +696,21 @@ python bounds_uncertainty.py # one-sided confidence bounds, rho in {-1,0,.5,.9}
 python curvature.py          # the one-sidedness theorem + controls
 python network_geometry.py   # topology -> curvature -> set direction
 python completion.py         # closing the set; the gating-mode readout
-python audit_r2.py           # reconfirms the second review's claims
-python audit_v3.py           # adversarial audit, must exit 0
+python audit_envelope.py > ../results/audit_envelope.txt          # envelope, masking direction
+python audit_model_limits.py > ../results/audit_model_limits.txt  # limits of the model
+python audit_profiling.py > ../results/audit_profiling.txt        # fixed against profiled fit (~3 min)
+python audit_v3.py           # adversarial checks, must exit 0
 python vibronic.py           # the vibronic-sum penalty and its table
 python adh_primary.py        # alcohol dehydrogenase records, correlation bracket
 python published_intrinsic.py  # intrinsic pairs that cannot test the reference
 python offset_analysis.py    # per-series profiles   (about 3 min per series, ~2 h)
 python holdout.py            # deletion sensitivity: point and confidence (~1 min)
-python design_power.py       # precision requirements; benchmark statistics
+python design_power.py       # precision requirements; dataset statistics
 python repeat_determinations.py  # independent determinations of one condition
-python reference_counts.py   # the units against the semiclassical reference
+python reference_counts.py   # the dataset against the semiclassical reference
+python cofactor_benchmark.py # the NAD+ titration: scheme test, table, sensitivity
+python reversible.py         # reversible step: windows, endpoints, counterexample
+python network_atlas.py 4    # enumeration and classification of mechanisms (~3 min)
 python model_domain.py       # the model comparison under bounded parameters (~40 s)
 python isotopic_purity.py    # purity scenarios and the exclusions table (~1 min)
 python synthetic_validation.py   # the procedure on synthetic data with a known truth
@@ -632,6 +720,7 @@ python offset_summary.py     # stratified interpretation
 python export_figs_v3.py     # pgfplots tables
 python export_fig_overview.py; python export_fig_envelope.py; python export_fig_design.py
 python export_fig_example.py # the worked example
+python export_script_index.py   # index of the scripts the supplement names
 cd ../figures/tikz && ./build.sh
 ```
 
@@ -646,7 +735,8 @@ except that `offset_profiles*.csv` move by 1e-5 in `chi2_min` and 1e-11 in
 Every reported column -- `F_hat`, `F_lo`, `F_hi`, `width`, `open_interval`,
 `excludes_semiclassical`, `excludes_ridge`, `adequate` -- is unchanged, as is
 every verdict. Only the timings above are machine dependent; most steps finish
-in seconds, and `offset_analysis.py` takes about fifty minutes.
+in seconds, and `offset_analysis.py` then took about fifty minutes (about two
+hours with the series added since).
 
 Re-verified for v1.8.0 on 2026-09-14 from a clean clone (Python 3.12.13, numpy
 2.2.6, scipy 1.17.1, pandas 3.0.2, sympy 1.14.0), with the fetched supplements in
@@ -772,11 +862,18 @@ the hydrogen isotopes; the bare-mass value 3.2628 is also in circulation.
 gamma_SC = 3.34887   rigid = 2.45884   F0 = -0.042086   threshold = 1.26890
 ```
 
-Temperature-series benchmark: 216 temperature-resolved records, 48 series, -50 to 45 C.
+Temperature-series data: 216 temperature-resolved records, 48 series, -50 to 45 C.
 Transcription audit: 700 values across the twenty-two PDF supplements (six parsed, sixteen
 transcribed), each matched with its uncertainty, 0 misses. The wider matched-primary record used for the
-identified-set figure is 244 records over 76 analysis units, of which 61 fall on
-the uninformative side, nine more fail on precision alone, and six clear.
+identified-set figure comprises 244 matched primary records in 76 analysis units.
+The 247 unique observations in `results/matched_measurements.csv` include the
+three additional cofactor concentrations. `results/nad_condition_bounds.csv`
+gives all four titration rows, the row that also belongs to a temperature
+series, and the test of the minimal scheme across them.
+`results/all_condition_units.csv` gives the bounds for each of the 79 units
+when the three are counted. `results/condition_screen_sensitivity.csv`
+summarizes the counts with and without them, and with and without the
+heterogeneous commercial *Candida boidinii* FDH preparation.
 
 Bounds: 3 of 48 series exclude both mechanisms, at every correlation -1, 0, 0.5
 and 0.9 (horse liver ADH F93W in 40% and 60% methanol, yeast ADH with
@@ -800,9 +897,11 @@ corrected bound is lower, and no verdict changes. Among the series that do not
 exclude, the best 95% lower bound is -0.059 (rho = -1) to -0.039 (rho = 0.9),
 thymidylate synthase Y209W hydride transfer in every case, and the best point
 estimate is -0.001 (W80M), above F0, with 95% lower bounds of -0.086 (rho = 0)
-and -0.101 (rho = -1). Bounds are averaged over 5 replications of 1e6 draws;
-largest Monte Carlo s.d. over all 180 cells is 1.7e-3 (the wild type in 50%
-methanol, whose inadmissible record leaves few finite tail draws).
+and -0.101 (rho = -1). Bounds at rho = -1 are closed-form quantiles. Those at
+the other correlations are averaged over 5 replications of 1e6 draws; the
+largest Monte Carlo s.d. over the 144 simulated cells is 1.1e-3 (the wild type
+in 50% methanol, whose inadmissible record leaves few finite tail draws), and
+at rho = -1 the simulated values agree with the closed form within 0.0004.
 
 ## Relation to recent work
 
@@ -822,10 +921,10 @@ upper limit is the integer-mass semiclassical exponent 3.25725 by construction
 (their Eq. 17 lower limit coincides with their Eq. 1); `masses.py` returns the
 same value.
 
-Their result is also the sharpest illustration of why the offset is the right
-coordinate. The exponent converges to the semiclassical value along the ray,
-which in exponent coordinates looks like the gated family merging with the
-semiclassical locus. It does not merge: the offset is pinned at `F0 = -0.042086`
+Their result is also the sharpest illustration of why the offset is the
+coordinate used for model tests. The exponent converges to the semiclassical
+value along the ray, which in exponent coordinates looks like the model family
+merging with the semiclassical reference. It does not merge: the offset is pinned at `F0 = -0.042086`
 for every point on that ray. A ratio of two diverging logarithms cannot resolve
 the bounded difference between them.
 
@@ -838,45 +937,38 @@ standard. It specifies error propagation but does not call for the covariance
 between H/T and D/T effects sharing a tritium reference, which `design_power.py`
 shows is worth a factor of 2.2 in that variance component.
 
-## On the superseded analysis
+## Pitfalls the suite checks for
 
-`results/` retains outputs from an earlier version of this work that was
-withdrawn and rebuilt, together with the audits that overturned it
-(`audit_referee.txt`, `audit_tableII.txt`). Three errors were found and are
-documented rather than quietly removed:
+Several mistakes are easy to make in this problem. Each has a script that
+tests it directly, and the outputs are kept in `results/`:
 
-1. An optimization performed on a constraint *boundary* rather than over the
-   constraint *region*, which reversed the direction of a proposed experimental
-   criterion. A "cap" that decreased as the feasible set grew was an internal
-   contradiction that should have been caught.
-2. A supremum over a model family read as a boundary in observable space, when
-   it is an asymptotic slope reached only as the isotope effects diverge.
-3. A goodness-of-fit table produced by pinning the intrinsic isotope effect at a
-   value itself derived from the same data through the relation under test.
-   Profiling instead moved a chi-square of 845 to 6.17.
-
-A fourth was caught internally: a monotonicity assertion that failed on 21 of the
-73 records then in the benchmark, which led to the `L_H` criterion now in the paper.
-
-A second external review then found three more, all confirmed here
-(`results/audit_review2.txt`):
-
-4. A claimed flat bound `F <= F0` over the whole parameter space. It is false:
+1. *Optimizing on a constraint boundary instead of over the constraint
+   region.* A cap on the exponent that decreases as the feasible set grows is a
+   contradiction: the supremum over the region is the semiclassical value for
+   every upper bound on the gating ratio (`audit_model_limits.py`).
+2. *Reading a supremum over a model family as a boundary in observable space.*
+   It is an asymptotic slope, reached only as the isotope effects diverge
+   (`audit_model_limits.py`).
+3. *Fixing the intrinsic isotope effect at an assumed value and fitting only
+   the commitment.* At an exponent of 2.90, profiling the intrinsic magnitude
+   instead moves the chi-square from 842 to 6.25 (`audit_profiling.py`).
+4. *Assuming that an observed effect is monotonic in temperature.* A
+   semiclassical pair with an Arrhenius commitment can give a turning point
+   (`audit_profiling.py`); the `L_H` criterion needs no such assumption.
+5. *A flat bound `F <= F0` over the whole parameter space.* It is false:
    `dF/dA < 0` identically, so the supremum is 0, and at `A = 0.05, w -> 0` one
-   finds `F = -0.0110 > F0`. The numerical check had begun at
-   `K_HT = 1.5`, entirely inside the region where the flat bound does hold. It is
-   replaced by the scale-dependent envelope `B(K)`.
-5. An inference from `F0 + Delta > 0` that the two model classes overlap. That
-   does not follow from an inequality on an upper bound. Direct evaluation is
-   required, and it shows the summed model can reach `F = +0.0053`.
-6. An experimental recommendation with the commitment ratio reversed. Masking
-   falls as `k_off/k_chem` *increases*, not decreases.
+   finds `F = -0.0110 > F0`. A numerical check that begins at `K_HT = 1.5` sits
+   entirely inside the region where the flat bound holds. The correct statement
+   is the scale-dependent envelope `B(K)` (`audit_envelope.py`).
+6. *Inferring from `F0 + Delta > 0` that two model classes overlap.* An
+   inequality on an upper bound does not show it. Direct evaluation is
+   required, and it shows that the summed model can reach `F = +0.005118` at
+   the worked parameter values (`vibronic_envelope.py`).
+7. *Reversing the commitment ratio.* Masking falls as `k_off/k_chem`
+   increases, not as it decreases (`audit_envelope.py`).
 
-A seventh point, that point-estimate bounds were reported without sampling
-uncertainty, is addressed by `bounds_uncertainty.py`.
-
-They are kept because the verification suite that found them is the reason to
-trust what replaced them.
+Point bounds are never reported without their sampling uncertainty
+(`bounds_uncertainty.py`).
 
 ## Licensing
 
@@ -887,4 +979,4 @@ redistributed; see `external_data/SOURCES.md`.
 ## Citation
 
 See `CITATION.cff`. Please also cite the primary measurement papers listed in
-`external_data/SOURCES.md` for any use of the benchmark values.
+`external_data/SOURCES.md` for any use of the curated values.

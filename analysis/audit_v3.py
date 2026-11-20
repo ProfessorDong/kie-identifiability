@@ -1,10 +1,10 @@
-"""Adversarial audit of the reconstructed results, before any manuscript is written.
+"""Adversarial checks of the main claims.
 
-Each section tries to BREAK a claim rather than confirm it.  Two earlier errors
-in this project (optimizing on a constraint boundary instead of a region, and
-asserting a monotonicity that failed on 21/73 records) were both of the form
-"checked the easy case, generalized without testing".  So every claim here is
-probed off the easy case.
+Each section tries to BREAK a claim rather than confirm it.  Two mistakes that
+are easy to make in this problem (optimizing on a constraint boundary instead
+of over a region, and asserting a monotonicity that fails on real records) are
+both of the form "checked the easy case, generalized without testing".  So
+every claim here is probed off the easy case.
 """
 from __future__ import annotations
 

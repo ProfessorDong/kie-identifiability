@@ -103,7 +103,8 @@ def ladh_shared_pair_fit():
 
 
 def pooled_compatible_set(zH, R, n=4000):
-    """Compatible offsets for exact data from variants sharing one pair.
+    """Compatible offsets for variants sharing one intrinsic pair and a common
+    tritium tracer within each measured pair (r = 1).
 
     u_H ranges over (max_j z_Hj, 1) and u_D = u_H/R; F(u) = -ln(1-u) +
     gamma ln(1 - u/R).  Returns the infimum of F over that range: the set is

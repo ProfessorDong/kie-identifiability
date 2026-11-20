@@ -13,8 +13,8 @@ integer 1:2:3      3.25725  -0.055522    0.1789   0.0389    0.1149    YES   YES
 
 2. HOW BADLY WOULD THE ERRORS HAVE TO BE UNDERSTATED?
 ----------------------------------------------------------------------------------------
-  to stop excluding the gated envelope F0   : errors x 2.60
-  to stop excluding the semiclassical locus : errors x 1.96
+  to stop excluding the ground-channel limit F0: errors x 2.60
+  to stop excluding the semiclassical reference: errors x 1.96
   Errors on the average (0.07, 0.02) match the standard
   error of the 3 determinations (0.067, 0.018), so these
   factors are the margin as it stands, with no allowance for the 'SD' label.
@@ -30,7 +30,7 @@ integer 1:2:3      3.25725  -0.055522    0.1789   0.0389    0.1149    YES   YES
 
 4. AGAINST THE SUMMED VIBRONIC ENVELOPE OVER A BOUNDED BOX
 ----------------------------------------------------------------------------------------
-  yeast ADH 95% lower bound: +0.0630
+  yeast ADH nominal 95% lower bound: +0.0630
       lambda range   max B_vib   LCB > max
               5-60      0.6096          no
              10-60      0.2956          no
@@ -38,15 +38,17 @@ integer 1:2:3      3.25725  -0.055522    0.1789   0.0389    0.1149    YES   YES
              20-60     -0.0002         YES
   WITHDRAWN as an exclusion: these maxima are pinned at the edge of the
   sampled box and reverse sign when it is extended, the summed family
-  reaching offsets well above anything measured.  No exclusion of the
+  reaching positive offsets.  No exclusion of the
   summed model is claimed; the comparison is with the ground channel only.
 
 5. REVERSIBILITY AND COMMITMENT, RESTATED
 ----------------------------------------------------------------------------------------
   L_H = 8.40 > gamma_SC, so the set is the open
   half-line (+0.1287, inf): no commitment lowers the endpoint.
-  vacuity window: EMPTY (F_obs > 0), so no
-  equilibrium isotope effect makes the observation uninformative.
+  Shared-tracer, mass-scaled equilibrium model, unbounded window: EMPTY (F_obs > 0).
+  Its positive observed offset bounds the intrinsic offset at every E_D.
+  The actual mixed-tracer assays require a separate linkage of forward
+  and reverse commitments to apply this reversible model.
 
 6. MULTIPLICITY
 ----------------------------------------------------------------------------------------

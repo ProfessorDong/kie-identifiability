@@ -16,7 +16,7 @@
     y axis line style={draw=none}, ytick style={draw=none},
     xtick={-0.4,-0.2,0,0.2}, minor x tick num=1,
     xticklabel style={/pgf/number format/.cd, fixed, precision=1, /tikz/.cd},
-    xlabel={endpoint $F_{\min}$}, clip=false,
+    xlabel={lower limit of the intrinsic offset $F$}, clip=false,
     label style={font=\fontsize{8.5}{10.2}\selectfont, color=cInk},
     tick label style={font=\fontsize{8}{9.6}\selectfont, color=cInk}},
 }
@@ -42,13 +42,17 @@
   \faPanel{\faRowsA}{data/fa_rays_a.tex}{A}
   % the shaded band right of F0 is empty in this panel, so the key sits there
   \node[annc, anchor=center, color=cBandG!55!black] at (axis cs:0.079,\faRowsA/2)
-    {set\\clears\\$\Fz$};
+    {above\\$\Fz$};
 \end{axis}
-\begin{axis}[asym, name=B, at={($(A.south east)+(49mm,0)$)}, anchor=south west,
+\begin{axis}[asym, name=B, at={($(A.south east)+(53mm,0)$)}, anchor=south west,
   height=\faRowsB*2.95mm, ymin=0.3, ymax=\faRowsB+0.7]
   \faPanel{\faRowsB}{data/fa_rays_b.tex}{B}
 \end{axis}
-\node[plab] at ($(A.north west)+(-45mm,6mm)$) {A};
-\node[plab] at ($(B.north west)+(-47mm,6mm)$) {B};
+\node[plab] at ($(A.north west)+(-45mm,6mm)$) {(\textit{A}) Lower half of the units};
+\node[plab] at ($(B.north west)+(-47mm,6mm)$) {(\textit{B}) Upper half of the units};
+\node[anchor=north west, align=left, font=\fontsize{7.6}{9.8}\selectfont, text=cInk]
+  at ($(A.south west)+(-45mm,-11mm)$) {Each temperature series is shown at its largest per-temperature lower limit.\\
+  Whisker, nominal one-sided 95\% lower bound.\quad $\ll,\gg$, off-scale lower limit.\\
+  $^{\ast}$, clears $F_0$ after adjustment.\quad $^{\dagger}$, four of five temperatures admissible.};
 \end{tikzpicture}
 \end{document}

@@ -6,8 +6,8 @@ discrimination problem therefore reduces to one scalar:
 
     F = ln K_HT^int - gamma_SC ln K_DT^int,   F = 0 (semiclassical), F0 (ridge).
 
-Rather than fit two model classes and compare them -- the approach that produced
-the invalid fixed-magnitude table in the withdrawn draft -- we fit ONE model in
+Rather than fit two model classes and compare them, which invites fixing the
+intrinsic magnitude (audit_profiling.py shows what that does), we fit ONE model in
 which F is free and profile it.  That measures the invariant directly, with an
 interval, and yields a precision target rather than a model-selection verdict.
 

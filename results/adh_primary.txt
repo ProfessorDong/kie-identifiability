@@ -45,20 +45,20 @@ YADH  wild type (p-methoxybenzyl alcohol)   8.060   1.940   3.149   7.51  -0.132
   mechanism is assumed: those whose chemical step is rate limiting.
 
   One-sided 95% bounds bracketed over the correlation rho (tab:ladhprim):
-  wild type     25 C  F_min -0.1719   rho=-1 -0.2154   rho=0 -0.2101   rho=0.9 -0.2047
+  wild type     25 C  F_min -0.1719   rho=-1 -0.2155   rho=0 -0.2101   rho=0.9 -0.2047
   ESE chimera   25 C  F_min -0.0725   rho=-1 -0.0980   rho=0 -0.0918   rho=0.9 -0.0837
   L57V          25 C  F_min -0.1315   rho=-1 -0.1988   rho=0 -0.1926   rho=0.9 -0.1865
   L57F          25 C  F_min -0.0293   rho=-1 -0.0642   rho=0 -0.0557   rho=0.9 -0.0445
   F93W          25 C  F_min -0.0263   rho=-1 -0.0483   rho=0 -0.0428   rho=0.9 -0.0352
   V203L         25 C  F_min -0.0751   rho=-1 -0.1211   rho=0 -0.1088   rho=0.9 -0.0909
-  V203A         25 C  F_min -0.1344   rho=-1 -0.2066   rho=0 -0.1945   rho=0.9 -0.1811
+  V203A         25 C  F_min -0.1344   rho=-1 -0.2067   rho=0 -0.1945   rho=0.9 -0.1811
   V203A-F93W    25 C  F_min -0.1324   rho=-1 -0.2029   rho=0 -0.1914   rho=0.9 -0.1788
   V203G         25 C  F_min -0.1306   rho=-1 -0.1661   rho=0 -0.1603   rho=0.9 -0.1539
-  wild type      3 C  F_min -0.4432   rho=-1 -1.0715   rho=0 -0.9595   rho=0.9 -0.8328
-  F93W           3 C  F_min +0.0109   rho=-1 -0.2963   rho=0 -0.2661   rho=0.9 -0.2363
-  F93W (Chin 2000)  25 C  F_min -0.0307   rho=-1 -0.0669   rho=0 -0.0612   rho=0.9 -0.0548
+  wild type      3 C  F_min -0.4432   rho=-1 -1.0719   rho=0 -0.9595   rho=0.9 -0.8328
+  F93W           3 C  F_min +0.0109   rho=-1 -0.2965   rho=0 -0.2661   rho=0.9 -0.2363
+  F93W (Chin 2000)  25 C  F_min -0.0307   rho=-1 -0.0670   rho=0 -0.0612   rho=0.9 -0.0548
   F93W-I224A    25 C  F_min -0.0280   rho=-1 -0.0660   rho=0 -0.0587   rho=0.9 -0.0503
   F93W-I224L    25 C  F_min -0.0587   rho=-1 -0.0996   rho=0 -0.0905   rho=0.9 -0.0791
-  F93W-I224G    25 C  F_min +0.0293   rho=-1 -0.0252   rho=0 -0.0095   rho=0.9 +0.0156
+  F93W-I224G    25 C  F_min +0.0293   rho=-1 -0.0253   rho=0 -0.0095   rho=0.9 +0.0156
   F93W-I224V    25 C  F_min +0.0212   rho=-1 -0.0202   rho=0 -0.0111   rho=0.9 +0.0002
   F93W at 25 C clears F0 for rho > 0.104

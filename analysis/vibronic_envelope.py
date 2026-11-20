@@ -1,16 +1,10 @@
 """The envelope of attainable offsets for the full vibronic sum.
 
-The main text proves Theorem 1 for the ground channel and shows by one worked
-parameter set that summation over excited channels can carry the offset above
-zero.  What it does not do is map where.  This module computes
-
-    B_vib(nu, lambda, dG, T) = sup over (A, w) of F_summed ,
-
-restricted to intrinsic H/T effects above sqrt(mu_T/mu_H) = 1.2689, which is the
-regime in which the ground-channel envelope is flat at F0 and therefore the
-regime the empirical comparison uses.  Where B_vib < 0 a separation between the
-gated and semiclassical families survives summation; where B_vib >= 0 it does
-not, and no offset-based exclusion is possible even in principle.
+The sampled (A,w) grids give lower bounds on a supremum for the chosen
+channel model. A positive grid value is a constructive example. A negative
+grid maximum cannot establish that all allowable offsets are negative.
+We restrict intrinsic H/T to at least 1.2689, the flat part of the
+ground-channel envelope used in the manuscript.
 
 EXACT GATED FRANCK-CONDON FACTORS.  The gating average of the 0 -> n factor is
 done in closed form rather than by quadrature, which is what makes a phase
@@ -34,6 +28,7 @@ from __future__ import annotations
 import math
 
 import numpy as np
+from scipy.special import gammaln, logsumexp
 
 import masses as M
 import vibronic as V
@@ -46,62 +41,54 @@ KTHRESH = math.sqrt(M.mu_ratios("C")[2])          # 1.2689
 CM_TO_KCAL = 2.859144e-3                          # kcal/mol per cm^-1 (hc N_A)
 
 
-def fc_gated(nmax, mu, A, w):
-    """Exact <|S^{0n}|^2> over Gaussian gating, n = 0..nmax, vectorized in n."""
-    R0, sig2 = math.sqrt(A), w / 2.0
-    if sig2 <= 0:
-        S = mu * A
-        return np.array([math.exp(n * math.log(max(S, 1e-300)) - S
-                                  - math.lgamma(n + 1)) for n in range(nmax + 1)])
-    s2 = 1.0 / (2.0 * mu + 1.0 / sig2)
-    m = R0 * s2 / sig2
-    pref = math.sqrt(s2 / sig2) * math.exp(-mu * R0 ** 2 / (1.0 + 2.0 * mu * sig2))
-    mom = np.empty(2 * nmax + 1)                  # E[X^k] under N(m, s2)
-    mom[0] = 1.0
-    if len(mom) > 1:
-        mom[1] = m
+def log_fc_gated(nmax, mu, A, w):
+    """Logarithms of the Gaussian-averaged channel factors, including at w=0.
+
+    Axis zero enumerates quantum numbers. A and w can be scalars or arrays
+    broadcastable to the shape of a parameter grid.
+    """
+    A, w = np.broadcast_arrays(np.asarray(A, dtype=float), np.asarray(w, dtype=float))
+    if np.any(A < 0) or np.any(w < 0):
+        raise ValueError("Action and width must be nonnegative.")
+    denom = 1 + mu * w
+    log_prefactor = -0.5 * np.log1p(mu * w) - mu * A / denom
+    with np.errstate(divide="ignore"):
+        log_mean = 0.5 * np.log(A) - np.log(denom)
+        log_variance = np.log(w / 2) - np.log(denom)
+    moments = [np.zeros_like(A), log_mean]
     for k in range(2, 2 * nmax + 1):
-        mom[k] = m * mom[k - 1] + (k - 1) * s2 * mom[k - 2]
-    out = np.empty(nmax + 1)
-    for n in range(nmax + 1):
-        out[n] = pref * math.exp(n * math.log(mu) - math.lgamma(n + 1)) * mom[2 * n]
-    return np.maximum(out, 0.0)
+        moments.append(np.logaddexp(log_mean + moments[-1],
+                                    np.log(k - 1) + log_variance + moments[-2]))
+    return np.stack([log_prefactor + n * np.log(mu) - gammaln(n + 1) + moments[2*n]
+                     for n in range(nmax + 1)])
+
+
+def fc_gated(nmax, mu, A, w):
+    """Gaussian-averaged factors on the ordinary scale, for quadrature comparisons."""
+    return np.exp(log_fc_gated(nmax, mu, A, w))
 
 
 def summed_X(A, w, nu_cm, lam, dG, T, nmax=30):
-    """(ln K_HT, ln K_DT) for the channel-summed rate."""
-    hw_H = nu_cm * CM_TO_KCAL
-    tot = {}
-    for L in "HDT":
-        hw = hw_H / MU[L]                          # omega ~ mu^{-1/2}
-        fc = fc_gated(nmax, MU[L], A, w)
-        n = np.arange(nmax + 1)
-        marcus = np.exp(-((dG + lam + n * hw) ** 2) / (4.0 * lam * KB_KCAL * T))
-        tot[L] = float(np.sum(fc * marcus))
-    if tot["T"] <= 0:
-        return np.nan, np.nan
-    return math.log(tot["H"] / tot["T"]), math.log(tot["D"] / tot["T"])
+    """Return log H/T and D/T without ever forming a ratio of absolute rates."""
+    log_rates = {}
+    for isotope, mu in MU.items():
+        factors = log_fc_gated(nmax, mu, A, w)
+        channels = np.arange(nmax + 1).reshape((-1,) + (1,) * (factors.ndim - 1))
+        gap = dG + lam + channels * nu_cm * CM_TO_KCAL / mu
+        log_rates[isotope] = logsumexp(factors - gap**2 / (4 * lam * KB_KCAL * T), axis=0)
+    return log_rates["H"] - log_rates["T"], log_rates["D"] - log_rates["T"]
 
 
 def B_vib(nu_cm, lam, dG, T, nmax=30, nA=26, nw=26, kmin=KTHRESH):
-    """sup of F over (A, w), restricted to K_HT^int >= kmin.
-
-    Returns (B, A*, w*, K*).  nan if no grid point meets the restriction.
-    """
-    best, arg = -np.inf, (np.nan, np.nan, np.nan)
-    for A in np.logspace(-1.3, 1.8, nA):
-        for w in np.logspace(-2.6, 1.4, nw):
-            xh, xd = summed_X(A, w, nu_cm, lam, dG, T, nmax)
-            if not (np.isfinite(xh) and np.isfinite(xd)):
-                continue
-            if math.exp(xh) < kmin:
-                continue
-            f = xh - GSC * xd
-            if f > best:
-                best, arg = f, (A, w, math.exp(xh))
-    if not np.isfinite(best):
+    """Return the sampled maximum and its (action, width, intrinsic H/T)."""
+    A, w = np.meshgrid(np.logspace(-1.3, 1.8, nA), np.logspace(-2.6, 1.4, nw),
+                       indexing="ij")
+    xh, xd = summed_X(A, w, nu_cm, lam, dG, T, nmax)
+    offsets = np.where(xh >= np.log(kmin), xh - GSC * xd, -np.inf)
+    i = np.unravel_index(np.argmax(offsets), offsets.shape)
+    if not np.isfinite(offsets[i]):
         return np.nan, np.nan, np.nan, np.nan
-    return best, arg[0], arg[1], arg[2]
+    return offsets[i], A[i], w[i], np.exp(xh[i])
 
 
 BVIB_CELLS = ((1500, 10, -5), (3000, 20, -5), (2500, 40, -5), (3600, 10, -15))
@@ -114,16 +101,14 @@ def bvib_grid_max(nu_cm, lam, dG, T=298.15, A_hi=63.1, w_hi=25.1, nA=60, nw=60):
     the supremum and nothing more.  The defaults are the original 60 x 60 box;
     bvib_extended() widens it.  Returns (F, A*, w*).
     """
-    best = (-np.inf, np.nan, np.nan)
-    for A in np.logspace(math.log10(0.05), math.log10(A_hi), nA):
-        for w in np.logspace(-2.6, math.log10(w_hi), nw):
-            xh, xd = summed_X(A, w, nu_cm, lam, dG, T, 30)
-            if not np.isfinite(xh) or math.exp(xh) < KTHRESH:
-                continue
-            f = xh - GSC * xd
-            if f > best[0]:
-                best = (f, A, w)
-    return best
+    A, w = np.meshgrid(np.logspace(math.log10(0.05), math.log10(A_hi), nA),
+                       np.logspace(-2.6, math.log10(w_hi), nw), indexing="ij")
+    xh, xd = summed_X(A, w, nu_cm, lam, dG, T, 30)
+    offsets = np.where(xh >= np.log(KTHRESH), xh - GSC * xd, -np.inf)
+    i = np.unravel_index(np.argmax(offsets), offsets.shape)
+    if not np.isfinite(offsets[i]):
+        return -np.inf, np.nan, np.nan
+    return offsets[i], A[i], w[i]
 
 
 def bvib_extended():
@@ -165,7 +150,11 @@ def _verify():
     print(f"  A=2.011 w=0.346 nu=3626 lam=11.55 dG=-11.42 T=284.8")
     print(f"  K_HT = {math.exp(xh):.5f}  K_DT = {math.exp(xd):.5f}  "
           f"F = {xh - GSC*xd:+.5f}")
-    print(f"  main text reports K_HT = 1.51949, K_DT = 1.13128, F = +0.00530")
+    assert np.isclose(xh - GSC * xd, 0.005118213495, rtol=0, atol=2e-10)
+    # Absolute rates at this grid point are below double-precision range.
+    for cutoff in (30, 60):
+        h, d = summed_X(1e5, 26.07123571336003, 1500, 10, -5, 298.15, cutoff)
+        assert np.isclose(h - GSC * d, 0.5250265, rtol=0, atol=2e-6)
 
     print()
     print("=" * 78)
@@ -181,13 +170,13 @@ def _verify():
 def _phase():
     print()
     print("=" * 78)
-    print("4. PHASE DIAGRAM: WHERE DOES THE SEPARATION SURVIVE?")
+    print("4. SAMPLED MAXIMUM OFFSETS ON THE FINITE GRID")
     print("=" * 78)
     nus = (1500.0, 2000.0, 2500.0, 2800.0, 3000.0, 3300.0, 3600.0)
     lams = (5.0, 10.0, 20.0, 40.0)
     for dG, T in ((-5.0, 298.15), (-15.0, 298.15)):
         print(f"\n  dG = {dG} kcal/mol, T = {T} K"
-              f"      (entries are B_vib; negative = separation survives)")
+              f"      (each entry is a finite-grid maximum)")
         print("  " + f"{'nu (cm^-1)':>12}" +
               "".join(f"{'lam='+str(l):>12}" for l in lams))
         for nu in nus:
@@ -197,12 +186,14 @@ def _phase():
                 row += f"{b:12.4f}" if np.isfinite(b) else f"{'--':>12}"
             print(f"  {nu:12.0f}" + row)
     print()
-    print("  Reading: B_vib < F0 would leave the main-text bound intact;")
-    print("  F0 <= B_vib < 0 leaves a separation but a smaller one; B_vib >= 0")
-    print("  means the gated family reaches the semiclassical locus and no")
-    print("  offset-based exclusion is possible at those parameters.")
+    print("  Positive values witness positive offsets. Negative grid maxima")
+    print("  do not certify separation throughout the parameter domain.")
 
 
 if __name__ == "__main__":
     _verify()
     _phase()
+    print("\nSI Note 14. Sampled offsets on the small and extended grids:")
+    print("frequency  reorganization  driving force  small max   extended max    action    width")
+    for cell, (small, large) in bvib_extended().items():
+        print(*cell, f"{small[0]:+.6f} {large[0]:+.6f} {large[1]:.0f} {large[2]:.6f}")

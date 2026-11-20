@@ -1,26 +1,9 @@
-"""The one system in the record that does discriminate.
+"""Conditional reanalysis of Cha, Murray and Klinman's yeast ADH measurements.
 
-Cha, Murray and Klinman (Science 243, 1325 (1989)) report competitive primary
-V/K effects for yeast alcohol dehydrogenase against a common tritium reference:
-exactly the observable this analysis needs, at a single temperature.  Their own
-argument is the offset test in disguise.  They compare the observed exponent
-3.58 with what they call "the theoretical upper limit for the exponent", 3.34,
-which is the reduced-mass semiclassical value gamma_SC = 3.34887 used here.
-
-Two things follow that they could not have argued in 1989.
-
-First, the conclusion is robust to kinetic complexity.  Kohen and Jensen later
-objected that commitments can inflate an observed exponent, which is correct in
-general.  It cannot rescue this case: L_H = 8.40 exceeds gamma_SC, so by
-Proposition 2 the identified set is the OPEN half-line (F_obs, infinity).  Every
-admissible commitment moves the intrinsic offset UP, so an observed offset above
-the envelope cannot be a masking artifact.  The one-sided direction of the set is
-what makes the 1989 argument safe.
-
-Second, the direction of that inference depends on the kinetic scheme.  Under a
-shared additive commitment the set is open below and the argument would fail.
-The scheme-derived map of Eq. (1), which is Northrop's equation re-referenced to
-the tritium reference, is the one that applies.
+The original H/T and D/T experiments use different tritiated preparations.
+The primary-pair test assumes ordered tracer commitments, a shared primary
+chemical effect, isotope-insensitive binding and one irreversible transfer step.
+The reversible example is a separate, hypothetical shared-tracer calculation.
 """
 from __future__ import annotations
 
@@ -43,13 +26,13 @@ def say(s=""):
 def main():
     d = pd.read_csv("../data/cha1989_yadh.csv")
     say("=" * 90)
-    say("THE DECISIVE CASE: YEAST ADH PRIMARY EFFECTS (Cha, Murray & Klinman 1989)")
+    say("CONDITIONAL PRIMARY-PAIR TEST: YEAST ADH PRIMARY EFFECTS (Cha, Murray & Klinman 1989)")
     say("=" * 90)
     say(f"gamma_SC = {GSC:.5f}   F0 = {F0:+.6f}")
     say("Errors as published. Cha et al. call them standard deviations of >=5")
     say("determinations (time points within one experiment); the errors on the")
-    say("average are those propagated into the mean, and they match the standard")
-    say("error of the three determinations, so no further margin is claimed.")
+    say("average are consistent with an estimate of the standard")
+    say("error. Bounds use normal log errors as a working model.")
     say("")
     say(f"{'record':28s}{'K_HT':>13}{'K_DT':>13}{'gam_obs':>9}{'L_H':>7}"
         f"{'F_min':>9}{'sd':>8}{'95% LCB':>9}{'>F0':>6}{'>0':>5}")
@@ -70,7 +53,7 @@ def main():
     say("")
     say(f"  All {len(res)} records have L_H > gamma_SC, so every identified set is the")
     say("  OPEN half-line (F_obs, inf): the endpoint is the commitment-free value and")
-    say("  no admissible commitment can lower it. Masking cannot explain these data.")
+    say("  ordered forward commitments alone cannot lower it under the assumed tracer model.")
     say(f"  {int(res.excl_gated.sum())}/{len(res)} exclude the ground-channel gated model;"
         f" {int(res.excl_semiclassical.sum())}/{len(res)} also exclude the")
     say("  semiclassical locus F = 0.")
@@ -85,18 +68,17 @@ def main():
     es = eie_threshold(avg.K_HT, avg.K_DT)
     win = vacuity_window(avg.K_HT, avg.K_DT)
     say(f"  F_min = {fmin:+.4f}, sd = {sd:.4f}, 95% LCB = {fmin-1.645*sd:+.4f}")
-    say(f"  reversibility: lower edge E_D* = {es:.3f}, vacuity window = "
+    say(f"  Shared-tracer reversible model: algebraic crossing E_D* = {es:.3f}, vacuity window = "
         f"{'EMPTY' if win is None else win}")
-    say("  The window is empty because F_obs > 0. By Proposition 3 no equilibrium")
-    say("  isotope effect can make this observation uninformative, so the")
-    say("  conclusion is unconditional in E_D rather than conditional on a bound.")
+    say("  For a shared tracer and mass-scaled equilibrium isotope effects, a positive")
+    say("  observed offset bounds the intrinsic offset at every E_D (SI Note 13).")
     say(f"{'E_DT':>10}{'F_min':>11}{'95% LCB':>11}{'excludes gated?':>18}")
     for e in (1.0, 1.1, 1.2, 1.4, 1.6, 2.0, 5.0, 10.0):
         f, _, _ = F_min_reversible(avg.K_HT, avg.K_DT, e)
         say(f"{e:10.2f}{f:11.4f}{f-1.645*sd:11.4f}"
             f"{'YES' if f-1.645*sd > F0 else 'no':>18}")
-    say("  The endpoint is unchanged across the whole range: reversibility does")
-    say("  not touch this conclusion at any equilibrium isotope effect.")
+    say("  The measured mixed-tracer pair requires additional information linking")
+    say("  forward and reverse commitments before this reversible result can apply.")
     say("")
     say("  Correlation acts in both directions: rho > 0 shrinks sd(F), rho < 0")
     say("  inflates it.  The paper reports the maximally adverse rho = -1.")

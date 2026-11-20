@@ -1,0 +1,36 @@
+script,description,notes
+audit_numbers.py,"Recomputes every derived number and compares it with the text of the article and of its supplement; run it first",
+corpus.py,"Defines the dataset: the data files, the records and the analysis units",
+masses.py,"Isotope masses, reduced masses and the semiclassical exponents, imported by the other scripts",
+adh_primary.py,"Primary H/T and D/T effects of the alcohol dehydrogenases: lower limits, confidence bounds at each correlation, and the error increase that would remove a nominal exclusion",6;18
+atlas_general.py,"Classification of branched reaction schemes with one to three enzyme-bound states, with each step labeled in turn",3;19
+atlas_general_census.py,"The same schemes checked in exact rational arithmetic at sampled rate constants",3;19
+bounds_uncertainty.py,"One-sided confidence bounds on the lower limit of every analysis unit: closed-form quantiles at a correlation of -1, simulation at the other correlations, and adjustment across units",18;19
+build_trinomial.py,"Rebuilds the temperature-series data file from the sources' supplements and checks every transcribed value against its source",6
+cofactor_benchmark.py,"The NAD+ titration: test of the minimal scheme across the four concentrations, the random-order check, and the counts with the three additional conditions",6
+completion.py,"Recovery of the intrinsic pair from an independent commitment or an intrinsic H/D effect; the precision required; viscosity; temperature dependence of a recovered offset",3;8;19
+curvature.py,"Why the allowed range is one-sided: concavity of the masking response, steps in series, ordered tracers, and the random-map checks",3;4;5;8;19
+design_power.py,"Measurement precision needed to separate an allowed range from the model, and summary statistics of the dataset",15
+equation_checks.py,"Numerical check of every displayed equation of the article and of its supplement",19
+export_fig_atlas.py,"Data for the figure of scheme classes in the article: one mechanism of each class at stated rate constants",3
+export_fig_design.py,"Data for the last figure of the article: binding and bypass tolerances, recovery, sources of uncertainty, pooled variants",4
+holdout.py,"Sensitivity of each temperature series to the deletion of one temperature",17
+identifiable_set.py,"The allowed range (lower limit and branch) of every temperature-resolved record",19
+isotopic_purity.py,"Protium in the deuterated substrates: the corrections, their removal, and the classification of the units under each purity scenario",6;19
+joint_nuisance.py,"Binding isotope effects and a bypass acting together: where the yeast exclusion survives, and a finite model that reproduces the pair where it does not",4
+model_domain.py,"Largest offset of the ground-channel model when its parameters are bounded, and the resulting counts",2
+network_atlas.py,"Symbolic enumeration and classification of the chain mechanisms; the full check is ""python3 network_atlas.py 4""",3;19
+network_geometry.py,"The response of a reaction scheme as a ratio of two linear functions of the intrinsic effect: coefficients, curvature, and the lower limit with a bypass",3
+partial_id.py,"Closed-form lower limit of the intrinsic offset and its extension to isotope-sensitive binding",4
+pooling_check.py,"Pooling of temperatures or enzyme variants: common-pair fits, the number of identifiable parameters, and the scale symmetry",9;19
+profile_edges.py,"Continuation of the offset profiles whose optimum lies at the edge of the profiled range",11;19
+published_intrinsic.py,"Offsets implied by published intrinsic effects that were obtained with Northrop's method",6
+reference_asymmetry.py,"The tracer ratio from the sources' secondary effects, and the mixed-label identity",5
+reference_counts.py,"Counts of the analysis units against the semiclassical reference and against the model",10
+repeat_determinations.py,"Comparison of independent determinations of one condition",6
+reversible.py,"Reversible chemical step: the interval of equilibrium effects that removes the lower limit, its endpoints, and the two-tracer counterexample",13
+synthetic_validation.py,"The whole procedure applied to synthetic data with known intrinsic effects",15;19
+verify_derivation.py,"Symbolic and numerical verification of the closed forms and propositions",2;19
+vibronic.py,"The model summed over vibronic channels: what happens to the channel-by-channel limit",12
+vibronic_envelope.py,"Largest offsets of the summed model on expanding parameter grids",12;14
+yadh_robustness.py,"Yeast alcohol dehydrogenase: mass convention, error inflation, heavier-tailed errors, and adjustment across units",18

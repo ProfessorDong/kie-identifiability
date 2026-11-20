@@ -10,7 +10,7 @@ sqrt(hbar/(2 mu omega)), because mu*omega = sqrt(k_f*mu).
 That matters here: the supremum identity sup gamma_TUN = gamma_SC is an
 identity in whatever masses are used, so it is exact only when BOTH models are
 evaluated with the same masses.  Mixing a bare-mass tunneling model with a
-reduced-mass semiclassical exponent, as an earlier draft did, manufactures a
+reduced-mass semiclassical exponent manufactures a
 spurious gap between them.
 
 Atomic masses are CODATA/AME2020 values in unified atomic mass units.

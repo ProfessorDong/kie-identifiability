@@ -1,0 +1,248 @@
+unit,stratum,family,variant,step,T_C,NAD_mM,K_HT,K_HT_se,K_DT,K_DT_se,source_DOI,source_table,normal_order_at_center
+FDH V123A (hydride),dataset,FDH,V123A,hydride,5.0,,4.96,0.03,1.98,0.02,10.1021/acscatal.9b03345,Table S2,True
+FDH V123A (hydride),dataset,FDH,V123A,hydride,15.0,,5.17,0.02,1.97,0.01,10.1021/acscatal.9b03345,Table S2,True
+FDH V123A (hydride),dataset,FDH,V123A,hydride,25.0,,5.54,0.02,1.95,0.01,10.1021/acscatal.9b03345,Table S2,True
+FDH V123A (hydride),dataset,FDH,V123A,hydride,35.0,,5.61,0.01,1.94,0.01,10.1021/acscatal.9b03345,Table S2,True
+FDH V123A (hydride),dataset,FDH,V123A,hydride,45.0,,6.08,0.02,1.93,0.01,10.1021/acscatal.9b03345,Table S2,True
+FDH V123G (hydride),dataset,FDH,V123G,hydride,5.0,,5.08,0.05,2.09,0.03,10.1021/acscatal.9b03345,Table S2,True
+FDH V123G (hydride),dataset,FDH,V123G,hydride,15.0,,5.6,0.1,2.03,0.03,10.1021/acscatal.9b03345,Table S2,True
+FDH V123G (hydride),dataset,FDH,V123G,hydride,25.0,,5.62,0.06,2.0,0.02,10.1021/acscatal.9b03345,Table S2,True
+FDH V123G (hydride),dataset,FDH,V123G,hydride,35.0,,5.71,0.01,1.95,0.03,10.1021/acscatal.9b03345,Table S2,True
+FDH V123G (hydride),dataset,FDH,V123G,hydride,45.0,,6.44,0.08,1.92,0.01,10.1021/acscatal.9b03345,Table S2,True
+TSase Y209W (proton),dataset,TSase,Y209W,proton,5.0,,5.21,0.13,1.93,0.05,10.3390/ijms16047304,Table S2,True
+TSase Y209W (proton),dataset,TSase,Y209W,proton,15.0,,4.97,0.21,1.81,0.02,10.3390/ijms16047304,Table S2,True
+TSase Y209W (proton),dataset,TSase,Y209W,proton,25.0,,3.54,0.05,1.53,0.03,10.3390/ijms16047304,Table S2,True
+TSase Y209W (proton),dataset,TSase,Y209W,proton,35.0,,1.93,0.09,1.29,0.04,10.3390/ijms16047304,Table S2,True
+TSase WT (hydride),dataset,TSase,WT,hydride,5.0,,2.362,0.0174355957741627,1.4900000000000002,0.0036514837167011,10.1371/journal.pone.0196506,S2 Table,True
+TSase WT (hydride),dataset,TSase,WT,hydride,15.0,,2.71,0.0192353840616713,1.566,0.0067823299831252,10.1371/journal.pone.0196506,S2 Table,True
+TSase WT (hydride),dataset,TSase,WT,hydride,25.0,,3.052,0.0139283882771841,1.614,0.004,10.1371/journal.pone.0196506,S2 Table,True
+TSase WT (hydride),dataset,TSase,WT,hydride,35.0,,3.4425,0.0165201896679991,1.6599999999999997,0.0083666002653407,10.1371/journal.pone.0196506,S2 Table,True
+TSase WT (proton),dataset,TSase,WT,proton,5.0,,1.7920000000000005,0.0131909059582729,1.3675,0.0094648472430004,10.1371/journal.pone.0196506,S3 Table,True
+TSase WT (proton),dataset,TSase,WT,proton,15.0,,1.7975,0.014361406616345,1.3457142857142856,0.0036885555678165,10.1371/journal.pone.0196506,S3 Table,True
+TSase WT (proton),dataset,TSase,WT,proton,25.0,,1.5375,0.0110867789130417,1.2325,0.0047871355387816,10.1371/journal.pone.0196506,S3 Table,True
+TSase WT (proton),dataset,TSase,WT,proton,35.0,,1.9057649663380751,0.0153606846376108,1.3095726493098137,0.0052428097831355,10.1371/journal.pone.0196506,S3 Table,True
+ecDHFR F125M (hydride),dataset,ecDHFR,F125M,hydride,5.0,,3.07,0.02,1.61,0.01,10.1021/ja411998h,Table S1-S4,True
+ecDHFR F125M (hydride),dataset,ecDHFR,F125M,hydride,15.0,,4.55,0.04,1.76,0.01,10.1021/ja411998h,Table S1-S4,True
+ecDHFR F125M (hydride),dataset,ecDHFR,F125M,hydride,25.0,,5.2,0.09,1.8,0.01,10.1021/ja411998h,Table S1-S4,True
+ecDHFR F125M (hydride),dataset,ecDHFR,F125M,hydride,35.0,,5.71,0.02,1.81,0.02,10.1021/ja411998h,Table S1-S4,True
+ecDHFR F125M (hydride),dataset,ecDHFR,F125M,hydride,45.0,,6.28,0.03,1.82,0.01,10.1021/ja411998h,Table S1-S4,True
+ecDHFR G121V-F125M (hydride),dataset,ecDHFR,G121V-F125M,hydride,5.0,,6.33,0.03,1.99,0.01,10.1021/ja411998h,Table S1-S4,True
+ecDHFR G121V-F125M (hydride),dataset,ecDHFR,G121V-F125M,hydride,15.0,,6.23,0.04,1.92,0.01,10.1021/ja411998h,Table S1-S4,True
+ecDHFR G121V-F125M (hydride),dataset,ecDHFR,G121V-F125M,hydride,25.0,,6.22,0.04,1.85,0.01,10.1021/ja411998h,Table S1-S4,True
+ecDHFR G121V-F125M (hydride),dataset,ecDHFR,G121V-F125M,hydride,35.0,,6.08,0.04,1.8,0.003,10.1021/ja411998h,Table S1-S4,True
+ecDHFR G121V-F125M (hydride),dataset,ecDHFR,G121V-F125M,hydride,45.0,,5.71,0.05,1.72,0.03,10.1021/ja411998h,Table S1-S4,True
+ecDHFR M42W-F125M (hydride),dataset,ecDHFR,M42W-F125M,hydride,5.0,,5.12,0.01,1.91,0.02,10.1021/ja411998h,Table S1-S4,True
+ecDHFR M42W-F125M (hydride),dataset,ecDHFR,M42W-F125M,hydride,15.0,,5.06,0.05,1.82,0.02,10.1021/ja411998h,Table S1-S4,True
+ecDHFR M42W-F125M (hydride),dataset,ecDHFR,M42W-F125M,hydride,25.0,,4.9,0.02,1.77,0.01,10.1021/ja411998h,Table S1-S4,True
+ecDHFR M42W-F125M (hydride),dataset,ecDHFR,M42W-F125M,hydride,35.0,,4.72,0.03,1.71,0.01,10.1021/ja411998h,Table S1-S4,True
+ecDHFR M42W-F125M (hydride),dataset,ecDHFR,M42W-F125M,hydride,45.0,,4.54,0.03,1.62,0.03,10.1021/ja411998h,Table S1-S4,True
+ecDHFR W133F (hydride),dataset,ecDHFR,W133F,hydride,5.0,,2.89,0.05,1.48,0.03,10.1021/ja411998h,Table S1-S4,True
+ecDHFR W133F (hydride),dataset,ecDHFR,W133F,hydride,25.0,,5.04,0.03,1.65,0.02,10.1021/ja411998h,Table S1-S4,True
+ecDHFR W133F (hydride),dataset,ecDHFR,W133F,hydride,45.0,,5.02,0.07,1.65,0.07,10.1021/ja411998h,Table S1-S4,True
+ecDHFR heavy enzyme (hydride),dataset,ecDHFR,heavy enzyme,hydride,5.0,,2.4,0.05,1.5,0.02,10.1021/ja501936d,Table S1,True
+ecDHFR heavy enzyme (hydride),dataset,ecDHFR,heavy enzyme,hydride,15.0,,3.29,0.04,1.61,0.05,10.1021/ja501936d,Table S1,True
+ecDHFR heavy enzyme (hydride),dataset,ecDHFR,heavy enzyme,hydride,25.0,,4.1,0.03,1.64,0.04,10.1021/ja501936d,Table S1,True
+ecDHFR heavy enzyme (hydride),dataset,ecDHFR,heavy enzyme,hydride,35.0,,4.91,0.04,1.69,0.02,10.1021/ja501936d,Table S1,True
+ecDHFR heavy enzyme (hydride),dataset,ecDHFR,heavy enzyme,hydride,45.0,,5.05,0.06,1.7,0.07,10.1021/ja501936d,Table S1,True
+ecDHFR light enzyme (hydride),dataset,ecDHFR,light enzyme,hydride,5.0,,3.06,0.1,1.51,0.02,10.1021/ja031683w,SI Table 1,True
+ecDHFR light enzyme (hydride),dataset,ecDHFR,light enzyme,hydride,10.0,,3.69,0.03,1.57,0.03,10.1021/ja031683w,SI Table 1,True
+ecDHFR light enzyme (hydride),dataset,ecDHFR,light enzyme,hydride,15.0,,4.76,0.04,1.63,0.01,10.1021/ja031683w,SI Table 1,True
+ecDHFR light enzyme (hydride),dataset,ecDHFR,light enzyme,hydride,25.0,,4.85,0.09,1.66,0.03,10.1021/ja031683w,SI Table 1,True
+ecDHFR light enzyme (hydride),dataset,ecDHFR,light enzyme,hydride,35.0,,4.8,0.12,1.66,0.01,10.1021/ja031683w,SI Table 1,True
+ecDHFR light enzyme (hydride),dataset,ecDHFR,light enzyme,hydride,45.0,,4.82,0.11,1.65,0.02,10.1021/ja031683w,SI Table 1,True
+hsDHFR F32L (hydride),dataset,hsDHFR,F32L,hydride,5.0,,1.91,0.03,1.41,0.04,10.1021/acs.biochem.1c00558,Table S2-S6,True
+hsDHFR F32L (hydride),dataset,hsDHFR,F32L,hydride,15.0,,2.0,0.05,1.39,0.01,10.1021/acs.biochem.1c00558,Table S2-S6,True
+hsDHFR F32L (hydride),dataset,hsDHFR,F32L,hydride,25.0,,1.93,0.14,1.36,0.06,10.1021/acs.biochem.1c00558,Table S2-S6,True
+hsDHFR F32L (hydride),dataset,hsDHFR,F32L,hydride,35.0,,1.9,0.01,1.31,0.01,10.1021/acs.biochem.1c00558,Table S2-S6,True
+hsDHFR F32L-PP26N-PEKN62G (hydride),dataset,hsDHFR,F32L-PP26N-PEKN62G,hydride,5.0,,1.97,0.02,1.44,0.01,10.1021/acs.biochem.1c00558,Table S2-S6,True
+hsDHFR F32L-PP26N-PEKN62G (hydride),dataset,hsDHFR,F32L-PP26N-PEKN62G,hydride,15.0,,3.01,0.05,1.7,0.01,10.1021/acs.biochem.1c00558,Table S2-S6,True
+hsDHFR F32L-PP26N-PEKN62G (hydride),dataset,hsDHFR,F32L-PP26N-PEKN62G,hydride,25.0,,3.1,0.02,1.75,0.01,10.1021/acs.biochem.1c00558,Table S2-S6,True
+hsDHFR F32L-PP26N-PEKN62G (hydride),dataset,hsDHFR,F32L-PP26N-PEKN62G,hydride,35.0,,3.42,0.02,1.78,0.01,10.1021/acs.biochem.1c00558,Table S2-S6,True
+hsDHFR F32M (hydride),dataset,hsDHFR,F32M,hydride,5.0,,1.89,0.04,1.48,0.01,10.1021/acs.biochem.1c00558,Table S2-S6,True
+hsDHFR F32M (hydride),dataset,hsDHFR,F32M,hydride,15.0,,2.29,0.04,1.6,0.01,10.1021/acs.biochem.1c00558,Table S2-S6,True
+hsDHFR F32M (hydride),dataset,hsDHFR,F32M,hydride,25.0,,1.85,0.03,1.43,0.01,10.1021/acs.biochem.1c00558,Table S2-S6,True
+hsDHFR F32M (hydride),dataset,hsDHFR,F32M,hydride,35.0,,2.66,0.06,1.7,0.02,10.1021/acs.biochem.1c00558,Table S2-S6,True
+hsDHFR d26-PPLR-d62-PEKN (hydride),dataset,hsDHFR,d26-PPLR-d62-PEKN,hydride,5.0,,3.96,0.02,1.57,0.01,10.1021/acs.biochem.1c00558,Table S2-S6,True
+hsDHFR d26-PPLR-d62-PEKN (hydride),dataset,hsDHFR,d26-PPLR-d62-PEKN,hydride,15.0,,3.6,0.02,1.54,0.01,10.1021/acs.biochem.1c00558,Table S2-S6,True
+hsDHFR d26-PPLR-d62-PEKN (hydride),dataset,hsDHFR,d26-PPLR-d62-PEKN,hydride,25.0,,3.39,0.01,1.52,0.01,10.1021/acs.biochem.1c00558,Table S2-S6,True
+hsDHFR d26-PPLR-d62-PEKN (hydride),dataset,hsDHFR,d26-PPLR-d62-PEKN,hydride,35.0,,3.17,0.03,1.5,0.02,10.1021/acs.biochem.1c00558,Table S2-S6,True
+hsDHFR d26-PPLR-d62-PEKN (hydride),dataset,hsDHFR,d26-PPLR-d62-PEKN,hydride,45.0,,3.02,0.01,1.48,0.01,10.1021/acs.biochem.1c00558,Table S2-S6,True
+hsDHFR d62-PEKN (hydride),dataset,hsDHFR,d62-PEKN,hydride,5.0,,4.13,0.02,1.64,0.02,10.1021/acs.biochem.1c00558,Table S2-S6,True
+hsDHFR d62-PEKN (hydride),dataset,hsDHFR,d62-PEKN,hydride,15.0,,3.97,0.04,1.62,0.01,10.1021/acs.biochem.1c00558,Table S2-S6,True
+hsDHFR d62-PEKN (hydride),dataset,hsDHFR,d62-PEKN,hydride,25.0,,3.77,0.03,1.6,0.03,10.1021/acs.biochem.1c00558,Table S2-S6,True
+hsDHFR d62-PEKN (hydride),dataset,hsDHFR,d62-PEKN,hydride,35.0,,3.53,0.02,1.57,0.01,10.1021/acs.biochem.1c00558,Table S2-S6,True
+hsDHFR d62-PEKN (hydride),dataset,hsDHFR,d62-PEKN,hydride,45.0,,3.4,0.03,1.55,0.02,10.1021/acs.biochem.1c00558,Table S2-S6,True
+MAOB pH 7.5 (abstraction),dataset,MAOB,pH 7.5,abstraction,2.0,,13.03,0.51,2.707,0.04,10.1021/bi00253a026,Table 1,True
+MAOB pH 7.5 (abstraction),dataset,MAOB,pH 7.5,abstraction,25.0,,21.43,0.81,2.703,0.102,10.1021/bi00253a026,Table 1,True
+MAOB pH 7.5 (abstraction),dataset,MAOB,pH 7.5,abstraction,43.2,,16.87,0.35,2.464,0.069,10.1021/bi00253a026,Table 1,True
+MAOB pH 6.1 (abstraction),dataset,MAOB,pH 6.1,abstraction,10.0,,28.89,1.1,2.896,0.132,10.1021/bi00253a026,Table 3,True
+MAOB pH 6.1 (abstraction),dataset,MAOB,pH 6.1,abstraction,15.0,,27.59,0.7,2.892,0.054,10.1021/bi00253a026,Table 3,True
+MAOB pH 6.1 (abstraction),dataset,MAOB,pH 6.1,abstraction,25.0,,21.98,1.16,2.69,0.086,10.1021/bi00253a026,Table 3,True
+MAOB pH 6.1 (abstraction),dataset,MAOB,pH 6.1,abstraction,30.0,,21.49,0.95,2.631,0.044,10.1021/bi00253a026,Table 3,True
+MAOB pH 6.1 (abstraction),dataset,MAOB,pH 6.1,abstraction,35.0,,18.52,0.99,2.569,0.07,10.1021/bi00253a026,Table 3,True
+MAOB pH 6.1 (abstraction),dataset,MAOB,pH 6.1,abstraction,40.0,,17.42,0.4,2.509,0.067,10.1021/bi00253a026,Table 3,True
+MAOB pH 6.1 (abstraction),dataset,MAOB,pH 6.1,abstraction,43.0,,17.02,0.52,2.507,0.133,10.1021/bi00253a026,Table 3,True
+LADH wild type (50% MeOH) (hydride),dataset,LADH,wild type (50% MeOH),hydride,3.0,,6.7,0.4,2.2,0.1,10.1021/bi002075l,Table 2,True
+LADH wild type (50% MeOH) (hydride),dataset,LADH,wild type (50% MeOH),hydride,-20.0,,6.1,0.2,2.3,0.1,10.1021/bi002075l,Table 2,True
+LADH wild type (50% MeOH) (hydride),dataset,LADH,wild type (50% MeOH),hydride,-30.0,,6.6,0.3,1.8,0.2,10.1021/bi002075l,Table 2,True
+LADH wild type (50% MeOH) (hydride),dataset,LADH,wild type (50% MeOH),hydride,-40.0,,3.0,0.2,1.5,0.1,10.1021/bi002075l,Table 2,True
+LADH wild type (50% MeOH) (hydride),dataset,LADH,wild type (50% MeOH),hydride,-50.0,,2.2,0.1,0.99,0.03,10.1021/bi002075l,Table 2,False
+LADH F93W (40% MeOH) (hydride),dataset,LADH,F93W (40% MeOH),hydride,3.0,10.0,8.6,0.1,1.8,0.03,10.1021/bi002075l,Tables 4 and 5 (same determination),True
+LADH F93W (40% MeOH) (hydride),dataset,LADH,F93W (40% MeOH),hydride,-10.0,10.0,9.4,0.3,2.05,0.05,10.1021/bi002075l,Table 4,True
+LADH F93W (40% MeOH) (hydride),dataset,LADH,F93W (40% MeOH),hydride,-20.0,10.0,10.8,0.1,2.02,0.07,10.1021/bi002075l,Table 4,True
+LADH F93W (40% MeOH) (hydride),dataset,LADH,F93W (40% MeOH),hydride,-30.0,10.0,13.0,0.1,2.22,0.09,10.1021/bi002075l,Table 4,True
+LADH F93W (60% MeOH) (hydride),dataset,LADH,F93W (60% MeOH),hydride,3.0,,8.6,0.4,1.69,0.06,10.1021/bi002075l,Table 4,True
+LADH F93W (60% MeOH) (hydride),dataset,LADH,F93W (60% MeOH),hydride,-20.0,,10.7,0.9,1.9,0.6,10.1021/bi002075l,Table 4,True
+FDH WT (commercial) (hydride),dataset,FDH,WT (commercial),hydride,5.0,,3.69,0.09,1.57,0.02,10.1021/ja902120t,SI Table S2,True
+FDH WT (commercial) (hydride),dataset,FDH,WT (commercial),hydride,15.0,,3.82,0.05,1.57,0.05,10.1021/ja902120t,SI Table S2,True
+FDH WT (commercial) (hydride),dataset,FDH,WT (commercial),hydride,25.0,,3.8,0.09,1.58,0.03,10.1021/ja902120t,SI Table S2,True
+FDH WT (commercial) (hydride),dataset,FDH,WT (commercial),hydride,35.0,,3.78,0.05,1.57,0.03,10.1021/ja902120t,SI Table S2,True
+FDH WT (commercial) (hydride),dataset,FDH,WT (commercial),hydride,45.0,,3.79,0.13,1.57,0.02,10.1021/ja902120t,SI Table S2,True
+FDH WT (recombinant) (hydride),dataset,FDH,WT (recombinant),hydride,5.0,,3.7,0.03,1.6,0.01,10.1021/acs.biochem.6b00181,SI Table S1,True
+FDH WT (recombinant) (hydride),dataset,FDH,WT (recombinant),hydride,15.0,,3.66,0.03,1.6,0.02,10.1021/acs.biochem.6b00181,SI Table S1,True
+FDH WT (recombinant) (hydride),dataset,FDH,WT (recombinant),hydride,25.0,,3.72,0.03,1.6,0.01,10.1021/acs.biochem.6b00181,SI Table S1,True
+FDH WT (recombinant) (hydride),dataset,FDH,WT (recombinant),hydride,35.0,,3.76,0.03,1.6,0.02,10.1021/acs.biochem.6b00181,SI Table S1,True
+FDH WT (recombinant) (hydride),dataset,FDH,WT (recombinant),hydride,45.0,,3.7,0.04,1.61,0.02,10.1021/acs.biochem.6b00181,SI Table S1,True
+FDH half-heavy (hydride),dataset,FDH,half-heavy,hydride,5.0,,5.27,0.08,1.91,0.02,10.1021/jacs.7b08359,SI Table S2,True
+FDH half-heavy (hydride),dataset,FDH,half-heavy,hydride,15.0,,5.47,0.02,1.88,0.03,10.1021/jacs.7b08359,SI Table S2,True
+FDH half-heavy (hydride),dataset,FDH,half-heavy,hydride,25.0,,5.53,0.01,1.88,0.02,10.1021/jacs.7b08359,SI Table S2,True
+FDH half-heavy (hydride),dataset,FDH,half-heavy,hydride,35.0,,5.34,0.06,1.82,0.02,10.1021/jacs.7b08359,SI Table S2,True
+FDH half-heavy (hydride),dataset,FDH,half-heavy,hydride,45.0,,5.03,0.07,1.77,0.05,10.1021/jacs.7b08359,SI Table S2,True
+FDH heavy (hydride),dataset,FDH,heavy,hydride,5.0,,4.38,0.03,1.96,0.02,10.1021/jacs.7b08359,SI Table S3,True
+FDH heavy (hydride),dataset,FDH,heavy,hydride,10.0,,4.54,0.04,1.92,0.01,10.1021/jacs.7b08359,SI Table S3,True
+FDH heavy (hydride),dataset,FDH,heavy,hydride,15.0,,5.87,0.14,2.03,0.03,10.1021/jacs.7b08359,SI Table S3,True
+FDH heavy (hydride),dataset,FDH,heavy,hydride,20.0,,4.54,0.09,1.9,0.01,10.1021/jacs.7b08359,SI Table S3,True
+FDH heavy (hydride),dataset,FDH,heavy,hydride,25.0,,5.77,0.06,2.0,0.02,10.1021/jacs.7b08359,SI Table S3,True
+FDH heavy (hydride),dataset,FDH,heavy,hydride,30.0,,4.72,0.13,1.87,0.02,10.1021/jacs.7b08359,SI Table S3,True
+FDH heavy (hydride),dataset,FDH,heavy,hydride,35.0,,5.66,0.05,1.937,0.005,10.1021/jacs.7b08359,SI Table S3,True
+FDH heavy (hydride),dataset,FDH,heavy,hydride,40.0,,6.83,0.04,1.99,0.01,10.1021/jacs.7b08359,SI Table S3,True
+FDH heavy (hydride),dataset,FDH,heavy,hydride,45.0,,6.64,0.15,1.93,0.05,10.1021/jacs.7b08359,SI Table S3,True
+TSase N177D (hydride),dataset,TSase,N177D,hydride,5.0,,4.05,0.07,1.92,0.03,10.1021/acscatal.8b02554,SI Table S2,True
+TSase N177D (hydride),dataset,TSase,N177D,hydride,15.0,,4.65,0.06,1.97,0.04,10.1021/acscatal.8b02554,SI Table S2,True
+TSase N177D (hydride),dataset,TSase,N177D,hydride,25.0,,5.19,0.08,1.98,0.05,10.1021/acscatal.8b02554,SI Table S2,True
+TSase N177D (hydride),dataset,TSase,N177D,hydride,35.0,,5.43,0.12,1.94,0.05,10.1021/acscatal.8b02554,SI Table S2,True
+TSase N177S (hydride),dataset,TSase,N177S,hydride,5.0,,3.77,0.1,1.85,0.02,10.1021/acscatal.8b02554,SI Table S3,True
+TSase N177S (hydride),dataset,TSase,N177S,hydride,15.0,,4.64,0.07,1.95,0.03,10.1021/acscatal.8b02554,SI Table S3,True
+TSase N177S (hydride),dataset,TSase,N177S,hydride,25.0,,4.99,0.06,1.95,0.01,10.1021/acscatal.8b02554,SI Table S3,True
+TSase N177S (hydride),dataset,TSase,N177S,hydride,35.0,,5.26,0.09,1.95,0.01,10.1021/acscatal.8b02554,SI Table S3,True
+TSase R166K (hydride),dataset,TSase,R166K,hydride,5.0,,5.74,0.02,2.0,0.02,10.1021/ja504341g,SI Table S2,True
+TSase R166K (hydride),dataset,TSase,R166K,hydride,15.0,,6.43,0.1,1.97,0.01,10.1021/ja504341g,SI Table S2,True
+TSase R166K (hydride),dataset,TSase,R166K,hydride,25.0,,6.31,0.1,1.89,0.009,10.1021/ja504341g,SI Table S2,True
+TSase R166K (hydride),dataset,TSase,R166K,hydride,35.0,,6.09,0.02,1.8,0.04,10.1021/ja504341g,SI Table S2,True
+TSase R166K (proton),dataset,TSase,R166K,proton,5.0,,10.99,0.08,2.63,0.08,10.1021/acscatal.5b01332,SI Table S1,True
+TSase R166K (proton),dataset,TSase,R166K,proton,15.0,,9.66,0.27,2.37,0.03,10.1021/acscatal.5b01332,SI Table S1,True
+TSase R166K (proton),dataset,TSase,R166K,proton,25.0,,5.23,0.07,1.9,0.03,10.1021/acscatal.5b01332,SI Table S1,True
+TSase R166K (proton),dataset,TSase,R166K,proton,35.0,,3.1,0.09,1.56,0.02,10.1021/acscatal.5b01332,SI Table S1,True
+TSase W80M (hydride),dataset,TSase,W80M,hydride,5.0,,7.07,0.04,1.8,0.02,10.1021/ja060196o,SI Table S1,True
+TSase W80M (hydride),dataset,TSase,W80M,hydride,20.0,,7.02,0.05,1.79,0.02,10.1021/ja060196o,SI Table S1,True
+TSase W80M (hydride),dataset,TSase,W80M,hydride,30.0,,6.97,0.07,1.81,0.02,10.1021/ja060196o,SI Table S1,True
+TSase W80M (hydride),dataset,TSase,W80M,hydride,40.0,,7.02,0.05,1.8,0.02,10.1021/ja060196o,SI Table S1,True
+TSase WT (Mg2+) (hydride),dataset,TSase,WT (Mg2+),hydride,5.0,,2.59,0.02,1.47,0.02,10.1021/ja400761x,SI Table S2,True
+TSase WT (Mg2+) (hydride),dataset,TSase,WT (Mg2+),hydride,15.0,,3.51,0.02,1.6,0.02,10.1021/ja400761x,SI Table S2,True
+TSase WT (Mg2+) (hydride),dataset,TSase,WT (Mg2+),hydride,25.0,,4.14,0.02,1.65,0.01,10.1021/ja400761x,SI Table S2,True
+TSase WT (Mg2+) (hydride),dataset,TSase,WT (Mg2+),hydride,35.0,,3.91,0.05,1.63,0.03,10.1021/ja400761x,SI Table S2,True
+TSase WT (Mg2+) (proton),dataset,TSase,WT (Mg2+),proton,5.0,,2.08,0.01,1.46,0.01,10.1021/ja103010b,SI Table S1,True
+TSase WT (Mg2+) (proton),dataset,TSase,WT (Mg2+),proton,15.0,,2.22,0.02,1.44,0.007,10.1021/ja103010b,SI Table S1,True
+TSase WT (Mg2+) (proton),dataset,TSase,WT (Mg2+),proton,25.0,,2.236,0.006,1.38,0.01,10.1021/ja103010b,SI Table S1,True
+TSase WT (Mg2+) (proton),dataset,TSase,WT (Mg2+),proton,35.0,,2.102,0.007,1.31,0.01,10.1021/ja103010b,SI Table S1,True
+TSase Y209W (hydride),dataset,TSase,Y209W,hydride,5.0,,8.5,0.1,1.9,0.02,10.1021/ja307859m,SI Table S4,True
+TSase Y209W (hydride),dataset,TSase,Y209W,hydride,25.0,,7.77,0.04,1.85,0.01,10.1021/ja307859m,SI Table S4,True
+TSase Y209W (hydride),dataset,TSase,Y209W,hydride,35.0,,6.6,0.1,1.81,0.03,10.1021/ja307859m,SI Table S4,True
+YADH wild type (p-chlorobenzyl alcohol) (hydride),dataset,YADH,wild type (p-chlorobenzyl alcohol),hydride,0.0,,7.49,0.29,1.71,0.02,10.1021/bi00161a030,Table IV,True
+YADH wild type (p-chlorobenzyl alcohol) (hydride),dataset,YADH,wild type (p-chlorobenzyl alcohol),hydride,25.0,,6.59,0.13,1.59,0.03,10.1021/bi00161a030,Table IV,True
+ecDHFR D27S (hydride),dataset,ecDHFR,D27S,hydride,5.0,,2.15,0.02,1.44,0.01,10.1073/pnas.1415940111,SI Table S6,True
+ecDHFR D27S (hydride),dataset,ecDHFR,D27S,hydride,15.0,,2.0,0.01,1.39,0.01,10.1073/pnas.1415940111,SI Table S6,True
+ecDHFR D27S (hydride),dataset,ecDHFR,D27S,hydride,25.0,,1.77,0.01,1.32,0.01,10.1073/pnas.1415940111,SI Table S6,True
+ecDHFR D27S (hydride),dataset,ecDHFR,D27S,hydride,35.0,,1.68,0.01,1.29,0.01,10.1073/pnas.1415940111,SI Table S6,True
+ecDHFR D27S (hydride),dataset,ecDHFR,D27S,hydride,45.0,,1.53,0.01,1.23,0.01,10.1073/pnas.1415940111,SI Table S6,True
+ecDHFR D27S-Y100F (hydride),dataset,ecDHFR,D27S-Y100F,hydride,5.0,,2.92,0.01,1.62,0.02,10.1073/pnas.1415940111,SI Table S7,True
+ecDHFR D27S-Y100F (hydride),dataset,ecDHFR,D27S-Y100F,hydride,15.0,,2.61,0.02,1.53,0.02,10.1073/pnas.1415940111,SI Table S7,True
+ecDHFR D27S-Y100F (hydride),dataset,ecDHFR,D27S-Y100F,hydride,25.0,,2.41,0.01,1.47,0.01,10.1073/pnas.1415940111,SI Table S7,True
+ecDHFR D27S-Y100F (hydride),dataset,ecDHFR,D27S-Y100F,hydride,35.0,,2.29,0.01,1.42,0.01,10.1073/pnas.1415940111,SI Table S7,True
+ecDHFR D27S-Y100F (hydride),dataset,ecDHFR,D27S-Y100F,hydride,45.0,,2.11,0.01,1.35,0.02,10.1073/pnas.1415940111,SI Table S7,True
+ecDHFR G121V (hydride),dataset,ecDHFR,G121V,hydride,5.0,,7.79,0.04,1.93,0.01,10.1021/bi0518242,SI Table 1S,True
+ecDHFR G121V (hydride),dataset,ecDHFR,G121V,hydride,15.0,,6.75,0.02,1.89,0.01,10.1021/bi0518242,SI Table 1S,True
+ecDHFR G121V (hydride),dataset,ecDHFR,G121V,hydride,25.0,,6.07,0.02,1.85,0.01,10.1021/bi0518242,SI Table 1S,True
+ecDHFR G121V (hydride),dataset,ecDHFR,G121V,hydride,35.0,,5.65,0.01,1.82,0.01,10.1021/bi0518242,SI Table 1S,True
+ecDHFR G121V (hydride),dataset,ecDHFR,G121V,hydride,45.0,,5.04,0.02,1.78,0.01,10.1021/bi0518242,SI Table 1S,True
+ecDHFR I14A (hydride),dataset,ecDHFR,I14A,hydride,5.0,,5.98,0.03,1.84,0.02,10.1039/c0cc02988b,ESI Table 1S,True
+ecDHFR I14A (hydride),dataset,ecDHFR,I14A,hydride,15.0,,5.96,0.03,1.83,0.01,10.1039/c0cc02988b,ESI Table 1S,True
+ecDHFR I14A (hydride),dataset,ecDHFR,I14A,hydride,25.0,,5.95,0.01,1.82,0.01,10.1039/c0cc02988b,ESI Table 1S,True
+ecDHFR I14A (hydride),dataset,ecDHFR,I14A,hydride,35.0,,5.95,0.03,1.82,0.01,10.1039/c0cc02988b,ESI Table 1S,True
+ecDHFR I14A (hydride),dataset,ecDHFR,I14A,hydride,45.0,,5.94,0.03,1.81,0.01,10.1039/c0cc02988b,ESI Table 1S,True
+ecDHFR I14A-G121V (hydride),dataset,ecDHFR,I14A-G121V,hydride,5.0,,2.13,0.03,1.47,0.01,10.1021/acscatal.5b00331,SI Table S1,True
+ecDHFR I14A-G121V (hydride),dataset,ecDHFR,I14A-G121V,hydride,15.0,,2.6,0.02,1.55,0.01,10.1021/acscatal.5b00331,SI Table S1,True
+ecDHFR I14A-G121V (hydride),dataset,ecDHFR,I14A-G121V,hydride,25.0,,3.05,0.04,1.59,0.01,10.1021/acscatal.5b00331,SI Table S1,True
+ecDHFR I14A-G121V (hydride),dataset,ecDHFR,I14A-G121V,hydride,35.0,,4.24,0.03,1.66,0.01,10.1021/acscatal.5b00331,SI Table S1,True
+ecDHFR I14A-G121V (hydride),dataset,ecDHFR,I14A-G121V,hydride,45.0,,5.2,0.04,1.68,0.01,10.1021/acscatal.5b00331,SI Table S1,True
+ecDHFR M42W (hydride),dataset,ecDHFR,M42W,hydride,5.0,,3.65,0.06,1.63,0.02,10.1098/rstb.2006.1871,ESM Table 1,True
+ecDHFR M42W (hydride),dataset,ecDHFR,M42W,hydride,15.0,,3.94,0.06,1.65,0.03,10.1098/rstb.2006.1871,ESM Table 1,True
+ecDHFR M42W (hydride),dataset,ecDHFR,M42W,hydride,25.0,,3.92,0.03,1.64,0.03,10.1098/rstb.2006.1871,ESM Table 1,True
+ecDHFR M42W (hydride),dataset,ecDHFR,M42W,hydride,35.0,,3.97,0.06,1.64,0.02,10.1098/rstb.2006.1871,ESM Table 1,True
+ecDHFR M42W (hydride),dataset,ecDHFR,M42W,hydride,45.0,,4.18,0.06,1.65,0.02,10.1098/rstb.2006.1871,ESM Table 1,True
+ecDHFR WT (pH 7.0) (hydride),dataset,ecDHFR,WT (pH 7.0),hydride,5.0,,1.61,0.02,1.22,0.01,10.1073/pnas.1415940111,SI Table S8,True
+ecDHFR WT (pH 7.0) (hydride),dataset,ecDHFR,WT (pH 7.0),hydride,15.0,,2.64,0.01,1.43,0.01,10.1073/pnas.1415940111,SI Table S8,True
+ecDHFR WT (pH 7.0) (hydride),dataset,ecDHFR,WT (pH 7.0),hydride,25.0,,2.65,0.02,1.43,0.02,10.1073/pnas.1415940111,SI Table S8,True
+ecDHFR WT (pH 7.0) (hydride),dataset,ecDHFR,WT (pH 7.0),hydride,35.0,,2.65,0.01,1.43,0.01,10.1073/pnas.1415940111,SI Table S8,True
+ecDHFR WT (pH 7.0) (hydride),dataset,ecDHFR,WT (pH 7.0),hydride,45.0,,2.71,0.01,1.43,0.01,10.1073/pnas.1415940111,SI Table S8,True
+ecDHFR Y100F (hydride),dataset,ecDHFR,Y100F,hydride,5.0,,3.607,0.007,1.677,0.005,10.1073/pnas.1415940111,SI Table S5,True
+ecDHFR Y100F (hydride),dataset,ecDHFR,Y100F,hydride,15.0,,3.262,0.018,1.627,0.002,10.1073/pnas.1415940111,SI Table S5,True
+ecDHFR Y100F (hydride),dataset,ecDHFR,Y100F,hydride,25.0,,2.912,0.011,1.573,0.012,10.1073/pnas.1415940111,SI Table S5,True
+ecDHFR Y100F (hydride),dataset,ecDHFR,Y100F,hydride,35.0,,2.574,0.008,1.51,0.003,10.1073/pnas.1415940111,SI Table S5,True
+ecDHFR Y100F (hydride),dataset,ecDHFR,Y100F,hydride,45.0,,2.305,0.009,1.452,0.015,10.1073/pnas.1415940111,SI Table S5,True
+hsDHFR M53W (hydride),dataset,hsDHFR,M53W,hydride,5.0,,3.95,0.01,1.7,0.01,10.1021/acs.biochem.9b00460,SI Table S2,True
+hsDHFR M53W (hydride),dataset,hsDHFR,M53W,hydride,15.0,,3.5,0.04,1.64,0.01,10.1021/acs.biochem.9b00460,SI Table S2,True
+hsDHFR M53W (hydride),dataset,hsDHFR,M53W,hydride,25.0,,3.51,0.01,1.63,0.01,10.1021/acs.biochem.9b00460,SI Table S2,True
+hsDHFR M53W (hydride),dataset,hsDHFR,M53W,hydride,35.0,,3.59,0.01,1.63,0.01,10.1021/acs.biochem.9b00460,SI Table S2,True
+hsDHFR M53W-S145V (hydride),dataset,hsDHFR,M53W-S145V,hydride,5.0,,2.68,0.02,1.68,0.01,10.1021/acs.biochem.9b00460,SI Table S2,True
+hsDHFR M53W-S145V (hydride),dataset,hsDHFR,M53W-S145V,hydride,15.0,,2.46,0.01,1.59,0.02,10.1021/acs.biochem.9b00460,SI Table S2,True
+hsDHFR M53W-S145V (hydride),dataset,hsDHFR,M53W-S145V,hydride,25.0,,2.59,0.02,1.59,0.02,10.1021/acs.biochem.9b00460,SI Table S2,True
+hsDHFR M53W-S145V (hydride),dataset,hsDHFR,M53W-S145V,hydride,35.0,,2.94,0.01,1.62,0.01,10.1021/acs.biochem.9b00460,SI Table S2,True
+hsDHFR S145V (hydride),dataset,hsDHFR,S145V,hydride,5.0,,1.53,0.04,1.2,0.01,10.1021/acs.biochem.9b00460,SI Table S2,True
+hsDHFR S145V (hydride),dataset,hsDHFR,S145V,hydride,15.0,,1.78,0.03,1.26,0.01,10.1021/acs.biochem.9b00460,SI Table S2,True
+hsDHFR S145V (hydride),dataset,hsDHFR,S145V,hydride,25.0,,1.88,0.01,1.28,0.01,10.1021/acs.biochem.9b00460,SI Table S2,True
+hsDHFR S145V (hydride),dataset,hsDHFR,S145V,hydride,35.0,,2.24,0.05,1.35,0.01,10.1021/acs.biochem.9b00460,SI Table S2,True
+hsDHFR WT (light) (hydride),dataset,hsDHFR,WT (light),hydride,5.0,,2.86,0.01,1.45,0.02,10.1021/acs.biochem.5b00945,SI Table S1,True
+hsDHFR WT (light) (hydride),dataset,hsDHFR,WT (light),hydride,15.0,,2.8,0.09,1.44,0.03,10.1021/acs.biochem.5b00945,SI Table S1,True
+hsDHFR WT (light) (hydride),dataset,hsDHFR,WT (light),hydride,25.0,,2.94,0.05,1.46,0.04,10.1021/acs.biochem.5b00945,SI Table S1,True
+hsDHFR WT (light) (hydride),dataset,hsDHFR,WT (light),hydride,35.0,,2.83,0.04,1.45,0.08,10.1021/acs.biochem.5b00945,SI Table S1,True
+hsDHFR WT (light) (hydride),dataset,hsDHFR,WT (light),hydride,45.0,,2.79,0.03,1.45,0.05,10.1021/acs.biochem.5b00945,SI Table S1,True
+hsDHFR WT (heavy) (hydride),dataset,hsDHFR,WT (heavy),hydride,5.0,,2.98,0.02,1.47,0.03,10.1021/acs.biochem.5b00945,SI Table S2,True
+hsDHFR WT (heavy) (hydride),dataset,hsDHFR,WT (heavy),hydride,15.0,,2.76,0.05,1.44,0.02,10.1021/acs.biochem.5b00945,SI Table S2,True
+hsDHFR WT (heavy) (hydride),dataset,hsDHFR,WT (heavy),hydride,25.0,,2.86,0.04,1.46,0.03,10.1021/acs.biochem.5b00945,SI Table S2,True
+hsDHFR WT (heavy) (hydride),dataset,hsDHFR,WT (heavy),hydride,35.0,,2.81,0.04,1.45,0.03,10.1021/acs.biochem.5b00945,SI Table S2,True
+hsDHFR WT (heavy) (hydride),dataset,hsDHFR,WT (heavy),hydride,45.0,,2.78,0.03,1.45,0.04,10.1021/acs.biochem.5b00945,SI Table S2,True
+R67DHFR WT (hydride),dataset,R67DHFR,WT,hydride,5.0,,6.53,0.09,1.76,0.03,10.1002/cbic.200900451,SI Table S2 (mu = 0.15; measured in Yahashiri 2008),True
+R67DHFR WT (hydride),dataset,R67DHFR,WT,hydride,25.0,,6.04,0.11,1.73,0.01,10.1002/cbic.200900451,SI Table S2 (mu = 0.15; measured in Yahashiri 2008),True
+R67DHFR WT (hydride),dataset,R67DHFR,WT,hydride,45.0,,5.47,0.06,1.68,0.02,10.1002/cbic.200900451,SI Table S2 (mu = 0.15; measured in Yahashiri 2008),True
+"LADH wild type, 25 C (Bahnson1993)",dataset,LADH,wild type,hydride,25.0,,7.149,0.025,1.894,0.013,10.1021/bi00072a003,Table I primary,True
+"LADH ESE chimera, 25 C (Bahnson1993)",dataset,LADH,ESE chimera,hydride,25.0,,7.593,0.036,1.872,0.006,10.1021/bi00072a003,Table I primary,True
+"LADH L57V, 25 C (Bahnson1993)",dataset,LADH,L57V,hydride,25.0,,7.55,0.03,1.902,0.021,10.1021/bi00072a003,Table I primary,True
+"LADH L57F, 25 C (Bahnson1993)",dataset,LADH,L57F,hydride,25.0,,7.308,0.048,1.827,0.008,10.1021/bi00072a003,Table I primary,True
+"LADH F93W, 25 C (Bahnson1993)",dataset,LADH,F93W,hydride,25.0,,7.755,0.034,1.858,0.005,10.1021/bi00072a003,Table I primary,True
+"LADH V203L, 25 C (Bahnson1997)",dataset,LADH,V203L,hydride,25.0,,7.82,0.08,1.89,0.01,10.1073/pnas.94.24.12797,Table 1 primary,True
+"LADH V203A, 25 C (Bahnson1997)",dataset,LADH,V203A,hydride,25.0,,7.24,0.06,1.88,0.02,10.1073/pnas.94.24.12797,Table 1 primary,True
+"LADH V203A-F93W, 25 C (Bahnson1997)",dataset,LADH,V203A-F93W,hydride,25.0,,7.65,0.06,1.91,0.02,10.1073/pnas.94.24.12797,Table 1 primary,True
+"LADH V203G, 25 C (Bahnson1997)",dataset,LADH,V203G,hydride,25.0,,7.53,0.03,1.9,0.01,10.1073/pnas.94.24.12797,Table 1 primary,True
+"LADH wild type, 3 C (TsaiKlinman2001)",dataset,LADH,wild type,hydride,3.0,,9.0,0.7,2.2,0.2,10.1021/bi002075l,Table 2 primary aqueous,True
+"LADH F93W, 3 C (TsaiKlinman2001)",dataset,LADH,F93W,hydride,3.0,,10.3,0.2,2.0,0.1,10.1021/bi002075l,Table 4 primary aqueous,True
+"BSAO wild type, 25 C (Grant1989)",dataset,BSAO,wild type,proton,25.0,,35.2,0.8,3.07,0.07,10.1021/bi00442a010,Table I primary averages; competitive V/K by 3H/14C,True
+"YADH wild type, 25 C (Cha1989)",dataset,YADH,wild type,hydride,25.0,,7.13,0.07,1.73,0.02,10.1126/science.2646716,Table 2 reported average,True
+"ecTSase wild type, 20 C (Agrawal2004)",dataset,ecTSase,wild type,hydride,20.0,,6.91,0.05,1.78,0.02,10.1021/bi036124g,"observed competitive V/K H/T and D/T stated in the Results text (p. 2001; Fig. 1); each temperature averages >=3 independent experiments, the error type is not stated; 100 mM Tris pH 7.5, 50 mM 2-mercaptoethanol, 1 mM EDTA, 5 mM CH2O, no Mg2+; tracer (R)-[6-3H]CH2H4folate in protiated or (R)-[6-2H] cofactor; the other temperatures (5, 30, 40 C) are in Fig. 2 only",True
+"LADH F93W (Chin 2000), 25 C (ChinKlinman2000)",dataset,LADH,F93W (Chin 2000),hydride,25.0,,7.61,0.03,1.85,0.01,10.1021/bi9920331,"Table 1 primary; standard error of the mean, n = 38 (H/T) and 41 (D/T); recombinant enzyme, pH 7, 300 mM potassium phosphate, 300 mM semicarbazide, 10 mM NAD+; an independent determination of the form in ladh_adh_primary.csv (Bahnson 1993)",True
+"LADH F93W-I224A, 25 C (ChinKlinman2000)",dataset,LADH,F93W-I224A,hydride,25.0,,7.77,0.04,1.86,0.01,10.1021/bi9920331,"Table 1 primary; standard error of the mean, n = 21 (H/T) and 23 (D/T); conditions as F93W",True
+"LADH F93W-I224L, 25 C (ChinKlinman2000)",dataset,LADH,F93W-I224L,hydride,25.0,,7.4,0.05,1.85,0.01,10.1021/bi9920331,"Table 1 primary; standard error of the mean, n = 21 (H/T) and 19 (D/T); conditions as F93W",True
+"LADH F93W-I224G, 25 C (ChinKlinman2000)",dataset,LADH,F93W-I224G,hydride,25.0,,7.51,0.11,1.81,0.01,10.1021/bi9920331,"Table 1 primary; standard error of the mean, n = 14 (H/T) and 21 (D/T); conditions as F93W",True
+"LADH F93W-I224V, 25 C (ChinKlinman2000)",dataset,LADH,F93W-I224V,hydride,25.0,,7.45,0.05,1.81,0.01,10.1021/bi9920331,"Table 1 primary; standard error of the mean, n = 19 (H/T) and 22 (D/T); conditions as F93W",True
+"YADH wild type (p-methoxybenzyl alcohol), 25 C (Rucker1992)",dataset,YADH,wild type (p-methoxybenzyl alcohol),hydride,25.0,,8.06,0.04,1.94,0.06,10.1021/bi00161a030,"Table V primary; pH 8.5; D/T the average of five experiments, corrected for protium in the deuterated substrate; H/T labelled observed by the source but obtained by extrapolation to zero enzyme concentration (Fig. 3); error type not stated",True
+"BSAO p-methoxybenzylamine, 25 C (Rucker1992)",dataset,BSAO,p-methoxybenzylamine,proton,25.0,,20.2,1.9,2.86,0.05,10.1021/bi00161a030,"Table I H/T average of two experiments with the standard deviation of all time points; D/T 2.86 +- 0.05 stated in the text (Table II gives the two determinations 2.80 +- 0.05 and 2.92 +- 0.05), corrected for protium; pH 8.25",True
+"ecTSase wild type, 25 C (Hong2007)",dataset,ecTSase,wild type,proton,25.0,,1.52,0.03,1.17,0.01,10.1021/bi701363s,"Table 1, at 5 uM CH2H4folate (the observed effects depend on its concentration); 100 mM Tris pH 7.5, 50 mM 2-mercaptoethanol, 1 mM EDTA, 5 mM formaldehyde, no Mg2+; error type not stated",True
+"ecTSase Y94F, 25 C (Hong2007)",dataset,ecTSase,Y94F,proton,25.0,,1.44,0.03,1.15,0.01,10.1021/bi701363s,"Table 1, at 5 uM CH2H4folate; conditions as wild type; error type not stated",True
+"hsTSase WT (no Mg2+), 25 C (Islam2018)",dataset,hsTSase,WT (no Mg2+),hydride,25.0,,3.19,0.03,1.64,0.01,10.1371/journal.pone.0196506,"Table 2, without Mg2+ (1 mM EDTA); the temperature is not printed: the with-Mg2+ cell of the same table equals the 25 C record of S2 Table, so 25 C is inferred; error type not stated",True
+"ecDHFR WT (Sen 2011), 25 C (Sen2011)",dataset,ecDHFR,WT (Sen 2011),hydride,25.0,,4.84,0.04,1.66,0.02,10.1021/bi2003873,"Table 1, cDHFR with dihydrofolate; standard deviations; the temperature and pH of the H/T and D/T runs are not printed (25 C and pH 9 are stated for the H/D runs of the same study)",True
+"ecDHFR WT (dihydrobiopterin), 25 C (Sen2011)",dataset,ecDHFR,WT (dihydrobiopterin),hydride,25.0,,7.11,0.09,2.0,0.02,10.1021/bi2003873,"Table 1, cDHFR with dihydrobiopterin as substrate; standard deviations; temperature not printed for these runs (see the dihydrofolate row)",True
+"R67DHFR wild type, 25 C (Sen2011)",dataset,R67DHFR,wild type,hydride,25.0,,6.04,0.07,1.74,0.02,10.1021/bi2003873,"Table 1, type II (R67) DHFR with dihydrofolate; standard deviations; temperature not printed (25 C and pH 8 are stated for the H/D runs)",True
+"ecDHFR WT (Sen 2012), 25 C (Sen2012)",dataset,ecDHFR,WT (Sen 2012),hydride,25.0,,4.86,0.06,1.66,0.01,10.1016/j.ab.2012.08.012,"Table 2, [carbonyl-14C] reference; 25 C, pH 9.0 stated; error type not stated; the [Ad-14C] row of the same table reprints Sikorski 2004 and is not a record",True
+"LADH F93W (40% MeOH), 0.02 mM NAD+, 3 C (TsaiKlinman2001)",NAD titration,LADH,F93W (40% MeOH),hydride,3.0,0.02,7.0,0.3,1.03,0.04,10.1021/bi002075l,Table 5,True
+"LADH F93W (40% MeOH), 1 mM NAD+, 3 C (TsaiKlinman2001)",NAD titration,LADH,F93W (40% MeOH),hydride,3.0,1.0,7.9,0.7,1.2,0.1,10.1021/bi002075l,Table 5,True
+"LADH F93W (40% MeOH), 20 mM NAD+, 3 C (TsaiKlinman2001)",NAD titration,LADH,F93W (40% MeOH),hydride,3.0,20.0,8.6,0.2,1.8,0.03,10.1021/bi002075l,Table 5,True

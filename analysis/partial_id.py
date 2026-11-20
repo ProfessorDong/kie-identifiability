@@ -254,8 +254,7 @@ def _verify():
 
 def binding_order_example(n=4_000_000):
     """The binding reduction needs the binding effects to keep the intrinsic pair
-    normally ordered, beta_H K~_H >= beta_D K~_D >= 1 (Supplementary Note 4;
-    external audit, 2026-10-21, round 2).  Without it the shifted endpoint is a
+    normally ordered, beta_H K~_H >= beta_D K~_D >= 1 (Supplementary Note 4).  Without it the shifted endpoint is a
     conservative bound only.  Example: K = (1.10, 1.02), alpha = 1,
     beta = (0.95, 1.05).  Returns (shifted endpoint, infimum over normally
     ordered intrinsic pairs, largest admissible c, yeast worst-case triple over

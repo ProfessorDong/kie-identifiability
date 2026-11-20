@@ -275,7 +275,7 @@ def transcription_audit(bench=OUT / "trinomial_benchmark.csv"):
     What it does NOT establish: that the value sits in the right ROW or COLUMN
     of the table.  A swap of the H/T and D/T columns, or of two temperatures,
     would pass.  Row and column assignment were checked against the rendered
-    page images during the 2026-09 reference review, not by this function.
+    page images, not by this function.
     """
     d = pd.read_csv(bench)
     pairs = found = 0

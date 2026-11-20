@@ -300,6 +300,31 @@ def structural_class(coeffs):
 NDRAW = 12
 
 
+def reference_rate_moves_behavior(coeffs, subs):
+    """Does the rate constant of the labeled step alone change the behavior?
+
+    With the labeled constant written x k_T, A and C are proportional to k_T
+    and B and D do not contain it, so the curvature change
+    x* = sqrt(BD/(AC)) is inversely proportional to k_T, while the sign of
+    AD - BC does not depend on k_T.  A mechanism with all four coefficients
+    nonzero therefore has x* > 1 at small k_T and x* <= 1 at large k_T, with
+    every other rate constant fixed.  This evaluates the two cases, at k_T
+    rescaled so that x* = 2 and x* = 1/2, and returns the two geometries
+    (classify and the direct profile must agree on each).
+    """
+    kT = sp.Symbol("k_T", positive=True)
+    xs = curvature_point(coeffs, subs)
+    out = []
+    for target in (2.0, 0.5):
+        sub = dict(subs)
+        sub[kT] = float(subs[kT]) * xs / target
+        _, geo, xs_new = classify(coeffs, sub)
+        if abs(xs_new - target) > 1e-9 * target or profile_geometry(coeffs, sub)[0] != geo:
+            return None
+        out.append(geo)
+    return tuple(out)
+
+
 def atlas(nmax=3, verbose=True):
     """Build the atlas and check every entry against numerical profiling."""
     rows, flagged, bad = [], [], 0
@@ -325,8 +350,20 @@ def atlas(nmax=3, verbose=True):
                 if verbose:
                     print(f"  MISMATCH {m.name}: struct={cls}/{geo} "
                           f"num={ncls}/{ngeo} x*={xs:.4g} profile={pgeo}")
+        moves = None
+        if cls == "conditional":
+            # the analytic statement, at the first draw: k_T alone moves x*
+            # across unity, so the mechanism realizes two behaviors whatever
+            # the twelve draws happened to show
+            moves = reference_rate_moves_behavior(co, draws(co, m.name, k=1)[0])
+            if moves is None or moves[0] == moves[1]:
+                agree = False
+                bad += 1
+                if verbose:
+                    print(f"  MISMATCH {m.name}: k_T alone does not change the behavior ({moves})")
         rows.append(dict(name=m.name, states=m.states, cls=cls, geometry=geo,
-                         realized=sorted(seen), verified=agree, note=m.note))
+                         realized=sorted(seen), verified=agree, note=m.note,
+                         kT_moves=moves))
     return rows, flagged, bad
 
 
@@ -581,7 +618,7 @@ def check_manuscript(path=None, rows=None):
               f"{anchor!r}")
         return 1
     ma = mtxt.index(anchor)
-    sec_main = mtxt[ma:ma + 900]
+    sec_main = mtxt[ma:ma + 1200]
     fam = enumerate_family(4)
     nblind = sum(1 for m in fam if blind_by_topology(m))
     nbyp = sum(1 for m in fam if not blind_by_topology(m) and "bypass" in m.note)
@@ -593,11 +630,23 @@ def check_manuscript(path=None, rows=None):
     # sampled rate constants, so it needs the full atlas; pass rows= from
     # atlas() to check it.  This is the number the paper leans on when it says
     # topology classifies the available geometries rather than fixing one.
+    phrases = []
     if rows is not None:
         cond = [r for r in rows if r["cls"] == "conditional"]
         multi = sum(1 for r in cond if len(set(r["realized"])) > 1)
+        moved = sum(1 for r in cond if r["kT_moves"] and r["kT_moves"][0] != r["kT_moves"][1])
         want["conditional"] = len(cond)
-        want["conditional realizing both geometries"] = multi
+        # Analytic: k_T alone changes the behavior in every conditional
+        # mechanism.  Sampled: how many showed more than one behavior among the
+        # NDRAW draws.  Until 2026-11-20 only the sampled count (57 of 62 at
+        # twelve draws) was quoted, as though five mechanisms had one behavior.
+        if moved != len(cond):
+            print(f"  FAIL manuscript census: k_T alone changes the behavior in {moved} "
+                  f"of {len(cond)} conditional mechanisms, not all")
+            return 1
+        phrases = [("main", f"In all ${len(cond)}$ conditional mechanisms the behavior of the offset depends on the rate constants"),
+                   ("si", f"${multi}$ of the ${len(cond)}$ mechanisms showed more than one behavior"),
+                   ("si", f"in each of the ${len(cond)}$ conditional mechanisms")]
     else:
         print("  (multi-geometry count not checked: call with rows=atlas(4)[0])")
     # Each document is checked on its own.  Until 2026-11-13 the two passages
@@ -607,12 +656,17 @@ def check_manuscript(path=None, rows=None):
     bad = 0
     for lab, v in want.items():
         where = []
-        if lab != "conditional realizing both geometries" and f"${v}$" not in sec:
+        if f"${v}$" not in sec:
             where.append("the atlas section of the supplement")
         if lab != "informative" and f"${v}$" not in sec_main:
             where.append("the enumeration paragraph of the main text")
         for w in where:
             print(f"  FAIL manuscript census: {lab} = {v} not in {w}")
+            bad += 1
+    flat = {"main": " ".join(sec_main.split()), "si": " ".join(sec.split())}
+    for doc, phrase in phrases:
+        if phrase not in flat[doc]:
+            print(f"  FAIL manuscript census: {doc} lacks {phrase!r}")
             bad += 1
     return bad
 

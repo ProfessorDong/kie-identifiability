@@ -1,4 +1,4 @@
-"""Independent determinations of one condition: are the published errors honest?
+"""Independent determinations of one condition: do the published errors cover them?
 
 Every confidence bound in this analysis reads the published uncertainties as
 standard errors.  Whether they are realistic can be checked wherever the same

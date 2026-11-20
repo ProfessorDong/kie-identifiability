@@ -54,42 +54,54 @@ def _sci(x, nd=0):
     return (f"$10^{{{e}}}$" if nd == 0 and abs(m - 1) < 1e-9
             else f"${m:.{nd}f}\\times10^{{{e}}}$")
 _top = b[b.rho == 0.0].sort_values("point", ascending=False).head(6)
-top = list(zip(_top.family, _top.variant))
+# a series is (family, variant, step): Y209W thymidylate synthase has a hydride
+# and a proton series, and selecting by family and variant alone mixed the two
+top = list(zip(_top.family, _top.variant, _top.step))
 _NT = 6
-# how many of the listed series clear the threshold at the adverse rho = -1;
-# the caption states it rather than asserting a fixed answer
-_clear = [(f, v) for f, v in top
-          if b[(b.family == f) & (b.variant == v) & (b.rho == -1.0)].lcb.iloc[0] > F0]
-_WORD.update({0: "no entry reaches it", 1: "one entry clears it at every $\\rho$",
-              2: "two entries clear it at every $\\rho$"})
-_CLEARWORD = (_WORD[len(_clear)] if len(_clear) <= 2
-              else f"{_words(len(_clear))} entries clear it at every $\\rho$")
+# Which of the six clear the upper limit of the model at every correlation
+# examined, and which only at some.  Until 2026-11-20 the caption said that
+# three series clear it "at each of the four assumed correlations"; at
+# rho = 0.9 a fourth does.
+_RHOS = (-1.0, 0.0, 0.5, 0.9)
+_all, _some = [], []
+for f, v, st in top:
+    sub = b[(b.family == f) & (b.variant == v) & (b.step == st)].set_index("rho").lcb
+    above = [rho for rho in _RHOS if sub[rho] > F0]
+    if len(above) == len(_RHOS):
+        _all.append((f, v, st))
+    elif above:
+        _some.append((f, v, st, above, sub))
+_only = ""
+for f, v, st, above, sub in _some:
+    lab = f"{display_family(f, v)} {v} ({st})".replace("%", r"\%")
+    at = " and ".join(f"$\\rho={rho:g}$" for rho in above)
+    vals = ", ".join(f"${sub[rho]:.3f}$" for rho in above)
+    _only += f" {lab} clears it only at {at} ({vals})."
+_sim = b[b.rho != -1.0]
+_adv = b[b.rho == -1.0]
 L += [r"\begin{table}[!htbp]",
-      r"\caption{Nominal one-sided $95\%$ lower confidence bounds on the offset for the "
-            r"six series with the highest point estimates, bracketed over the unknown "
-      r"correlation $\rho$ between the errors of the H/T and D/T effects, which no "
-      r"source reports. The threshold for excluding the ground-channel model "
-            r"is $\Fz=-0.0421$; " + _CLEARWORD + r". Each bound is on the series "
-      r"maximum of the endpoint: the one-sided bound for each temperature at "
-      r"level $0.05/n_T$ ($n_T$ counts every recorded temperature; draws, and "
-      r"records, with no admissible intrinsic pair enter at $-\infty$), then the "
-      r"largest of these, which by the union bound has "
-      r"coverage at least $95\%$ whenever each per-temperature bound has its "
-      r"nominal coverage. That coverage is approximate: the errors are re-expressed "
-      r"on the log scale at the observed effects, so the bound would be exact only "
-      r"if the log-scale standard deviations were known and the quantile stayed on "
-      r"the admissible branch. Exclusion by such a bound has type-I error at most "
-      r"$5\%$ only when that coverage holds. Bounds average " + _WORD[_bu.N_REP] +
-      r" replications of " + _sci(_bu.N_DRAW) + r" draws; the largest Monte Carlo "
-      r"standard deviation over all " + _WORD[4 * len(b) // 4] + r" cells is " +
-      _sci(b.lcb_mc_sd.max(), 1) + r". The bracket includes $\rho=-1$, the "
-      r"maximally adverse case.}",
+      r"\caption{Nominal one-sided $95\%$ lower bounds on the largest "
+      r"per-temperature endpoint for the six leading series, at the four "
+      r"assumed error correlations. " + _words(len(_all)).capitalize() +
+      r" series clear the upper limit of the ground-channel model, "
+      r"$\Fz=-0.0421$, at all four correlations." + _only +
+      r" Each series uses the largest temperature-specific lower bound at "
+      r"$0.05/n_T$, counting all measured temperatures. Inadmissible draws enter "
+      r"at $-\infty$. This Bonferroni construction requires the individual "
+      r"bounds to have their nominal coverage (Supplementary Note~\ref{sm:bounds}). "
+      r"Entries at $\rho=-1$ are closed-form quantiles. The others average "
+      + _words(_bu.N_REP) + r" replications of " + _sci(_bu.N_DRAW) +
+      r" draws; the largest Monte Carlo standard deviation over the "
+      + str(len(_sim)) + r" simulated cells of the " + str(b.groupby(["family", "variant", "step"]).ngroups) +
+      r" series was " + _sci(_sim.lcb_mc_sd.max(), 1) +
+      r", and at $\rho=-1$ the simulated bounds agree with the closed form within "
+      + f"${np.ceil((_adv.lcb_mc - _adv.lcb).abs().max() * 1e4) / 1e4:.4f}$" + r".}",
       r"\label{tab:unc-si}", r"\begin{center}\small",
       r"\begin{tabular}{lccccc}", r"\toprule",
             r"Series & point & $\rho=-1$ & $\rho=0$ & $\rho=0.5$ & $\rho=0.9$\\",
       r"\midrule"]
-for fam, v in top:
-    s = b[(b.family == fam) & (b.variant == v)]
+for fam, v, st in top:
+    s = b[(b.family == fam) & (b.variant == v) & (b.step == st)]
     lab = f"{display_family(fam, v)} {v}".replace("%", r"\%")
     L.append(f"{lab} & ${s[s.rho==0].point.iloc[0]:.4f}$ & "
              f"${s[s.rho==-1.0].lcb.iloc[0]:.3f}$ & "
@@ -97,7 +109,7 @@ for fam, v in top:
              f"${s[s.rho==0.9].lcb.iloc[0]:.3f}$\\\\")
 L += [r"\bottomrule", r"\end{tabular}", r"\end{center}", r"\end{table}", ""]
 
-# The summed-vibronic table (tab:bvib-si) was withdrawn together with its data.
+# The summed-vibronic table (tab:bvib-si) was removed together with its data.
 # Its grid maxima sat at the upper edge of the A range in 27 of 32 cells and
 # reverse sign when that range is extended, so the entries were wrong in sign
 # rather than merely uncertain.  See the SI section "The summed vibronic
@@ -108,24 +120,26 @@ s = pd.read_csv("../data/secondary_adh.csv")
 s["gamma_obs"] = np.log(s.K_HT) / np.log(s.K_DT)
 s = s.sort_values("gamma_obs", ascending=False)
 L += [r"\begin{table}[!htbp]",
-      r"\caption{Observed secondary competitive effects for alcohol "
-      r"dehydrogenase, tabulated for reference only. "
-      r"$\gamma^{\mathrm{obs}}=\ln\KHT/\ln\KDT$ reproduces the published "
-      r"exponent to $0.05$ in every case. These measurements come from the "
-      r"mixed-labeling design, in which the H/T effect accompanies C--H cleavage "
-      r"and the D/T effect accompanies C--D cleavage, so the two ratios are "
-      r"referred to different molecules. Their forward commitments are ordered "
-      r"by the primary effect, so forward masking can only deflate these "
-      r"exponents (Supplementary Note~\ref{sm:mixed}); reverse commitments and "
-      r"secondary equilibrium effects are not bounded, and the ground-channel "
-      r"envelope has no prediction for a secondary exponent, so no envelope "
-      r"inference is drawn from these values.}",
+      r"\caption{Secondary competitive effects for alcohol dehydrogenases with "
+      r"separately published Swain--Schaad exponents. The log ratio computed "
+      r"from the two printed effects differs from the published exponent by at most "
+      + f"${np.abs(s.gamma_obs - s.exp_pub).max():.2f}$" +
+      r" and lies within the quoted uncertainty in all " + _words(len(s)) +
+      r" rows. The twelve secondary exponents that Tsai and Klinman print for "
+      r"their $3\,^{\circ}$C and cryosolvent conditions~\cite{TsaiKlinman2001} "
+      r"are not included. H/T accompanies C--H transfer and D/T accompanies C--D transfer. "
+      r"Interpretation therefore depends on the tracer backgrounds, reverse "
+      r"commitments and secondary equilibrium isotope effects "
+      r"(Supplementary Note~\ref{sm:mixed}).}",
       r"\label{tab:sec-si}", r"\begin{center}\small",
       r"\begin{tabular}{llcccc}", r"\toprule",
-      r"Enzyme & Form & $\KHT$ & $\KDT$ & $\gamma^{\mathrm{obs}}$ & published\\",
+      r"Enzyme & Form & $2^{\circ}$ H/T & $2^{\circ}$ D/T & $\gamma^{\mathrm{obs}}$ & published\\",
       r"\midrule"]
 for _, r in s.iterrows():
-    L.append(f"{r.family} & {r.variant} & "
+    variant = r.variant
+    if r.source == "Rucker1992" and "chlorobenzyl" in variant:
+        variant = f"p-Cl-benzyl alcohol, ${int(r.T_C)}\\,^{{\\circ}}$C"
+    L.append(f"{r.family} & {variant} & "
              f"${r.K_HT:.3f}\\pm{r.K_HT_se:.3f}$ & ${r.K_DT:.3f}\\pm{r.K_DT_se:.3f}$ & "
              f"${r.gamma_obs:.2f}$ & {_pair(r.exp_pub, r.exp_pub_se)}\\\\")
 L += [r"\bottomrule", r"\end{tabular}", r"\end{center}", r"\end{table}", ""]

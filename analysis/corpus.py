@@ -1,6 +1,9 @@
-"""The matched primary record, in one place.
+"""The dataset of matched primary effects, in one place.
 
-The corpus has two parts.  Temperature-resolved series live in
+The three additional conditions of the cofactor titration, which its source
+used as a control, are not analysis units; cofactor_benchmark.py analyzes them
+and keeps the shared 10 mM arm in its temperature series.
+The dataset has two parts.  Temperature-resolved series live in
 data/trinomial_benchmark.csv, one analysis unit per (family, variant, step).
 Records measured at a single condition live in their own files, and each such
 record is its own analysis unit.  Until 2026-09-14 every script that needed the

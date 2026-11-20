@@ -32,7 +32,7 @@
   ytick={0,0.05,0.1,0.15,0.2},
   yticklabels={$0$,$0.05$,$0.10$,$0.15$,$0.20$},
   clip=true,
-  title={(\textit{\textbf{A}})\ \ yeast: two nuisances, one map}]
+  title={(\textit{\textbf{A}})\ \ yeast ADH: binding and bypass}]
   \addplot[name path=HI, draw=none] table[x=phi,y=fb] {data/fd_joint_rhi.dat};
   \path[name path=AX] (axis cs:0,0) -- (axis cs:0.2,0);
   \addplot[cHyd!14] fill between[of=HI and AX, split,
@@ -68,13 +68,13 @@
   at={($(A.east)+(20mm,0)$)}, anchor=west,
   xmode=log, log basis x=10, xmin=5, xmax=1e4, ymin=-0.10, ymax=0.82,
   xlabel={reciprocal commitment $c$},
-  ylabel={completed offset $F^{\mathrm{int}}$},
+  ylabel={intrinsic offset $F^{\mathrm{int}}$},
   xtick={10,100,1000,10000},
   xticklabels={$10$,$10^{2}$,$10^{3}$,$10^{4}$},
   ytick={0,0.2,0.4,0.6,0.8},
   yticklabels={$0$,$0.2$,$0.4$,$0.6$,$0.8$},
   clip=true,
-  title={(\textit{\textbf{B}})\ \ a commitment turns the bound into a value}]
+  title={(\textit{\textbf{B}})\ \ yeast ADH: historical estimate}]
   \fill[cGold!16] (axis cs:\fdClo,-0.10) rectangle (axis cs:\fdChi,0.82);
   \draw[cAcc, line width=0.7pt] (axis cs:5,\fdFzero) -- (axis cs:1e4,\fdFzero);
   \draw[cInk, line width=0.6pt, densely dashed] (axis cs:5,0) -- (axis cs:1e4,0);
@@ -88,7 +88,7 @@
   \addplot[only marks, mark=*, mark size=1.6pt, cPro]
     coordinates {(\fdClo,\fdFhi) (\fdChi,\fdFlo)};
   \node[annc, color=cGold!70!black, anchor=north] at (axis cs:30,0.80)
-    {Klinman\\1976};
+    {assumed\\range};
   \node[ann, color=cPro, anchor=north east] at (axis cs:9800,\fdFobs-0.012)
     {endpoint, $c\to\infty$};
   \node[ann, color=cAcc!85!black, anchor=north east] at (axis cs:9800,\fdFzero-0.008)
@@ -100,16 +100,49 @@
 \end{axis}
 
 % =====================================================================
-% (C) pooling cannot fix the scale
+% (C) the error budget at known commitment
 % =====================================================================
 \begin{axis}[des, name=C, width=58mm, height=44mm,
   at={($(A.south west)+(0,-22mm)$)}, anchor=north west,
+  xmode=log, log basis x=10, xmin=1.15, xmax=30, ymin=0, ymax=0.12,
+  xlabel={$m=c_{\mathrm H}/(\KHT-1)$},
+  ylabel={contribution to SE of $F^{\mathrm{int}}$},
+  xtick={2,3,5,10,20}, xticklabels={$2$,$3$,$5$,$10$,$20$},
+  ytick={0,0.02,0.04,0.06,0.08,0.1,0.12},
+  yticklabels={$0$,$0.02$,$0.04$,$0.06$,$0.08$,$0.10$,$0.12$},
+  clip=true,
+  title={(\textit{\textbf{C}})\ \ yeast ADH: sources of uncertainty}]
+  \fill[cBandG!12] (axis cs:1.15,0) rectangle (axis cs:30,\fdTarget);
+  \draw[cBandG, line width=0.7pt] (axis cs:1.15,\fdTarget) -- (axis cs:30,\fdTarget);
+  \addplot[cPro, line width=1.0pt] table[x=m,y=isom1] {data/fd_budget.dat};
+  \addplot[cPro, line width=1.0pt, densely dashed] table[x=m,y=iso0]
+    {data/fd_budget.dat};
+  \addplot[cGold, line width=1.0pt, densely dotted] table[x=m,y=comm10]
+    {data/fd_budget.dat};
+  \addplot[only marks, mark=*, mark size=1.5pt, cPro] table[x=m,y=isom1]
+    {data/fd_budget_m3.dat};
+  \addplot[only marks, mark=*, mark size=1.5pt, cPro] table[x=m,y=iso0]
+    {data/fd_budget_m3.dat};
+  \node[ann, color=cPro, anchor=south west] at (axis cs:3.15,0.058) {$0.057$ at $m=3$, $\rho=-1$};
+  \node[ann, color=cPro, anchor=north west] at (axis cs:5.5,0.0385) {$0.044$ at $m=3$, $\rho=0$};
+  \node[ann, color=cBandG!80!black, anchor=north east] at (axis cs:28,0.0195)
+    {chosen target $|\Fz|/2$};
+  \node[ann, color=cGold!85!black, anchor=east] at (axis cs:28,0.110)
+    {$10\%$ commitment error alone};
+  \draw[cGold!70, line width=0.4pt] (axis cs:6.4,0.107) -- (axis cs:1.92,0.094);
+\end{axis}
+
+% =====================================================================
+% (D) pooling cannot fix the scale
+% =====================================================================
+\begin{axis}[des, name=D, width=58mm, height=44mm,
+  at={($(C.east)+(20mm,0)$)}, anchor=west,
   xmin=0, xmax=0.82, ymin=0, ymax=3.2,
   xlabel={$\ln K_{\mathrm{DT}}$ or $\ln x_{\mathrm D}$},
   ylabel={$\ln K_{\mathrm{HT}}$ or $\ln x_{\mathrm H}$},
   xtick={0,0.2,0.4,0.6,0.8}, ytick={0,1,2,3},
   clip=true,
-  title={(\textit{\textbf{C}})\ \ nine variants fix a curve, not a point}]
+  title={(\textit{\textbf{D}})\ \ nine synthetic shared-tracer variants}]
   \addplot[cInk, line width=0.6pt, densely dashed] table[x=xd,y=xh]
     {data/fd_pool_ray.dat};
   \addplot[cGrey!80, line width=0.7pt] table[x=xd,y=xh] {data/fd_pool_seen.dat};
@@ -127,44 +160,12 @@
   \node[ann, color=cHyd, anchor=west] at (axis cs:0.545,1.22)
     {$(3.75,\,5/3)$,\\$F=-0.389$};
   \node[ann, anchor=north west] at (axis cs:0.03,1.55)
-    {nine observed\\variants};
+    {synthetic\\measurements};
   \draw[cInk!60, line width=0.4pt] (axis cs:0.15,1.02) -- (axis cs:0.29,0.66);
   \node[ann, anchor=north, rotate=33] at (axis cs:0.70,2.27) {$F=0$};
   \node[ann, color=cAcc!85!black, anchor=west] at (axis cs:0.59,0.55)
-    {compatible\\intrinsic pairs};
+    {allowed\\intrinsic pairs};
   \draw[cAcc!70, line width=0.4pt] (axis cs:0.63,0.80) -- (axis cs:0.47,1.05);
-\end{axis}
-
-% =====================================================================
-% (D) the error budget at known commitment
-% =====================================================================
-\begin{axis}[des, name=D, width=58mm, height=44mm,
-  at={($(C.east)+(20mm,0)$)}, anchor=west,
-  xmode=log, log basis x=10, xmin=1.15, xmax=30, ymin=0, ymax=0.12,
-  xlabel={$m=c_{\mathrm H}/(\KHT-1)$},
-  ylabel={standard error of $F^{\mathrm{int}}$},
-  xtick={2,3,5,10,20}, xticklabels={$2$,$3$,$5$,$10$,$20$},
-  ytick={0,0.02,0.04,0.06,0.08,0.1,0.12},
-  yticklabels={$0$,$0.02$,$0.04$,$0.06$,$0.08$,$0.10$,$0.12$},
-  clip=true,
-  title={(\textit{\textbf{D}})\ \ the isotope errors set a floor}]
-  \fill[cBandG!12] (axis cs:1.15,0) rectangle (axis cs:30,\fdTarget);
-  \draw[cBandG, line width=0.7pt] (axis cs:1.15,\fdTarget) -- (axis cs:30,\fdTarget);
-  \addplot[cPro, line width=1.0pt] table[x=m,y=isom1] {data/fd_budget.dat};
-  \addplot[cPro, line width=1.0pt, densely dashed] table[x=m,y=iso0]
-    {data/fd_budget.dat};
-  \addplot[cGold, line width=1.0pt, densely dotted] table[x=m,y=comm10]
-    {data/fd_budget.dat};
-  \addplot[only marks, mark=*, mark size=1.5pt, cPro] table[x=m,y=isom1]
-    {data/fd_budget_m3.dat};
-  \addplot[only marks, mark=*, mark size=1.5pt, cPro] table[x=m,y=iso0]
-    {data/fd_budget_m3.dat};
-  \node[ann, color=cPro, anchor=south west] at (axis cs:3.15,0.058) {$0.057$ at $m=3$, $\rho=-1$};
-  \node[ann, color=cPro, anchor=north west] at (axis cs:5.5,0.0385) {$0.044$ at $m=3$, $\rho=0$};
-  \node[ann, color=cBandG!80!black, anchor=north east] at (axis cs:28,0.0195)
-    {target $|\Fz|/2$};
-  \node[ann, color=cGold!85!black, anchor=west] at (axis cs:1.55,0.105)
-    {commitment to $10\%$};
 \end{axis}
 
 \end{tikzpicture}

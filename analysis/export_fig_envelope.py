@@ -133,12 +133,13 @@ def main():
         f.write("nu span\n")
         for nu in NUS:
             f.write(f"{nu} {spans[nu]:.6f}\n")
+    peak_index = int(np.argmax(span))
     peaks = [sensitivity_peak(A, w0)[0] for A in SWEEP_A for w0 in SWEEP_W0]
     lo, hi = min(peaks), max(peaks)
     cross = 2 * 300 / CM_TO_K
     print(f"  sensitivity peak over the sweep: {lo:.0f} to {hi:.0f} cm-1; "
           f"crossover {cross:.0f} cm-1; A=5, w0=0.5 peak at "
-          f"{nus[int(np.argmax(span))]:.0f} cm-1")
+          f"{nus[peak_index]:.0f} cm-1")
     if (f"{lo:.0f}", f"{hi:.0f}", f"{cross:.0f}") != ("140", "470", "417"):
         print("  FAIL envelope: peak range or crossover disagrees with the text")
         bad += 1
@@ -147,7 +148,9 @@ def main():
         f.write(f"\\def\\feFzero{{{F0:.6f}}}\n")
         f.write(f"\\def\\feXthr{{{np.log(scale_threshold()):.6f}}}\n")
         f.write(f"\\def\\fePeakLo{{{lo:.0f}}}\n\\def\\fePeakHi{{{hi:.0f}}}\n")
-        f.write(f"\\def\\feCross{{{cross:.1f}}}\n")
+        f.write(f"\\def\\feCross{{{cross:.0f}}}\n")
+        f.write(f"\\def\\feExamplePeak{{{nus[peak_index]:.0f}}}\n")
+        f.write(f"\\def\\feExampleSpan{{{span[peak_index]:.6f}}}\n")
         for name, kh, kd in CASES:          # the observations, as open circles
             tag = name.capitalize()
             f.write(f"\\def\\fe{tag}X{{{np.log(kh):.6f}}}\n")

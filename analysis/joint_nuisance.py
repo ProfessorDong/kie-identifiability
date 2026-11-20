@@ -127,7 +127,7 @@ def main():
     print(f"   binding only : F_bind up to {fb:.4f}")
     print(f"   bypass  only : phi_H  up to {ph:.4f}")
 
-    print(f"\nthe reviewer's joint point: F_bind=0.090, phi_H=0.080")
+    print(f"\na joint point: F_bind=0.090, phi_H=0.080")
     e = endpoint(F_bind=0.090, phi_H=0.080)
     print(f"   both individually inside their marginal tolerances")
     print(f"   joint endpoint = {e:+.5f}   F0 = {F0:+.5f}   "
@@ -264,8 +264,7 @@ def box_sensitivity(halfwidths=(0.02, 0.05, 0.10, 0.15, 0.20), nphi=8):
 
 
 # ------------------------------------------------------------ regression tests
-# Two points that a reviewer constructed to defeat successive versions of the
-# joint statement.  Both reproduce the decisive observation exactly from an
+# Two points that defeat simpler forms of the joint statement.  Both reproduce the decisive observation exactly from an
 # intrinsic pair sitting on the gated envelope, with every binding constant
 # inside BIND_BOX.  They are kept here so that no future edit to the boundary
 # can quietly re-admit them.
@@ -481,7 +480,7 @@ def check_envelope_r(nphi=241, rs=None, verbose=True):
         for fb in (0.0, 0.03, 0.06, 0.10):
             v = np.array([worst_corner_endpoint(fb, phi, r, n=40000) for r in grid])
             bad += int(np.any(np.diff(v) > 1e-9))
-    # the reviewer's point: admitted by the r = 1.31 line, fatal at the largest r
+    # a point admitted by the r = 1.31 line and fatal at the largest r
     e = _endpoint_ab(1.0, 1.0, 1.0, 1.0, 0.14, R_RANGE[1])
     if not (e < F0 and envelope(0.14) > 0 and envelope_r(0.14) < 0):
         bad += 1

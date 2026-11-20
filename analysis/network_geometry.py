@@ -1,4 +1,4 @@
-"""Kinetic-network topology determines the geometry of isotope identification.
+"""Kinetic-network topology classifies the geometry of isotope identification.
 
 For a steady-state mechanism with a single isotope-sensitive step, every
 King-Altman term is a product of distinct rate constants, so the isotope-
@@ -222,8 +222,8 @@ def endpoint_exact(KH, KD, phi, r=1.0):
     # The large-c limit (x_H, x_D) -> (P_H, P_D) is a candidate when finite
     # admissible points approach it.  At P_H = P_D that is decided by the next
     # order, x_L - P_L ~ a (P_H + phi)/c and b (P_D + r phi)/(rho c): an equality
-    # limit counts when x_H stays above x_D (external audit, 2026-10-21: at
-    # 7, 1.5, phi = 1, r = 23 the routine returned nan for a finite infimum).
+    # limit counts when x_H stays above x_D (at 7, 1.5, phi = 1, r = 23 the
+    # infimum is finite and must not come out as nan).
     tie_lim = (abs(PH - PD) <= 1e-12 * PH
                and a * (PH + phi) * rho > b * (PD + r * phi))
     vals = [endpoint_closed(KH, KD, phi, r)] if (PH > PD or tie_lim) else []
@@ -284,7 +284,7 @@ def equality_limit_case():
 
 
 def bypass_nonmonotone_case():
-    """The endpoint need not fall as a bypass grows (external audit, 2026-10-21).
+    """The endpoint need not fall as a bypass grows.
 
     Shared reference, K_HT = 2, K_DT = 1.1: the endpoint RISES from phi = 0 to
     phi = 1 before falling.  Returns [(phi, endpoint_exact)] at phi in
@@ -338,8 +338,8 @@ def bypass_to_destroy(KH, KD, target, r=1.0):
 # source reports secondary effects -- a LOWER bound on the reference asymmetry,
 # so these tolerances are upper limits; for yeast ADH the jointly solved r and
 # its tolerance are in completion.py.  The ecDHFR light-enzyme entry is the 25 C
-# record of Sikorski et al. 2004; an earlier version of this list carried
-# (3.10, 1.75), which is not any record in the benchmark.
+# record of Sikorski et al. 2004; (3.10, 1.75) is not any record of the
+# dataset and must not be used here.
 # The MAO-B entry takes r from its own secondary effects at the same pH and
 # temperature (reference_asymmetry.py).  It was hard-coded as 1.14 until
 # 2026-09-14, the value shared by BSAO and by MAO-B at pH 7.5; at pH 6.1 and 10 C

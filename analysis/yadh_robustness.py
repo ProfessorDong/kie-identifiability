@@ -1,8 +1,4 @@
-"""How hard is the yeast ADH conclusion to break?
-
-It rests on one temperature, four determinations, and 1989-vintage error bars.
-That is the thinnest data supporting the strongest claim in the paper, so this
-module attacks it from every direction that does not require new measurements.
+"""Sensitivity of the yeast ADH comparisons to statistical and kinetic assumptions.
 """
 from __future__ import annotations
 
@@ -140,7 +136,7 @@ def main():
     g, f0, _ = convention("reduced C-H")
     f = np.log(avg.K_HT) - g * np.log(avg.K_DT)
     sd = np.sqrt((avg.K_HT_se / avg.K_HT) ** 2 + (g * avg.K_DT_se / avg.K_DT) ** 2)
-    for tgt, nm in ((f0, "the gated envelope F0"), (0.0, "the semiclassical locus")):
+    for tgt, nm in ((f0, "the ground-channel limit F0"), (0.0, "the semiclassical reference")):
         lam = (f - tgt) / (1.645 * sd)
         say(f"  to stop excluding {nm:24s}: errors x {lam:.2f}")
     # Until 2026-09-14 this claimed the margin was conservative by sqrt(5),
@@ -180,7 +176,7 @@ def main():
     say("4. AGAINST THE SUMMED VIBRONIC ENVELOPE OVER A BOUNDED BOX")
     say("-" * 88)
     lcb = f - 1.645 * sd
-    say(f"  yeast ADH 95% lower bound: {lcb:+.4f}")
+    say(f"  yeast ADH nominal 95% lower bound: {lcb:+.4f}")
     say(f"{'lambda range':>18}{'max B_vib':>12}{'LCB > max':>12}")
     for lo, hi, lab in ((5, 60, "5-60"), (10, 60, "10-60"), (15, 60, "15-60"),
                         (20, 60, "20-60")):
@@ -198,7 +194,7 @@ def main():
     # extended (vibronic_envelope.py).  The printout now says so.
     say("  WITHDRAWN as an exclusion: these maxima are pinned at the edge of the")
     say("  sampled box and reverse sign when it is extended, the summed family")
-    say("  reaching offsets well above anything measured.  No exclusion of the")
+    say("  reaching positive offsets.  No exclusion of the")
     say("  summed model is claimed; the comparison is with the ground channel only.")
 
     say("")
@@ -208,8 +204,10 @@ def main():
     fmin, cstar, interior, closed = F_min_exact(avg.K_HT, avg.K_DT)
     say(f"  L_H = {(avg.K_HT-1)/(avg.K_DT-1):.2f} > gamma_SC, so the set is the open")
     say(f"  half-line ({fmin:+.4f}, inf): no commitment lowers the endpoint.")
-    say(f"  vacuity window: {'EMPTY' if win is None else win} (F_obs > 0), so no")
-    say("  equilibrium isotope effect makes the observation uninformative.")
+    say(f"  Shared-tracer, mass-scaled equilibrium model, unbounded window: {'EMPTY' if win is None else win} (F_obs > 0).")
+    say("  Its positive observed offset bounds the intrinsic offset at every E_D.")
+    say("  The actual mixed-tracer assays require a separate linkage of forward")
+    say("  and reverse commitments to apply this reversible model.")
 
     say("")
     say("6. MULTIPLICITY")

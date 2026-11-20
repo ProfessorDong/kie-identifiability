@@ -1,0 +1,5 @@
+screen,records,admissible,units,below,below_bare,above,above_95,above_adj,above_mixed,model_excluded_mixed,model_uninformative,model_precision_limited,model_excluded,model_excluded_adj
+dataset,244,243,76,68,61,8,4,1,7,6,61,9,6,2
+all,247,246,79,68,61,11,6,1,10,8,61,10,8,2
+dataset_without_commercial_FDH,239,238,75,67,60,8,4,1,7,6,60,9,6,2
+all_without_commercial_FDH,242,241,78,67,60,11,6,1,10,8,60,10,8,2

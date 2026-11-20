@@ -1,0 +1,116 @@
+
+============================================================================
+CHECK 1: an UPPER bound sigma/R0 <= eps does NOT cap gamma_TUN
+============================================================================
+counterexample: w = n, A = n^3  =>  r -> 0 but A/w^2 -> inf
+       n    r=sigma/R0       A/w^2   gamma_TUN
+   1e+01     7.071e-02          10    3.234777
+   1e+02     7.071e-03         100    3.336377
+   1e+03     7.071e-04       1e+03    3.347606
+   1e+04     7.071e-05       1e+04    3.348740
+   1e+05     7.071e-06       1e+05    3.348854
+   1e+06     7.071e-07       1e+06    3.348865
+
+semiclassical gamma_SC (reduced masses, as in the model) = 3.348866
+=> sup over {r <= eps} equals gamma_SC for EVERY eps > 0.
+
+Optimizing only on the boundary w = 2*A*eps^2 gives smaller numbers.
+Set-theoretic check: {r<=eps} grows with eps, so its max cannot decrease.
+     eps     max on boundary r=eps    true sup over r<=eps
+   0.010                    3.3328                  3.3489
+   0.050                    3.2731                  3.3489
+   0.100                    3.2076                  3.3489
+   0.200                    3.1019                  3.3489
+   0.333                    3.0015                  3.3488
+   1.000                    2.8459                  3.3488
+The boundary maxima are NOT the constrained sup.
+
+============================================================================
+CHECK 1b: a LOWER bound sigma/R0 >= eps DOES cap gamma_TUN
+============================================================================
+     eps   sup gamma_TUN over r >= eps
+   0.010                        3.3328
+   0.050                        3.2731
+   0.100                        3.2076
+   0.200                        3.1019
+   0.333                        3.0015
+   1.000                        2.8459
+Caps are strictly below gamma_SC and DECREASE with eps:
+the discriminating constraint is a LOWER bound on the gating amplitude.
+
+============================================================================
+CHECK 2: gamma_SC is reached only as the intrinsic KIEs DIVERGE
+============================================================================
+     A/w^2   gamma_TUN   ln K_HT^int      K_HT^int
+     1e+00    3.135044        0.6171     1.853e+00
+     1e+01    3.314231        4.0273     5.611e+01
+     1e+02    3.345173       38.1299     3.627e+16
+     1e+03    3.348494      379.1557    4.626e+164
+     1e+04    3.348828     3789.4133           inf
+     1e+05    3.348862    37891.9896           inf
+=> the supremum is an asymptotic slope at divergent KIE, not a finite
+   boundary point in observable space.
+
+============================================================================
+THE RIDGE LIMIT
+============================================================================
+P_H=0.238146  P_D=0.083680   C_H=0.378918  C_D=0.113148
+C_H/C_D = 3.3488663841   gamma_SC = 3.3488663841
+
+verify ln K_LT^int -> P_L + s C_L  along A = s w^2, w -> inf:
+  s=  0.5 w=   1e+03: lnK_HT   0.427109 vs   0.427605   lnK_DT   0.140121 vs   0.140254
+  s=  0.5 w=   1e+05: lnK_HT   0.427600 vs   0.427605   lnK_DT   0.140252 vs   0.140254
+  s=  0.5 w=   1e+07: lnK_HT   0.427605 vs   0.427605   lnK_DT   0.140254 vs   0.140254
+  s=  5.0 w=   1e+03: lnK_HT   2.129480 vs   2.132737   lnK_DT   0.648598 vs   0.649421
+  s=  5.0 w=   1e+05: lnK_HT   2.132704 vs   2.132737   lnK_DT   0.649412 vs   0.649421
+  s=  5.0 w=   1e+07: lnK_HT   2.132737 vs   2.132737   lnK_DT   0.649421 vs   0.649421
+  s= 50.0 w=   1e+03: lnK_HT  19.153188 vs  19.184053   lnK_DT   5.733372 vs   5.741089
+  s= 50.0 w=   1e+05: lnK_HT  19.183744 vs  19.184053   lnK_DT   5.741011 vs   5.741089
+  s= 50.0 w=   1e+07: lnK_HT  19.184050 vs  19.184053   lnK_DT   5.741088 vs   5.741089
+
+=> in the ridge limit the attainable (lnK_DT, lnK_HT) set is the RAY
+   base (P_D,P_H) = (0.0837,0.2381)  direction (C_D,C_H)
+   whose slope C_H/C_D = gamma_SC exactly.
+   The semiclassical reference is the ray from the ORIGIN with the same slope.
+   The two are PARALLEL LINES, offset forever.
+
+   signed mass-scaling offset  F = lnK_HT - gamma_SC lnK_DT = -0.042086
+   perpendicular separation                                   = 0.012042
+   This is a FIXED number set by the masses alone: it does not vanish,
+   and it does not depend on the KIE magnitude or on A, w separately.
+
+   symbolic: simplify(C_H/C_D - gamma_SC) = 0
+
+============================================================================
+CHECK 2b: finite-scale bound gamma_inf(L_H) < gamma_SC
+============================================================================
+  K_HT^int     gamma_inf
+       1.5      3.033951
+       2.0      3.157171
+       3.0      3.225310
+       5.0      3.263527
+       8.0      3.282433
+      11.0      3.291103
+      15.0      3.297618
+     100.0      3.318539
+   10000.0      3.333634
+gamma_SC = 3.348866   (approached only as K_HT^int -> inf)
+
+============================================================================
+CHECK 3: dimensions of A and w
+============================================================================
+kappa = sqrt(k_f)/(2 hbar):  [k_f]=M T^-2, [hbar]=M L^2 T^-1
+  => [kappa] = M^(1/2) T^-1 / (M L^2 T^-1) = M^(-1/2) L^-2
+  so A = kappa R0^2 carries M^(-1/2): NOT dimensionless.
+  correct: A = kappa sqrt(m_H) R0^2,  w = 2 kappa sqrt(m_H) sigma^2.
+
+============================================================================
+CHECK 4: mass-convention consistency
+============================================================================
+mass numbers 1,2,3          : gamma_SC = 3.257253
+atomic masses               : gamma_SC = 3.262807
+C-H/C-D/C-T reduced masses  : gamma_SC = 3.348866
+The supremum identity holds in whatever masses are used, so the tunneling
+supremum EQUALS gamma_SC in the same convention.  Comparing a model
+evaluated with one set of masses against gamma_SC from another mixes
+conventions and manufactures a gap.

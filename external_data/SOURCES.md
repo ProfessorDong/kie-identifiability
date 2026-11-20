@@ -6,16 +6,17 @@ values are facts and are redistributed with attribution in
 `data/trinomial_benchmark.csv`; the documents they came from are not ours to
 share.
 
-Run `./fetch_sources.sh` to retrieve the openly accessible supplements. Two
-sources are paywalled and must be downloaded manually; see below.
+Run `./fetch_sources.sh` to retrieve the openly accessible supplements. The
+others are paywalled or distributed as Word files and must be placed by hand;
+see below.
 
-## Matched H/T and D/T series (the benchmark)
+## Matched H/T and D/T series parsed from the sources' supplements
 
 | Source | DOI | Contributes | Availability |
 |---|---|---|---|
 | Islam et al., *PLoS ONE* **13**, e0196506 (2018) | `10.1371/journal.pone.0196506` | hsTSase hydride + proton | PMC5929524, OA (S2/S3 Tables, files s004/s005 .xlsx) |
 | Abeysinghe & Kohen, *Int. J. Mol. Sci.* **16**, 7304 (2015) | `10.3390/ijms16047304` | ecTSase Y209W proton | PMC4425018, OA (Table S2) |
-| Singh et al., *JACS* **136**, 2575 (2014) | `10.1021/ja411998h` | 4 ecDHFR variants, 5 temperatures | PMC3985941, OA |
+| Singh et al., *JACS* **136**, 2575 (2014) | `10.1021/ja411998h` | 4 ecDHFR variants, 3 to 5 temperatures | PMC3985941, OA |
 | Li et al., *Biochemistry* **60**, 3822 (2021) | `10.1021/acs.biochem.1c00558` | 5 hsDHFR variants | PMC8697555, OA |
 | Wang et al., *JACS* **136**, 8333 (2014) | `10.1021/ja501936d` | heavy ecDHFR | PMC4063187, OA |
 | Sikorski et al., *JACS* **126**, 4778 (2004) | `10.1021/ja031683w` | light (wild-type) ecDHFR | **paywalled** |
@@ -72,8 +73,9 @@ transcribed by hand".
 
 ## Manual downloads
 
-Three documents cannot be fetched programmatically. Place them in
-`external_data/si/manual/` under the filenames shown, then rerun
+Two documents needed by the parse cannot be fetched programmatically (the
+supplements of the census sources above are placed by hand as well). Place
+them in `external_data/si/manual/` under the filenames shown, then rerun
 `python analysis/build_trinomial.py`.
 
 1. **Pagano et al. 2019**: <https://doi.org/10.1021/acscatal.9b03345>
@@ -84,22 +86,23 @@ Three documents cannot be fetched programmatically. Place them in
    Supporting Information PDF → `ja031683w_si_002.pdf`
    (its Table 1 prints the plus-minus sign as a dash; the parse reads it so)
 
-3. *(Optional, not used in the benchmark)* Stojković et al. 2012 and
-   Austin-Kloppe et al. 2026, if you wish to reproduce the exclusion analysis
-   in Supplemental Material §S4.2.
+3. *(Optional, not used in the dataset)* Stojković et al. 2012, whose printed
+   intrinsic effects `analysis/published_intrinsic.py` tabulates, and
+   Austin-Kloppe et al. 2026.
 
 Without the Pagano SI the parse produces 14 series and 63 records instead of 16
 and 73; without the Sikorski SI, 15 and 67; without both, 13 and 57. The shipped
-benchmark is never overwritten by a partial parse.
+data file is never overwritten by a partial parse.
 
 ## Transcription discipline
 
 `analysis/build_trinomial.py` parses the supplementary tables from the PDF text
 layer rather than retyping them, and runs an audit confirming that every value in
-the shipped benchmark from a PDF source appears verbatim in that source together
+the shipped data file from a PDF source appears verbatim in that source together
 with its stated uncertainty. It reads the shipped file, not a fresh parse, so a
-hand edit to the CSV is caught. With all sources present it covers 260 values
-across six documents and passes with zero misses, and the script exits non-zero
+hand edit to the CSV is caught. With all sources present it covers 700 values
+(350 pairs of a value and its error) across twenty-two PDF supplements, six
+parsed and sixteen transcribed, and passes with zero misses, and the script exits non-zero
 on any miss. It does not establish row or column assignment: a swap of the H/T
 and D/T columns within a row would pass. Those assignments were checked against
 the rendered tables.
@@ -108,17 +111,20 @@ The ecDHFR light-enzyme series is parsed from its original report, Sikorski et
 al. 2004 (SI Table 1), which lists that series alone. Wang et al. 2014 reprint it
 beside their heavy enzyme, rounded (3.1 for 3.06 at 5 °C; 4.8 ± 0.1 for 4.82 ± 0.11
 and 4.80 ± 0.12 at 45 and 35 °C) and distinguished only by colour. Until
-2026-10-15 the benchmark took the light series from that reprint, with the 10 °C
+2026-10-15 the data file took the light series from that reprint, with the 10 °C
 row assigned by interpolation; only Wang's heavy rows are now parsed.
 
 ## Records transcribed by hand
 
-Twenty-four records come from articles without machine-readable supplements.
-Their values were transcribed by hand from the printed tables, or for one record
+Sixty-one records of the dataset (28 single-condition records and 33 records
+of temperature series), and the three additional conditions of the cofactor
+titration, come from articles without machine-readable supplements.
+Their values were transcribed by hand from the printed tables, from two
+word-processor supplements, or for one record
 from the text, and each was checked against the rendered page image; most of
 these articles are scans, and no text layer was relied on. They are outside the
 automated audit above and are held in their own files (the monoamine oxidase
-records sit in the benchmark file but are flagged by DOI in `build_trinomial.py`),
+records sit in the series data file but are flagged by DOI in `build_trinomial.py`),
 so parsed and typed records never mix. `analysis/corpus.py` lists every file of
 single-condition records, and every script that needs them reads that list.
 
@@ -129,27 +135,35 @@ single-condition records, and every script that needs them reads that list.
 | Bahnson et al., *Proc. Natl. Acad. Sci. USA* **94**, 12797 (1997), [10.1073/pnas.94.24.12797](https://doi.org/10.1073/pnas.94.24.12797) | `data/ladh_adh_primary.csv` | Table 1 | 4 |
 | Tsai & Klinman, *Biochemistry* **40**, 2303 (2001), [10.1021/bi002075l](https://doi.org/10.1021/bi002075l) | `data/ladh_adh_primary.csv` | Tables 2 and 4, aqueous rows at 3 °C | 2 |
 | Tsai & Klinman, *Biochemistry* **40**, 2303 (2001), [10.1021/bi002075l](https://doi.org/10.1021/bi002075l) | `data/trinomial_benchmark.csv` (family `LADH`, variants in 40%, 50% and 60% MeOH) | Table 2 (wild type, 50% MeOH, 3 to −50 °C) and Table 4 (F93W, 40% MeOH, 3 to −30 °C; 60% MeOH, 3 and −20 °C), all at 10 mM NAD+ | 11 |
+| Tsai & Klinman, *Biochemistry* **40**, 2303 (2001), [10.1021/bi002075l](https://doi.org/10.1021/bi002075l) | `data/tsai2001_nad_titration.csv` | Table 5, F93W NAD⁺ concentration series at 3 °C and 40% methanol. Four rows, one repeats Table 4 at 10 mM. | 3 new |
 | Grant & Klinman, *Biochemistry* **28**, 6597 (1989), [10.1021/bi00442a010](https://doi.org/10.1021/bi00442a010) | `data/bsao_grant1989.csv` | Table I averages, 25 °C | 1 |
 | Jonsson, Edmondson & Klinman, *Biochemistry* **33**, 14871 (1994), [10.1021/bi00253a026](https://doi.org/10.1021/bi00253a026) | `data/trinomial_benchmark.csv` (family `MAOB`) | Tables 1 and 3 | 10 |
 | Agrawal, Hong, Mihai & Kohen, *Biochemistry* **43**, 1998 (2004), [10.1021/bi036124g](https://doi.org/10.1021/bi036124g) | `data/agrawal2004_ectsase.csv` | Results text, 20 °C: 6.91 ± 0.05 and 1.78 ± 0.02 (the other temperatures are plotted only and are not digitized) | 1 |
 | Rucker, Cha, Jonsson, Grant & Klinman, *Biochemistry* **31**, 11489 (1992), [10.1021/bi00161a030](https://doi.org/10.1021/bi00161a030) | `data/trinomial_benchmark.csv` (family `YADH`), `data/yadh_rucker1992.csv`, `data/bsao_rucker1992.csv` | Table IV (yeast ADH, p-chlorobenzyl alcohol, 0 and 25 °C); Table V (yeast ADH, p-methoxybenzyl alcohol, 25 °C; its H/T is an extrapolation to zero enzyme concentration, Fig. 3); Table I and text (bovine serum amine oxidase, p-methoxybenzylamine, 25 °C: H/T 20.2 ± 1.9; D/T 2.86 ± 0.05 stated in the text, Table II giving the two determinations). D/T corrected by the authors for protium | 4 |
 | Chin & Klinman, *Biochemistry* **39**, 1278 (2000), [10.1021/bi9920331](https://doi.org/10.1021/bi9920331) | `data/ladh_chin2000.csv` | Table 1: F93W and the double mutants F93W:I224A, I224L, I224G, I224V at 25 °C, pH 7 (standard errors of the mean, 14 to 41 determinations) | 5 |
-| Hong, Maley & Kohen, *Biochemistry* **46**, 14188 (2007), [10.1021/bi701363s](https://doi.org/10.1021/bi701363s) | `data/ectsase_hong2007.csv` | Table 1: ecTSase wild type and Y94F, proton abstraction, 25 °C, at 5 µM CH2H4folate, no Mg2+ | 2 |
+| Hong, Maley & Kohen, *Biochemistry* **46**, 14188 (2007), [10.1021/bi701363s](https://doi.org/10.1021/bi701363s) | `data/ectsase_hong2007.csv` | Table 1: ecTSase wild type and Y94F, proton abstraction, 25 °C, at 5 µM CH2H4folate, no Mg2+. For Y94F hydride transfer, Figure 5 plots H/T and D/T. Only H/T is given numerically with uncertainty in the prose. | 2 |
 | Islam et al., *PLoS ONE* **13**, e0196506 (2018), [10.1371/journal.pone.0196506](https://doi.org/10.1371/journal.pone.0196506) | `data/hstsase_islam2018_nomg.csv` | Table 2: hsTSase hydride without Mg2+ (temperature not printed; 25 °C inferred from the with-Mg2+ cell of the same table). Its two ecTSase pairs are quotations: 4.14/1.65 is Wang et al. 2013 SI Table S2 at 25 °C; 7.07/1.81 is printed in neither cited source and is not admitted | 1 |
 | Sen, Yahashiri & Kohen, *Biochemistry* **50**, 6462 (2011), [10.1021/bi2003873](https://doi.org/10.1021/bi2003873) | `data/dhfr_sen.csv` | Table 1: ecDHFR with dihydrofolate, ecDHFR with dihydrobiopterin, and R67 (type II) DHFR (standard deviations; the temperature of these runs is not printed) | 3 |
 | Sen, Stojković & Kohen, *Anal. Biochem.* **430**, 123 (2012), [10.1016/j.ab.2012.08.012](https://doi.org/10.1016/j.ab.2012.08.012) | `data/dhfr_sen.csv` | Table 2, [carbonyl-14C] row: ecDHFR wild type, 25 °C, pH 9.0 (its [Ad-14C] row reprints Sikorski 2004) | 1 |
 
-The Tsai & Klinman methanol records were first excluded on the ground that a
-random component in the mechanism breaks the single shared observation map.
-That was wrong on both counts: the competitive runs were made at 10 mM NAD+,
-for F93W far above its 0.75 mM Michaelis constant, which the authors state
-ensures an ordered pathway (no Michaelis constant is reported for the wild type
-in 50% methanol), and a random mechanism with no route around the chemical step
-still gives the base map at fixed cosubstrate. They were admitted on
-2026-10-13 under the same rule as every other source. `data/ladh_bahnson.csv`
+Tsai and Klinman’s temperature experiments used 10 mM NAD⁺. Their separate
+Table 5 (p. 2310) measured primary and secondary isotope effects while varying
+NAD⁺ at 3 °C in 40% methanol, pH* 7.0. The 0.02, 1 and 20 mM conditions
+add three observations. The 10 mM row repeats Table 4, including all primary
+and secondary values and uncertainties. The source prints an H/T of 7.0 ± 0.3
+at 0.02 mM in Table 5 and 6.5 in the adjacent prose. We use the table. Using
+6.5 at the table's uncertainty in a sensitivity calculation preserves its
+unbounded one-sided lower limit. The authors describe a preferred order of
+cofactor binding with a random component in methanol, and they used the
+titration as a control: their other measurements were made at 10 mM NAD⁺.
+The three additional concentrations are therefore not analysis units of the
+dataset. `analysis/cofactor_benchmark.py` tests whether one intrinsic pair can
+reproduce the four conditions under the minimal scheme (it cannot at 0.02 and
+1 mM) and repeats the counts with the three conditions treated as units.
+`data/ladh_bahnson.csv`
 is the 1997 re-tabulation of the Bahnson Table 1 values (L57F and F93W rounded
 as reprinted there); no script reads it, and the records it holds enter the
-corpus once, from `data/ladh_adh_primary.csv`.
+dataset once, from `data/ladh_adh_primary.csv`.
 
 The Agrawal record was first excluded on the ground that all of that paper's
 isotope effects are in figures. That overlooked the 20 °C values stated in the
@@ -177,15 +191,20 @@ its baseline, so every complete run wrongly reported missing sources.)
 
 ## How each source made its two tritium references
 
-`data/tracer_design.csv` records, for all 33 enzyme forms, which tritiated
-molecule served as the reference in the H/T and in the D/T experiment. It
+`data/tracer_design.csv` records, for all 74 enzyme forms, which tritiated
+molecule served as the reference (the tracer) in the H/T and in the D/T
+experiment. It
 decides the reference asymmetry `r = c_D/c_H` of Proposition S4, and
 `analysis/reference_asymmetry.py` reads it. Each entry was read from the
 source's Methods (Cha 1989 from its note 27).
 
-**Shared tracer, 16 forms: r = 1 exactly.** One tritiated isotopologue serves
+**Shared tracer, 47 forms: r = 1 exactly.** One tritiated isotopologue serves
 both experiments and only the bulk substrate changes, so the two references are
-the same molecule.
+the same molecule. The table gives the protocols of the first sixteen; the
+forms added by the census (formate dehydrogenase, thymidylate synthase and
+dihydrofolate reductase series, 31 forms) use the same single-tracer designs
+and are listed, with the evidence read from each source, in
+`data/tracer_design.csv`.
 
 | Source | Forms | Tritium tracer (both experiments) | Bulk in H/T / in D/T |
 |---|---|---|---|
@@ -202,21 +221,27 @@ Formate, C6 of the folate cofactor and C5 of dUMP each carry a single hydrogen.
 NADPH carries two at C4; the transferred one is 4R, and in these protocols the
 4S hydrogen is protium in both references.
 
-**Non-transferred position labeled, 17 forms: r inferred.** The D/T reference
+**Non-transferred position labeled, 27 forms: r inferred for 25, assumed for
+2.** The D/T reference
 carries deuterium at the non-transferred position, so it differs from the H/T
 reference there. This is the same design that makes the secondary effects
-measurable, and these are exactly the 17 forms that report them.
+measurable, and 25 of these forms report them. The other two, the ecDHFR
+mutants G121V and M42W (Wang et al. 2006), use the design without reporting
+secondary effects, so `r >= 1` is assumed for them. The table gives the
+protocols of the sources read first; the yeast and amine oxidase records of
+Rucker et al. 1992 and the F93W forms of Chin & Klinman 2000 use the same
+doubly labeled design (`data/tracer_design.csv`).
 
 | Source | Forms | H/T reference | D/T reference |
 |---|---|---|---|
 | Cha et al. 1989 | yeast ADH | benzyl alcohol tritiated at C1 | benzyl alcohol "containing D and T at C-1" (note 27) |
 | Bahnson et al. 1993; 1997 (same protocol, "doubly labeled substrates as described") | nine horse liver ADH forms | [1-3H]benzyl alcohol, randomly tritiated | [1,1-2H2,1-3H]benzyl alcohol |
-| Tsai & Klinman 2001 | horse liver WT and F93W at 3 C, and the three methanol series | [1-3H]benzyl alcohol | [1-2H,1-3H]benzyl alcohol |
+| Tsai & Klinman 2001 | horse liver WT and F93W at 3 C, the three methanol temperature series, and the F93W cofactor titration | [1-3H]benzyl alcohol | [1-2H,1-3H]benzyl alcohol |
 | Grant & Klinman 1989 | bovine serum amine oxidase | randomly tritiated benzylamine from [1-1H]benzaldehyde | randomly tritiated benzylamine from [1-2H]benzaldehyde |
 | Jonsson et al. 1994 | monoamine oxidase B, both pH | [1,1-1H2-1-3H]-p-methoxybenzylamine | [1,1-2H2-1-3H]-p-methoxybenzylamine |
 | Sikorski et al. 2004 | ecDHFR light (wild-type) enzyme | (4R)-[4-3H]-NADPH vs [Ad-14C]-NADPH | (4R)-[4-3H]-NADPH with D at 4S ("4R [4,4-2H,3H]") vs [Ad-14C,4-2H2]-NADPH |
 
-Until 2026-09-14 the 17 shared-tracer forms were recorded as "assumed" and the
+Until 2026-09-14 the shared-tracer forms then in the data were recorded as "assumed" and the
 text said the references always differ at the non-transferred position; reading
 the Methods showed the condition holds for them with equality. Until 2026-10-15
 the ecDHFR light enzyme was among them, on the strength of Wang et al.'s Methods,
@@ -242,13 +267,13 @@ isotope-effect records, so they are held as literals in `completion.py` at the
 point of use rather than in `data/`.  Running that script reproduces both
 completion tables of the supplement.
 
-Two source classes were examined and rejected, for reasons worth recording:
+Several source classes were examined and rejected, for reasons worth recording:
 
 - **Deuterium-only.** Soybean lipoxygenase (Rickert & Klinman 1999; Knapp et al.
   2002) and the ADH flexibility work (Kohen & Klinman 2000) report H/D only. No
   second isotope pair exists, so the offset cannot be formed.
 - **No matched D/T.** Peptidylglycine α-amidating enzyme (Francisco et al.
-  1998) and dopamine β-monooxygenase (Miller & Klinman 1985) report H/T and H/D
+  1998) and dopamine β-monooxygenase (Miller & Klinman 1983) report H/T and H/D
   effects on `V/K`, not the matched H/T and D/T pair against a tritium reference
   that the offset requires, and derive intrinsic effects from them by Northrop's
   method. (Recorded until 2026-09-14 as publishing only intrinsic values, which

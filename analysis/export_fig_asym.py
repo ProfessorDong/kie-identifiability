@@ -15,7 +15,7 @@ OUT = "../figures/tikz/data/"
 
 # ---- panel (a): primary identified sets, one row per series / enzyme form
 rows = []
-RHO = -1.0            # maximally adverse; every bound drawn is the worst case
+RHO = -1.0  # working correlation used in both panels
 
 
 def _lcb(kht, kht_se, kdt, kdt_se, rho=RHO):
@@ -43,9 +43,9 @@ def _series_closed(r):
     """Is the plotted endpoint of this series attained at finite commitment?
 
     A series row plots the largest endpoint over its temperatures, so whether
-    that endpoint is attained is a property of the single record achieving it.
-    The identified set is closed exactly when L_H < gamma; otherwise the
-    endpoint is approached only as the commitment diverges and is excluded.
+    that endpoint is attained only if every record tied for the largest lower
+    endpoint can attain it. A per-record minimum is attained at positive
+    commitment if L_H < gamma; otherwise it is an unmasked limit.
     """
     sub = _TB[_TB.system.str.contains(_FAM.get(r.family, r.family), case=False,
                                       na=False)
@@ -56,16 +56,15 @@ def _series_closed(r):
             if x.K_HT > x.K_DT > 1]
     if not vals:
         raise ValueError(f"no benchmark record for {r.family} {r.variant}")
-    best = max(vals, key=lambda v: v[0])
-    if abs(best[0] - r.point) > 1e-6:
+    best = max(v[0] for v in vals)
+    if abs(best - r.point) > 1e-6:
         raise ValueError(f"endpoint mismatch for {r.family} {r.variant}: "
-                         f"{r.point} vs {best[0]}")
-    return bool(best[3])
+                         f"{r.point} vs {best}")
+    return all(v[3] for v in vals if v[0] == best)
 
 
 b = pd.read_csv("../results/bounds_uncertainty.csv")
-# Conservative throughout: every bound is the maximally adverse rho = -1 case,
-# so any system drawn as clearing F0 clears it under any correlation.
+# Use one specified correlation throughout, including the nonlinear endpoint.
 b = b[b.rho == RHO]
 # TSase contributes both a hydride- and a proton-transfer series; without the
 # step in the label the two WT rows are indistinguishable in the figure.
@@ -111,7 +110,7 @@ for _, r in single.iterrows():
                  pd.DataFrame([r])))
 
 df = pd.DataFrame(rows, columns=["label", "point", "lcb", "grp", "closed", "recs"])
-# Two marks, both computed (2026-10-15, after an external audit):
+# Two marks, both computed:
 #   dagger   - a series with a recorded pair outside the normal-order domain;
 #              its row summarizes the admissible temperatures only
 #   asterisk - a unit whose rho = -1 bound still clears F0 after adjustment

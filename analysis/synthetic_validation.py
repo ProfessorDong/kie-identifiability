@@ -1,6 +1,6 @@
 """Synthetic validation: the whole procedure run forward and back on known truths.
 
-An external audit (2026-10-21) asked for one end-to-end demonstration under a
+One end-to-end demonstration under a
 specified kinetic model: start from a known intrinsic pair and commitment,
 simulate the assay, compute the compatible set and its bound exactly as the
 paper does, and show what an independent commitment measurement adds.  Nothing

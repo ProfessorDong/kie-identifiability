@@ -1,0 +1,17 @@
+==============================================================================
+CHECK 1: the chi-square at fixed K_HT^int = 11 is an artefact of the fixed value
+==============================================================================
+  gamma          chi2 @ K=11   profiled chi2  best K_HT^int       p
+   2.35   unreachable at K=11
+   2.50               3577.5           49.27           3.99   0.000
+   2.70               1939.9           12.63           5.18   0.027
+   2.90                842.0            6.25           6.61   0.283
+
+==============================================================================
+CHECK 2: can a semiclassical + Arrhenius-commitment model produce
+         a NON-MONOTONIC observed K_HT(T)?
+==============================================================================
+  counterexample found: lnA_u=1.694 E_u=1.882 lnc0=-3.662 E_c=-1.538
+  K_HT^obs over 5-35 C: min 1.1428 max 1.1454  turning point present
+  non-monotonic parameter sets found: 391 / 200000
+  => a monotonic observed K_HT(T) cannot be assumed for this model class.
