@@ -755,6 +755,26 @@ the six figures build, `audit_numbers.py` passes, and no tracked file changes.
 The changes in `network_atlas.py` are to comments and docstrings only, and
 `offset_analysis.py` is untouched; neither was rerun.
 
+Re-verified for v1.8.13 on 2026-11-20 from a clean clone, same environment: the
+scripts this release changes, adds or depends on (`cofactor_benchmark.py`,
+`bounds_uncertainty.py`, `completion.py`, `reversible.py`, `curvature.py`,
+`network_geometry.py`, `vibronic.py`, `vibronic_envelope.py`, `secondary.py`,
+`decisive_case.py`, `adh_primary.py`, `isotopic_purity.py`,
+`yadh_robustness.py`, `pooling_check.py`, `reference_counts.py`,
+`repeat_determinations.py`, `holdout.py`, `model_domain.py`,
+`joint_nuisance.py`, `synthetic_validation.py`, `equation_checks.py`,
+`verify_derivation.py`, `build_trinomial.py`, `identifiable_set.py`,
+`partial_id.py`, `export_fig_asym.py`, `export_fig_overview.py`,
+`export_fig_envelope.py`, `export_fig_design.py`, `export_fig_example.py`,
+`export_fig_atlas.py`, `export_fig_geom.py`, `export_si_tables.py`,
+`export_bounds_table.py`, `export_benchmark_table.py`,
+`export_profiles_table.py`, `export_script_index.py` and `audit_v3.py`) exit 0;
+`audit_model_limits.py`, `audit_envelope.py` and `audit_profiling.py`
+reproduce their stored outputs exactly; `network_atlas.py 4` passes; the ten
+figures build; `audit_numbers.py` passes with the manuscript and exits 0
+without it; and no tracked file changes. The data and the inputs of
+`offset_analysis.py` are unchanged since v1.8.11, so it was not rerun.
+
 Re-verified for v1.8.12 on 2026-11-14 from a clean clone, same environment: the
 scripts this release changes, adds or depends on (`partial_id.py`,
 `reference_asymmetry.py`, `reference_counts.py`, `model_domain.py`,
