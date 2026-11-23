@@ -788,6 +788,15 @@ the six figures build, `audit_numbers.py` passes, and no tracked file changes.
 The changes in `network_atlas.py` are to comments and docstrings only, and
 `offset_analysis.py` is untouched; neither was rerun.
 
+Re-verified for v1.8.14 on 2026-11-23 from a clean clone, same environment: the
+scripts this release changes or adds (`northrop_sensitivity.py`,
+`completion.py`, `export_benchmark_table.py`, `export_script_index.py`,
+`model_domain.py`) and those they depend on (`reference_counts.py`,
+`cofactor_benchmark.py`) exit 0 and reproduce every tracked output exactly;
+`network_atlas.py 4` passes; `audit_numbers.py` passes with the manuscript and
+exits 0 without it; and no tracked file changes. No data file, figure source
+or other script changed since v1.8.13, so they were not rerun.
+
 Re-verified for v1.8.13 on 2026-11-20 from a clean clone, same environment: the
 scripts this release changes, adds or depends on (`cofactor_benchmark.py`,
 `bounds_uncertainty.py`, `completion.py`, `reversible.py`, `curvature.py`,
