@@ -1,7 +1,7 @@
 cff-version: 1.2.0
 title: >-
-  Limits on the intrinsic Swain-Schaad exponent from competitive isotope effects when the
-  commitment to catalysis is unknown: data, code and verification suite
+  A measured Swain-Schaad exponent is only a lower limit on the intrinsic exponent: data,
+  code and verification suite
 message: >-
   If you use this software or the curated dataset, please cite
   this repository and the primary measurement papers listed in

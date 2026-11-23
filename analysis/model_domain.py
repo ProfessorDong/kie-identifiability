@@ -131,7 +131,8 @@ def scales(w, A, wavenumber=3000.0):
 
 
 def width_for_gap(K, gap):
-    """Gating width at which the model comes within `gap` of F0 at effect K."""
+    """Natural logarithm of the gating width at which the model comes within
+    `gap` of F0 at effect K (exponentiate for w)."""
     from scipy.optimize import brentq
     XH = float(np.log(K))
     return float(brentq(lambda lw: F0 - offset(XH, np.exp(lw)) - gap, np.log(1e-3), np.log(1e9)))

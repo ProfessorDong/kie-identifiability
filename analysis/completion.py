@@ -132,6 +132,87 @@ def isotope_error_budget(KH, KD, sH, sD, c, r=1.0, gamma=GSC):
     return float(np.hypot(uH, uD)), float(uH + uD)
 
 
+# ---------------------------- commitments of the bulk (light) substrates instead
+def bulk_commitments(KH, KD, c, r=1.0):
+    """Forward commitments C_H, C_D of the bulk substrates of the two comparisons
+    (Northrop's Eq. 1, C_L = k_L/k_off) implied by the reciprocal tracer
+    commitment c of the H/T comparison and the tracer ratio r (c_D = r c).
+
+    C_L = x_L / c_L, with x_L = K c_L/(1 + c_L - K) the intrinsic effect at that
+    commitment.  Returns (C_H, C_D, x_H, x_D)."""
+    cD = r*c
+    xH = KH*c/(1 + c - KH)
+    xD = KD*cD/(1 + cD - KD)
+    return float(xH/c), float(xD/cD), float(xH), float(xD)
+
+
+def bulk_commitment_precision_needed(KH, KD, c, r=1.0, target=abs(F0)/2, gamma=GSC):
+    """Relative precision needed on the commitments of the two bulk substrates,
+    measured separately with independent errors of equal relative size, to fix
+    the intrinsic offset to +/- `target`.
+
+    From Eq. 1, x_L = K_L (1 + C_L) - C_L, so no tracer ratio enters once C_H and
+    C_D are known.  dF/dC_H = (K_HT - 1)/x_H and dF/dC_D = -gamma (K_DT - 1)/x_D;
+    a relative error e in C_L moves F by C_L e times that.  The pair (KH, KD) and
+    the true commitments are those of the scheme with tracer commitment c and
+    tracer ratio r, as in commitment_precision_needed_separate."""
+    CH, CD, xH, xD = bulk_commitments(KH, KD, c, r)
+    dh = CH*(KH - 1)/xH
+    dd = gamma*CD*(KD - 1)/xD
+    return target/float(np.hypot(dh, dd))
+
+
+def bulk_isotope_error_budget(KH, KD, sH, sD, c, r=1.0, gamma=GSC):
+    """Standard error of F from the isotope effects alone when the bulk
+    commitments C_H, C_D are known exactly: d ln x_L/dK_L = (1 + C_L)/x_L.
+    Returns (se at rho = 0, se at rho = -1)."""
+    CH, CD, xH, xD = bulk_commitments(KH, KD, c, r)
+    uH = (1 + CH)*sH/xH
+    uD = gamma*(1 + CD)*sD/xD
+    return float(np.hypot(uH, uD)), float(uH + uD)
+
+
+def reference_test_margin(KH=7.13, KD=1.73, sH=0.07, sD=0.02, m=3, r=1.31, rel_commitment=0.10, gamma=GSC):
+    """How far a recovered intrinsic offset clears the semiclassical reference
+    (F = 0), in standard errors, when the bulk commitments are measured with an
+    independent relative error `rel_commitment` each and the isotope effects
+    carry their published errors.  The scheme is the yeast one at c = m (K_HT - 1)
+    with tracer ratio r.  Returns (F_int, z at rho = 0, z at rho = -1)."""
+    c = m*(KH - 1)
+    CH, CD, xH, xD = bulk_commitments(KH, KD, c, r)
+    F = float(np.log(xH) - gamma*np.log(xD))
+    s_commit = float(np.hypot(CH*(KH - 1)/xH, gamma*CD*(KD - 1)/xD))*rel_commitment
+    s0, s1 = bulk_isotope_error_budget(KH, KD, sH, sD, c, r, gamma)
+    return F, F/float(np.hypot(s0, s_commit)), F/float(np.hypot(s1, s_commit))
+
+
+def trapped_fraction(C, rel_precision):
+    """Fraction p = C/(1 + C) of prebound substrate that an isotope-partitioning
+    experiment traps as product (minimal scheme, no rebinding), and the absolute
+    precision on p that a relative precision `rel_precision` on C requires,
+    dp = rel_precision p (1 - p)."""
+    p = C/(1 + C)
+    return float(p), float(rel_precision*p*(1 - p))
+
+
+def check_bulk_inversion(n=20000, seed=20261121):
+    """x_L = K_L (1 + C_L) - C_L recovers the intrinsic pair from the bulk
+    commitments, for random admissible schemes with r >= 1.  Returns the
+    largest relative error."""
+    rng = np.random.default_rng(seed)
+    worst = 0.0
+    for _ in range(n):
+        xD = 1 + rng.uniform(0.05, 3.0)
+        xH = xD**rng.uniform(2.0, 5.0)
+        c = np.exp(rng.uniform(-3, 4))
+        r = 1 + rng.uniform(0, 0.6)
+        KH = xH*(1 + c)/(xH + c)
+        KD = xD*(1 + r*c)/(xD + r*c)
+        CH, CD = xH/c, xD/(r*c)
+        worst = max(worst, abs(KH*(1 + CH) - CH - xH)/xH, abs(KD*(1 + CD) - CD - xD)/xD)
+    return float(worst)
+
+
 # ------------------------------------- systems completed from published kinetics
 def yadh_completion(a, KH=7.13, KD=1.73, r=1.31):
     """Yeast ADH closed by Klinman's dissociation ratio a = k_-1/k_cat.

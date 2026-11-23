@@ -1,4 +1,4 @@
-# Limits on the Intrinsic Swain-Schaad Exponent from Competitive Isotope Effects When the Commitment to Catalysis Is Unknown
+# A Measured Swain-Schaad Exponent Is Only a Lower Limit on the Intrinsic Exponent
 
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.21913975.svg)](https://doi.org/10.5281/zenodo.21913975)
 
@@ -61,6 +61,34 @@ ADH F93W in 40% and in 60% methanol, and its F93W-I224G and I224V double
 mutants), and only the two yeast units survive adjustment across all 76 at
 rho = -1. Only the p-chlorobenzyl alcohol unit also survives removal of its
 isotopic-purity correction at the same time (`isotopic_purity.exclusions`).
+
+**What Northrop's method can and cannot add.** For a pair observed below the
+semiclassical value, Northrop's method returns a solution for every assumed
+exponent above the observed one, so it cannot test the exponent it assumes.
+Near the semiclassical value, a change of 0.1 in the assumed exponent changes
+the derived intrinsic H/T effect by a median of 11.4% (9.9% to 14.5%, 222
+records). The temperature dependence derived from those effects is far less
+sensitive: in the 41 of 46 series with three or more temperatures where the
+method has a solution throughout, changing a constant exponent from 3.26 to
+3.50 moves Ea(T) - Ea(H) by at most 0.37 kcal/mol (median 0.06) and multiplies
+A_H/A_T by 0.70 to 1.35 (`analysis/northrop_sensitivity.py`). For the
+worked reductase pair (3.06, 1.51), assumed exponents 0.1 below and above the
+semiclassical value give intrinsic H/T effects of 5.63 and 6.91, and at the
+semiclassical value the method implies a commitment of 1.55 for the protiated
+substrate (`worked_pair`). Treating a mixed-label series with the
+shared-tracer form is a smaller approximation: replacing r = 1 by the lower
+bound R from the secondary effects lowers the derived effect by a median of
+1.4% (at most 8.8%; 33 records, `tracer_ratio_bias`).
+
+**Recovering the intrinsic pair.** Northrop's Eq. (1) gives
+x_L = K_LT (1 + C_L) - C_L, so the commitments of the two bulk substrates, as
+measured for example by isotope partitioning, recover the intrinsic pair
+without the tracer ratio. For the yeast pair at one third of the largest
+commitment its H/T effect allows (r = 1.31), they must be known to 6.0% each
+to hold the intrinsic offset within |F0|/2, and the published isotope errors
+alone already give it a standard error of 0.042 (rho = 0) to 0.051 (rho = -1)
+(`completion.bulk_commitment_precision_needed`,
+`completion.bulk_isotope_error_budget`).
 
 **A cofactor titration tests the scheme.** [Tsai and Klinman](https://doi.org/10.1021/bi002075l)
 (Table 5) measured the F93W horse liver enzyme at 3 °C in 40% methanol at four
@@ -600,6 +628,10 @@ analysis/
   model_domain.py       the model comparison when the action and gating width
                         are bounded: largest offset, and the units that then
                         cannot exclude the model (results/model_domain.csv)
+    northrop_sensitivity.py  Northrop's method at an assumed exponent: how the
+                        derived intrinsic H/T effects (about 11% per 0.1 in the
+                        exponent) and the temperature dependence fitted to them
+                        (at most 0.37 kcal/mol from 3.26 to 3.50) depend on it
   reference_counts.py   the analysis units against the semiclassical reference
                         itself: observed below it at every admissible
                         temperature, above it, above at 95%, and above after
@@ -708,6 +740,7 @@ python holdout.py            # deletion sensitivity: point and confidence (~1 mi
 python design_power.py       # precision requirements; dataset statistics
 python repeat_determinations.py  # independent determinations of one condition
 python reference_counts.py   # the dataset against the semiclassical reference
+python northrop_sensitivity.py  # Northrop-derived effects against the assumed exponent
 python cofactor_benchmark.py # the NAD+ titration: scheme test, table, sensitivity
 python reversible.py         # reversible step: windows, endpoints, counterexample
 python network_atlas.py 4    # enumeration and classification of mechanisms (~3 min)
