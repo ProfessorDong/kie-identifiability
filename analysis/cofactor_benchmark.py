@@ -250,6 +250,33 @@ def random_order_check(n=400, seed=20261120):
     return float(worst), float(rise)
 
 
+def simultaneous_check(t, level=0.05, comparator_mM=10.0):
+    """The scheme test without an assumption about error correlations.
+
+    One-sided confidence bounds on five quantities hold simultaneously with
+    probability at least 1 - level, by Bonferroni, for any correlations, if
+    each reported error is a Gaussian marginal standard error: lower bounds on
+    the comparator's D/T effect and on the two subsaturating H/T effects, and
+    upper bounds on the two subsaturating D/T effects.  The smallest D/T effect
+    the scheme allows, K* K_H / (K* + K_H - 1), increases with K* and with
+    K_H, so the lower bounds give the smallest D/T effect the scheme could
+    require.  The comparator is the source's standard 10 mM condition, which
+    avoids selecting the larger of the two saturating D/T effects.
+
+    Returns (z, table) with, for each subsaturating concentration, the smallest
+    D/T effect required and the upper bound on the measured D/T effect."""
+    from scipy.stats import norm
+    z = float(norm.isf(level / 5))
+    tt = t.set_index("NAD_mM")
+    comp = tt.loc[comparator_mM]
+    low = tt[tt.index < comparator_mM].sort_index()
+    d_star = comp.K_DT - z * comp.K_DT_se
+    h_low = low.K_HT - z * low.K_HT_se
+    out = pd.DataFrame({"required_DT": d_star * h_low / (d_star + h_low - 1),
+                        "measured_DT_upper": low.K_DT + z * low.K_DT_se})
+    return z, out
+
+
 def scheme_fit(t, r=1.0):
     """Smallest chi-square of one intrinsic pair fitted to all four conditions.
 

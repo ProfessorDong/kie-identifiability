@@ -1,7 +1,7 @@
 cff-version: 1.2.0
 title: >-
-  A measured Swain-Schaad exponent is only a lower limit on the intrinsic exponent: data,
-  code and verification suite
+  Competitive isotope effects set only a lower limit on the intrinsic Swain-Schaad
+  exponent of enzymatic hydrogen transfer: data, code and verification suite
 message: >-
   If you use this software or the curated dataset, please cite
   this repository and the primary measurement papers listed in
@@ -9,8 +9,8 @@ message: >-
 type: software
 doi: 10.5281/zenodo.21913975
 repository-code: 'https://github.com/ProfessorDong/kie-identifiability'
-version: v1.8.14
-date-released: '2026-11-23'
+version: v1.8.15
+date-released: '2026-11-24'
 authors:
   - given-names: Liang
     family-names: Dong

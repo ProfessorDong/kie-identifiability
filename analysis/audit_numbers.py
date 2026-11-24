@@ -86,8 +86,8 @@ def derived():
         ("F0", F0, 6, ("main", "si")),
     ]
     # Reference exponents quoted in Supplementary Note 1 for comparison with the
-    # sources.  These were hand-typed until 2026-09-14, when a reference-review
-    # found the bare-mass value given as 3.26278 in one place and 3.26281 in
+    # sources.  These were hand-typed until 2026-09-14, when a check found the
+    # bare-mass value given as 3.26278 in one place and 3.26281 in
     # another; masses.py constants give 3.262807.  Each is now recomputed here
     # from the same atomic masses, so a stale or transposed value fails.
     def _exp(mH, mD, mT, heavy=None):
@@ -109,7 +109,7 @@ def derived():
         out.append((f"YADH F_int {lab}", r["F"], 3, ("main", "si")))
         out.append((f"YADH gamma_int {lab}", r["gamma"], 2, ("si",)))
     # The BSAO completion detail moved to the supplement when the main text was
-    # trimmed; these are SI-only by editorial decision, not by oversight.
+    # trimmed; these are SI-only by design, not by oversight.
     T, m, me = bsao_masking_by_temperature()
     out.append(("BSAO m(25C)", m[3], 3, ("si",)))
     out.append(("BSAO sd m(25C)", me[3], 3, ("si",)))
@@ -618,6 +618,10 @@ def check_no_ai_mentions():
     from pathlib import Path
     bad = 0
     targets = [("main", DOCS["main"]), ("si", DOCS["si"])]
+    # the supplement's front matter (title, abstract, contents) is read as well
+    front = DOCS["si"].parent / "kie_si.tex"
+    if front.exists():
+        targets.append(("si front matter", front))
     root = Path(__file__).resolve().parent.parent
     for extra in ("README.md", "CITATION.cff"):
         f = root / extra
@@ -848,7 +852,7 @@ def check_corpus():
                  f"giving {U} units rather than {R} independent systems",
                  f"also adjust across the {U} analysis units",
                  f"of {R} measured pairs, grouped into {U} temperature series or single conditions",
-                 f"That is the case in {benchmark.loc['dataset'].below} of {U} published temperature series or single conditions"),
+                 f"Measured exponents lie below that value in {benchmark.loc['dataset'].below} of {U} published data sets"),
         "si": (f"The dataset contains {R} pairs of competitive H/T and D/T effects",
                f"{cc['series_records']} temperature records in {cc['series']} series",
                f"{cc['single']} single-condition records, giving {U} analysis units",
@@ -897,9 +901,9 @@ def check_repo_metadata():
         if not f.exists():
             continue
         txt = " ".join(f.read_text().split())
-        # case-insensitive: a journal may require Title Case, the deposit keeps sentence
-        # case, and what must not drift is the wording; a LaTeX en dash is a hyphen in
-        # plain text
+        # case-insensitive: the article's title is in Title Case, the deposit's in
+        # sentence case, and what must not drift is the wording; a LaTeX en dash is a
+        # hyphen in plain text
         plain = lambda s_: re.sub(r"--|\u2013", "-", s_).lower()
         if plain(title) not in plain(txt):
             print(f"  FAIL {name} does not carry the article title")
@@ -1608,7 +1612,7 @@ def check_source_fidelity():
             bad += 1
     sources = (Path(__file__).resolve().parent.parent / "external_data" / "SOURCES.md").read_text()
     if "completes bovine serum amine oxidase" in sources:
-        print("  FAIL source fidelity: SOURCES.md still lists the withdrawn BSAO completion")
+        print("  FAIL source fidelity: SOURCES.md claims a BSAO completion, which the analysis does not support")
         bad += 1
     if not bad:
         print(f"  source fidelity: combined margin {100 * (k - 1):.1f}%, D/T SE of four "
@@ -1618,7 +1622,7 @@ def check_source_fidelity():
 
 
 def check_readiness_scope():
-    r"""Scope corrections from a readiness review (2026-09-15).
+    r"""Scope corrections of 2026-09-15.
 
     The binding shift was stated as exact on any branch (it holds on the open
     branch only); the single-record bound was called exact at rho = -1 (it is a
@@ -1720,17 +1724,17 @@ def check_readiness_scope():
     return bad
 
 
-def check_external_audit_2026_10_12():
-    r"""Numbers corrected or added after the audit of 2026-10-12.
+def check_numbers_2026_10_12():
+    r"""Numbers corrected or added on 2026-10-12.
 
-    That audit found the promoting-mode spans and the Fisher example computed
-    with bare integer masses in qtunnel.py against the reduced-mass gamma_SC and
-    F0; the horse liver pooling fit asserted, not deposited, and given one
+    The promoting-mode spans and the Fisher example had been computed with bare
+    integer masses in qtunnel.py against the reduced-mass gamma_SC and F0; the
+    horse liver pooling fit had been stated without deposited code and with one
     degree of freedom too few (an exact scale symmetry removes a parameter);
-    the BSAO bound printed at rho = 0 without saying so; a stale vibronic
-    example; profile optima pinned at the grid edge reported as optima; and an
-    argument for the yeast r root that did not prove uniqueness.  Every
-    replacement number is recomputed here and matched to its sentence.
+    the BSAO bound had been printed at rho = 0 without saying so; a vibronic
+    example was stale; profile optima pinned at the grid edge had been reported
+    as optima; and the argument for the yeast r root did not prove uniqueness.
+    Every replacement number is recomputed here and matched to its sentence.
     """
     import completion as C
     import pooling_check as P
@@ -2161,10 +2165,10 @@ def _texts():
 
 # Guards that compare a computed quantity against the manuscript text.  Without
 # the manuscript they have nothing to compare against and are skipped, loudly.
-def check_source_review_2026_10_13():
+def check_sources_2026_10_13():
     r"""Corrections from reading every cited source in full (2026-10-13).
 
-    The review admitted the Tsai & Klinman methanol records (their stated
+    That reading admitted the Tsai & Klinman methanol records (their stated
     exclusion contradicted the source, which ran the competitive experiments at
     saturating NAD+, and the paper's own theory, under which a random mechanism
     with no bypass keeps the base map), and found that the closed-form endpoint
@@ -2184,12 +2188,12 @@ def check_source_review_2026_10_13():
     def need(doc, text, what):
         nonlocal bad
         if text not in {"main": main, "si": si}[doc]:
-            print(f"  FAIL source review: {doc} lacks {what}: {text!r}")
+            print(f"  FAIL sources 2026-10-13: {doc} lacks {what}: {text!r}")
             bad += 1
 
     # the admissibility rule of the scalar endpoint
     if _fme(2.2, 0.99)[0] != -np.inf:
-        print("  FAIL source review: F_min_exact scores an inadmissible pair")
+        print("  FAIL sources 2026-10-13: F_min_exact scores an inadmissible pair")
         bad += 1
     # the two methanol series that exclude: endpoints and nominal bounds
     b = pd.read_csv("../results/bounds_uncertainty.csv")
@@ -2203,7 +2207,7 @@ def check_source_review_2026_10_13():
         need("si", f"LADH {table_variant} & ${pt:.4f}$ & ${l1:.3f}$ & ${l0:.3f}$",
              f"the {hi}% methanol point and rho=-1/0 bounds in the included SI table")
         if not (l1 > F0 and l1 > 0):
-            print(f"  FAIL source review: {v} no longer clears both thresholds")
+            print(f"  FAIL sources 2026-10-13: {v} no longer clears both thresholds")
             bad += 1
     # the units whose rho = -1 bound clears F0, counted from the data (three
     # until the census of 2026-10-20: yeast and the two methanol series)
@@ -2238,7 +2242,7 @@ def check_source_review_2026_10_13():
                     best = (m, a.K_HT * np.exp(-z * x), a.K_DT * np.exp(z * y))
             m, hl, dh = best
             if not (hl > dh > 1 and (hl - 1) / (dh - 1) >= GSC):
-                print(f"  FAIL source review: {v} multiplicity bound leaves the open branch")
+                print(f"  FAIL sources 2026-10-13: {v} multiplicity bound leaves the open branch")
                 bad += 1
             need("si", f"${m:+.3f}$", f"the {v} multiplicity bound at rho = {rho:+.0f}")
     # credit and convention fixes that must not regress
@@ -2255,18 +2259,18 @@ def check_source_review_2026_10_13():
                       ("main", "SoudackovHammesSchiffer2000,HammesSchifferSoudackov2008}. The transferred"),
                       ("si", "``reduced relative to''"),
                       ("si", "drift between columns"),
-                      ("main", "companion supplemental"), ("main", "this revision"),
+                      ("main", "companion supplemental"),
                       ("si", "excluded on a ground internal to this paper")):
         if text in {"main": main, "si": si}[doc]:
-            print(f"  FAIL source review: {doc} still has the retired phrasing {text!r}")
+            print(f"  FAIL sources 2026-10-13: {doc} still has the retired phrasing {text!r}")
             bad += 1
     bib = (DOCS["main"].parent / "references.bib").read_text()
     for wrong in ("Kim, Kwangsoo", "Hothi, Poonam"):
         if wrong in bib:
-            print(f"  FAIL source review: references.bib still has {wrong!r}")
+            print(f"  FAIL sources 2026-10-13: references.bib still has {wrong!r}")
             bad += 1
     if not bad:
-        print("  source review 2026-10-13: methanol series and multiplicity, admissibility "
+        print("  sources 2026-10-13: methanol series and multiplicity, admissibility "
               "rule, credits and retired phrasings")
     return bad
 
@@ -3665,7 +3669,7 @@ def check_audit_2026_11_20():
         bad += 1
     for pattern, what in (
             (rf"\b{n_below} of {U}\b", "the count below the semiclassical value"),
-            (r"cofactor titration, the D/T effect below saturating cofactor falls further than the minimal scheme allows at any commitment, for reasons the data do not identify",
+            (r"cofactor titration departs from the scheme below saturating cofactor, for reasons the data do not identify",
              "the test of the scheme, with its caveat"),
             (r"isotope partitioning of the bulk substrate", "the measurement that recovers the intrinsic effects"),
             (rf"semiclassical value \(about \${GSC:.1f}\$\)", "the semiclassical value"),
@@ -3735,7 +3739,7 @@ def check_audit_2026_11_20():
     # supplement state it, and a figure of the reductase pair anchors it
     import northrop_sensitivity as NS
     ns, nst = NS.summary()
-    want = f"change by about ${ns['pct_median']:.0f}\\%$ for each $0.1$ change in the exponent it assumes"
+    want = f"shift by about ${ns['pct_median']:.0f}\\%$ per $0.1$ change in the assumed exponent"
     if want not in abstract:
         print(f"  FAIL audit 2026-11-20: the abstract lacks the dependence of Northrop-derived effects on the exponent: {want!r}")
         bad += 1
@@ -3760,7 +3764,7 @@ def check_audit_2026_11_20():
     need("si", f"(median ${ns['factor_median']:.2f}$)", "the median factor on the prefactor ratio")
     need("main", "Conclusions drawn from the activation-energy difference are therefore insensitive to the choice of a constant exponent",
          "what the sensitivity does and does not establish")
-    need("main", "magnitudes depend on it, whereas the temperature dependence derived from them hardly does",
+    need("main", "magnitudes and prefactor ratios depend on it, whereas the isotopic difference in activation energy derived from them hardly does",
          "the Northrop result in the Conclusions")
     need("main", f"across ${ns['n_solved']}$ published pairs and ${ns['n_series']}$ temperature series",
          "the Northrop counts in the table of contributions")
@@ -3785,39 +3789,14 @@ def check_audit_2026_11_20():
     need("main", f"Only the {_nw(c['model_excluded_adj'])} yeast alcohol dehydrogenase units exclude the model after adjustment across all {U} units",
          "the adjusted exclusions, in the Results")
 
-    # ---- the letter that accompanies the manuscript, when it is beside it:
-    # how many papers the measurements come from, and how many of them
-    # appeared in the journal that published most of them
-    letter = ROOT / "cover_letter.tex"
-    if letter.exists():
-        from collections import Counter
-        lt = " ".join(letter.read_text().split())
-        bib = (ROOT / "references.bib").read_text()
-        keys = sorted(set(pd.read_csv(corpus.DATA / "deuterium_purity.csv").source))
-        jr = {}
-        for k in keys:
-            m = re.search(r"@\w+\{" + re.escape(k) + r",(.*?)\n\}", bib, re.S)
-            j = re.search(r"journal\s*=\s*\{([^}]*)\}", m.group(1)) if m else None
-            jr[k] = j.group(1) if j else None
-        ranked = Counter(v for v in jr.values() if v).most_common(2)
-        (first, n_first), n_second = ranked[0], ranked[1][1]
-        want = f"come from {len(keys)} published papers, {n_first} of them in \\emph{{{first}}}, more than in any other journal"
-        if None in jr.values() or n_first <= n_second or want not in lt:
-            print(f"  FAIL audit 2026-11-20: the letter does not carry {want!r} ({len(keys)} sources, {n_first} in the "
-                  f"most frequent journal, {n_second} in the next)")
-            bad += 1
-        want = f"In {c['below']} of {U} published temperature series or single conditions ({corpus.counts()['records']} measured pairs)"
-        if want not in lt:
-            print(f"  FAIL audit 2026-11-20: the cover letter does not carry {want!r}")
-            bad += 1
     if not bad:
         print("  audit 2026-11-20: Table 2 range, H/D route, commitment precision, protium thresholds, mass conventions, "
-              "reversible windows and counterexample, promoting-mode peaks, repeat determinations, restated counts, cover letter")
+              "reversible windows and counterexample, promoting-mode peaks, repeat determinations, restated counts")
     return bad
 
 
-def check_round2_2026_10_22():
-    """Second round of 2026-10-21: binding-order condition, Rucker's
+def check_corrections_2026_10_22():
+    """Corrections of 2026-10-21: binding-order condition, Rucker's
     correction as a reconstruction (Grant & Klinman prescription), synthetic
     recovery ranges, and four retired wordings."""
     import partial_id as P
@@ -3830,11 +3809,11 @@ def check_round2_2026_10_22():
     def need(doc, text, what):
         nonlocal bad
         if text not in (si if doc == "si" else main):
-            print(f"  FAIL round 2: {doc} lacks {what}: {text!r}")
+            print(f"  FAIL corrections 2026-10-22: {doc} lacks {what}: {text!r}")
             bad += 1
     shifted, inf, cmax, (y1, y2, y3) = P.binding_order_example()
     if not inf > shifted + 0.005:
-        print("  FAIL round 2: the binding-order example no longer separates the two endpoints")
+        print("  FAIL corrections 2026-10-22: the binding-order example no longer separates the two endpoints")
         bad += 1
     need("si", f"the intrinsic pair is normally ordered only for $c<{cmax:.3f}$", "the binding-order domain")
     need("si", f"$(1-\\gSC)\\ln1.0775={inf:.4f}$, against ${shifted:.4f}$", "the binding-order endpoints")
@@ -3843,7 +3822,7 @@ def check_round2_2026_10_22():
     _, _, thr5 = IP.rucker_B_sensitivity(0.5)
     need("si", f"would have to exceed ${thr0:.2f}$", "the Rucker primary-constant threshold")
     if thr5 is not None:
-        print("  FAIL round 2: the f = 0.5 Rucker sensitivity now reaches F0 below B = 12")
+        print("  FAIL corrections 2026-10-22: the f = 0.5 Rucker sensitivity now reaches F0 below B = 12")
         bad += 1
     g = corpus.series()
     rk = g[g.variant.str.contains("chloro")].sort_values("T_C")
@@ -3855,8 +3834,9 @@ def check_round2_2026_10_22():
     # The physical-order and pooling qualifications are stated in the main
     # text.  These are scientific guards, not style rules.
     need("main", "For exact, mutually compatible data, the range of intrinsic effects is that allowed by the least masked variant alone", "the range from compatible shared-tracer variants")
-    need("main", "Both commitments must be measured with the same enzyme preparation, labeling pattern, temperature, solvent "
-                 "and cofactor concentration as the two isotope effects", "the information required for intrinsic recovery")
+    need("main", "Both commitments must be measured with the same enzyme preparation, labeling pattern, temperature and "
+                 "solvent as the two isotope effects, which should themselves be measured at saturating cosubstrate",
+         "the information required for intrinsic recovery")
     need("main", "Excluding either hypothesis therefore does not by itself establish or disprove tunneling in an enzyme",
          "the scope of model exclusion")
     for doc, txt in (("si", si), ("main", main)):
@@ -3867,10 +3847,10 @@ def check_round2_2026_10_22():
                       "an inference the masked data could never make",
                       "own protium correction undone with its stated constants"):
             if stale in txt:
-                print(f"  FAIL round 2: retired wording in {doc}: {stale!r}")
+                print(f"  FAIL corrections 2026-10-22: retired wording in {doc}: {stale!r}")
                 bad += 1
     if not bad:
-        print(f"  round 2 2026-10-22: binding order ({inf:.4f} vs {shifted:.4f}), Rucker reconstruction "
+        print(f"  corrections 2026-10-22: binding order ({inf:.4f} vs {shifted:.4f}), Rucker reconstruction "
               f"(B {B25:.2f}/{B0:.2f}, threshold {thr0:.2f}), recovery ranges")
     return bad
 
@@ -3985,15 +3965,6 @@ def check_practice_2026_11_20():
         a_, b_ = sub.iloc[0], sub.iloc[1]
         need("main", f"The measured values, ${a_.primary_DT:.2f}\\pm{a_.primary_DT_error:.2f}$ and "
                      f"${b_.primary_DT:.1f}\\pm{b_.primary_DT_error:.1f}$", "the subsaturating D/T effects")
-    # ---- the cover letter's Northrop statement and its titration caveat
-    letter = " ".join((DOCS["main"].parent / "cover_letter.tex").read_text().split())
-    ns, _ = NS.summary()
-    for text, what in ((f"change by about {ns['pct_median']:.0f}\\% for each 0.1 change in the exponent the method assumes",
-                        "the Northrop sensitivity"),
-                       ("which the measurements below saturating cofactor do not satisfy, for reasons the data do not identify", "the titration caveat")):
-        if text not in letter:
-            print(f"  FAIL practice 2026-11-20: the cover letter lacks {what}: {text!r}")
-            bad += 1
     # ---- added 2026-11-20: implied commitment at the source's exponent,
     # trapped fraction, the margin of a reference test, the mass-ratio threshold
     need("main", f"at the exponent $3.34$ that the source used it is ${wp['C_H_334']:.2f}$, the value the source reported",
@@ -4055,6 +4026,248 @@ def check_practice_2026_11_20():
     return bad
 
 
+def check_text_2026_11_23():
+    """Statements added on 2026-11-23.
+
+    Each is either recomputed here or tied to its source: the semicarbazone
+    trap that makes reversal unlikely in the cofactor titration (Tsai and
+    Klinman 2001, Methods), the simultaneous one-sided check of the titration
+    that allows any error correlation (cofactor_benchmark.simultaneous_check),
+    the return of a closed-branch offset to its observed value at a nonzero
+    commitment, the absence of a sign change in the 41 fitted
+    activation-energy differences, and the qualifications on blind schemes,
+    on models that also fix the size of the H/T effect, on the tracer-ratio
+    comparison and on the other routes to the commitment.
+    """
+    import cofactor_benchmark as cb
+    import northrop_sensitivity as NS
+    import reference_counts as RC
+    from partial_id import F_min_exact as _fme
+    from scipy.optimize import brentq
+    bad = 0
+    main = " ".join(DOCS["main"].read_text().split())
+    si = " ".join(DOCS["si"].read_text().split())
+
+    def need(doc, text, what):
+        nonlocal bad
+        if text not in (main if doc == "main" else si):
+            print(f"  FAIL text 2026-11-23: {doc} lacks {what}: {text!r}")
+            bad += 1
+
+    # ---- the titration: no independence assumption
+    raw = cb.cofactor_conditions(RC.reference_groups())
+    z, tab = cb.simultaneous_check(raw)
+    if not (tab.required_DT > tab.measured_DT_upper).all():
+        print("  FAIL text 2026-11-23: the simultaneous bounds no longer separate the subsaturating conditions")
+        bad += 1
+    need("si", f"$z={z:.3f}$", "the Bonferroni quantile")
+    for conc, row in tab.iterrows():
+        need("si", f"{conc:g} & {row.required_DT:.3f} & {row.measured_DT_upper:.3f}", f"the simultaneous bounds at {conc:g} mM")
+    need("main", "Simultaneous one-sided confidence bounds, which allow any correlation between the errors, give the same "
+                 "result (Supplementary Note~6)", "the simultaneous check in the main text")
+    # ---- reversal is excluded by the trap (source Methods: turnover below 0.1% of trapping)
+    need("main", "Reversal of the reaction is unlikely, because the assays trapped the aldehyde product as its semicarbazone",
+         "the semicarbazone trap")
+    need("si", "kept turnover below $0.1\\%$ of the rate of semicarbazone formation", "the trap's margin in the source")
+    for doc in ("main", "si"):
+        if "reversed by the NADH" in (main if doc == "main" else si) or "as NADH accumulates" in (main if doc == "main" else si):
+            print(f"  FAIL text 2026-11-23: {doc} offers reversal by accumulated NADH, which the trap excludes")
+            bad += 1
+    need("si", "The titration is the kind of control that this analysis recommends", "the credit to the source")
+    # ---- equality of offsets at a nonzero commitment (closed branch)
+    s_ = __import__("corpus").series()
+    h = s_[(s_.family == "ecDHFR") & (s_.variant == "heavy enzyme") & (s_.T_C == 5.0)].iloc[0]
+    kh, kd = float(h.K_HT), float(h.K_DT)
+    Fc = lambda c: np.log(kh * c / (1 + c - kh)) - GSC * np.log(kd * c / (1 + c - kd))
+    Fobs = np.log(kh) - GSC * np.log(kd)
+    cstar = _fme(kh, kd)[1]
+    c2 = brentq(lambda c: Fc(c) - Fobs, (kh - 1) * (1 + 1e-9), cstar)
+    need("si", f"regaining the observed value at $c={c2:.2f}$ ($C_{{\\mathrm T}}={1 / c2:.3f}$)", "the second crossing of the observed offset")
+    need("si", "Even equality of $F_{\\mathrm{obs}}$ and $F^{\\mathrm{int}}$ need not imply zero commitment", "equality without zero commitment")
+    # ---- Northrop: no sign change; the source's interval; the tracer-ratio caveat
+    _, nst = NS.summary()
+    signs = np.sign(nst[["dEa_3.26", "dEa_sc", "dEa_3.50"]].to_numpy())
+    if (signs != signs[:, [0]]).any():
+        print("  FAIL text 2026-11-23: a fitted activation-energy difference changes sign, the text says none does")
+        bad += 1
+    need("main", f"none of the ${len(nst)}$ fitted differences changes sign (unweighted fits to the reported central values)",
+         "no sign change")
+    need("main", "an interval that is itself conditional on the assumed exponent", "what the source's interval measures")
+    need("main", "since the true ratio can exceed $R$, this is not a bound on the error", "the tracer-ratio caveat")
+    # ---- qualifications on the classes, the model comparison and the other routes
+    need("main", "acts only after the complex is irreversibly committed to the monitored product", "the blind condition")
+    need("main", "for the ground-channel model that comparison reduces to the offset (Supplementary Note~2)",
+         "models that also fix the size of the H/T effect")
+    need("si", "When the lower limit tests the whole pair", "the fixed-H/T continuity argument")
+    need("main", "whether they are chemically plausible is a separate question", "the plausibility of very large intrinsic effects")
+    need("main", "if primary and secondary substitution act independently, indicates that the deuterium at the "
+                 "non-transferred position slows", "the separability behind the tracer ordering")
+    need("main", "but only as accurately as that information is itself known", "the other routes to the commitment")
+    need("main", "which rejects one intrinsic pair with only the commitment varying across concentrations", "the titration in the table")
+    # ---- the abstract states the temperature result and the credit (both had been dropped once)
+    t_ = DOCS["main"].read_text()
+    abstract = " ".join(t_[t_.index("\\begin{abstract}"):t_.index("\\end{abstract}")].split())
+    for phrase in ("as previously argued", "while the isotopic difference in activation energy changes little"):
+        if phrase not in abstract:
+            print(f"  FAIL text 2026-11-23: the abstract lacks {phrase!r}")
+            bad += 1
+    if not bad:
+        print(f"  text 2026-11-23: simultaneous titration check (z = {z:.3f}), semicarbazone trap, closed-branch equality at "
+              f"C_T = {1 / c2:.3f}, no sign change in {len(nst)} series, qualifications in place")
+    return bad
+
+
+def check_front_2026_11_23():
+    """The title and the abstract of 2026-11-23, and the statements they summarize.
+
+    The title names the measurement, the quantity and the system, and does not
+    make tunneling its subject: the paper neither establishes nor rules out
+    tunneling.  The abstract gives probing tunneling as the use of the isotope
+    effects, not as a claim of the paper; states the sharp result for one shared
+    tracer or two ordered ones; puts the bypass caveat before the consequences;
+    restricts the dependence on the assumed exponent to the pairs below the
+    reference; names the activation-energy difference as the quantity that
+    hardly changes (the prefactor ratio is more sensitive); and presents the
+    cofactor titration as a test of the scheme.  The Conclusions and Table 6
+    state the same split, and the numbers behind it are recomputed.
+    """
+    import northrop_sensitivity as NS
+    bad = 0
+    t = DOCS["main"].read_text()
+    main = " ".join(t.split())
+    m = re.search(r"\\title\[[^\]]*\]\{([^}]*)\}", t)
+    title = " ".join(m.group(1).split()) if m else ""
+    for w in ("Competitive Isotope Effects", "Only a Lower Limit", "Intrinsic Swain--Schaad Exponent",
+              "Enzymatic Hydrogen Transfer"):
+        if w not in title:
+            print(f"  FAIL front 2026-11-23: the title lacks {w!r}: {title!r}")
+            bad += 1
+    if re.search(r"(?i)tunnel", title):
+        print(f"  FAIL front 2026-11-23: the title makes tunneling its subject, which the paper does not test: {title!r}")
+        bad += 1
+    abstract = " ".join(t[t.index("\\begin{abstract}"):t.index("\\end{abstract}")].split())
+    for phrase, what in (
+            ("are used to probe tunneling in enzymatic hydrogen transfer", "probing tunneling as the use of the effects"),
+            ("compared with its semiclassical value (about $3.3$)", "why the semiclassical value matters"),
+            ("Northrop's method instead assumes an exponent to obtain intrinsic effects", "the assumption of Northrop's method at its first mention"),
+            ("without assuming any Swain--Schaad relation", "that the analysis assumes no relation"),
+            ("with a single tritiated tracer", "the shared tracer"),
+            ("The same holds when the D/T tracer is less committed", "the two-tracer designs the result covers"),
+            ("and every larger value is allowed", "that the lower limit is sharp"),
+            ("can turn the limit into an upper limit or remove it. Without such a route, an exponent measured above",
+             "the bypass caveat before the consequences it limits"),
+            ("cannot by themselves support models predicting low intrinsic exponents", "the consequence for tunneling models"),
+            ("while the isotopic difference in activation energy changes little", "the quantity that hardly changes"),
+            ("A published cofactor titration departs from the scheme below saturating cofactor", "the titration as a test of the scheme")):
+        if phrase not in abstract:
+            print(f"  FAIL front 2026-11-23: the abstract lacks {what}: {phrase!r}")
+            bad += 1
+    for stale, why in (("taken as evidence of tunneling", "which invites an inference to tunneling that the paper does not make"),
+                       ("two ordered ones", "a term the abstract does not define"),
+                       ("temperature dependence derived from them changes little", "which the prefactor ratio does not bear out")):
+        if stale in abstract:
+            print(f"  FAIL front 2026-11-23: the abstract says {stale!r}, {why}")
+            bad += 1
+    for phrase, what in (
+            ("their magnitudes and prefactor ratios depend on it, whereas the isotopic difference in activation energy "
+             "derived from them hardly does", "the split in the Conclusions"),
+            ("magnitudes and prefactor ratios depend on the assumed exponent; the activation-energy difference hardly does",
+             "the split in Table 6")):
+        if phrase not in main:
+            print(f"  FAIL front 2026-11-23: main lacks {what}: {phrase!r}")
+            bad += 1
+    ns, _ = NS.summary()
+    if not (ns["dEa_change_max"] < 0.5 and (ns["factor_lo"] < 0.9 or ns["factor_hi"] > 1.1)):
+        print(f"  FAIL front 2026-11-23: the activation-energy difference no longer hardly changes while the prefactor ratio moves: {ns}")
+        bad += 1
+    if not bad:
+        print(f"  front 2026-11-23: title names enzymatic hydrogen transfer and not tunneling; abstract scope, caveat order, "
+              f"activation-energy difference ({ns['dEa_change_max']:.2f} kcal/mol at most) and prefactor ratio "
+              f"({ns['factor_lo']:.2f} to {ns['factor_hi']:.2f}) in place")
+    return bad
+
+
+def check_sources_2026_11_23():
+    """Statements checked against four sources read in full on 2026-11-23.
+
+    Rose et al. 1974 (isotope trapping): the trapped fraction gives the
+    commitment only when an excess of unlabeled substrate in the chase prevents
+    rebinding and trapping is extrapolated to saturating cosubstrate; at finite
+    cosubstrate p/(1-p) = aC/[1 + (1-a)C], recomputed here from the two-stage
+    partition.  Hermes et al. 1982: deuteration divides the forward commitment
+    by the intrinsic deuterium effect, so a 13C effect on the same step limits
+    the intrinsic effects without a Swain-Schaad relation; their
+    glucose-6-phosphate dehydrogenase values as printed.  Jones et al. 1986: a
+    branch to a different product competes with the labeled step and unmasks
+    the observed effect, so it is not a bypass.  Bigeleisen 1955: the rule of
+    the geometric mean was proved for equilibria with small quantum
+    corrections; the water example (17.0 against 16.4) and u for a C-H stretch
+    are recomputed here.
+    """
+    bad = 0
+    main = " ".join(DOCS["main"].read_text().split())
+    si = " ".join(DOCS["si"].read_text().split())
+    docs = {"main": main, "si": si}
+
+    def need(doc, text, what):
+        nonlocal bad
+        if text not in docs[doc]:
+            print(f"  FAIL sources 2026-11-23: {doc} lacks {what}: {text!r}")
+            bad += 1
+
+    def forbid(doc, text, why):
+        nonlocal bad
+        if text in docs[doc]:
+            print(f"  FAIL sources 2026-11-23: {doc} says {text!r}, {why}")
+            bad += 1
+
+    # ---- Rose et al. 1974
+    rng = np.random.default_rng(1974)
+    a, C = rng.uniform(0.01, 1.0, 2000), rng.uniform(0.01, 10.0, 2000)
+    p_ = a * C / (1 + C)          # cosubstrate binds first (a), then the complex reacts (C/(1+C))
+    if not (np.allclose(p_ / (1 - p_), a * C / (1 + (1 - a) * C)) and np.all(p_ / (1 - p_) < C)):
+        print("  FAIL sources 2026-11-23: the trapping relation at finite cosubstrate does not hold")
+        bad += 1
+    need("main", "isotope-trapping (pulse--chase) experiment~\\cite{Rose1974}, also called isotope partitioning",
+         "the method's own name")
+    need("main", "keeps released substrate from rebinding, and with $p$ extrapolated to saturating cosubstrate, $C_L=p/(1-p)$",
+         "the conditions under which the trapped fraction gives the commitment")
+    need("main", "and $p/(1-p)$ understates $C_L$~\\cite{Rose1974}", "the bias at subsaturating cosubstrate")
+    need("main", "which should themselves be measured at saturating cosubstrate", "matching conditions for the isotope effects")
+    need("main", "subtracted label that reached product from the diluted pool, and used a control quenched before the chase",
+         "the corrections of the original method")
+    need("si", "$p/(1-p)=aC_L/[1+(1-a)C_L]$", "the relation at finite cosubstrate")
+    forbid("main", "If released substrate cannot rebind", "which omits how rebinding is prevented and the cosubstrate condition")
+    # ---- Hermes et al. 1982
+    need("main", "Multiple-isotope-effect methods use a related idea that needs no known ratio", "the multiple-isotope-effect logic")
+    need("main", "deuteration divides the forward commitment by the intrinsic deuterium effect", "how deuteration enters")
+    need("main", "and it fixes them when the reverse commitment is negligible~\\cite{Hermes1982}", "when the solution is exact")
+    need("main", "limit the intrinsic effects when both act on the same step~\\cite{Hermes1982}", "the credit in the Introduction")
+    for v in ("$5.27\\pm0.29$", "$0.75\\pm0.26$", "$0.49\\pm0.27$"):
+        need("main", v, "a value printed by Hermes et al. for glucose-6-phosphate dehydrogenase")
+    forbid("main", "which is the logic of multiple-isotope-effect methods", "which attributes a known ratio to a method that needs none")
+    # ---- Jones et al. 1986
+    need("main", "A branch to a different product is not a bypass but a competing fate of the first kind",
+         "where isotopically sensitive branching belongs")
+    need("main", "unmasks the observed intramolecular isotope effect~\\cite{Jones1986}", "the direction of its effect")
+    forbid("main", "is familiar from isotopically sensitive branching", "which presents that branching as a bypass")
+    # ---- Bigeleisen 1955
+    need("main", "This is the kinetic form of the rule of the geometric mean~\\cite{Bigeleisen1955,KohenJensen2002}, which "
+                 "Bigeleisen proved for gas-phase equilibria when quantum corrections are small", "what Bigeleisen proved")
+    dev = (17.0 / 16.4 - 1) * 100
+    need("main", f"differs by ${dev:.1f}\\%$ according to whether the other position carries tritium or protium",
+         "the water example in the main text")
+    need("si", f"$17.0$ with tritium at the other position and $16.4$ with protium, ${dev:.1f}\\%$ apart",
+         "the water example in the supplement")
+    u = 1.438777 * 3000 / 298.15        # second radiation constant hc/k in cm K
+    need("si", f"has $u\\approx{u:.0f}$", "u for a C-H stretch at 25 C")
+    need("si", "is $0.81$ of its statistical value~\\cite{Bigeleisen1955}", "the largest deviation Bigeleisen reports")
+    if not bad:
+        print(f"  sources 2026-11-23: isotope trapping (relation at finite cosubstrate holds), multiple isotope effects, "
+              f"isotopically sensitive branching, rule of the geometric mean (water {dev:.1f}%, u = {u:.1f})")
+    return bad
+
+
 _NEEDS_DOCS = {
     "check_audit_2026_10_15", "check_consistency_2026_10_16",
     "check_light_example",
@@ -4065,10 +4278,10 @@ _NEEDS_DOCS = {
     "check_repo_metadata", "check_titles", "check_reference_asymmetry",
     "check_promoting_mode", "check_corpus_consequences", "check_scope_corrections",
     "check_source_fidelity", "check_readiness_scope", "check_generated_tables",
-    "check_external_audit_2026_10_12",
-    "check_source_review_2026_10_13", "check_text_2026_10_21", "check_tables_2026_10_22", "check_round2_2026_10_22", "check_worked_example",
+    "check_numbers_2026_10_12",
+    "check_sources_2026_10_13", "check_text_2026_10_21", "check_tables_2026_10_22", "check_corrections_2026_10_22", "check_worked_example",
     "check_audit_2026_11_13", "check_assumptions_2026_11_13", "check_text_2026_11_18",
-    "check_audit_2026_11_20", "check_practice_2026_11_20",
+    "check_audit_2026_11_20", "check_practice_2026_11_20", "check_text_2026_11_23", "check_front_2026_11_23", "check_sources_2026_11_23",
 }
 
 
@@ -4140,15 +4353,16 @@ def run():
                 check_promoting_mode, check_corpus_consequences,
                 check_scope_corrections, check_source_fidelity,
                 check_readiness_scope, check_generated_tables,
-                check_external_audit_2026_10_12, check_source_review_2026_10_13,
+                check_numbers_2026_10_12, check_sources_2026_10_13,
                 check_figure_data, check_audit_2026_10_15,
                 check_tables_2026_10_15, check_consistency_2026_10_16,
                 check_bounds_2026_10_21, check_text_2026_10_21,
                 check_tables_2026_10_22, check_equations_2026_10_22,
-                check_round2_2026_10_22, check_worked_example,
+                check_corrections_2026_10_22, check_worked_example,
                 check_audit_2026_11_13, check_assumptions_2026_11_13,
                 check_text_2026_11_18, check_audit_2026_11_20,
-                check_practice_2026_11_20):
+                check_practice_2026_11_20, check_text_2026_11_23, check_front_2026_11_23,
+                check_sources_2026_11_23):
         if not HAVE_DOCS and _fn.__name__ in _NEEDS_DOCS:
             print(f"  SKIPPED (needs the manuscript): {_fn.__name__}")
             continue

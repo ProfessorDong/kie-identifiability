@@ -1,4 +1,4 @@
-# A Measured Swain-Schaad Exponent Is Only a Lower Limit on the Intrinsic Exponent
+# Competitive Isotope Effects Set Only a Lower Limit on the Intrinsic Swain-Schaad Exponent of Enzymatic Hydrogen Transfer
 
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.21913975.svg)](https://doi.org/10.5281/zenodo.21913975)
 

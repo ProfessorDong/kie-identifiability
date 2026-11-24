@@ -36,7 +36,7 @@ integer 1:2:3      3.25725  -0.055522    0.1789   0.0389    0.1149    YES   YES
              10-60      0.2956          no
              15-60      0.0061         YES
              20-60     -0.0002         YES
-  WITHDRAWN as an exclusion: these maxima are pinned at the edge of the
+  NOT an exclusion: these maxima are pinned at the edge of the
   sampled box and reverse sign when it is extended, the summed family
   reaching positive offsets.  No exclusion of the
   summed model is claimed; the comparison is with the ground channel only.

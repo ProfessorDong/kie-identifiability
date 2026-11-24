@@ -188,11 +188,10 @@ def main():
                     if np.isfinite(b):
                         best = max(best, b)
         say(f"{lab:>18}{best:12.4f}{'YES' if lcb > best else 'no':>12}")
-    # Until 2026-09-14 this section concluded that the observation excludes the
-    # summed model above ~10 kcal/mol.  The supplement withdrew that: these
-    # maxima sit at the edge of the sampled box and reverse sign when it is
-    # extended (vibronic_envelope.py).  The printout now says so.
-    say("  WITHDRAWN as an exclusion: these maxima are pinned at the edge of the")
+    # These maxima sit at the edge of the sampled box and reverse sign when it is
+    # extended (vibronic_envelope.py), so they support no exclusion of the
+    # summed model, and the printout says so.
+    say("  NOT an exclusion: these maxima are pinned at the edge of the")
     say("  sampled box and reverse sign when it is extended, the summed family")
     say("  reaching positive offsets.  No exclusion of the")
     say("  summed model is claimed; the comparison is with the ground channel only.")
